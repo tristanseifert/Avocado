@@ -6,16 +6,16 @@
 //  Copyright © 2016 Tristan Seifert. All rights reserved.
 //
 
-#import "AppDelegate.h"
+#import "TSAppDelegate.h"
 
-@interface AppDelegate ()
+@interface TSAppDelegate ()
 
 @property (weak) IBOutlet NSWindow *window;
 - (IBAction)saveAction:(id)sender;
 
 @end
 
-@implementation AppDelegate
+@implementation TSAppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 	// Insert code here to initialize your application

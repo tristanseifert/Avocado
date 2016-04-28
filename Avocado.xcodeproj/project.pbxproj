@@ -7,22 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6AE87BC91CD275C90053CD9D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BC81CD275C90053CD9D /* AppDelegate.m */; };
+		6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */; };
 		6AE87BCC1CD275C90053CD9D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BCB1CD275C90053CD9D /* main.m */; };
-		6AE87BCF1CD275C90053CD9D /* Avocado.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BCD1CD275C90053CD9D /* Avocado.xcdatamodeld */; };
 		6AE87BD11CD275C90053CD9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AE87BD01CD275C90053CD9D /* Assets.xcassets */; };
 		6AE87BD41CD275C90053CD9D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AE87BD21CD275C90053CD9D /* MainMenu.xib */; };
+		6AE87BEC1CD276E70053CD9D /* Avocado.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BEA1CD276E70053CD9D /* Avocado.xcdatamodeld */; };
+		EA7EEFA26E5969496DFD4D34 /* libPods-Avocado.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 037613DEB79D67C508440DFB /* libPods-Avocado.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		037613DEB79D67C508440DFB /* libPods-Avocado.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Avocado.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		072E3CE76E3BE9A62C321D67 /* Pods-Avocado.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Avocado.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Avocado/Pods-Avocado.debug.xcconfig"; sourceTree = "<group>"; };
 		6AE87BC41CD275C90053CD9D /* Avocado.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Avocado.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		6AE87BC71CD275C90053CD9D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		6AE87BC81CD275C90053CD9D /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		6AE87BC71CD275C90053CD9D /* TSAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TSAppDelegate.h; sourceTree = "<group>"; };
+		6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TSAppDelegate.m; sourceTree = "<group>"; };
 		6AE87BCB1CD275C90053CD9D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		6AE87BCE1CD275C90053CD9D /* Avocado.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Avocado.xcdatamodel; sourceTree = "<group>"; };
 		6AE87BD01CD275C90053CD9D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6AE87BD31CD275C90053CD9D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		6AE87BD51CD275C90053CD9D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6AE87BDD1CD2767A0053CD9D /* Avocado-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Avocado-Prefix.pch"; sourceTree = "<group>"; };
+		6AE87BE91CD276BF0053CD9D /* mogenerator.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = mogenerator.sh; path = Avocado/CoreData/mogenerator.sh; sourceTree = "<group>"; };
+		6AE87BEB1CD276E70053CD9D /* Avocado.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Avocado.xcdatamodel; sourceTree = "<group>"; };
+		70A0E8562B68C925C7E5445C /* Pods-Avocado.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Avocado.release.xcconfig"; path = "Pods/Target Support Files/Pods-Avocado/Pods-Avocado.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -30,6 +36,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA7EEFA26E5969496DFD4D34 /* libPods-Avocado.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -39,8 +46,13 @@
 		6AE87BBB1CD275C90053CD9D = {
 			isa = PBXGroup;
 			children = (
-				6AE87BC61CD275C90053CD9D /* Avocado */,
+				6AE87BDC1CD276070053CD9D /* CoreData */,
+				6AE87BC61CD275C90053CD9D /* App Delegate */,
+				6AE87BDB1CD275FA0053CD9D /* Resources */,
+				6AE87BCA1CD275C90053CD9D /* Supporting Files */,
 				6AE87BC51CD275C90053CD9D /* Products */,
+				8A1D7E197716AC0277E58CE5 /* Pods */,
+				F4FC62D8D3C46EB93528ACF1 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -52,17 +64,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		6AE87BC61CD275C90053CD9D /* Avocado */ = {
+		6AE87BC61CD275C90053CD9D /* App Delegate */ = {
 			isa = PBXGroup;
 			children = (
-				6AE87BC71CD275C90053CD9D /* AppDelegate.h */,
-				6AE87BC81CD275C90053CD9D /* AppDelegate.m */,
-				6AE87BD01CD275C90053CD9D /* Assets.xcassets */,
+				6AE87BC71CD275C90053CD9D /* TSAppDelegate.h */,
+				6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */,
 				6AE87BD21CD275C90053CD9D /* MainMenu.xib */,
-				6AE87BD51CD275C90053CD9D /* Info.plist */,
-				6AE87BCD1CD275C90053CD9D /* Avocado.xcdatamodeld */,
-				6AE87BCA1CD275C90053CD9D /* Supporting Files */,
 			);
+			name = "App Delegate";
 			path = Avocado;
 			sourceTree = "<group>";
 		};
@@ -70,8 +79,78 @@
 			isa = PBXGroup;
 			children = (
 				6AE87BCB1CD275C90053CD9D /* main.m */,
+				6AE87BDD1CD2767A0053CD9D /* Avocado-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			path = Avocado;
+			sourceTree = "<group>";
+		};
+		6AE87BDB1CD275FA0053CD9D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				6AE87BD51CD275C90053CD9D /* Info.plist */,
+				6AE87BD01CD275C90053CD9D /* Assets.xcassets */,
+			);
+			name = Resources;
+			path = Avocado;
+			sourceTree = "<group>";
+		};
+		6AE87BDC1CD276070053CD9D /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				6AE87BEE1CD2777E0053CD9D /* Managed Object Subclasses */,
+				6AE87BE81CD276AE0053CD9D /* Build Tools */,
+				6AE87BEA1CD276E70053CD9D /* Avocado.xcdatamodeld */,
+			);
+			name = CoreData;
+			sourceTree = "<group>";
+		};
+		6AE87BE81CD276AE0053CD9D /* Build Tools */ = {
+			isa = PBXGroup;
+			children = (
+				6AE87BE91CD276BF0053CD9D /* mogenerator.sh */,
+			);
+			name = "Build Tools";
+			sourceTree = "<group>";
+		};
+		6AE87BEE1CD2777E0053CD9D /* Managed Object Subclasses */ = {
+			isa = PBXGroup;
+			children = (
+				6AE87BF01CD277860053CD9D /* Model */,
+				6AE87BEF1CD277830053CD9D /* Entity */,
+			);
+			name = "Managed Object Subclasses";
+			sourceTree = "<group>";
+		};
+		6AE87BEF1CD277830053CD9D /* Entity */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Entity;
+			sourceTree = "<group>";
+		};
+		6AE87BF01CD277860053CD9D /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		8A1D7E197716AC0277E58CE5 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				072E3CE76E3BE9A62C321D67 /* Pods-Avocado.debug.xcconfig */,
+				70A0E8562B68C925C7E5445C /* Pods-Avocado.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		F4FC62D8D3C46EB93528ACF1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				037613DEB79D67C508440DFB /* libPods-Avocado.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -81,9 +160,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6AE87BD81CD275C90053CD9D /* Build configuration list for PBXNativeTarget "Avocado" */;
 			buildPhases = (
+				F8652002148D4BDE09E87921 /* Check Pods Manifest.lock */,
+				6AE87BED1CD276FD0053CD9D /* Update CoreData Subclasses (mogenerator) */,
 				6AE87BC01CD275C90053CD9D /* Sources */,
 				6AE87BC11CD275C90053CD9D /* Frameworks */,
 				6AE87BC21CD275C90053CD9D /* Resources */,
+				677C148D027D0E0A6543CA26 /* Embed Pods Frameworks */,
+				B0DFEA25DCDDB691FBC6651D /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -138,14 +221,76 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		677C148D027D0E0A6543CA26 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Avocado/Pods-Avocado-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6AE87BED1CD276FD0053CD9D /* Update CoreData Subclasses (mogenerator) */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Update CoreData Subclasses (mogenerator)";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "${SRCROOT}/Avocado/CoreData/mogenerator.sh";
+		};
+		B0DFEA25DCDDB691FBC6651D /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Avocado/Pods-Avocado-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F8652002148D4BDE09E87921 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		6AE87BC01CD275C90053CD9D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				6AE87BCC1CD275C90053CD9D /* main.m in Sources */,
-				6AE87BCF1CD275C90053CD9D /* Avocado.xcdatamodeld in Sources */,
-				6AE87BC91CD275C90053CD9D /* AppDelegate.m in Sources */,
+				6AE87BEC1CD276E70053CD9D /* Avocado.xcdatamodeld in Sources */,
+				6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,9 +391,11 @@
 		};
 		6AE87BD91CD275C90053CD9D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 072E3CE76E3BE9A62C321D67 /* Pods-Avocado.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PREFIX_HEADER = "Avocado/Avocado-Prefix.pch";
 				INFOPLIST_FILE = Avocado/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = me.tseifert.Avocado;
@@ -258,9 +405,11 @@
 		};
 		6AE87BDA1CD275C90053CD9D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 70A0E8562B68C925C7E5445C /* Pods-Avocado.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PREFIX_HEADER = "Avocado/Avocado-Prefix.pch";
 				INFOPLIST_FILE = Avocado/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = me.tseifert.Avocado;
@@ -287,17 +436,19 @@
 				6AE87BDA1CD275C90053CD9D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		6AE87BCD1CD275C90053CD9D /* Avocado.xcdatamodeld */ = {
+		6AE87BEA1CD276E70053CD9D /* Avocado.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				6AE87BCE1CD275C90053CD9D /* Avocado.xcdatamodel */,
+				6AE87BEB1CD276E70053CD9D /* Avocado.xcdatamodel */,
 			);
-			currentVersion = 6AE87BCE1CD275C90053CD9D /* Avocado.xcdatamodel */;
-			path = Avocado.xcdatamodeld;
+			currentVersion = 6AE87BEB1CD276E70053CD9D /* Avocado.xcdatamodel */;
+			name = Avocado.xcdatamodeld;
+			path = Avocado/CoreData/Avocado.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
