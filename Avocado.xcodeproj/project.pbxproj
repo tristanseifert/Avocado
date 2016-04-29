@@ -12,6 +12,8 @@
 		6AE87BD11CD275C90053CD9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AE87BD01CD275C90053CD9D /* Assets.xcassets */; };
 		6AE87BD41CD275C90053CD9D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AE87BD21CD275C90053CD9D /* MainMenu.xib */; };
 		6AE87BEC1CD276E70053CD9D /* Avocado.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BEA1CD276E70053CD9D /* Avocado.xcdatamodeld */; };
+		6AE87C151CD3D4B60053CD9D /* libraw_r.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AE87C141CD3D4B60053CD9D /* libraw_r.a */; };
+		6AE87C211CD3D5460053CD9D /* TSLibRawWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87C201CD3D5460053CD9D /* TSLibRawWrapper.m */; };
 		EA7EEFA26E5969496DFD4D34 /* libPods-Avocado.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 037613DEB79D67C508440DFB /* libPods-Avocado.a */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +30,16 @@
 		6AE87BDD1CD2767A0053CD9D /* Avocado-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Avocado-Prefix.pch"; sourceTree = "<group>"; };
 		6AE87BE91CD276BF0053CD9D /* mogenerator.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = mogenerator.sh; path = Avocado/CoreData/mogenerator.sh; sourceTree = "<group>"; };
 		6AE87BEB1CD276E70053CD9D /* Avocado.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Avocado.xcdatamodel; sourceTree = "<group>"; };
+		6AE87C141CD3D4B60053CD9D /* libraw_r.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libraw_r.a; path = "Dependencies/LibRaw-0.17.1/lib/.libs/libraw_r.a"; sourceTree = "<group>"; };
+		6AE87C171CD3D4D40053CD9D /* libraw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libraw.h; sourceTree = "<group>"; };
+		6AE87C181CD3D4D40053CD9D /* libraw_alloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libraw_alloc.h; sourceTree = "<group>"; };
+		6AE87C191CD3D4D40053CD9D /* libraw_const.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libraw_const.h; sourceTree = "<group>"; };
+		6AE87C1A1CD3D4D40053CD9D /* libraw_datastream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libraw_datastream.h; sourceTree = "<group>"; };
+		6AE87C1B1CD3D4D40053CD9D /* libraw_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libraw_internal.h; sourceTree = "<group>"; };
+		6AE87C1C1CD3D4D40053CD9D /* libraw_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libraw_types.h; sourceTree = "<group>"; };
+		6AE87C1D1CD3D4D40053CD9D /* libraw_version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libraw_version.h; sourceTree = "<group>"; };
+		6AE87C1F1CD3D5460053CD9D /* TSLibRawWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibRawWrapper.h; path = "Avocado/RAW Processing/TSLibRawWrapper.h"; sourceTree = "<group>"; };
+		6AE87C201CD3D5460053CD9D /* TSLibRawWrapper.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = TSLibRawWrapper.m; path = "Avocado/RAW Processing/TSLibRawWrapper.m"; sourceTree = "<group>"; };
 		70A0E8562B68C925C7E5445C /* Pods-Avocado.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Avocado.release.xcconfig"; path = "Pods/Target Support Files/Pods-Avocado/Pods-Avocado.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -37,6 +49,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA7EEFA26E5969496DFD4D34 /* libPods-Avocado.a in Frameworks */,
+				6AE87C151CD3D4B60053CD9D /* libraw_r.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -48,6 +61,7 @@
 			children = (
 				6AE87BDC1CD276070053CD9D /* CoreData */,
 				6AE87BC61CD275C90053CD9D /* App Delegate */,
+				6AE87BF11CD3D28E0053CD9D /* Dependencies */,
 				6AE87BDB1CD275FA0053CD9D /* Resources */,
 				6AE87BCA1CD275C90053CD9D /* Supporting Files */,
 				6AE87BC51CD275C90053CD9D /* Products */,
@@ -134,6 +148,48 @@
 			children = (
 			);
 			name = Model;
+			sourceTree = "<group>";
+		};
+		6AE87BF11CD3D28E0053CD9D /* Dependencies */ = {
+			isa = PBXGroup;
+			children = (
+				6AE87BF21CD3D2940053CD9D /* libraw */,
+			);
+			name = Dependencies;
+			sourceTree = "<group>";
+		};
+		6AE87BF21CD3D2940053CD9D /* libraw */ = {
+			isa = PBXGroup;
+			children = (
+				6AE87C141CD3D4B60053CD9D /* libraw_r.a */,
+				6AE87C1E1CD3D5280053CD9D /* ObjC Wrapper */,
+				6AE87C161CD3D4D40053CD9D /* Headers */,
+			);
+			name = libraw;
+			sourceTree = "<group>";
+		};
+		6AE87C161CD3D4D40053CD9D /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				6AE87C171CD3D4D40053CD9D /* libraw.h */,
+				6AE87C181CD3D4D40053CD9D /* libraw_alloc.h */,
+				6AE87C191CD3D4D40053CD9D /* libraw_const.h */,
+				6AE87C1A1CD3D4D40053CD9D /* libraw_datastream.h */,
+				6AE87C1B1CD3D4D40053CD9D /* libraw_internal.h */,
+				6AE87C1C1CD3D4D40053CD9D /* libraw_types.h */,
+				6AE87C1D1CD3D4D40053CD9D /* libraw_version.h */,
+			);
+			name = Headers;
+			path = "Dependencies/LibRaw-0.17.1/libraw";
+			sourceTree = "<group>";
+		};
+		6AE87C1E1CD3D5280053CD9D /* ObjC Wrapper */ = {
+			isa = PBXGroup;
+			children = (
+				6AE87C1F1CD3D5460053CD9D /* TSLibRawWrapper.h */,
+				6AE87C201CD3D5460053CD9D /* TSLibRawWrapper.m */,
+			);
+			name = "ObjC Wrapper";
 			sourceTree = "<group>";
 		};
 		8A1D7E197716AC0277E58CE5 /* Pods */ = {
@@ -289,6 +345,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6AE87BCC1CD275C90053CD9D /* main.m in Sources */,
+				6AE87C211CD3D5460053CD9D /* TSLibRawWrapper.m in Sources */,
 				6AE87BEC1CD276E70053CD9D /* Avocado.xcdatamodeld in Sources */,
 				6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */,
 			);
@@ -398,6 +455,10 @@
 				GCC_PREFIX_HEADER = "Avocado/Avocado-Prefix.pch";
 				INFOPLIST_FILE = Avocado/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Dependencies/LibRaw-0.17.1/lib/.libs",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = me.tseifert.Avocado;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -412,6 +473,10 @@
 				GCC_PREFIX_HEADER = "Avocado/Avocado-Prefix.pch";
 				INFOPLIST_FILE = Avocado/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Dependencies/LibRaw-0.17.1/lib/.libs",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = me.tseifert.Avocado;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

@@ -14,4 +14,11 @@
 
 #import <CocoaLumberjack/CocoaLumberjack.h>
 
+// define log level
+#if DEBUG
+static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
+#else
+static const DDLogLevel ddLogLevel = DDLogLevelWarning;
+#endif
+
 #endif /* Avocado_Prefix_pch */
