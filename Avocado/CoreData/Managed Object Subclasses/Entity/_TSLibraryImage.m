@@ -4,6 +4,7 @@
 #import "_TSLibraryImage.h"
 
 const struct TSLibraryImageAttributes TSLibraryImageAttributes = {
+	.fileType = @"fileType",
 	.fileUrl = @"fileUrl",
 	.metadata = @"metadata",
 	.thumbData = @"thumbData",
@@ -41,7 +42,33 @@ const struct TSLibraryImageRelationships TSLibraryImageRelationships = {
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 
+	if ([key isEqualToString:@"fileTypeValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"fileType"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
+
 	return keyPaths;
+}
+
+@dynamic fileType;
+
+- (int16_t)fileTypeValue {
+	NSNumber *result = [self fileType];
+	return [result shortValue];
+}
+
+- (void)setFileTypeValue:(int16_t)value_ {
+	[self setFileType:@(value_)];
+}
+
+- (int16_t)primitiveFileTypeValue {
+	NSNumber *result = [self primitiveFileType];
+	return [result shortValue];
+}
+
+- (void)setPrimitiveFileTypeValue:(int16_t)value_ {
+	[self setPrimitiveFileType:@(value_)];
 }
 
 @dynamic fileUrl;

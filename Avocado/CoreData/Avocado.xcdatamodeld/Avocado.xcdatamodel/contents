@@ -20,23 +20,13 @@
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="Image" representedClassName="TSLibraryImage" syncable="YES">
+        <attribute name="fileType" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="fileUrl" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="metadata" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="thumbData" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <relationship name="adjustments" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ImageAdjustment" inverseName="image" inverseEntity="ImageAdjustment" syncable="YES"/>
         <relationship name="parentAlbums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Album" inverseName="images" inverseEntity="Album" syncable="YES"/>
         <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tag" inverseName="images" inverseEntity="Tag" syncable="YES"/>
-        <compoundIndexes>
-            <compoundIndex>
-                <index value="tags"/>
-            </compoundIndex>
-            <compoundIndex>
-                <index value="parentAlbums"/>
-            </compoundIndex>
-            <compoundIndex>
-                <index value="fileUrl"/>
-            </compoundIndex>
-        </compoundIndexes>
     </entity>
     <entity name="ImageAdjustment" representedClassName="TSLibraryImageAdjustment" syncable="YES">
         <attribute name="delta" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
@@ -46,18 +36,13 @@
     <entity name="Tag" representedClassName="TSLibraryTag" syncable="YES">
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Image" inverseName="tags" inverseEntity="Image" syncable="YES"/>
-        <compoundIndexes>
-            <compoundIndex>
-                <index value="title"/>
-            </compoundIndex>
-        </compoundIndexes>
     </entity>
     <elements>
-        <element name="Image" positionX="97" positionY="243" width="128" height="135"/>
         <element name="Album" positionX="99" positionY="78" width="128" height="120"/>
         <element name="AlbumCollection" positionX="97" positionY="-72" width="128" height="105"/>
-        <element name="ImageAdjustment" positionX="349" positionY="270" width="128" height="90"/>
         <element name="ExportService" positionX="441" positionY="-90" width="128" height="105"/>
-        <element name="Tag" positionX="351" positionY="396" width="128" height="73"/>
+        <element name="Image" positionX="97" positionY="243" width="128" height="150"/>
+        <element name="ImageAdjustment" positionX="349" positionY="270" width="128" height="90"/>
+        <element name="Tag" positionX="351" positionY="396" width="128" height="75"/>
     </elements>
 </model>

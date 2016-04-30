@@ -4,6 +4,7 @@
 @import CoreData;
 
 extern const struct TSLibraryImageAttributes {
+	__unsafe_unretained NSString *fileType;
 	__unsafe_unretained NSString *fileUrl;
 	__unsafe_unretained NSString *metadata;
 	__unsafe_unretained NSString *thumbData;
@@ -31,6 +32,14 @@ extern const struct TSLibraryImageRelationships {
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 @property (nonatomic, readonly, strong) TSLibraryImageID* objectID;
+
+@property (nonatomic, strong) NSNumber* fileType;
+
+@property (atomic) int16_t fileTypeValue;
+- (int16_t)fileTypeValue;
+- (void)setFileTypeValue:(int16_t)value_;
+
+//- (BOOL)validateFileType:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) id fileUrl;
 
@@ -90,6 +99,12 @@ extern const struct TSLibraryImageRelationships {
 @end
 
 @interface _TSLibraryImage (CoreDataGeneratedPrimitiveAccessors)
+
+- (NSNumber*)primitiveFileType;
+- (void)setPrimitiveFileType:(NSNumber*)value;
+
+- (int16_t)primitiveFileTypeValue;
+- (void)setPrimitiveFileTypeValue:(int16_t)value_;
 
 - (id)primitiveFileUrl;
 - (void)setPrimitiveFileUrl:(id)value;

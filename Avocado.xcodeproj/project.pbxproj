@@ -26,6 +26,16 @@
 		6AE87BEC1CD276E70053CD9D /* Avocado.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BEA1CD276E70053CD9D /* Avocado.xcdatamodeld */; };
 		6AE87C151CD3D4B60053CD9D /* libraw_r.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AE87C141CD3D4B60053CD9D /* libraw_r.a */; };
 		6AE87C211CD3D5460053CD9D /* TSLibRawWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87C201CD3D5460053CD9D /* TSLibRawWrapper.m */; };
+		6AEC350C1CD437170033DE0A /* TSCoreDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC350B1CD437170033DE0A /* TSCoreDataStore.m */; };
+		6AEC35121CD43E070033DE0A /* TSMainLibraryWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC35101CD43E070033DE0A /* TSMainLibraryWindowController.m */; };
+		6AEC35131CD43E070033DE0A /* TSMainLibraryWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC35111CD43E070033DE0A /* TSMainLibraryWindow.xib */; };
+		6AEC35191CD43F000033DE0A /* TSCoreDataStoreIB.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC35181CD43F000033DE0A /* TSCoreDataStoreIB.m */; };
+		6AEC351B1CD43FED0033DE0A /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEC351A1CD43FED0033DE0A /* Accelerate.framework */; };
+		6AEC351D1CD43FF00033DE0A /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEC351C1CD43FF00033DE0A /* CoreImage.framework */; };
+		6AEC35411CD443460033DE0A /* TSLibraryOverviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC353F1CD443460033DE0A /* TSLibraryOverviewController.m */; };
+		6AEC35421CD443460033DE0A /* TSLibraryOverview.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC35401CD443460033DE0A /* TSLibraryOverview.xib */; };
+		6AEC35471CD443B90033DE0A /* TSLibraryDetailController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC35451CD443B90033DE0A /* TSLibraryDetailController.m */; };
+		6AEC35481CD443B90033DE0A /* TSLibraryDetail.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC35461CD443B90033DE0A /* TSLibraryDetail.xib */; };
 		EA7EEFA26E5969496DFD4D34 /* libPods-Avocado.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 037613DEB79D67C508440DFB /* libPods-Avocado.a */; };
 /* End PBXBuildFile section */
 
@@ -81,6 +91,21 @@
 		6AE87C1D1CD3D4D40053CD9D /* libraw_version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libraw_version.h; sourceTree = "<group>"; };
 		6AE87C1F1CD3D5460053CD9D /* TSLibRawWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibRawWrapper.h; path = "Avocado/RAW Processing/TSLibRawWrapper.h"; sourceTree = "<group>"; };
 		6AE87C201CD3D5460053CD9D /* TSLibRawWrapper.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = TSLibRawWrapper.m; path = "Avocado/RAW Processing/TSLibRawWrapper.m"; sourceTree = "<group>"; };
+		6AEC350A1CD437170033DE0A /* TSCoreDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSCoreDataStore.h; path = Avocado/CoreData/TSCoreDataStore.h; sourceTree = "<group>"; };
+		6AEC350B1CD437170033DE0A /* TSCoreDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSCoreDataStore.m; path = Avocado/CoreData/TSCoreDataStore.m; sourceTree = "<group>"; };
+		6AEC350F1CD43E070033DE0A /* TSMainLibraryWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSMainLibraryWindowController.h; path = "Library Window/TSMainLibraryWindowController.h"; sourceTree = "<group>"; };
+		6AEC35101CD43E070033DE0A /* TSMainLibraryWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSMainLibraryWindowController.m; path = "Library Window/TSMainLibraryWindowController.m"; sourceTree = "<group>"; };
+		6AEC35111CD43E070033DE0A /* TSMainLibraryWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSMainLibraryWindow.xib; path = "Library Window/TSMainLibraryWindow.xib"; sourceTree = "<group>"; };
+		6AEC35171CD43F000033DE0A /* TSCoreDataStoreIB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSCoreDataStoreIB.h; path = Avocado/CoreData/TSCoreDataStoreIB.h; sourceTree = "<group>"; };
+		6AEC35181CD43F000033DE0A /* TSCoreDataStoreIB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSCoreDataStoreIB.m; path = Avocado/CoreData/TSCoreDataStoreIB.m; sourceTree = "<group>"; };
+		6AEC351A1CD43FED0033DE0A /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		6AEC351C1CD43FF00033DE0A /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
+		6AEC353E1CD443460033DE0A /* TSLibraryOverviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryOverviewController.h; path = "Library Window/Overview/TSLibraryOverviewController.h"; sourceTree = "<group>"; };
+		6AEC353F1CD443460033DE0A /* TSLibraryOverviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryOverviewController.m; path = "Library Window/Overview/TSLibraryOverviewController.m"; sourceTree = "<group>"; };
+		6AEC35401CD443460033DE0A /* TSLibraryOverview.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSLibraryOverview.xib; path = "Library Window/Overview/TSLibraryOverview.xib"; sourceTree = "<group>"; };
+		6AEC35441CD443B90033DE0A /* TSLibraryDetailController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryDetailController.h; path = "Library Window/Single Image/TSLibraryDetailController.h"; sourceTree = "<group>"; };
+		6AEC35451CD443B90033DE0A /* TSLibraryDetailController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryDetailController.m; path = "Library Window/Single Image/TSLibraryDetailController.m"; sourceTree = "<group>"; };
+		6AEC35461CD443B90033DE0A /* TSLibraryDetail.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSLibraryDetail.xib; path = "Library Window/Single Image/TSLibraryDetail.xib"; sourceTree = "<group>"; };
 		70A0E8562B68C925C7E5445C /* Pods-Avocado.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Avocado.release.xcconfig"; path = "Pods/Target Support Files/Pods-Avocado/Pods-Avocado.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -89,6 +114,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6AEC351D1CD43FF00033DE0A /* CoreImage.framework in Frameworks */,
+				6AEC351B1CD43FED0033DE0A /* Accelerate.framework in Frameworks */,
 				EA7EEFA26E5969496DFD4D34 /* libPods-Avocado.a in Frameworks */,
 				6AE87C151CD3D4B60053CD9D /* libraw_r.a in Frameworks */,
 			);
@@ -100,11 +127,7 @@
 		6AE87BBB1CD275C90053CD9D = {
 			isa = PBXGroup;
 			children = (
-				6AE87BDC1CD276070053CD9D /* CoreData */,
-				6AE87BC61CD275C90053CD9D /* App Delegate */,
-				6AE87BF11CD3D28E0053CD9D /* Dependencies */,
-				6AE87BDB1CD275FA0053CD9D /* Resources */,
-				6AE87BCA1CD275C90053CD9D /* Supporting Files */,
+				6AEC350E1CD43DCA0033DE0A /* Avocado App */,
 				6AE87BC51CD275C90053CD9D /* Products */,
 				8A1D7E197716AC0277E58CE5 /* Pods */,
 				F4FC62D8D3C46EB93528ACF1 /* Frameworks */,
@@ -153,9 +176,13 @@
 		6AE87BDC1CD276070053CD9D /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
-				6AE87BEE1CD2777E0053CD9D /* Managed Object Subclasses */,
 				6AE87BE81CD276AE0053CD9D /* Build Tools */,
+				6AE87BEE1CD2777E0053CD9D /* Managed Object Subclasses */,
 				6AE87BEA1CD276E70053CD9D /* Avocado.xcdatamodeld */,
+				6AEC350A1CD437170033DE0A /* TSCoreDataStore.h */,
+				6AEC350B1CD437170033DE0A /* TSCoreDataStore.m */,
+				6AEC35171CD43F000033DE0A /* TSCoreDataStoreIB.h */,
+				6AEC35181CD43F000033DE0A /* TSCoreDataStoreIB.m */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -262,6 +289,54 @@
 			name = "ObjC Wrapper";
 			sourceTree = "<group>";
 		};
+		6AEC350D1CD43DBD0033DE0A /* Library Window */ = {
+			isa = PBXGroup;
+			children = (
+				6AEC350F1CD43E070033DE0A /* TSMainLibraryWindowController.h */,
+				6AEC35101CD43E070033DE0A /* TSMainLibraryWindowController.m */,
+				6AEC35111CD43E070033DE0A /* TSMainLibraryWindow.xib */,
+			);
+			name = "Library Window";
+			path = Avocado;
+			sourceTree = "<group>";
+		};
+		6AEC350E1CD43DCA0033DE0A /* Avocado App */ = {
+			isa = PBXGroup;
+			children = (
+				6AE87BDC1CD276070053CD9D /* CoreData */,
+				6AEC35431CD443A50033DE0A /* Library Detail Controller */,
+				6AEC353D1CD4431B0033DE0A /* Library Overview Controller */,
+				6AEC350D1CD43DBD0033DE0A /* Library Window */,
+				6AE87BC61CD275C90053CD9D /* App Delegate */,
+				6AE87BF11CD3D28E0053CD9D /* Dependencies */,
+				6AE87BDB1CD275FA0053CD9D /* Resources */,
+				6AE87BCA1CD275C90053CD9D /* Supporting Files */,
+			);
+			name = "Avocado App";
+			sourceTree = "<group>";
+		};
+		6AEC353D1CD4431B0033DE0A /* Library Overview Controller */ = {
+			isa = PBXGroup;
+			children = (
+				6AEC353E1CD443460033DE0A /* TSLibraryOverviewController.h */,
+				6AEC353F1CD443460033DE0A /* TSLibraryOverviewController.m */,
+				6AEC35401CD443460033DE0A /* TSLibraryOverview.xib */,
+			);
+			name = "Library Overview Controller";
+			path = Avocado;
+			sourceTree = "<group>";
+		};
+		6AEC35431CD443A50033DE0A /* Library Detail Controller */ = {
+			isa = PBXGroup;
+			children = (
+				6AEC35441CD443B90033DE0A /* TSLibraryDetailController.h */,
+				6AEC35451CD443B90033DE0A /* TSLibraryDetailController.m */,
+				6AEC35461CD443B90033DE0A /* TSLibraryDetail.xib */,
+			);
+			name = "Library Detail Controller";
+			path = Avocado;
+			sourceTree = "<group>";
+		};
 		8A1D7E197716AC0277E58CE5 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -274,6 +349,8 @@
 		F4FC62D8D3C46EB93528ACF1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6AEC351C1CD43FF00033DE0A /* CoreImage.framework */,
+				6AEC351A1CD43FED0033DE0A /* Accelerate.framework */,
 				037613DEB79D67C508440DFB /* libPods-Avocado.a */,
 			);
 			name = Frameworks;
@@ -293,6 +370,7 @@
 				6AE87BC21CD275C90053CD9D /* Resources */,
 				677C148D027D0E0A6543CA26 /* Embed Pods Frameworks */,
 				B0DFEA25DCDDB691FBC6651D /* Copy Pods Resources */,
+				6AEC35281CD4406D0033DE0A /* Set Build Version */,
 			);
 			buildRules = (
 			);
@@ -314,6 +392,7 @@
 				TargetAttributes = {
 					6AE87BC31CD275C90053CD9D = {
 						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = 8QDQ246B94;
 					};
 				};
 			};
@@ -341,7 +420,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				6AE87BD11CD275C90053CD9D /* Assets.xcassets in Resources */,
+				6AEC35481CD443B90033DE0A /* TSLibraryDetail.xib in Resources */,
 				6AE87BD41CD275C90053CD9D /* MainMenu.xib in Resources */,
+				6AEC35131CD43E070033DE0A /* TSMainLibraryWindow.xib in Resources */,
+				6AEC35421CD443460033DE0A /* TSLibraryOverview.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -376,6 +458,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "${SRCROOT}/Avocado/CoreData/mogenerator.sh";
+		};
+		6AEC35281CD4406D0033DE0A /* Set Build Version */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Set Build Version";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "${SRCROOT}/Scripts/update_build_number.sh";
 		};
 		B0DFEA25DCDDB691FBC6651D /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -415,14 +511,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				6AE87BCC1CD275C90053CD9D /* main.m in Sources */,
+				6AEC35121CD43E070033DE0A /* TSMainLibraryWindowController.m in Sources */,
+				6AEC350C1CD437170033DE0A /* TSCoreDataStore.m in Sources */,
 				6ABC2DB11CD4357E006B959F /* TSLibraryTag.m in Sources */,
 				6ABC2DBE1CD43586006B959F /* _TSLibraryAlbum.m in Sources */,
 				6AE87C211CD3D5460053CD9D /* TSLibRawWrapper.m in Sources */,
 				6AE87BEC1CD276E70053CD9D /* Avocado.xcdatamodeld in Sources */,
 				6ABC2DC31CD43586006B959F /* _TSLibraryTag.m in Sources */,
 				6ABC2DAC1CD4357E006B959F /* TSLibraryAlbum.m in Sources */,
+				6AEC35471CD443B90033DE0A /* TSLibraryDetailController.m in Sources */,
 				6ABC2D9C1CD42C4A006B959F /* _TSLibraryImage.m in Sources */,
 				6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */,
+				6AEC35411CD443460033DE0A /* TSLibraryOverviewController.m in Sources */,
+				6AEC35191CD43F000033DE0A /* TSCoreDataStoreIB.m in Sources */,
 				6ABC2DAF1CD4357E006B959F /* TSLibraryImage.m in Sources */,
 				6ABC2DAD1CD4357E006B959F /* TSLibraryAlbumCollection.m in Sources */,
 				6ABC2DAE1CD4357E006B959F /* TSLibraryExportService.m in Sources */,
@@ -533,6 +634,7 @@
 			baseConfigurationReference = 072E3CE76E3BE9A62C321D67 /* Pods-Avocado.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PREFIX_HEADER = "Avocado/Avocado-Prefix.pch";
 				INFOPLIST_FILE = Avocado/Info.plist;
@@ -541,6 +643,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Dependencies/LibRaw-0.17.1/lib/.libs",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = me.tseifert.Avocado;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -551,6 +654,7 @@
 			baseConfigurationReference = 70A0E8562B68C925C7E5445C /* Pods-Avocado.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PREFIX_HEADER = "Avocado/Avocado-Prefix.pch";
 				INFOPLIST_FILE = Avocado/Info.plist;
@@ -559,6 +663,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Dependencies/LibRaw-0.17.1/lib/.libs",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = me.tseifert.Avocado;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
