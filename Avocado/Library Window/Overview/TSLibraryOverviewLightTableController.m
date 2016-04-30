@@ -104,6 +104,7 @@
 	CGFloat cellHeight = cellWidth * 0.667;
 	
 	self.gridView.itemSize = NSMakeSize(cellWidth, cellHeight);
+	[self.gridView reloadData];
 }
 
 @end

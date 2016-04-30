@@ -74,5 +74,31 @@
 }
 
 #pragma mark Split View Delegate
+/**
+ * Constrains the left sidebar to be at least 150px, but no larger than 400px.
+ */
+- (CGFloat) splitView:(NSSplitView *) splitView constrainSplitPosition:(CGFloat) proposedPosition
+		  ofSubviewAt:(NSInteger) dividerIndex {
+	if(dividerIndex == 0) {
+		// minimum size: 150px
+		if(proposedPosition <= 150.f) {
+			return 150.f;
+		}
+		// maximum size: 400px
+		else if(proposedPosition >= 400.f) {
+			return 400.f;
+		}
+	}
+	
+	return proposedPosition;
+}
+
+/**
+ * When the split view has resized the subviews, initiate resizing of the grid
+ * cells.
+ */
+- (void)splitViewDidResizeSubviews:(NSNotification *) notification {
+	[self.lightTableController recalculateItemSize];
+}
 
 @end
