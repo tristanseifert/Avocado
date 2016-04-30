@@ -1,2062 +1,716 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>archiveVersion</key>
-	<string>1</string>
-	<key>classes</key>
-	<dict/>
-	<key>objectVersion</key>
-	<string>46</string>
-	<key>objects</key>
-	<dict>
-		<key>072E3CE76E3BE9A62C321D67</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.xcconfig</string>
-			<key>name</key>
-			<string>Pods-Avocado.debug.xcconfig</string>
-			<key>path</key>
-			<string>Pods/Target Support Files/Pods-Avocado/Pods-Avocado.debug.xcconfig</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>677C148D027D0E0A6543CA26</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array/>
-			<key>inputPaths</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXShellScriptBuildPhase</string>
-			<key>name</key>
-			<string>Embed Pods Frameworks</string>
-			<key>outputPaths</key>
-			<array/>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-			<key>shellPath</key>
-			<string>/bin/sh</string>
-			<key>shellScript</key>
-			<string>"${SRCROOT}/Pods/Target Support Files/Pods-Avocado/Pods-Avocado-frameworks.sh"
-</string>
-			<key>showEnvVarsInLog</key>
-			<string>0</string>
-		</dict>
-		<key>6ABC2D991CD42C30006B959F</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>TSHumanModels.h</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/TSHumanModels.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2D9A1CD42C4A006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>_TSLibraryImage.h</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImage.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2D9B1CD42C4A006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>_TSLibraryImage.m</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImage.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2D9C1CD42C4A006B959F</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6ABC2D9B1CD42C4A006B959F</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6ABC2D9D1CD42C56006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>TSLibraryImage.h</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImage.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2D9E1CD42C56006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>TSLibraryImage.m</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImage.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DA01CD4357E006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>TSLibraryAlbum.h</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryAlbum.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DA11CD4357E006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>TSLibraryAlbum.m</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryAlbum.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DA21CD4357E006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>TSLibraryAlbumCollection.h</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryAlbumCollection.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DA31CD4357E006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>TSLibraryAlbumCollection.m</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryAlbumCollection.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DA41CD4357E006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>TSLibraryExportService.h</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryExportService.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DA51CD4357E006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>TSLibraryExportService.m</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryExportService.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DA61CD4357E006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>TSLibraryImage.h</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImage.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DA71CD4357E006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>TSLibraryImage.m</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImage.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DA81CD4357E006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>TSLibraryImageAdjustment.h</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImageAdjustment.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DA91CD4357E006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>TSLibraryImageAdjustment.m</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImageAdjustment.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DAA1CD4357E006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>TSLibraryTag.h</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryTag.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DAB1CD4357E006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>TSLibraryTag.m</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryTag.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DAC1CD4357E006B959F</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6ABC2DA11CD4357E006B959F</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6ABC2DAD1CD4357E006B959F</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6ABC2DA31CD4357E006B959F</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6ABC2DAE1CD4357E006B959F</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6ABC2DA51CD4357E006B959F</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6ABC2DAF1CD4357E006B959F</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6ABC2DA71CD4357E006B959F</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6ABC2DB01CD4357E006B959F</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6ABC2DA91CD4357E006B959F</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6ABC2DB11CD4357E006B959F</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6ABC2DAB1CD4357E006B959F</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6ABC2DB21CD43586006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>_TSLibraryAlbum.h</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryAlbum.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DB31CD43586006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>_TSLibraryAlbum.m</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryAlbum.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DB41CD43586006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>_TSLibraryAlbumCollection.h</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryAlbumCollection.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DB51CD43586006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>_TSLibraryAlbumCollection.m</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryAlbumCollection.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DB61CD43586006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>_TSLibraryExportService.h</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryExportService.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DB71CD43586006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>_TSLibraryExportService.m</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryExportService.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DB81CD43586006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>_TSLibraryImage.h</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImage.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DB91CD43586006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>_TSLibraryImage.m</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImage.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DBA1CD43586006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>_TSLibraryImageAdjustment.h</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImageAdjustment.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DBB1CD43586006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>_TSLibraryImageAdjustment.m</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImageAdjustment.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DBC1CD43586006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>_TSLibraryTag.h</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryTag.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DBD1CD43586006B959F</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>_TSLibraryTag.m</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryTag.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6ABC2DBE1CD43586006B959F</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6ABC2DB31CD43586006B959F</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6ABC2DBF1CD43586006B959F</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6ABC2DB51CD43586006B959F</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6ABC2DC01CD43586006B959F</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6ABC2DB71CD43586006B959F</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6ABC2DC21CD43586006B959F</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6ABC2DBB1CD43586006B959F</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6ABC2DC31CD43586006B959F</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6ABC2DBD1CD43586006B959F</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6AE87BBB1CD275C90053CD9D</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6AEC350E1CD43DCA0033DE0A</string>
-				<string>6AE87BC51CD275C90053CD9D</string>
-				<string>8A1D7E197716AC0277E58CE5</string>
-				<string>F4FC62D8D3C46EB93528ACF1</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87BBC1CD275C90053CD9D</key>
-		<dict>
-			<key>attributes</key>
-			<dict>
-				<key>LastUpgradeCheck</key>
-				<string>0730</string>
-				<key>ORGANIZATIONNAME</key>
-				<string>Tristan Seifert</string>
-				<key>TargetAttributes</key>
-				<dict>
-					<key>6AE87BC31CD275C90053CD9D</key>
-					<dict>
-						<key>CreatedOnToolsVersion</key>
-						<string>7.3</string>
-						<key>DevelopmentTeam</key>
-						<string>8QDQ246B94</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>buildConfigurationList</key>
-			<string>6AE87BBF1CD275C90053CD9D</string>
-			<key>compatibilityVersion</key>
-			<string>Xcode 3.2</string>
-			<key>developmentRegion</key>
-			<string>English</string>
-			<key>hasScannedForEncodings</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXProject</string>
-			<key>knownRegions</key>
-			<array>
-				<string>en</string>
-				<string>Base</string>
-			</array>
-			<key>mainGroup</key>
-			<string>6AE87BBB1CD275C90053CD9D</string>
-			<key>productRefGroup</key>
-			<string>6AE87BC51CD275C90053CD9D</string>
-			<key>projectDirPath</key>
-			<string></string>
-			<key>projectReferences</key>
-			<array/>
-			<key>projectRoot</key>
-			<string></string>
-			<key>targets</key>
-			<array>
-				<string>6AE87BC31CD275C90053CD9D</string>
-			</array>
-		</dict>
-		<key>6AE87BBF1CD275C90053CD9D</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>6AE87BD61CD275C90053CD9D</string>
-				<string>6AE87BD71CD275C90053CD9D</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Release</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>6AE87BC01CD275C90053CD9D</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>6AE87BCC1CD275C90053CD9D</string>
-				<string>6AEC35121CD43E070033DE0A</string>
-				<string>6AEC350C1CD437170033DE0A</string>
-				<string>6ABC2DB11CD4357E006B959F</string>
-				<string>6ABC2DBE1CD43586006B959F</string>
-				<string>6AE87C211CD3D5460053CD9D</string>
-				<string>6AE87BEC1CD276E70053CD9D</string>
-				<string>6ABC2DC31CD43586006B959F</string>
-				<string>6ABC2DAC1CD4357E006B959F</string>
-				<string>6AEC35471CD443B90033DE0A</string>
-				<string>6ABC2D9C1CD42C4A006B959F</string>
-				<string>6AE87BC91CD275C90053CD9D</string>
-				<string>6AEC35411CD443460033DE0A</string>
-				<string>6AEC35191CD43F000033DE0A</string>
-				<string>6ABC2DAF1CD4357E006B959F</string>
-				<string>6ABC2DAD1CD4357E006B959F</string>
-				<string>6ABC2DAE1CD4357E006B959F</string>
-				<string>6ABC2DC01CD43586006B959F</string>
-				<string>6ABC2DBF1CD43586006B959F</string>
-				<string>6ABC2DC21CD43586006B959F</string>
-				<string>6ABC2DB01CD4357E006B959F</string>
-			</array>
-			<key>isa</key>
-			<string>PBXSourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>6AE87BC11CD275C90053CD9D</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>6AEC351D1CD43FF00033DE0A</string>
-				<string>6AEC351B1CD43FED0033DE0A</string>
-				<string>6AE87C151CD3D4B60053CD9D</string>
-				<string>90D8F3504CA87BC8DFD0DDE7</string>
-			</array>
-			<key>isa</key>
-			<string>PBXFrameworksBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>6AE87BC21CD275C90053CD9D</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>6AE87BD11CD275C90053CD9D</string>
-				<string>6AEC35481CD443B90033DE0A</string>
-				<string>6AE87BD41CD275C90053CD9D</string>
-				<string>6AEC35131CD43E070033DE0A</string>
-				<string>6AEC35421CD443460033DE0A</string>
-			</array>
-			<key>isa</key>
-			<string>PBXResourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>6AE87BC31CD275C90053CD9D</key>
-		<dict>
-			<key>buildConfigurationList</key>
-			<string>6AE87BD81CD275C90053CD9D</string>
-			<key>buildPhases</key>
-			<array>
-				<string>F8652002148D4BDE09E87921</string>
-				<string>6AE87BED1CD276FD0053CD9D</string>
-				<string>6AE87BC01CD275C90053CD9D</string>
-				<string>6AE87BC11CD275C90053CD9D</string>
-				<string>6AE87BC21CD275C90053CD9D</string>
-				<string>677C148D027D0E0A6543CA26</string>
-				<string>B0DFEA25DCDDB691FBC6651D</string>
-				<string>6AEC35281CD4406D0033DE0A</string>
-			</array>
-			<key>buildRules</key>
-			<array/>
-			<key>dependencies</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXNativeTarget</string>
-			<key>name</key>
-			<string>Avocado</string>
-			<key>productName</key>
-			<string>Avocado</string>
-			<key>productReference</key>
-			<string>6AE87BC41CD275C90053CD9D</string>
-			<key>productType</key>
-			<string>com.apple.product-type.application</string>
-		</dict>
-		<key>6AE87BC41CD275C90053CD9D</key>
-		<dict>
-			<key>explicitFileType</key>
-			<string>wrapper.application</string>
-			<key>includeInIndex</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>path</key>
-			<string>Avocado.app</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-		<key>6AE87BC51CD275C90053CD9D</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6AE87BC41CD275C90053CD9D</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Products</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87BC61CD275C90053CD9D</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6AE87BC71CD275C90053CD9D</string>
-				<string>6AE87BC81CD275C90053CD9D</string>
-				<string>6AE87BD21CD275C90053CD9D</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>App Delegate</string>
-			<key>path</key>
-			<string>Avocado</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87BC71CD275C90053CD9D</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>TSAppDelegate.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87BC81CD275C90053CD9D</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>TSAppDelegate.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87BC91CD275C90053CD9D</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6AE87BC81CD275C90053CD9D</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6AE87BCA1CD275C90053CD9D</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6AE87BCB1CD275C90053CD9D</string>
-				<string>6AE87BDD1CD2767A0053CD9D</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Supporting Files</string>
-			<key>path</key>
-			<string>Avocado</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87BCB1CD275C90053CD9D</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>main.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87BCC1CD275C90053CD9D</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6AE87BCB1CD275C90053CD9D</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6AE87BD01CD275C90053CD9D</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>folder.assetcatalog</string>
-			<key>path</key>
-			<string>Assets.xcassets</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87BD11CD275C90053CD9D</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6AE87BD01CD275C90053CD9D</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6AE87BD21CD275C90053CD9D</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6AE87BD31CD275C90053CD9D</string>
-			</array>
-			<key>isa</key>
-			<string>PBXVariantGroup</string>
-			<key>name</key>
-			<string>MainMenu.xib</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87BD31CD275C90053CD9D</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>file.xib</string>
-			<key>name</key>
-			<string>Base</string>
-			<key>path</key>
-			<string>Base.lproj/MainMenu.xib</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87BD41CD275C90053CD9D</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6AE87BD21CD275C90053CD9D</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6AE87BD51CD275C90053CD9D</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.plist.xml</string>
-			<key>path</key>
-			<string>Info.plist</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87BD61CD275C90053CD9D</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>ALWAYS_SEARCH_USER_PATHS</key>
-				<string>NO</string>
-				<key>CLANG_ANALYZER_NONNULL</key>
-				<string>YES</string>
-				<key>CLANG_CXX_LANGUAGE_STANDARD</key>
-				<string>gnu++0x</string>
-				<key>CLANG_CXX_LIBRARY</key>
-				<string>libc++</string>
-				<key>CLANG_ENABLE_MODULES</key>
-				<string>YES</string>
-				<key>CLANG_ENABLE_OBJC_ARC</key>
-				<string>YES</string>
-				<key>CLANG_WARN_BOOL_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_CONSTANT_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_DIRECT_OBJC_ISA_USAGE</key>
-				<string>YES_ERROR</string>
-				<key>CLANG_WARN_EMPTY_BODY</key>
-				<string>YES</string>
-				<key>CLANG_WARN_ENUM_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_INT_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_OBJC_ROOT_CLASS</key>
-				<string>YES_ERROR</string>
-				<key>CLANG_WARN_UNREACHABLE_CODE</key>
-				<string>YES</string>
-				<key>CLANG_WARN__DUPLICATE_METHOD_MATCH</key>
-				<string>YES</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>-</string>
-				<key>COPY_PHASE_STRIP</key>
-				<string>NO</string>
-				<key>DEBUG_INFORMATION_FORMAT</key>
-				<string>dwarf</string>
-				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
-				<string>YES</string>
-				<key>ENABLE_TESTABILITY</key>
-				<string>YES</string>
-				<key>GCC_C_LANGUAGE_STANDARD</key>
-				<string>gnu99</string>
-				<key>GCC_DYNAMIC_NO_PIC</key>
-				<string>NO</string>
-				<key>GCC_NO_COMMON_BLOCKS</key>
-				<string>YES</string>
-				<key>GCC_OPTIMIZATION_LEVEL</key>
-				<string>0</string>
-				<key>GCC_PREPROCESSOR_DEFINITIONS</key>
-				<array>
-					<string>DEBUG=1</string>
-					<string>$(inherited)</string>
-				</array>
-				<key>GCC_WARN_64_TO_32_BIT_CONVERSION</key>
-				<string>YES</string>
-				<key>GCC_WARN_ABOUT_RETURN_TYPE</key>
-				<string>YES_ERROR</string>
-				<key>GCC_WARN_UNDECLARED_SELECTOR</key>
-				<string>YES</string>
-				<key>GCC_WARN_UNINITIALIZED_AUTOS</key>
-				<string>YES_AGGRESSIVE</string>
-				<key>GCC_WARN_UNUSED_FUNCTION</key>
-				<string>YES</string>
-				<key>GCC_WARN_UNUSED_VARIABLE</key>
-				<string>YES</string>
-				<key>MACOSX_DEPLOYMENT_TARGET</key>
-				<string>10.11</string>
-				<key>MTL_ENABLE_DEBUG_INFO</key>
-				<string>YES</string>
-				<key>ONLY_ACTIVE_ARCH</key>
-				<string>YES</string>
-				<key>SDKROOT</key>
-				<string>macosx</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Debug</string>
-		</dict>
-		<key>6AE87BD71CD275C90053CD9D</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>ALWAYS_SEARCH_USER_PATHS</key>
-				<string>NO</string>
-				<key>CLANG_ANALYZER_NONNULL</key>
-				<string>YES</string>
-				<key>CLANG_CXX_LANGUAGE_STANDARD</key>
-				<string>gnu++0x</string>
-				<key>CLANG_CXX_LIBRARY</key>
-				<string>libc++</string>
-				<key>CLANG_ENABLE_MODULES</key>
-				<string>YES</string>
-				<key>CLANG_ENABLE_OBJC_ARC</key>
-				<string>YES</string>
-				<key>CLANG_WARN_BOOL_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_CONSTANT_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_DIRECT_OBJC_ISA_USAGE</key>
-				<string>YES_ERROR</string>
-				<key>CLANG_WARN_EMPTY_BODY</key>
-				<string>YES</string>
-				<key>CLANG_WARN_ENUM_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_INT_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_OBJC_ROOT_CLASS</key>
-				<string>YES_ERROR</string>
-				<key>CLANG_WARN_UNREACHABLE_CODE</key>
-				<string>YES</string>
-				<key>CLANG_WARN__DUPLICATE_METHOD_MATCH</key>
-				<string>YES</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>-</string>
-				<key>COPY_PHASE_STRIP</key>
-				<string>NO</string>
-				<key>DEBUG_INFORMATION_FORMAT</key>
-				<string>dwarf-with-dsym</string>
-				<key>ENABLE_NS_ASSERTIONS</key>
-				<string>NO</string>
-				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
-				<string>YES</string>
-				<key>GCC_C_LANGUAGE_STANDARD</key>
-				<string>gnu99</string>
-				<key>GCC_NO_COMMON_BLOCKS</key>
-				<string>YES</string>
-				<key>GCC_WARN_64_TO_32_BIT_CONVERSION</key>
-				<string>YES</string>
-				<key>GCC_WARN_ABOUT_RETURN_TYPE</key>
-				<string>YES_ERROR</string>
-				<key>GCC_WARN_UNDECLARED_SELECTOR</key>
-				<string>YES</string>
-				<key>GCC_WARN_UNINITIALIZED_AUTOS</key>
-				<string>YES_AGGRESSIVE</string>
-				<key>GCC_WARN_UNUSED_FUNCTION</key>
-				<string>YES</string>
-				<key>GCC_WARN_UNUSED_VARIABLE</key>
-				<string>YES</string>
-				<key>MACOSX_DEPLOYMENT_TARGET</key>
-				<string>10.11</string>
-				<key>MTL_ENABLE_DEBUG_INFO</key>
-				<string>NO</string>
-				<key>SDKROOT</key>
-				<string>macosx</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Release</string>
-		</dict>
-		<key>6AE87BD81CD275C90053CD9D</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>6AE87BD91CD275C90053CD9D</string>
-				<string>6AE87BDA1CD275C90053CD9D</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Release</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>6AE87BD91CD275C90053CD9D</key>
-		<dict>
-			<key>baseConfigurationReference</key>
-			<string>072E3CE76E3BE9A62C321D67</string>
-			<key>buildSettings</key>
-			<dict>
-				<key>ASSETCATALOG_COMPILER_APPICON_NAME</key>
-				<string>AppIcon</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>Developer ID Application</string>
-				<key>COMBINE_HIDPI_IMAGES</key>
-				<string>YES</string>
-				<key>GCC_PREFIX_HEADER</key>
-				<string>Avocado/Avocado-Prefix.pch</string>
-				<key>INFOPLIST_FILE</key>
-				<string>Avocado/Info.plist</string>
-				<key>LD_RUNPATH_SEARCH_PATHS</key>
-				<string>$(inherited) @executable_path/../Frameworks</string>
-				<key>LIBRARY_SEARCH_PATHS</key>
-				<array>
-					<string>$(inherited)</string>
-					<string>$(PROJECT_DIR)/Dependencies/LibRaw-0.17.1/lib/.libs</string>
-				</array>
-				<key>MACOSX_DEPLOYMENT_TARGET</key>
-				<string>10.11</string>
-				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
-				<string>me.tseifert.Avocado</string>
-				<key>PRODUCT_NAME</key>
-				<string>$(TARGET_NAME)</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Debug</string>
-		</dict>
-		<key>6AE87BDA1CD275C90053CD9D</key>
-		<dict>
-			<key>baseConfigurationReference</key>
-			<string>70A0E8562B68C925C7E5445C</string>
-			<key>buildSettings</key>
-			<dict>
-				<key>ASSETCATALOG_COMPILER_APPICON_NAME</key>
-				<string>AppIcon</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>Developer ID Application</string>
-				<key>COMBINE_HIDPI_IMAGES</key>
-				<string>YES</string>
-				<key>GCC_PREFIX_HEADER</key>
-				<string>Avocado/Avocado-Prefix.pch</string>
-				<key>INFOPLIST_FILE</key>
-				<string>Avocado/Info.plist</string>
-				<key>LD_RUNPATH_SEARCH_PATHS</key>
-				<string>$(inherited) @executable_path/../Frameworks</string>
-				<key>LIBRARY_SEARCH_PATHS</key>
-				<array>
-					<string>$(inherited)</string>
-					<string>$(PROJECT_DIR)/Dependencies/LibRaw-0.17.1/lib/.libs</string>
-				</array>
-				<key>MACOSX_DEPLOYMENT_TARGET</key>
-				<string>10.11</string>
-				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
-				<string>me.tseifert.Avocado</string>
-				<key>PRODUCT_NAME</key>
-				<string>$(TARGET_NAME)</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Release</string>
-		</dict>
-		<key>6AE87BDB1CD275FA0053CD9D</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6AE87BD51CD275C90053CD9D</string>
-				<string>6AE87BD01CD275C90053CD9D</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Resources</string>
-			<key>path</key>
-			<string>Avocado</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87BDC1CD276070053CD9D</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6AE87BE81CD276AE0053CD9D</string>
-				<string>6AE87BEE1CD2777E0053CD9D</string>
-				<string>6AE87BEA1CD276E70053CD9D</string>
-				<string>6AEC350A1CD437170033DE0A</string>
-				<string>6AEC350B1CD437170033DE0A</string>
-				<string>6AEC35171CD43F000033DE0A</string>
-				<string>6AEC35181CD43F000033DE0A</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>CoreData</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87BDD1CD2767A0053CD9D</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>Avocado-Prefix.pch</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87BE81CD276AE0053CD9D</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6AE87BE91CD276BF0053CD9D</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Build Tools</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87BE91CD276BF0053CD9D</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.script.sh</string>
-			<key>name</key>
-			<string>mogenerator.sh</string>
-			<key>path</key>
-			<string>Avocado/CoreData/mogenerator.sh</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87BEA1CD276E70053CD9D</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6AE87BEB1CD276E70053CD9D</string>
-			</array>
-			<key>currentVersion</key>
-			<string>6AE87BEB1CD276E70053CD9D</string>
-			<key>isa</key>
-			<string>XCVersionGroup</string>
-			<key>name</key>
-			<string>Avocado.xcdatamodeld</string>
-			<key>path</key>
-			<string>Avocado/CoreData/Avocado.xcdatamodeld</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-			<key>versionGroupType</key>
-			<string>wrapper.xcdatamodel</string>
-		</dict>
-		<key>6AE87BEB1CD276E70053CD9D</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.xcdatamodel</string>
-			<key>path</key>
-			<string>Avocado.xcdatamodel</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87BEC1CD276E70053CD9D</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6AE87BEA1CD276E70053CD9D</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6AE87BED1CD276FD0053CD9D</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array/>
-			<key>inputPaths</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXShellScriptBuildPhase</string>
-			<key>name</key>
-			<string>Update CoreData Subclasses (mogenerator)</string>
-			<key>outputPaths</key>
-			<array/>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-			<key>shellPath</key>
-			<string>/bin/sh</string>
-			<key>shellScript</key>
-			<string>${SRCROOT}/Avocado/CoreData/mogenerator.sh</string>
-		</dict>
-		<key>6AE87BEE1CD2777E0053CD9D</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6ABC2D991CD42C30006B959F</string>
-				<string>6AE87BF01CD277860053CD9D</string>
-				<string>6AE87BEF1CD277830053CD9D</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Managed Object Subclasses</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87BEF1CD277830053CD9D</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6ABC2DB21CD43586006B959F</string>
-				<string>6ABC2DB31CD43586006B959F</string>
-				<string>6ABC2DB41CD43586006B959F</string>
-				<string>6ABC2DB51CD43586006B959F</string>
-				<string>6ABC2DB61CD43586006B959F</string>
-				<string>6ABC2DB71CD43586006B959F</string>
-				<string>6ABC2DB81CD43586006B959F</string>
-				<string>6ABC2DB91CD43586006B959F</string>
-				<string>6ABC2DBA1CD43586006B959F</string>
-				<string>6ABC2DBB1CD43586006B959F</string>
-				<string>6ABC2DBC1CD43586006B959F</string>
-				<string>6ABC2DBD1CD43586006B959F</string>
-				<string>6ABC2D9A1CD42C4A006B959F</string>
-				<string>6ABC2D9B1CD42C4A006B959F</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Entity</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87BF01CD277860053CD9D</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6ABC2DA01CD4357E006B959F</string>
-				<string>6ABC2DA11CD4357E006B959F</string>
-				<string>6ABC2DA21CD4357E006B959F</string>
-				<string>6ABC2DA31CD4357E006B959F</string>
-				<string>6ABC2DA41CD4357E006B959F</string>
-				<string>6ABC2DA51CD4357E006B959F</string>
-				<string>6ABC2DA61CD4357E006B959F</string>
-				<string>6ABC2DA71CD4357E006B959F</string>
-				<string>6ABC2DA81CD4357E006B959F</string>
-				<string>6ABC2DA91CD4357E006B959F</string>
-				<string>6ABC2DAA1CD4357E006B959F</string>
-				<string>6ABC2DAB1CD4357E006B959F</string>
-				<string>6ABC2D9D1CD42C56006B959F</string>
-				<string>6ABC2D9E1CD42C56006B959F</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Model</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87BF11CD3D28E0053CD9D</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6AE87BF21CD3D2940053CD9D</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Dependencies</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87BF21CD3D2940053CD9D</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6AE87C141CD3D4B60053CD9D</string>
-				<string>6AE87C1E1CD3D5280053CD9D</string>
-				<string>6AE87C161CD3D4D40053CD9D</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>libraw</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87C141CD3D4B60053CD9D</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>archive.ar</string>
-			<key>name</key>
-			<string>libraw_r.a</string>
-			<key>path</key>
-			<string>Dependencies/LibRaw-0.17.1/lib/.libs/libraw_r.a</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87C151CD3D4B60053CD9D</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6AE87C141CD3D4B60053CD9D</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6AE87C161CD3D4D40053CD9D</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6AE87C171CD3D4D40053CD9D</string>
-				<string>6AE87C181CD3D4D40053CD9D</string>
-				<string>6AE87C191CD3D4D40053CD9D</string>
-				<string>6AE87C1A1CD3D4D40053CD9D</string>
-				<string>6AE87C1B1CD3D4D40053CD9D</string>
-				<string>6AE87C1C1CD3D4D40053CD9D</string>
-				<string>6AE87C1D1CD3D4D40053CD9D</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Headers</string>
-			<key>path</key>
-			<string>Dependencies/LibRaw-0.17.1/libraw</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87C171CD3D4D40053CD9D</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>libraw.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87C181CD3D4D40053CD9D</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>libraw_alloc.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87C191CD3D4D40053CD9D</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>libraw_const.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87C1A1CD3D4D40053CD9D</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>libraw_datastream.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87C1B1CD3D4D40053CD9D</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>libraw_internal.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87C1C1CD3D4D40053CD9D</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>libraw_types.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87C1D1CD3D4D40053CD9D</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>libraw_version.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87C1E1CD3D5280053CD9D</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6AE87C1F1CD3D5460053CD9D</string>
-				<string>6AE87C201CD3D5460053CD9D</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>ObjC Wrapper</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87C1F1CD3D5460053CD9D</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>TSLibRawWrapper.h</string>
-			<key>path</key>
-			<string>Avocado/RAW Processing/TSLibRawWrapper.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87C201CD3D5460053CD9D</key>
-		<dict>
-			<key>explicitFileType</key>
-			<string>sourcecode.cpp.objcpp</string>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>name</key>
-			<string>TSLibRawWrapper.m</string>
-			<key>path</key>
-			<string>Avocado/RAW Processing/TSLibRawWrapper.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE87C211CD3D5460053CD9D</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6AE87C201CD3D5460053CD9D</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6AEC350A1CD437170033DE0A</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>TSCoreDataStore.h</string>
-			<key>path</key>
-			<string>Avocado/CoreData/TSCoreDataStore.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AEC350B1CD437170033DE0A</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>TSCoreDataStore.m</string>
-			<key>path</key>
-			<string>Avocado/CoreData/TSCoreDataStore.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AEC350C1CD437170033DE0A</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6AEC350B1CD437170033DE0A</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6AEC350D1CD43DBD0033DE0A</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6AEC350F1CD43E070033DE0A</string>
-				<string>6AEC35101CD43E070033DE0A</string>
-				<string>6AEC35111CD43E070033DE0A</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Library Window</string>
-			<key>path</key>
-			<string>Avocado</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AEC350E1CD43DCA0033DE0A</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6AE87BDC1CD276070053CD9D</string>
-				<string>6AEC35431CD443A50033DE0A</string>
-				<string>6AEC353D1CD4431B0033DE0A</string>
-				<string>6AEC350D1CD43DBD0033DE0A</string>
-				<string>6AE87BC61CD275C90053CD9D</string>
-				<string>6AE87BF11CD3D28E0053CD9D</string>
-				<string>6AE87BDB1CD275FA0053CD9D</string>
-				<string>6AE87BCA1CD275C90053CD9D</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Avocado App</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AEC350F1CD43E070033DE0A</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>TSMainLibraryWindowController.h</string>
-			<key>path</key>
-			<string>Library Window/TSMainLibraryWindowController.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AEC35101CD43E070033DE0A</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>TSMainLibraryWindowController.m</string>
-			<key>path</key>
-			<string>Library Window/TSMainLibraryWindowController.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AEC35111CD43E070033DE0A</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>file.xib</string>
-			<key>name</key>
-			<string>TSMainLibraryWindow.xib</string>
-			<key>path</key>
-			<string>Library Window/TSMainLibraryWindow.xib</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AEC35121CD43E070033DE0A</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6AEC35101CD43E070033DE0A</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6AEC35131CD43E070033DE0A</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6AEC35111CD43E070033DE0A</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6AEC35171CD43F000033DE0A</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>TSCoreDataStoreIB.h</string>
-			<key>path</key>
-			<string>Avocado/CoreData/TSCoreDataStoreIB.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AEC35181CD43F000033DE0A</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>TSCoreDataStoreIB.m</string>
-			<key>path</key>
-			<string>Avocado/CoreData/TSCoreDataStoreIB.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AEC35191CD43F000033DE0A</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6AEC35181CD43F000033DE0A</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6AEC351A1CD43FED0033DE0A</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.framework</string>
-			<key>name</key>
-			<string>Accelerate.framework</string>
-			<key>path</key>
-			<string>System/Library/Frameworks/Accelerate.framework</string>
-			<key>sourceTree</key>
-			<string>SDKROOT</string>
-		</dict>
-		<key>6AEC351B1CD43FED0033DE0A</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6AEC351A1CD43FED0033DE0A</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6AEC351C1CD43FF00033DE0A</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.framework</string>
-			<key>name</key>
-			<string>CoreImage.framework</string>
-			<key>path</key>
-			<string>System/Library/Frameworks/CoreImage.framework</string>
-			<key>sourceTree</key>
-			<string>SDKROOT</string>
-		</dict>
-		<key>6AEC351D1CD43FF00033DE0A</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6AEC351C1CD43FF00033DE0A</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6AEC35281CD4406D0033DE0A</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array/>
-			<key>inputPaths</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXShellScriptBuildPhase</string>
-			<key>name</key>
-			<string>Set Build Version</string>
-			<key>outputPaths</key>
-			<array/>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-			<key>shellPath</key>
-			<string>/bin/sh</string>
-			<key>shellScript</key>
-			<string>${SRCROOT}/Scripts/update_build_number.sh</string>
-		</dict>
-		<key>6AEC353D1CD4431B0033DE0A</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6AEC353E1CD443460033DE0A</string>
-				<string>6AEC353F1CD443460033DE0A</string>
-				<string>6AEC35401CD443460033DE0A</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Library Overview Controller</string>
-			<key>path</key>
-			<string>Avocado</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AEC353E1CD443460033DE0A</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>TSLibraryOverviewController.h</string>
-			<key>path</key>
-			<string>Library Window/Overview/TSLibraryOverviewController.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AEC353F1CD443460033DE0A</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>TSLibraryOverviewController.m</string>
-			<key>path</key>
-			<string>Library Window/Overview/TSLibraryOverviewController.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AEC35401CD443460033DE0A</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>file.xib</string>
-			<key>name</key>
-			<string>TSLibraryOverview.xib</string>
-			<key>path</key>
-			<string>Library Window/Overview/TSLibraryOverview.xib</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AEC35411CD443460033DE0A</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6AEC353F1CD443460033DE0A</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6AEC35421CD443460033DE0A</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6AEC35401CD443460033DE0A</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6AEC35431CD443A50033DE0A</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6AEC35441CD443B90033DE0A</string>
-				<string>6AEC35451CD443B90033DE0A</string>
-				<string>6AEC35461CD443B90033DE0A</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Library Detail Controller</string>
-			<key>path</key>
-			<string>Avocado</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AEC35441CD443B90033DE0A</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>TSLibraryDetailController.h</string>
-			<key>path</key>
-			<string>Library Window/Single Image/TSLibraryDetailController.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AEC35451CD443B90033DE0A</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>TSLibraryDetailController.m</string>
-			<key>path</key>
-			<string>Library Window/Single Image/TSLibraryDetailController.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AEC35461CD443B90033DE0A</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>file.xib</string>
-			<key>name</key>
-			<string>TSLibraryDetail.xib</string>
-			<key>path</key>
-			<string>Library Window/Single Image/TSLibraryDetail.xib</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AEC35471CD443B90033DE0A</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6AEC35451CD443B90033DE0A</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6AEC35481CD443B90033DE0A</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6AEC35461CD443B90033DE0A</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>70A0E8562B68C925C7E5445C</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.xcconfig</string>
-			<key>name</key>
-			<string>Pods-Avocado.release.xcconfig</string>
-			<key>path</key>
-			<string>Pods/Target Support Files/Pods-Avocado/Pods-Avocado.release.xcconfig</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>819223217746015A3002C6D6</key>
-		<dict>
-			<key>explicitFileType</key>
-			<string>wrapper.framework</string>
-			<key>includeInIndex</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>path</key>
-			<string>Pods_Avocado.framework</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-		<key>8A1D7E197716AC0277E58CE5</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>072E3CE76E3BE9A62C321D67</string>
-				<string>70A0E8562B68C925C7E5445C</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Pods</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>90D8F3504CA87BC8DFD0DDE7</key>
-		<dict>
-			<key>fileRef</key>
-			<string>819223217746015A3002C6D6</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>B0DFEA25DCDDB691FBC6651D</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array/>
-			<key>inputPaths</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXShellScriptBuildPhase</string>
-			<key>name</key>
-			<string>Copy Pods Resources</string>
-			<key>outputPaths</key>
-			<array/>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-			<key>shellPath</key>
-			<string>/bin/sh</string>
-			<key>shellScript</key>
-			<string>"${SRCROOT}/Pods/Target Support Files/Pods-Avocado/Pods-Avocado-resources.sh"
-</string>
-			<key>showEnvVarsInLog</key>
-			<string>0</string>
-		</dict>
-		<key>F4FC62D8D3C46EB93528ACF1</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6AEC351C1CD43FF00033DE0A</string>
-				<string>6AEC351A1CD43FED0033DE0A</string>
-				<string>819223217746015A3002C6D6</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Frameworks</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F8652002148D4BDE09E87921</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array/>
-			<key>inputPaths</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXShellScriptBuildPhase</string>
-			<key>name</key>
-			<string>Check Pods Manifest.lock</string>
-			<key>outputPaths</key>
-			<array/>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-			<key>shellPath</key>
-			<string>/bin/sh</string>
-			<key>shellScript</key>
-			<string>diff "${PODS_ROOT}/../Podfile.lock" "${PODS_ROOT}/Manifest.lock" &gt; /dev/null
-if [[ $? != 0 ]] ; then
-    cat &lt;&lt; EOM
-error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.
-EOM
-    exit 1
-fi
-</string>
-			<key>showEnvVarsInLog</key>
-			<string>0</string>
-		</dict>
-	</dict>
-	<key>rootObject</key>
-	<string>6AE87BBC1CD275C90053CD9D</string>
-</dict>
-</plist>
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6ABC2D9C1CD42C4A006B959F /* _TSLibraryImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2D9B1CD42C4A006B959F /* _TSLibraryImage.m */; };
+		6ABC2DAC1CD4357E006B959F /* TSLibraryAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DA11CD4357E006B959F /* TSLibraryAlbum.m */; };
+		6ABC2DAD1CD4357E006B959F /* TSLibraryAlbumCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DA31CD4357E006B959F /* TSLibraryAlbumCollection.m */; };
+		6ABC2DAE1CD4357E006B959F /* TSLibraryExportService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DA51CD4357E006B959F /* TSLibraryExportService.m */; };
+		6ABC2DAF1CD4357E006B959F /* TSLibraryImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DA71CD4357E006B959F /* TSLibraryImage.m */; };
+		6ABC2DB01CD4357E006B959F /* TSLibraryImageAdjustment.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DA91CD4357E006B959F /* TSLibraryImageAdjustment.m */; };
+		6ABC2DB11CD4357E006B959F /* TSLibraryTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DAB1CD4357E006B959F /* TSLibraryTag.m */; };
+		6ABC2DBE1CD43586006B959F /* _TSLibraryAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DB31CD43586006B959F /* _TSLibraryAlbum.m */; };
+		6ABC2DBF1CD43586006B959F /* _TSLibraryAlbumCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DB51CD43586006B959F /* _TSLibraryAlbumCollection.m */; };
+		6ABC2DC01CD43586006B959F /* _TSLibraryExportService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DB71CD43586006B959F /* _TSLibraryExportService.m */; };
+		6ABC2DC21CD43586006B959F /* _TSLibraryImageAdjustment.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DBB1CD43586006B959F /* _TSLibraryImageAdjustment.m */; };
+		6ABC2DC31CD43586006B959F /* _TSLibraryTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DBD1CD43586006B959F /* _TSLibraryTag.m */; };
+		6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */; };
+		6AE87BCC1CD275C90053CD9D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BCB1CD275C90053CD9D /* main.m */; };
+		6AE87BD11CD275C90053CD9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AE87BD01CD275C90053CD9D /* Assets.xcassets */; };
+		6AE87BD41CD275C90053CD9D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AE87BD21CD275C90053CD9D /* MainMenu.xib */; };
+		6AE87BEC1CD276E70053CD9D /* Avocado.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BEA1CD276E70053CD9D /* Avocado.xcdatamodeld */; };
+		6AE87C151CD3D4B60053CD9D /* libraw_r.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AE87C141CD3D4B60053CD9D /* libraw_r.a */; };
+		6AE87C211CD3D5460053CD9D /* TSLibRawWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87C201CD3D5460053CD9D /* TSLibRawWrapper.m */; };
+		6AEC350C1CD437170033DE0A /* TSCoreDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC350B1CD437170033DE0A /* TSCoreDataStore.m */; };
+		6AEC35121CD43E070033DE0A /* TSMainLibraryWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC35101CD43E070033DE0A /* TSMainLibraryWindowController.m */; };
+		6AEC35131CD43E070033DE0A /* TSMainLibraryWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC35111CD43E070033DE0A /* TSMainLibraryWindow.xib */; };
+		6AEC35191CD43F000033DE0A /* TSCoreDataStoreIB.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC35181CD43F000033DE0A /* TSCoreDataStoreIB.m */; };
+		6AEC351B1CD43FED0033DE0A /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEC351A1CD43FED0033DE0A /* Accelerate.framework */; };
+		6AEC351D1CD43FF00033DE0A /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEC351C1CD43FF00033DE0A /* CoreImage.framework */; };
+		6AEC35411CD443460033DE0A /* TSLibraryOverviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC353F1CD443460033DE0A /* TSLibraryOverviewController.m */; };
+		6AEC35421CD443460033DE0A /* TSLibraryOverview.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC35401CD443460033DE0A /* TSLibraryOverview.xib */; };
+		6AEC35471CD443B90033DE0A /* TSLibraryDetailController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC35451CD443B90033DE0A /* TSLibraryDetailController.m */; };
+		6AEC35481CD443B90033DE0A /* TSLibraryDetail.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC35461CD443B90033DE0A /* TSLibraryDetail.xib */; };
+		6AEC765D1CD4679700870FAE /* TSMainLibraryContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC765C1CD4679700870FAE /* TSMainLibraryContentViewController.m */; };
+		90D8F3504CA87BC8DFD0DDE7 /* Pods_Avocado.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 819223217746015A3002C6D6 /* Pods_Avocado.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		072E3CE76E3BE9A62C321D67 /* Pods-Avocado.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Avocado.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Avocado/Pods-Avocado.debug.xcconfig"; sourceTree = "<group>"; };
+		6ABC2D991CD42C30006B959F /* TSHumanModels.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TSHumanModels.h; path = "Avocado/CoreData/Managed Object Subclasses/TSHumanModels.h"; sourceTree = "<group>"; };
+		6ABC2D9A1CD42C4A006B959F /* _TSLibraryImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _TSLibraryImage.h; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImage.h"; sourceTree = "<group>"; };
+		6ABC2D9B1CD42C4A006B959F /* _TSLibraryImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryImage.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImage.m"; sourceTree = "<group>"; };
+		6ABC2D9D1CD42C56006B959F /* TSLibraryImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryImage.h; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImage.h"; sourceTree = "<group>"; };
+		6ABC2D9E1CD42C56006B959F /* TSLibraryImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryImage.m; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImage.m"; sourceTree = "<group>"; };
+		6ABC2DA01CD4357E006B959F /* TSLibraryAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryAlbum.h; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryAlbum.h"; sourceTree = "<group>"; };
+		6ABC2DA11CD4357E006B959F /* TSLibraryAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryAlbum.m; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryAlbum.m"; sourceTree = "<group>"; };
+		6ABC2DA21CD4357E006B959F /* TSLibraryAlbumCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryAlbumCollection.h; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryAlbumCollection.h"; sourceTree = "<group>"; };
+		6ABC2DA31CD4357E006B959F /* TSLibraryAlbumCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryAlbumCollection.m; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryAlbumCollection.m"; sourceTree = "<group>"; };
+		6ABC2DA41CD4357E006B959F /* TSLibraryExportService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryExportService.h; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryExportService.h"; sourceTree = "<group>"; };
+		6ABC2DA51CD4357E006B959F /* TSLibraryExportService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryExportService.m; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryExportService.m"; sourceTree = "<group>"; };
+		6ABC2DA61CD4357E006B959F /* TSLibraryImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryImage.h; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImage.h"; sourceTree = "<group>"; };
+		6ABC2DA71CD4357E006B959F /* TSLibraryImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryImage.m; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImage.m"; sourceTree = "<group>"; };
+		6ABC2DA81CD4357E006B959F /* TSLibraryImageAdjustment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryImageAdjustment.h; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImageAdjustment.h"; sourceTree = "<group>"; };
+		6ABC2DA91CD4357E006B959F /* TSLibraryImageAdjustment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryImageAdjustment.m; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImageAdjustment.m"; sourceTree = "<group>"; };
+		6ABC2DAA1CD4357E006B959F /* TSLibraryTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryTag.h; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryTag.h"; sourceTree = "<group>"; };
+		6ABC2DAB1CD4357E006B959F /* TSLibraryTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryTag.m; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryTag.m"; sourceTree = "<group>"; };
+		6ABC2DB21CD43586006B959F /* _TSLibraryAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _TSLibraryAlbum.h; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryAlbum.h"; sourceTree = "<group>"; };
+		6ABC2DB31CD43586006B959F /* _TSLibraryAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryAlbum.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryAlbum.m"; sourceTree = "<group>"; };
+		6ABC2DB41CD43586006B959F /* _TSLibraryAlbumCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _TSLibraryAlbumCollection.h; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryAlbumCollection.h"; sourceTree = "<group>"; };
+		6ABC2DB51CD43586006B959F /* _TSLibraryAlbumCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryAlbumCollection.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryAlbumCollection.m"; sourceTree = "<group>"; };
+		6ABC2DB61CD43586006B959F /* _TSLibraryExportService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _TSLibraryExportService.h; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryExportService.h"; sourceTree = "<group>"; };
+		6ABC2DB71CD43586006B959F /* _TSLibraryExportService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryExportService.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryExportService.m"; sourceTree = "<group>"; };
+		6ABC2DB81CD43586006B959F /* _TSLibraryImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _TSLibraryImage.h; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImage.h"; sourceTree = "<group>"; };
+		6ABC2DB91CD43586006B959F /* _TSLibraryImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryImage.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImage.m"; sourceTree = "<group>"; };
+		6ABC2DBA1CD43586006B959F /* _TSLibraryImageAdjustment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _TSLibraryImageAdjustment.h; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImageAdjustment.h"; sourceTree = "<group>"; };
+		6ABC2DBB1CD43586006B959F /* _TSLibraryImageAdjustment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryImageAdjustment.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImageAdjustment.m"; sourceTree = "<group>"; };
+		6ABC2DBC1CD43586006B959F /* _TSLibraryTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _TSLibraryTag.h; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryTag.h"; sourceTree = "<group>"; };
+		6ABC2DBD1CD43586006B959F /* _TSLibraryTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryTag.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryTag.m"; sourceTree = "<group>"; };
+		6AE87BC41CD275C90053CD9D /* Avocado.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Avocado.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6AE87BC71CD275C90053CD9D /* TSAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TSAppDelegate.h; sourceTree = "<group>"; };
+		6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TSAppDelegate.m; sourceTree = "<group>"; };
+		6AE87BCB1CD275C90053CD9D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		6AE87BD01CD275C90053CD9D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		6AE87BD31CD275C90053CD9D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		6AE87BD51CD275C90053CD9D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6AE87BDD1CD2767A0053CD9D /* Avocado-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Avocado-Prefix.pch"; sourceTree = "<group>"; };
+		6AE87BE91CD276BF0053CD9D /* mogenerator.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = mogenerator.sh; path = Avocado/CoreData/mogenerator.sh; sourceTree = "<group>"; };
+		6AE87BEB1CD276E70053CD9D /* Avocado.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Avocado.xcdatamodel; sourceTree = "<group>"; };
+		6AE87C141CD3D4B60053CD9D /* libraw_r.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libraw_r.a; path = "Dependencies/LibRaw-0.17.1/lib/.libs/libraw_r.a"; sourceTree = "<group>"; };
+		6AE87C171CD3D4D40053CD9D /* libraw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libraw.h; sourceTree = "<group>"; };
+		6AE87C181CD3D4D40053CD9D /* libraw_alloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libraw_alloc.h; sourceTree = "<group>"; };
+		6AE87C191CD3D4D40053CD9D /* libraw_const.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libraw_const.h; sourceTree = "<group>"; };
+		6AE87C1A1CD3D4D40053CD9D /* libraw_datastream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libraw_datastream.h; sourceTree = "<group>"; };
+		6AE87C1B1CD3D4D40053CD9D /* libraw_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libraw_internal.h; sourceTree = "<group>"; };
+		6AE87C1C1CD3D4D40053CD9D /* libraw_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libraw_types.h; sourceTree = "<group>"; };
+		6AE87C1D1CD3D4D40053CD9D /* libraw_version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libraw_version.h; sourceTree = "<group>"; };
+		6AE87C1F1CD3D5460053CD9D /* TSLibRawWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibRawWrapper.h; path = "Avocado/RAW Processing/TSLibRawWrapper.h"; sourceTree = "<group>"; };
+		6AE87C201CD3D5460053CD9D /* TSLibRawWrapper.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = TSLibRawWrapper.m; path = "Avocado/RAW Processing/TSLibRawWrapper.m"; sourceTree = "<group>"; };
+		6AEC350A1CD437170033DE0A /* TSCoreDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSCoreDataStore.h; path = Avocado/CoreData/TSCoreDataStore.h; sourceTree = "<group>"; };
+		6AEC350B1CD437170033DE0A /* TSCoreDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSCoreDataStore.m; path = Avocado/CoreData/TSCoreDataStore.m; sourceTree = "<group>"; };
+		6AEC350F1CD43E070033DE0A /* TSMainLibraryWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSMainLibraryWindowController.h; path = "Library Window/TSMainLibraryWindowController.h"; sourceTree = "<group>"; };
+		6AEC35101CD43E070033DE0A /* TSMainLibraryWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSMainLibraryWindowController.m; path = "Library Window/TSMainLibraryWindowController.m"; sourceTree = "<group>"; };
+		6AEC35111CD43E070033DE0A /* TSMainLibraryWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSMainLibraryWindow.xib; path = "Library Window/TSMainLibraryWindow.xib"; sourceTree = "<group>"; };
+		6AEC35171CD43F000033DE0A /* TSCoreDataStoreIB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSCoreDataStoreIB.h; path = Avocado/CoreData/TSCoreDataStoreIB.h; sourceTree = "<group>"; };
+		6AEC35181CD43F000033DE0A /* TSCoreDataStoreIB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSCoreDataStoreIB.m; path = Avocado/CoreData/TSCoreDataStoreIB.m; sourceTree = "<group>"; };
+		6AEC351A1CD43FED0033DE0A /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		6AEC351C1CD43FF00033DE0A /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
+		6AEC353E1CD443460033DE0A /* TSLibraryOverviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryOverviewController.h; path = "Library Window/Overview/TSLibraryOverviewController.h"; sourceTree = "<group>"; };
+		6AEC353F1CD443460033DE0A /* TSLibraryOverviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryOverviewController.m; path = "Library Window/Overview/TSLibraryOverviewController.m"; sourceTree = "<group>"; };
+		6AEC35401CD443460033DE0A /* TSLibraryOverview.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSLibraryOverview.xib; path = "Library Window/Overview/TSLibraryOverview.xib"; sourceTree = "<group>"; };
+		6AEC35441CD443B90033DE0A /* TSLibraryDetailController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryDetailController.h; path = "Library Window/Single Image/TSLibraryDetailController.h"; sourceTree = "<group>"; };
+		6AEC35451CD443B90033DE0A /* TSLibraryDetailController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryDetailController.m; path = "Library Window/Single Image/TSLibraryDetailController.m"; sourceTree = "<group>"; };
+		6AEC35461CD443B90033DE0A /* TSLibraryDetail.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSLibraryDetail.xib; path = "Library Window/Single Image/TSLibraryDetail.xib"; sourceTree = "<group>"; };
+		6AEC765B1CD4679700870FAE /* TSMainLibraryContentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSMainLibraryContentViewController.h; path = "Library Window/TSMainLibraryContentViewController.h"; sourceTree = "<group>"; };
+		6AEC765C1CD4679700870FAE /* TSMainLibraryContentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSMainLibraryContentViewController.m; path = "Library Window/TSMainLibraryContentViewController.m"; sourceTree = "<group>"; };
+		70A0E8562B68C925C7E5445C /* Pods-Avocado.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Avocado.release.xcconfig"; path = "Pods/Target Support Files/Pods-Avocado/Pods-Avocado.release.xcconfig"; sourceTree = "<group>"; };
+		819223217746015A3002C6D6 /* Pods_Avocado.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Avocado.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6AE87BC11CD275C90053CD9D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6AEC351D1CD43FF00033DE0A /* CoreImage.framework in Frameworks */,
+				6AEC351B1CD43FED0033DE0A /* Accelerate.framework in Frameworks */,
+				6AE87C151CD3D4B60053CD9D /* libraw_r.a in Frameworks */,
+				90D8F3504CA87BC8DFD0DDE7 /* Pods_Avocado.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6AE87BBB1CD275C90053CD9D = {
+			isa = PBXGroup;
+			children = (
+				6AEC350E1CD43DCA0033DE0A /* Avocado App */,
+				6AE87BC51CD275C90053CD9D /* Products */,
+				8A1D7E197716AC0277E58CE5 /* Pods */,
+				F4FC62D8D3C46EB93528ACF1 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		6AE87BC51CD275C90053CD9D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6AE87BC41CD275C90053CD9D /* Avocado.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6AE87BC61CD275C90053CD9D /* App Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				6AE87BC71CD275C90053CD9D /* TSAppDelegate.h */,
+				6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */,
+				6AE87BD21CD275C90053CD9D /* MainMenu.xib */,
+			);
+			name = "App Delegate";
+			path = Avocado;
+			sourceTree = "<group>";
+		};
+		6AE87BCA1CD275C90053CD9D /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				6AE87BCB1CD275C90053CD9D /* main.m */,
+				6AE87BDD1CD2767A0053CD9D /* Avocado-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			path = Avocado;
+			sourceTree = "<group>";
+		};
+		6AE87BDB1CD275FA0053CD9D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				6AE87BD51CD275C90053CD9D /* Info.plist */,
+				6AE87BD01CD275C90053CD9D /* Assets.xcassets */,
+			);
+			name = Resources;
+			path = Avocado;
+			sourceTree = "<group>";
+		};
+		6AE87BDC1CD276070053CD9D /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				6AE87BE81CD276AE0053CD9D /* Build Tools */,
+				6AE87BEE1CD2777E0053CD9D /* Managed Object Subclasses */,
+				6AE87BEA1CD276E70053CD9D /* Avocado.xcdatamodeld */,
+				6AEC350A1CD437170033DE0A /* TSCoreDataStore.h */,
+				6AEC350B1CD437170033DE0A /* TSCoreDataStore.m */,
+				6AEC35171CD43F000033DE0A /* TSCoreDataStoreIB.h */,
+				6AEC35181CD43F000033DE0A /* TSCoreDataStoreIB.m */,
+			);
+			name = CoreData;
+			sourceTree = "<group>";
+		};
+		6AE87BE81CD276AE0053CD9D /* Build Tools */ = {
+			isa = PBXGroup;
+			children = (
+				6AE87BE91CD276BF0053CD9D /* mogenerator.sh */,
+			);
+			name = "Build Tools";
+			sourceTree = "<group>";
+		};
+		6AE87BEE1CD2777E0053CD9D /* Managed Object Subclasses */ = {
+			isa = PBXGroup;
+			children = (
+				6ABC2D991CD42C30006B959F /* TSHumanModels.h */,
+				6AE87BF01CD277860053CD9D /* Model */,
+				6AE87BEF1CD277830053CD9D /* Entity */,
+			);
+			name = "Managed Object Subclasses";
+			sourceTree = "<group>";
+		};
+		6AE87BEF1CD277830053CD9D /* Entity */ = {
+			isa = PBXGroup;
+			children = (
+				6ABC2DB21CD43586006B959F /* _TSLibraryAlbum.h */,
+				6ABC2DB31CD43586006B959F /* _TSLibraryAlbum.m */,
+				6ABC2DB41CD43586006B959F /* _TSLibraryAlbumCollection.h */,
+				6ABC2DB51CD43586006B959F /* _TSLibraryAlbumCollection.m */,
+				6ABC2DB61CD43586006B959F /* _TSLibraryExportService.h */,
+				6ABC2DB71CD43586006B959F /* _TSLibraryExportService.m */,
+				6ABC2DB81CD43586006B959F /* _TSLibraryImage.h */,
+				6ABC2DB91CD43586006B959F /* _TSLibraryImage.m */,
+				6ABC2DBA1CD43586006B959F /* _TSLibraryImageAdjustment.h */,
+				6ABC2DBB1CD43586006B959F /* _TSLibraryImageAdjustment.m */,
+				6ABC2DBC1CD43586006B959F /* _TSLibraryTag.h */,
+				6ABC2DBD1CD43586006B959F /* _TSLibraryTag.m */,
+				6ABC2D9A1CD42C4A006B959F /* _TSLibraryImage.h */,
+				6ABC2D9B1CD42C4A006B959F /* _TSLibraryImage.m */,
+			);
+			name = Entity;
+			sourceTree = "<group>";
+		};
+		6AE87BF01CD277860053CD9D /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				6ABC2DA01CD4357E006B959F /* TSLibraryAlbum.h */,
+				6ABC2DA11CD4357E006B959F /* TSLibraryAlbum.m */,
+				6ABC2DA21CD4357E006B959F /* TSLibraryAlbumCollection.h */,
+				6ABC2DA31CD4357E006B959F /* TSLibraryAlbumCollection.m */,
+				6ABC2DA41CD4357E006B959F /* TSLibraryExportService.h */,
+				6ABC2DA51CD4357E006B959F /* TSLibraryExportService.m */,
+				6ABC2DA61CD4357E006B959F /* TSLibraryImage.h */,
+				6ABC2DA71CD4357E006B959F /* TSLibraryImage.m */,
+				6ABC2DA81CD4357E006B959F /* TSLibraryImageAdjustment.h */,
+				6ABC2DA91CD4357E006B959F /* TSLibraryImageAdjustment.m */,
+				6ABC2DAA1CD4357E006B959F /* TSLibraryTag.h */,
+				6ABC2DAB1CD4357E006B959F /* TSLibraryTag.m */,
+				6ABC2D9D1CD42C56006B959F /* TSLibraryImage.h */,
+				6ABC2D9E1CD42C56006B959F /* TSLibraryImage.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		6AE87BF11CD3D28E0053CD9D /* Dependencies */ = {
+			isa = PBXGroup;
+			children = (
+				6AE87BF21CD3D2940053CD9D /* libraw */,
+			);
+			name = Dependencies;
+			sourceTree = "<group>";
+		};
+		6AE87BF21CD3D2940053CD9D /* libraw */ = {
+			isa = PBXGroup;
+			children = (
+				6AE87C141CD3D4B60053CD9D /* libraw_r.a */,
+				6AE87C1E1CD3D5280053CD9D /* ObjC Wrapper */,
+				6AE87C161CD3D4D40053CD9D /* Headers */,
+			);
+			name = libraw;
+			sourceTree = "<group>";
+		};
+		6AE87C161CD3D4D40053CD9D /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				6AE87C171CD3D4D40053CD9D /* libraw.h */,
+				6AE87C181CD3D4D40053CD9D /* libraw_alloc.h */,
+				6AE87C191CD3D4D40053CD9D /* libraw_const.h */,
+				6AE87C1A1CD3D4D40053CD9D /* libraw_datastream.h */,
+				6AE87C1B1CD3D4D40053CD9D /* libraw_internal.h */,
+				6AE87C1C1CD3D4D40053CD9D /* libraw_types.h */,
+				6AE87C1D1CD3D4D40053CD9D /* libraw_version.h */,
+			);
+			name = Headers;
+			path = "Dependencies/LibRaw-0.17.1/libraw";
+			sourceTree = "<group>";
+		};
+		6AE87C1E1CD3D5280053CD9D /* ObjC Wrapper */ = {
+			isa = PBXGroup;
+			children = (
+				6AE87C1F1CD3D5460053CD9D /* TSLibRawWrapper.h */,
+				6AE87C201CD3D5460053CD9D /* TSLibRawWrapper.m */,
+			);
+			name = "ObjC Wrapper";
+			sourceTree = "<group>";
+		};
+		6AEC350D1CD43DBD0033DE0A /* Library Window */ = {
+			isa = PBXGroup;
+			children = (
+				6AEC350F1CD43E070033DE0A /* TSMainLibraryWindowController.h */,
+				6AEC35101CD43E070033DE0A /* TSMainLibraryWindowController.m */,
+				6AEC35111CD43E070033DE0A /* TSMainLibraryWindow.xib */,
+				6AEC765B1CD4679700870FAE /* TSMainLibraryContentViewController.h */,
+				6AEC765C1CD4679700870FAE /* TSMainLibraryContentViewController.m */,
+			);
+			name = "Library Window";
+			path = Avocado;
+			sourceTree = "<group>";
+		};
+		6AEC350E1CD43DCA0033DE0A /* Avocado App */ = {
+			isa = PBXGroup;
+			children = (
+				6AE87BDC1CD276070053CD9D /* CoreData */,
+				6AEC35431CD443A50033DE0A /* Library Detail Controller */,
+				6AEC353D1CD4431B0033DE0A /* Library Overview Controller */,
+				6AEC350D1CD43DBD0033DE0A /* Library Window */,
+				6AE87BC61CD275C90053CD9D /* App Delegate */,
+				6AE87BF11CD3D28E0053CD9D /* Dependencies */,
+				6AE87BDB1CD275FA0053CD9D /* Resources */,
+				6AE87BCA1CD275C90053CD9D /* Supporting Files */,
+			);
+			name = "Avocado App";
+			sourceTree = "<group>";
+		};
+		6AEC353D1CD4431B0033DE0A /* Library Overview Controller */ = {
+			isa = PBXGroup;
+			children = (
+				6AEC353E1CD443460033DE0A /* TSLibraryOverviewController.h */,
+				6AEC353F1CD443460033DE0A /* TSLibraryOverviewController.m */,
+				6AEC35401CD443460033DE0A /* TSLibraryOverview.xib */,
+			);
+			name = "Library Overview Controller";
+			path = Avocado;
+			sourceTree = "<group>";
+		};
+		6AEC35431CD443A50033DE0A /* Library Detail Controller */ = {
+			isa = PBXGroup;
+			children = (
+				6AEC35441CD443B90033DE0A /* TSLibraryDetailController.h */,
+				6AEC35451CD443B90033DE0A /* TSLibraryDetailController.m */,
+				6AEC35461CD443B90033DE0A /* TSLibraryDetail.xib */,
+			);
+			name = "Library Detail Controller";
+			path = Avocado;
+			sourceTree = "<group>";
+		};
+		8A1D7E197716AC0277E58CE5 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				072E3CE76E3BE9A62C321D67 /* Pods-Avocado.debug.xcconfig */,
+				70A0E8562B68C925C7E5445C /* Pods-Avocado.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		F4FC62D8D3C46EB93528ACF1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6AEC351C1CD43FF00033DE0A /* CoreImage.framework */,
+				6AEC351A1CD43FED0033DE0A /* Accelerate.framework */,
+				819223217746015A3002C6D6 /* Pods_Avocado.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6AE87BC31CD275C90053CD9D /* Avocado */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6AE87BD81CD275C90053CD9D /* Build configuration list for PBXNativeTarget "Avocado" */;
+			buildPhases = (
+				F8652002148D4BDE09E87921 /* Check Pods Manifest.lock */,
+				6AE87BED1CD276FD0053CD9D /* Update CoreData Subclasses (mogenerator) */,
+				6AE87BC01CD275C90053CD9D /* Sources */,
+				6AE87BC11CD275C90053CD9D /* Frameworks */,
+				6AE87BC21CD275C90053CD9D /* Resources */,
+				677C148D027D0E0A6543CA26 /* Embed Pods Frameworks */,
+				B0DFEA25DCDDB691FBC6651D /* Copy Pods Resources */,
+				6AEC35281CD4406D0033DE0A /* Set Build Version */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Avocado;
+			productName = Avocado;
+			productReference = 6AE87BC41CD275C90053CD9D /* Avocado.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6AE87BBC1CD275C90053CD9D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = "Tristan Seifert";
+				TargetAttributes = {
+					6AE87BC31CD275C90053CD9D = {
+						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = 8QDQ246B94;
+					};
+				};
+			};
+			buildConfigurationList = 6AE87BBF1CD275C90053CD9D /* Build configuration list for PBXProject "Avocado" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 6AE87BBB1CD275C90053CD9D;
+			productRefGroup = 6AE87BC51CD275C90053CD9D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6AE87BC31CD275C90053CD9D /* Avocado */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		6AE87BC21CD275C90053CD9D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6AE87BD11CD275C90053CD9D /* Assets.xcassets in Resources */,
+				6AEC35481CD443B90033DE0A /* TSLibraryDetail.xib in Resources */,
+				6AE87BD41CD275C90053CD9D /* MainMenu.xib in Resources */,
+				6AEC35131CD43E070033DE0A /* TSMainLibraryWindow.xib in Resources */,
+				6AEC35421CD443460033DE0A /* TSLibraryOverview.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		677C148D027D0E0A6543CA26 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Avocado/Pods-Avocado-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6AE87BED1CD276FD0053CD9D /* Update CoreData Subclasses (mogenerator) */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Update CoreData Subclasses (mogenerator)";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "${SRCROOT}/Avocado/CoreData/mogenerator.sh";
+		};
+		6AEC35281CD4406D0033DE0A /* Set Build Version */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Set Build Version";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "${SRCROOT}/Scripts/update_build_number.sh";
+		};
+		B0DFEA25DCDDB691FBC6651D /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Avocado/Pods-Avocado-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F8652002148D4BDE09E87921 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6AE87BC01CD275C90053CD9D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6AE87BCC1CD275C90053CD9D /* main.m in Sources */,
+				6AEC35121CD43E070033DE0A /* TSMainLibraryWindowController.m in Sources */,
+				6AEC765D1CD4679700870FAE /* TSMainLibraryContentViewController.m in Sources */,
+				6AEC350C1CD437170033DE0A /* TSCoreDataStore.m in Sources */,
+				6ABC2DB11CD4357E006B959F /* TSLibraryTag.m in Sources */,
+				6ABC2DBE1CD43586006B959F /* _TSLibraryAlbum.m in Sources */,
+				6AE87C211CD3D5460053CD9D /* TSLibRawWrapper.m in Sources */,
+				6AE87BEC1CD276E70053CD9D /* Avocado.xcdatamodeld in Sources */,
+				6ABC2DC31CD43586006B959F /* _TSLibraryTag.m in Sources */,
+				6ABC2DAC1CD4357E006B959F /* TSLibraryAlbum.m in Sources */,
+				6AEC35471CD443B90033DE0A /* TSLibraryDetailController.m in Sources */,
+				6ABC2D9C1CD42C4A006B959F /* _TSLibraryImage.m in Sources */,
+				6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */,
+				6AEC35411CD443460033DE0A /* TSLibraryOverviewController.m in Sources */,
+				6AEC35191CD43F000033DE0A /* TSCoreDataStoreIB.m in Sources */,
+				6ABC2DAF1CD4357E006B959F /* TSLibraryImage.m in Sources */,
+				6ABC2DAD1CD4357E006B959F /* TSLibraryAlbumCollection.m in Sources */,
+				6ABC2DAE1CD4357E006B959F /* TSLibraryExportService.m in Sources */,
+				6ABC2DC01CD43586006B959F /* _TSLibraryExportService.m in Sources */,
+				6ABC2DBF1CD43586006B959F /* _TSLibraryAlbumCollection.m in Sources */,
+				6ABC2DC21CD43586006B959F /* _TSLibraryImageAdjustment.m in Sources */,
+				6ABC2DB01CD4357E006B959F /* TSLibraryImageAdjustment.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		6AE87BD21CD275C90053CD9D /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				6AE87BD31CD275C90053CD9D /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		6AE87BD61CD275C90053CD9D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		6AE87BD71CD275C90053CD9D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		6AE87BD91CD275C90053CD9D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 072E3CE76E3BE9A62C321D67 /* Pods-Avocado.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Developer ID Application";
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PREFIX_HEADER = "Avocado/Avocado-Prefix.pch";
+				INFOPLIST_FILE = Avocado/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Dependencies/LibRaw-0.17.1/lib/.libs",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = me.tseifert.Avocado;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		6AE87BDA1CD275C90053CD9D /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 70A0E8562B68C925C7E5445C /* Pods-Avocado.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Developer ID Application";
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PREFIX_HEADER = "Avocado/Avocado-Prefix.pch";
+				INFOPLIST_FILE = Avocado/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Dependencies/LibRaw-0.17.1/lib/.libs",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = me.tseifert.Avocado;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6AE87BBF1CD275C90053CD9D /* Build configuration list for PBXProject "Avocado" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6AE87BD61CD275C90053CD9D /* Debug */,
+				6AE87BD71CD275C90053CD9D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6AE87BD81CD275C90053CD9D /* Build configuration list for PBXNativeTarget "Avocado" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6AE87BD91CD275C90053CD9D /* Debug */,
+				6AE87BDA1CD275C90053CD9D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		6AE87BEA1CD276E70053CD9D /* Avocado.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				6AE87BEB1CD276E70053CD9D /* Avocado.xcdatamodel */,
+			);
+			currentVersion = 6AE87BEB1CD276E70053CD9D /* Avocado.xcdatamodel */;
+			name = Avocado.xcdatamodeld;
+			path = Avocado/CoreData/Avocado.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 6AE87BBC1CD275C90053CD9D /* Project object */;
+}

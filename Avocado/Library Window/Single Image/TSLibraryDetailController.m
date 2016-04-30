@@ -38,11 +38,21 @@
 }
 
 /**
- * Actually renders the image, once it has appeared.
+ * Tells our containing window to hide the title bar and make the content view
+ * span the entire size of the window.
  */
-- (void) viewDidAppear {
-	[super viewDidAppear];
+- (void) prepareWindowForAppearance:(NSWindow *) window {
+	[super prepareWindowForAppearance:window];
 	
+	// set up the custom window appearance
+	window.toolbar.visible = NO;
+	window.titlebarAppearsTransparent = YES;
+	window.movableByWindowBackground = YES;
+	
+	window.titleVisibility = NSWindowTitleHidden;
+	
+	NSUInteger styleMask = window.styleMask;
+	window.styleMask = styleMask | NSFullSizeContentViewWindowMask;
 }
 
 #pragma mark Image Handling

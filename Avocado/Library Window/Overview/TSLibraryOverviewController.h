@@ -12,6 +12,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface TSLibraryOverviewController : NSViewController
+#import "TSMainLibraryContentViewController.h"
+
+@interface TSLibraryOverviewController : TSMainLibraryContentViewController
 
 @end

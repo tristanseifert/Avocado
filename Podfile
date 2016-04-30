@@ -10,6 +10,8 @@ target 'Avocado' do
 
     # UI: Status bars at bottom of window
     pod 'GRStatusBar'
+    # UI: Grid view alternative
+    pod 'CNGridView'
 
     # Networking
     pod 'AFNetworking', '~> 3.0'

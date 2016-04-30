@@ -19,4 +19,24 @@
     // Do view setup here.
 }
 
+
+/**
+ * Tells our containing window to show the title bar, and make the content view
+ * exclude the title bar, and show the title bar again.
+ */
+- (void) prepareWindowForAppearance:(NSWindow *) window {
+	[super prepareWindowForAppearance:window];
+	
+	// set up the custom window appearance
+	window.toolbar.visible = YES;
+	window.titlebarAppearsTransparent = YES;
+	window.movableByWindowBackground = NO;
+	
+	window.titleVisibility = NSWindowTitleVisible;
+	
+	NSUInteger styleMask = window.styleMask;
+//	window.styleMask = styleMask & (~NSFullSizeContentViewWindowMask);
+	window.styleMask = styleMask | NSFullSizeContentViewWindowMask;
+}
+
 @end

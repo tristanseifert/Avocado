@@ -11,7 +11,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface TSLibraryDetailController : NSViewController
+#import "TSMainLibraryContentViewController.h"
+
+@interface TSLibraryDetailController : TSMainLibraryContentViewController
 
 @property (nonatomic) IBOutlet NSScrollView *scrollView;
 

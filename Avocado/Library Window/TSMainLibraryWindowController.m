@@ -25,17 +25,6 @@
  */
 - (void) windowDidLoad {
     [super windowDidLoad];
-    
-	// set up the custom UI
-	self.window.toolbar.visible = NO;
-	self.window.titlebarAppearsTransparent = YES;
-	self.window.movableByWindowBackground = YES;
-	
-	self.window.titleVisibility = NSWindowTitleHidden;
-	
-	// add full size content mask
-	NSUInteger styleMask = self.window.styleMask;
-	self.window.styleMask = styleMask | NSFullSizeContentViewWindowMask;
 	
 	// create the various controllers
 	self.vcOverview = [[TSLibraryOverviewController alloc] initWithNibName:@"TSLibraryOverview" bundle:nil];
@@ -43,6 +32,8 @@
 	
 	// set content
 	self.contentViewController = self.vcOverview;
+	
+	[((TSMainLibraryContentViewController *) self.contentViewController) prepareWindowForAppearance:self.window];
 }
 
 @end
