@@ -24,7 +24,7 @@
 		6AE87BD11CD275C90053CD9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AE87BD01CD275C90053CD9D /* Assets.xcassets */; };
 		6AE87BD41CD275C90053CD9D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AE87BD21CD275C90053CD9D /* MainMenu.xib */; };
 		6AE87BEC1CD276E70053CD9D /* Avocado.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BEA1CD276E70053CD9D /* Avocado.xcdatamodeld */; };
-		6AE87C211CD3D5460053CD9D /* TSLibRawWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87C201CD3D5460053CD9D /* TSLibRawWrapper.m */; };
+		6AE87C211CD3D5460053CD9D /* TSRawImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87C201CD3D5460053CD9D /* TSRawImage.m */; };
 		6AEC350C1CD437170033DE0A /* TSCoreDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC350B1CD437170033DE0A /* TSCoreDataStore.m */; };
 		6AEC35121CD43E070033DE0A /* TSMainLibraryWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC35101CD43E070033DE0A /* TSMainLibraryWindowController.m */; };
 		6AEC35131CD43E070033DE0A /* TSMainLibraryWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC35111CD43E070033DE0A /* TSMainLibraryWindow.xib */; };
@@ -82,8 +82,8 @@
 		6AE87BDD1CD2767A0053CD9D /* Avocado-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Avocado-Prefix.pch"; sourceTree = "<group>"; };
 		6AE87BE91CD276BF0053CD9D /* mogenerator.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = mogenerator.sh; path = Avocado/CoreData/mogenerator.sh; sourceTree = "<group>"; };
 		6AE87BEB1CD276E70053CD9D /* Avocado.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Avocado.xcdatamodel; sourceTree = "<group>"; };
-		6AE87C1F1CD3D5460053CD9D /* TSLibRawWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibRawWrapper.h; path = "Avocado/RAW Processing/TSLibRawWrapper.h"; sourceTree = "<group>"; };
-		6AE87C201CD3D5460053CD9D /* TSLibRawWrapper.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = TSLibRawWrapper.m; path = "Avocado/RAW Processing/TSLibRawWrapper.m"; sourceTree = "<group>"; };
+		6AE87C1F1CD3D5460053CD9D /* TSRawImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSRawImage.h; path = "Avocado/RAW Processing/TSRawImage.h"; sourceTree = "<group>"; };
+		6AE87C201CD3D5460053CD9D /* TSRawImage.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = TSRawImage.m; path = "Avocado/RAW Processing/TSRawImage.m"; sourceTree = "<group>"; };
 		6AEC350A1CD437170033DE0A /* TSCoreDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSCoreDataStore.h; path = Avocado/CoreData/TSCoreDataStore.h; sourceTree = "<group>"; };
 		6AEC350B1CD437170033DE0A /* TSCoreDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSCoreDataStore.m; path = Avocado/CoreData/TSCoreDataStore.m; sourceTree = "<group>"; };
 		6AEC350F1CD43E070033DE0A /* TSMainLibraryWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSMainLibraryWindowController.h; path = "Library Window/TSMainLibraryWindowController.h"; sourceTree = "<group>"; };
@@ -290,8 +290,8 @@
 		6AE87C1E1CD3D5280053CD9D /* ObjC Wrapper */ = {
 			isa = PBXGroup;
 			children = (
-				6AE87C1F1CD3D5460053CD9D /* TSLibRawWrapper.h */,
-				6AE87C201CD3D5460053CD9D /* TSLibRawWrapper.m */,
+				6AE87C1F1CD3D5460053CD9D /* TSRawImage.h */,
+				6AE87C201CD3D5460053CD9D /* TSRawImage.m */,
 			);
 			name = "ObjC Wrapper";
 			sourceTree = "<group>";
@@ -525,7 +525,7 @@
 				6AEC350C1CD437170033DE0A /* TSCoreDataStore.m in Sources */,
 				6ABC2DB11CD4357E006B959F /* TSLibraryTag.m in Sources */,
 				6ABC2DBE1CD43586006B959F /* _TSLibraryAlbum.m in Sources */,
-				6AE87C211CD3D5460053CD9D /* TSLibRawWrapper.m in Sources */,
+				6AE87C211CD3D5460053CD9D /* TSRawImage.m in Sources */,
 				6AE87BEC1CD276E70053CD9D /* Avocado.xcdatamodeld in Sources */,
 				6ABC2DC31CD43586006B959F /* _TSLibraryTag.m in Sources */,
 				6ABC2DAC1CD4357E006B959F /* TSLibraryAlbum.m in Sources */,

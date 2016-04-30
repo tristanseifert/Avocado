@@ -1,20 +1,24 @@
 //
-//  TSLibRawWrapper.h
+//  TSRawImage.h
 //  Avocado
 //
-//	An instance of this class can be created for each RAW file that needs to
-//	be processed.
+//	Similar to NSImage, this class allows loading and manipulation of a raw
+//	file.
 //
 //  Created by Tristan Seifert on 20160429.
 //  Copyright © 2016 Tristan Seifert. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
 
-@interface TSLibRawWrapper : NSObject
+extern NSString *const TSRawImageErrorDomain;
 
-- (BOOL) loadFile:(NSURL *) url;
-- (BOOL) parseFile;
+extern NSString *const TSRawImageErrorIsFatalKey;
+
+@interface TSRawImage : NSObject
+
+- (instancetype) initWithContentsOfUrl:(NSURL *) url error:(NSError **) outErr;
 
 
 /// iso speed
@@ -37,9 +41,17 @@
 @property (nonatomic, readonly, getter=getExifCameraModel) NSString *cameraModel;
 
 /// author
-@property (nonatomic, readonly, getter=getExifArtist) NSString *artist;
+@property (nonatomic, readonly, getter=getMetaArtist) NSString *artist;
 /// 'description' field
-@property (nonatomic, readonly, getter=getExifDescription) NSString *imageDescription;
+@property (nonatomic, readonly, getter=getMetaDescription) NSString *imageDescription;
+
+/// timestamp
+@property (nonatomic, readonly, getter=getMetaTimestamp) NSDate *timestamp;
+/// series number
+@property (nonatomic, readonly, getter=getMetaSeries) NSUInteger shotSeries;
+
+/// thumbnail image
+@property (nonatomic, readonly) NSImage *thumbnail;
 
 /// size of the final image
 @property (nonatomic, readonly, getter=getRawSize) NSSize size;
