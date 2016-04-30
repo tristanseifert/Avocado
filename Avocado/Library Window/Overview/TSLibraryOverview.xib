@@ -118,9 +118,9 @@
                                     <rect key="frame" x="0.0" y="0.0" width="250" height="24"/>
                                     <subviews>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wfu-fe-BWc">
-                                            <rect key="frame" x="8" y="1" width="24" height="22"/>
+                                            <rect key="frame" x="8" y="1" width="22" height="22"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="24" id="fWs-Kb-YIZ"/>
+                                                <constraint firstAttribute="width" constant="22" id="fWs-Kb-YIZ"/>
                                             </constraints>
                                             <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="kLc-6g-Ygo">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -128,7 +128,7 @@
                                             </buttonCell>
                                         </button>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="OPD-ea-T6N">
-                                            <rect key="frame" x="36" y="1" width="24" height="22"/>
+                                            <rect key="frame" x="34" y="1" width="22" height="22"/>
                                             <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSRemoveTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="aeC-Za-d7J">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>

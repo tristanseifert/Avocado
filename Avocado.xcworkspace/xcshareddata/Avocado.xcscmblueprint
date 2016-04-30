@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "6BEFAB3BB130345C190F12C07BC483F253E59D5C",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "FD20869EDA851F60430302C1413AAE5CB043C00D" : 0,
+    "6BEFAB3BB130345C190F12C07BC483F253E59D5C" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "4A838C44-F924-4171-A26B-D00EE2C8CE90",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "FD20869EDA851F60430302C1413AAE5CB043C00D" : "Avocado\/Dependencies\/LibRaw\/",
+    "6BEFAB3BB130345C190F12C07BC483F253E59D5C" : "Avocado\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Avocado",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Avocado.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "gitlab.com:tristanseifert\/avocado.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "6BEFAB3BB130345C190F12C07BC483F253E59D5C"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/LibRaw\/LibRaw.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "FD20869EDA851F60430302C1413AAE5CB043C00D"
+    }
+  ]
+}
