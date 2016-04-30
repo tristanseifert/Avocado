@@ -21,7 +21,7 @@
 
 @implementation TSAppDelegate
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {	
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 	// test the raw wrapper
 	NSURL *url = [NSURL fileURLWithPath:@"/Volumes/Datas/Photog/2016/2016-03-24/IMG_0018.CR2"];
 	

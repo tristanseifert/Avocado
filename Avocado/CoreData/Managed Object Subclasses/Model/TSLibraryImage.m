@@ -7,6 +7,7 @@
 @end
 
 @implementation TSLibraryImage
+@dynamic metadata, fileUrl;
 
 // Custom logic goes here.
 
