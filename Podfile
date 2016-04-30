@@ -5,5 +5,6 @@
 
 target 'Avocado' do
     pod 'CocoaLumberjack', '~> 2.2'
+    pod 'MagicalRecord', '~> 2.3'
 end
 

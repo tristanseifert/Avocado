@@ -8,15 +8,16 @@
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>1</integer>
+		</dict>
+		<key>MagicalRecord.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
 		</dict>
 		<key>Pods-Avocado.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>2</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
@@ -26,7 +27,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>AB610E930CFFC42C70066A7AE2A51853</key>
+		<key>1EB3D452C8BBF7A68F5E8003026AA7B0</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D54AB3ECEB9A8FBA15D4F73CBE326692</key>
 		<dict>
 			<key>primary</key>
 			<true/>

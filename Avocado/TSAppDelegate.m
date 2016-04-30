@@ -8,17 +8,33 @@
 
 #import "TSAppDelegate.h"
 
+#import "TSLibRawWrapper.h"
+
 @interface TSAppDelegate ()
 
+@property (nonatomic) TSLibRawWrapper *rawWrapper;
+
 @property (weak) IBOutlet NSWindow *window;
-- (IBAction)saveAction:(id)sender;
+- (IBAction) saveAction:(id) sender;
 
 @end
 
 @implementation TSAppDelegate
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-	// Insert code here to initialize your application
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {	
+	// test the raw wrapper
+	NSURL *url = [NSURL fileURLWithPath:@"/Volumes/Datas/Photog/2016/2016-03-24/IMG_0018.CR2"];
+	
+	self.rawWrapper = [TSLibRawWrapper new];
+	
+	[self.rawWrapper loadFile:url];
+	[self.rawWrapper parseFile];
+	
+	DDLogInfo(@"%@ %@", self.rawWrapper.cameraMake, self.rawWrapper.cameraModel);
+	DDLogInfo(@"shutter = %f, ISO = %f, aperture = %f", self.rawWrapper.shutterSpeed, self.rawWrapper.isoSpeed, self.rawWrapper.aperture);
+	DDLogInfo(@"Size: %@", NSStringFromSize(self.rawWrapper.size));
+	DDLogInfo(@"Lens: %@ (%@, %lu mm)", self.rawWrapper.lensName, self.rawWrapper.lensMake, self.rawWrapper.focalLength);
+	DDLogInfo(@"Artist: %@; Description: %@", self.rawWrapper.artist, self.rawWrapper.imageDescription);
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
@@ -26,19 +42,22 @@
 }
 
 #pragma mark - Core Data stack
-
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize managedObjectContext = _managedObjectContext;
 
-- (NSURL *)applicationDocumentsDirectory {
-    // The directory the application uses to store the Core Data store file. This code uses a directory named "me.tseifert.Avocado" in the user's Application Support directory.
+/**
+ * Where the CoreData store lives; this is in the app support directory.
+ */
+- (NSURL *) applicationDocumentsDirectory {
     NSURL *appSupportURL = [[[NSFileManager defaultManager] URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
     return [appSupportURL URLByAppendingPathComponent:@"me.tseifert.Avocado"];
 }
 
-- (NSManagedObjectModel *)managedObjectModel {
-    // The managed object model for the application. It is a fatal error for the application not to be able to find and load its model.
+/**
+ * Create a managed object model.
+ */
+- (NSManagedObjectModel *) managedObjectModel {
     if (_managedObjectModel) {
         return _managedObjectModel;
     }
@@ -48,8 +67,10 @@
     return _managedObjectModel;
 }
 
+/**
+ * Creates the persistent store coordinator.
+ */
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
-    // The persistent store coordinator for the application. This implementation creates and returns a coordinator, having added the store for the application to it. (The directory for the store is created, if necessary.)
     if (_persistentStoreCoordinator) {
         return _persistentStoreCoordinator;
     }
@@ -95,8 +116,10 @@
     return _persistentStoreCoordinator;
 }
 
-- (NSManagedObjectContext *)managedObjectContext {
-    // Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.)
+/**
+ * Creates the managed object coordinator.
+ */
+- (NSManagedObjectContext *) managedObjectContext {
     if (_managedObjectContext) {
         return _managedObjectContext;
     }
@@ -112,9 +135,7 @@
 }
 
 #pragma mark - Core Data Saving and Undo support
-
-- (IBAction)saveAction:(id)sender {
-    // Performs the save action for the application, which is to send the save: message to the application's managed object context. Any encountered errors are presented to the user.
+- (IBAction) saveAction:(id) sender {
     if (![[self managedObjectContext] commitEditing]) {
         NSLog(@"%@:%@ unable to commit editing before saving", [self class], NSStringFromSelector(_cmd));
     }
@@ -125,12 +146,11 @@
     }
 }
 
-- (NSUndoManager *)windowWillReturnUndoManager:(NSWindow *)window {
-    // Returns the NSUndoManager for the application. In this case, the manager returned is that of the managed object context for the application.
+- (NSUndoManager *) windowWillReturnUndoManager:(NSWindow *) window {
     return [[self managedObjectContext] undoManager];
 }
 
-- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
+- (NSApplicationTerminateReply) applicationShouldTerminate:(NSApplication *) sender {
     // Save changes in the application's managed object context before the application terminates.
     
     if (!_managedObjectContext) {

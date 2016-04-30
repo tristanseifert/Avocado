@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="untitled.xcdatamodel" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
-    <elements/>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10171" systemVersion="15E65" minimumToolsVersion="Automatic">
+    <entity name="Image" representedClassName="TSLibraryImage" syncable="YES">
+        <attribute name="fileUrl" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="thumbData" optional="YES" attributeType="Binary" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Image" positionX="-63" positionY="-18" width="128" height="75"/>
+    </elements>
 </model>

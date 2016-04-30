@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6ABC2D9C1CD42C4A006B959F /* _TSLibraryImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2D9B1CD42C4A006B959F /* _TSLibraryImage.m */; };
+		6ABC2D9F1CD42C56006B959F /* TSLibraryImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2D9E1CD42C56006B959F /* TSLibraryImage.m */; };
 		6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */; };
 		6AE87BCC1CD275C90053CD9D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BCB1CD275C90053CD9D /* main.m */; };
 		6AE87BD11CD275C90053CD9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AE87BD01CD275C90053CD9D /* Assets.xcassets */; };
@@ -20,6 +22,11 @@
 /* Begin PBXFileReference section */
 		037613DEB79D67C508440DFB /* libPods-Avocado.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Avocado.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		072E3CE76E3BE9A62C321D67 /* Pods-Avocado.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Avocado.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Avocado/Pods-Avocado.debug.xcconfig"; sourceTree = "<group>"; };
+		6ABC2D991CD42C30006B959F /* TSHumanModels.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TSHumanModels.h; path = "Avocado/CoreData/Managed Object Subclasses/TSHumanModels.h"; sourceTree = "<group>"; };
+		6ABC2D9A1CD42C4A006B959F /* _TSLibraryImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _TSLibraryImage.h; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImage.h"; sourceTree = "<group>"; };
+		6ABC2D9B1CD42C4A006B959F /* _TSLibraryImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryImage.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImage.m"; sourceTree = "<group>"; };
+		6ABC2D9D1CD42C56006B959F /* TSLibraryImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryImage.h; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImage.h"; sourceTree = "<group>"; };
+		6ABC2D9E1CD42C56006B959F /* TSLibraryImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryImage.m; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImage.m"; sourceTree = "<group>"; };
 		6AE87BC41CD275C90053CD9D /* Avocado.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Avocado.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AE87BC71CD275C90053CD9D /* TSAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TSAppDelegate.h; sourceTree = "<group>"; };
 		6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TSAppDelegate.m; sourceTree = "<group>"; };
@@ -130,6 +137,7 @@
 		6AE87BEE1CD2777E0053CD9D /* Managed Object Subclasses */ = {
 			isa = PBXGroup;
 			children = (
+				6ABC2D991CD42C30006B959F /* TSHumanModels.h */,
 				6AE87BF01CD277860053CD9D /* Model */,
 				6AE87BEF1CD277830053CD9D /* Entity */,
 			);
@@ -139,6 +147,8 @@
 		6AE87BEF1CD277830053CD9D /* Entity */ = {
 			isa = PBXGroup;
 			children = (
+				6ABC2D9A1CD42C4A006B959F /* _TSLibraryImage.h */,
+				6ABC2D9B1CD42C4A006B959F /* _TSLibraryImage.m */,
 			);
 			name = Entity;
 			sourceTree = "<group>";
@@ -146,6 +156,8 @@
 		6AE87BF01CD277860053CD9D /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				6ABC2D9D1CD42C56006B959F /* TSLibraryImage.h */,
+				6ABC2D9E1CD42C56006B959F /* TSLibraryImage.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -347,7 +359,9 @@
 				6AE87BCC1CD275C90053CD9D /* main.m in Sources */,
 				6AE87C211CD3D5460053CD9D /* TSLibRawWrapper.m in Sources */,
 				6AE87BEC1CD276E70053CD9D /* Avocado.xcdatamodeld in Sources */,
+				6ABC2D9C1CD42C4A006B959F /* _TSLibraryImage.m in Sources */,
 				6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */,
+				6ABC2D9F1CD42C56006B959F /* TSLibraryImage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
