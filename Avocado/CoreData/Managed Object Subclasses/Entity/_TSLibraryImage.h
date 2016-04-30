@@ -4,6 +4,9 @@
 @import CoreData;
 
 extern const struct TSLibraryImageAttributes {
+	__unsafe_unretained NSString *dateImported;
+	__unsafe_unretained NSString *dateModified;
+	__unsafe_unretained NSString *dateShot;
 	__unsafe_unretained NSString *fileType;
 	__unsafe_unretained NSString *fileUrl;
 	__unsafe_unretained NSString *metadata;
@@ -32,6 +35,18 @@ extern const struct TSLibraryImageRelationships {
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 @property (nonatomic, readonly, strong) TSLibraryImageID* objectID;
+
+@property (nonatomic, strong) NSDate* dateImported;
+
+//- (BOOL)validateDateImported:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSDate* dateModified;
+
+//- (BOOL)validateDateModified:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSDate* dateShot;
+
+//- (BOOL)validateDateShot:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSNumber* fileType;
 
@@ -99,6 +114,15 @@ extern const struct TSLibraryImageRelationships {
 @end
 
 @interface _TSLibraryImage (CoreDataGeneratedPrimitiveAccessors)
+
+- (NSDate*)primitiveDateImported;
+- (void)setPrimitiveDateImported:(NSDate*)value;
+
+- (NSDate*)primitiveDateModified;
+- (void)setPrimitiveDateModified:(NSDate*)value;
+
+- (NSDate*)primitiveDateShot;
+- (void)setPrimitiveDateShot:(NSDate*)value;
 
 - (NSNumber*)primitiveFileType;
 - (void)setPrimitiveFileType:(NSNumber*)value;

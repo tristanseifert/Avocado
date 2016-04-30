@@ -20,6 +20,9 @@
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="Image" representedClassName="TSLibraryImage" syncable="YES">
+        <attribute name="dateImported" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="dateModified" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="dateShot" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="fileType" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="fileUrl" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="metadata" optional="YES" attributeType="Transformable" syncable="YES"/>
@@ -41,7 +44,7 @@
         <element name="Album" positionX="99" positionY="78" width="128" height="120"/>
         <element name="AlbumCollection" positionX="97" positionY="-72" width="128" height="105"/>
         <element name="ExportService" positionX="441" positionY="-90" width="128" height="105"/>
-        <element name="Image" positionX="97" positionY="243" width="128" height="150"/>
+        <element name="Image" positionX="97" positionY="243" width="128" height="195"/>
         <element name="ImageAdjustment" positionX="349" positionY="270" width="128" height="90"/>
         <element name="Tag" positionX="351" positionY="396" width="128" height="75"/>
     </elements>

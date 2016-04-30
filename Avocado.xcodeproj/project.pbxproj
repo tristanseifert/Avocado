@@ -38,6 +38,7 @@
 		6AEC765D1CD4679700870FAE /* TSMainLibraryContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC765C1CD4679700870FAE /* TSMainLibraryContentViewController.m */; };
 		6AEC76661CD4760F00870FAE /* libraw_r.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEC76651CD4760F00870FAE /* libraw_r.a */; };
 		6AEC76681CD4773700870FAE /* liblcms2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEC76671CD4773700870FAE /* liblcms2.a */; };
+		6AEC766C1CD4FF2A00870FAE /* TSImportController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC766B1CD4FF2A00870FAE /* TSImportController.m */; };
 		90D8F3504CA87BC8DFD0DDE7 /* Pods_Avocado.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 819223217746015A3002C6D6 /* Pods_Avocado.framework */; };
 /* End PBXBuildFile section */
 
@@ -110,6 +111,8 @@
 		6AEC76641CD475E500870FAE /* libraw.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = libraw.h; path = Dependencies/LibRaw/libraw/libraw.h; sourceTree = SOURCE_ROOT; };
 		6AEC76651CD4760F00870FAE /* libraw_r.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libraw_r.a; path = Dependencies/LibRaw/lib/.libs/libraw_r.a; sourceTree = "<group>"; };
 		6AEC76671CD4773700870FAE /* liblcms2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblcms2.a; path = "Dependencies/lcms2-2.7/src/.libs/liblcms2.a"; sourceTree = "<group>"; };
+		6AEC766A1CD4FF2A00870FAE /* TSImportController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSImportController.h; path = Importing/TSImportController.h; sourceTree = "<group>"; };
+		6AEC766B1CD4FF2A00870FAE /* TSImportController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSImportController.m; path = Importing/TSImportController.m; sourceTree = "<group>"; };
 		70A0E8562B68C925C7E5445C /* Pods-Avocado.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Avocado.release.xcconfig"; path = "Pods/Target Support Files/Pods-Avocado/Pods-Avocado.release.xcconfig"; sourceTree = "<group>"; };
 		819223217746015A3002C6D6 /* Pods_Avocado.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Avocado.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -315,6 +318,7 @@
 				6AE87BDC1CD276070053CD9D /* CoreData */,
 				6AEC35431CD443A50033DE0A /* Library Detail Controller */,
 				6AEC353D1CD4431B0033DE0A /* Library Overview Controller */,
+				6AEC76691CD4FECD00870FAE /* Importing */,
 				6AEC350D1CD43DBD0033DE0A /* Library Window */,
 				6AE87BC61CD275C90053CD9D /* App Delegate */,
 				6AE87BF11CD3D28E0053CD9D /* Dependencies */,
@@ -343,6 +347,16 @@
 				6AEC35461CD443B90033DE0A /* TSLibraryDetail.xib */,
 			);
 			name = "Library Detail Controller";
+			path = Avocado;
+			sourceTree = "<group>";
+		};
+		6AEC76691CD4FECD00870FAE /* Importing */ = {
+			isa = PBXGroup;
+			children = (
+				6AEC766A1CD4FF2A00870FAE /* TSImportController.h */,
+				6AEC766B1CD4FF2A00870FAE /* TSImportController.m */,
+			);
+			name = Importing;
 			path = Avocado;
 			sourceTree = "<group>";
 		};
@@ -533,6 +547,7 @@
 				6ABC2D9C1CD42C4A006B959F /* _TSLibraryImage.m in Sources */,
 				6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */,
 				6AEC35411CD443460033DE0A /* TSLibraryOverviewController.m in Sources */,
+				6AEC766C1CD4FF2A00870FAE /* TSImportController.m in Sources */,
 				6AEC35191CD43F000033DE0A /* TSCoreDataStoreIB.m in Sources */,
 				6ABC2DAF1CD4357E006B959F /* TSLibraryImage.m in Sources */,
 				6ABC2DAD1CD4357E006B959F /* TSLibraryAlbumCollection.m in Sources */,

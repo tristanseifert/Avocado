@@ -4,6 +4,9 @@
 #import "_TSLibraryImage.h"
 
 const struct TSLibraryImageAttributes TSLibraryImageAttributes = {
+	.dateImported = @"dateImported",
+	.dateModified = @"dateModified",
+	.dateShot = @"dateShot",
 	.fileType = @"fileType",
 	.fileUrl = @"fileUrl",
 	.metadata = @"metadata",
@@ -50,6 +53,12 @@ const struct TSLibraryImageRelationships TSLibraryImageRelationships = {
 
 	return keyPaths;
 }
+
+@dynamic dateImported;
+
+@dynamic dateModified;
+
+@dynamic dateShot;
 
 @dynamic fileType;
 

@@ -45,7 +45,9 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 		self.libRaw = new LibRaw();
 		
 		// load file and parse the thumbnails
-		[self loadFile:url withError:outErr];
+		if([self loadFile:url withError:outErr] == NO) {
+			return nil;
+		}
 		
 		[self unpackThumbs];
 	}

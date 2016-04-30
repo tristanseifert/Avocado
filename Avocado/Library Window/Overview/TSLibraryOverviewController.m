@@ -39,4 +39,13 @@
 	window.styleMask = styleMask | NSFullSizeContentViewWindowMask;
 }
 
+#pragma mark UI Actions
+/**
+ * Opens the import dialog, that allows selection of a directory of files that
+ * shall be imported.
+ */
+- (IBAction) showImportDialog:(id) sender {
+	
+}
+
 @end
