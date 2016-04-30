@@ -29,4 +29,11 @@ typedef NS_ENUM(int16_t, TSLibraryImageType) {
  */
 @property (atomic) TSLibraryImageType fileTypeValue;
 
+/**
+ * Time interval since the reference date, indicating when this image was
+ * shot; however, the time component is set to 00:00:00.000 for easy sorting
+ * and uniquing.
+ */
+@property (atomic) NSTimeInterval dayShotValue;
+
 @end

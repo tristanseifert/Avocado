@@ -7,6 +7,7 @@ const struct TSLibraryImageAttributes TSLibraryImageAttributes = {
 	.dateImported = @"dateImported",
 	.dateModified = @"dateModified",
 	.dateShot = @"dateShot",
+	.dayShot = @"dayShot",
 	.fileType = @"fileType",
 	.fileUrl = @"fileUrl",
 	.metadata = @"metadata",
@@ -45,6 +46,11 @@ const struct TSLibraryImageRelationships TSLibraryImageRelationships = {
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 
+	if ([key isEqualToString:@"dayShotValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"dayShot"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 	if ([key isEqualToString:@"fileTypeValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"fileType"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -59,6 +65,26 @@ const struct TSLibraryImageRelationships TSLibraryImageRelationships = {
 @dynamic dateModified;
 
 @dynamic dateShot;
+
+@dynamic dayShot;
+
+- (double)dayShotValue {
+	NSNumber *result = [self dayShot];
+	return [result doubleValue];
+}
+
+- (void)setDayShotValue:(double)value_ {
+	[self setDayShot:@(value_)];
+}
+
+- (double)primitiveDayShotValue {
+	NSNumber *result = [self primitiveDayShot];
+	return [result doubleValue];
+}
+
+- (void)setPrimitiveDayShotValue:(double)value_ {
+	[self setPrimitiveDayShot:@(value_)];
+}
 
 @dynamic fileType;
 

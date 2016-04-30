@@ -7,6 +7,7 @@ extern const struct TSLibraryImageAttributes {
 	__unsafe_unretained NSString *dateImported;
 	__unsafe_unretained NSString *dateModified;
 	__unsafe_unretained NSString *dateShot;
+	__unsafe_unretained NSString *dayShot;
 	__unsafe_unretained NSString *fileType;
 	__unsafe_unretained NSString *fileUrl;
 	__unsafe_unretained NSString *metadata;
@@ -47,6 +48,14 @@ extern const struct TSLibraryImageRelationships {
 @property (nonatomic, strong) NSDate* dateShot;
 
 //- (BOOL)validateDateShot:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSNumber* dayShot;
+
+@property (atomic) double dayShotValue;
+- (double)dayShotValue;
+- (void)setDayShotValue:(double)value_;
+
+//- (BOOL)validateDayShot:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSNumber* fileType;
 
@@ -123,6 +132,12 @@ extern const struct TSLibraryImageRelationships {
 
 - (NSDate*)primitiveDateShot;
 - (void)setPrimitiveDateShot:(NSDate*)value;
+
+- (NSNumber*)primitiveDayShot;
+- (void)setPrimitiveDayShot:(NSNumber*)value;
+
+- (double)primitiveDayShotValue;
+- (void)setPrimitiveDayShotValue:(double)value_;
 
 - (NSNumber*)primitiveFileType;
 - (void)setPrimitiveFileType:(NSNumber*)value;
