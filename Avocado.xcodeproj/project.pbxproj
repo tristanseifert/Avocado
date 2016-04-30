@@ -11,7 +11,6 @@
 		6ABC2DAC1CD4357E006B959F /* TSLibraryAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DA11CD4357E006B959F /* TSLibraryAlbum.m */; };
 		6ABC2DAD1CD4357E006B959F /* TSLibraryAlbumCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DA31CD4357E006B959F /* TSLibraryAlbumCollection.m */; };
 		6ABC2DAE1CD4357E006B959F /* TSLibraryExportService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DA51CD4357E006B959F /* TSLibraryExportService.m */; };
-		6ABC2DAF1CD4357E006B959F /* TSLibraryImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DA71CD4357E006B959F /* TSLibraryImage.m */; };
 		6ABC2DB01CD4357E006B959F /* TSLibraryImageAdjustment.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DA91CD4357E006B959F /* TSLibraryImageAdjustment.m */; };
 		6ABC2DB11CD4357E006B959F /* TSLibraryTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DAB1CD4357E006B959F /* TSLibraryTag.m */; };
 		6ABC2DBE1CD43586006B959F /* _TSLibraryAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DB31CD43586006B959F /* _TSLibraryAlbum.m */; };
@@ -45,6 +44,7 @@
 		6AEC76781CD50E6E00870FAE /* TSImportPanelAccessory.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC76761CD50E6E00870FAE /* TSImportPanelAccessory.xib */; };
 		6AEC767B1CD516EF00870FAE /* TSLibraryOverviewLightTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC767A1CD516EF00870FAE /* TSLibraryOverviewLightTableController.m */; };
 		6AEC767E1CD5187D00870FAE /* TSLibraryLightTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC767D1CD5187D00870FAE /* TSLibraryLightTableCell.m */; };
+		6AEC76821CD548FC00870FAE /* TSLibraryLightTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC76811CD548FC00870FAE /* TSLibraryLightTableView.m */; };
 		90D8F3504CA87BC8DFD0DDE7 /* Pods_Avocado.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 819223217746015A3002C6D6 /* Pods_Avocado.framework */; };
 /* End PBXBuildFile section */
 
@@ -61,8 +61,6 @@
 		6ABC2DA31CD4357E006B959F /* TSLibraryAlbumCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryAlbumCollection.m; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryAlbumCollection.m"; sourceTree = "<group>"; };
 		6ABC2DA41CD4357E006B959F /* TSLibraryExportService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryExportService.h; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryExportService.h"; sourceTree = "<group>"; };
 		6ABC2DA51CD4357E006B959F /* TSLibraryExportService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryExportService.m; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryExportService.m"; sourceTree = "<group>"; };
-		6ABC2DA61CD4357E006B959F /* TSLibraryImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryImage.h; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImage.h"; sourceTree = "<group>"; };
-		6ABC2DA71CD4357E006B959F /* TSLibraryImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryImage.m; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImage.m"; sourceTree = "<group>"; };
 		6ABC2DA81CD4357E006B959F /* TSLibraryImageAdjustment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryImageAdjustment.h; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImageAdjustment.h"; sourceTree = "<group>"; };
 		6ABC2DA91CD4357E006B959F /* TSLibraryImageAdjustment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryImageAdjustment.m; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImageAdjustment.m"; sourceTree = "<group>"; };
 		6ABC2DAA1CD4357E006B959F /* TSLibraryTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryTag.h; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryTag.h"; sourceTree = "<group>"; };
@@ -130,6 +128,8 @@
 		6AEC767A1CD516EF00870FAE /* TSLibraryOverviewLightTableController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryOverviewLightTableController.m; path = "Library Window/Overview/TSLibraryOverviewLightTableController.m"; sourceTree = "<group>"; };
 		6AEC767C1CD5187D00870FAE /* TSLibraryLightTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryLightTableCell.h; path = "Library Window/Overview/TSLibraryLightTableCell.h"; sourceTree = "<group>"; };
 		6AEC767D1CD5187D00870FAE /* TSLibraryLightTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryLightTableCell.m; path = "Library Window/Overview/TSLibraryLightTableCell.m"; sourceTree = "<group>"; };
+		6AEC76801CD548FC00870FAE /* TSLibraryLightTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryLightTableView.h; path = "Library Window/Overview/TSLibraryLightTableView.h"; sourceTree = "<group>"; };
+		6AEC76811CD548FC00870FAE /* TSLibraryLightTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryLightTableView.m; path = "Library Window/Overview/TSLibraryLightTableView.m"; sourceTree = "<group>"; };
 		70A0E8562B68C925C7E5445C /* Pods-Avocado.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Avocado.release.xcconfig"; path = "Pods/Target Support Files/Pods-Avocado/Pods-Avocado.release.xcconfig"; sourceTree = "<group>"; };
 		819223217746015A3002C6D6 /* Pods_Avocado.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Avocado.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -261,8 +261,6 @@
 				6ABC2DA31CD4357E006B959F /* TSLibraryAlbumCollection.m */,
 				6ABC2DA41CD4357E006B959F /* TSLibraryExportService.h */,
 				6ABC2DA51CD4357E006B959F /* TSLibraryExportService.m */,
-				6ABC2DA61CD4357E006B959F /* TSLibraryImage.h */,
-				6ABC2DA71CD4357E006B959F /* TSLibraryImage.m */,
 				6ABC2DA81CD4357E006B959F /* TSLibraryImageAdjustment.h */,
 				6ABC2DA91CD4357E006B959F /* TSLibraryImageAdjustment.m */,
 				6ABC2DAA1CD4357E006B959F /* TSLibraryTag.h */,
@@ -354,8 +352,7 @@
 				6AEC35401CD443460033DE0A /* TSLibraryOverview.xib */,
 				6AEC76791CD516EE00870FAE /* TSLibraryOverviewLightTableController.h */,
 				6AEC767A1CD516EF00870FAE /* TSLibraryOverviewLightTableController.m */,
-				6AEC767C1CD5187D00870FAE /* TSLibraryLightTableCell.h */,
-				6AEC767D1CD5187D00870FAE /* TSLibraryLightTableCell.m */,
+				6AEC767F1CD548E300870FAE /* Image View */,
 			);
 			name = "Library Overview Controller";
 			path = Avocado;
@@ -394,6 +391,17 @@
 				6AEC766F1CD5098F00870FAE /* NSDate+AvocadoUtils.m */,
 			);
 			name = "Categories and Helpers";
+			sourceTree = "<group>";
+		};
+		6AEC767F1CD548E300870FAE /* Image View */ = {
+			isa = PBXGroup;
+			children = (
+				6AEC767C1CD5187D00870FAE /* TSLibraryLightTableCell.h */,
+				6AEC767D1CD5187D00870FAE /* TSLibraryLightTableCell.m */,
+				6AEC76801CD548FC00870FAE /* TSLibraryLightTableView.h */,
+				6AEC76811CD548FC00870FAE /* TSLibraryLightTableView.m */,
+			);
+			name = "Image View";
 			sourceTree = "<group>";
 		};
 		8A1D7E197716AC0277E58CE5 /* Pods */ = {
@@ -590,7 +598,7 @@
 				6AEC766C1CD4FF2A00870FAE /* TSImportController.m in Sources */,
 				6AEC35191CD43F000033DE0A /* TSCoreDataStoreIB.m in Sources */,
 				6AEC76701CD5098F00870FAE /* NSDate+AvocadoUtils.m in Sources */,
-				6ABC2DAF1CD4357E006B959F /* TSLibraryImage.m in Sources */,
+				6AEC76821CD548FC00870FAE /* TSLibraryLightTableView.m in Sources */,
 				6ABC2DAD1CD4357E006B959F /* TSLibraryAlbumCollection.m in Sources */,
 				6ABC2DAE1CD4357E006B959F /* TSLibraryExportService.m in Sources */,
 				6ABC2DC01CD43586006B959F /* _TSLibraryExportService.m in Sources */,

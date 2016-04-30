@@ -3,11 +3,12 @@
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
+        <plugIn identifier="com.apple.imagekit.ibplugin" version="10116"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="TSLibraryOverviewController">
             <connections>
-                <outlet property="lightTableView" destination="SWJ-v5-Dde" id="sCs-9H-p4q"/>
+                <outlet property="lightTableView" destination="FGR-cT-zSw" id="Uqz-E0-qVe"/>
                 <outlet property="view" destination="v8k-Ft-lOF" id="uIB-sI-xuA"/>
             </connections>
         </customObject>
@@ -21,17 +22,17 @@
                     <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
                     <subviews>
                         <customView id="XTv-50-Hvf" userLabel="Sidebar pls">
-                            <rect key="frame" x="0.0" y="0.0" width="250" height="600"/>
+                            <rect key="frame" x="0.0" y="0.0" width="210" height="600"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <subviews>
                                 <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="17" horizontalPageScroll="10" verticalLineScroll="17" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F3b-wo-Geo">
-                                    <rect key="frame" x="0.0" y="0.0" width="250" height="600"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="210" height="600"/>
                                     <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="kml-vz-MIW">
-                                        <rect key="frame" x="0.0" y="0.0" width="250" height="600"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="210" height="600"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="14" outlineTableColumn="3J2-cX-bl2" id="qPx-Wl-SFD">
-                                                <rect key="frame" x="0.0" y="0.0" width="250" height="0.0"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="210" height="600"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="0.0"/>
                                                 <color key="backgroundColor" name="_sourceListBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -69,7 +70,7 @@
                                                             </tableCellView>
                                                         </prototypeCellViews>
                                                     </tableColumn>
-                                                    <tableColumn width="128" minWidth="40" maxWidth="1000" id="eYK-5T-qXh">
+                                                    <tableColumn width="88" minWidth="40" maxWidth="1000" id="eYK-5T-qXh">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -83,7 +84,7 @@
                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                         <prototypeCellViews>
                                                             <tableCellView id="gdw-On-1uR">
-                                                                <rect key="frame" x="120" y="0.0" width="128" height="17"/>
+                                                                <rect key="frame" x="120" y="0.0" width="88" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
                                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IEH-aI-UDN">
@@ -116,7 +117,7 @@
                                     </scroller>
                                 </scrollView>
                                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="Ln8-PW-vRN">
-                                    <rect key="frame" x="0.0" y="0.0" width="250" height="24"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="210" height="24"/>
                                     <subviews>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wfu-fe-BWc">
                                             <rect key="frame" x="8" y="1" width="22" height="22"/>
@@ -158,27 +159,12 @@
                                 <constraint firstItem="F3b-wo-Geo" firstAttribute="top" secondItem="XTv-50-Hvf" secondAttribute="top" id="yfg-2A-FMv"/>
                             </constraints>
                         </customView>
-                        <scrollView fixedFrame="YES" borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="tQf-n1-6md">
-                            <rect key="frame" x="260" y="0.0" width="540" height="600"/>
+                        <ikImageBrowserView autoresizesSubviews="NO" fixedFrame="YES" zoomValue="0.32943457365036011" id="FGR-cT-zSw" customClass="TSLibraryLightTableView">
+                            <rect key="frame" x="220" y="0.0" width="580" height="600"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <clipView key="contentView" id="7s5-vH-fvB">
-                                <rect key="frame" x="0.0" y="0.0" width="540" height="600"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <subviews>
-                                    <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SWJ-v5-Dde" customClass="CNGridView">
-                                        <rect key="frame" x="-174" y="-125" width="13" height="111"/>
-                                    </view>
-                                </subviews>
-                            </clipView>
-                            <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="00T-ns-MDd">
-                                <rect key="frame" x="0.0" y="584" width="540" height="16"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                            </scroller>
-                            <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="sUZ-kh-sre">
-                                <rect key="frame" x="525" y="0.0" width="15" height="600"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                            </scroller>
-                        </scrollView>
+                            <autoresizingMask key="contentResizingMask" heightSizable="YES"/>
+                            <size key="cellSize" width="100" height="100"/>
+                        </ikImageBrowserView>
                     </subviews>
                     <holdingPriorities>
                         <real value="250"/>

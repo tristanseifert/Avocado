@@ -11,14 +11,10 @@
 
 #import <Foundation/Foundation.h>
 
-#import <CNGridView/CNGridView.h>
+#import <Quartz/Quartz.h>
 
-@interface TSLibraryOverviewLightTableController : NSObject <CNGridViewDataSource, CNGridViewDelegate>
+@interface TSLibraryOverviewLightTableController : NSObject
 
-- (instancetype) initWithGridView:(CNGridView *) view;
-
-- (void) recalculateItemSize;
-
-@property (nonatomic) NSUInteger cellsPerRow;
+- (instancetype) initWithGridView:(IKImageBrowserView *) view;
 
 @end

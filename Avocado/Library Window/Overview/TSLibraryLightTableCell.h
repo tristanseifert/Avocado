@@ -8,10 +8,10 @@
 //  Copyright © 2016 Tristan Seifert. All rights reserved.
 //
 
-#import <CNGridView/CNGridView.h>
+#import <Quartz/Quartz.h>
 
 @class TSLibraryImage;
-@interface TSLibraryLightTableCell : CNGridViewItem
+@interface TSLibraryLightTableCell : IKImageBrowserCell
 
 @property (nonatomic) TSLibraryImage* image;
 

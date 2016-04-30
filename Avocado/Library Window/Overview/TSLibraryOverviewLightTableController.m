@@ -6,7 +6,6 @@
 //  Copyright © 2016 Tristan Seifert. All rights reserved.
 //
 
-#import <CNGridView/CNGridViewItemLayout.h>
 
 #import "TSLibraryOverviewLightTableController.h"
 
@@ -14,11 +13,7 @@
 
 @interface TSLibraryOverviewLightTableController ()
 
-@property (nonatomic) CNGridView *gridView;
-
-@property (strong) CNGridViewItemLayout *defaultLayout;
-@property (strong) CNGridViewItemLayout *hoverLayout;
-@property (strong) CNGridViewItemLayout *selectionLayout;
+@property (nonatomic) IKImageBrowserView *gridView;
 
 @end
 
@@ -27,27 +22,13 @@
 /**
  * Initialises the controller.
  */
-- (instancetype) initWithGridView:(CNGridView *) view {
+- (instancetype) initWithGridView:(IKImageBrowserView *) view {
 	if(self = [super init]) {
 		self.gridView = view;
 		
 		// we're both its delegate and its data source
 		self.gridView.dataSource = self;
 		self.gridView.delegate = self;
-		
-		// set up the layouts for default/selection/hover
-		self.defaultLayout = [CNGridViewItemLayout defaultLayout];
-		self.hoverLayout = [CNGridViewItemLayout defaultLayout];
-		self.selectionLayout = [CNGridViewItemLayout defaultLayout];
-		
-		self.hoverLayout.backgroundColor = [[NSColor grayColor] colorWithAlphaComponent:0.42];
-		self.selectionLayout.backgroundColor = [NSColor colorWithCalibratedRed:0.542 green:0.699 blue:0.807 alpha:0.420];
-		
-		// set up some appearance on the grid view
-		self.gridView.scrollElasticity = YES;
-		
-		// set up default values
-		self.cellsPerRow = 3;
 	}
 	
 	return self;
@@ -56,55 +37,45 @@
 
 #pragma mark Data Source
 /**
- * Returns the number of items that are in the given section.
+ * Returns the number of images that are in the image browser.
  */
-- (NSUInteger) gridView:(CNGridView *) gridView numberOfItemsInSection:(NSInteger) section {
-	return 27;
+- (NSUInteger) numberOfItemsInImageBrowser:(IKImageBrowserView *) aBrowser {
+	return 28;
 }
 
 /**
- * Returns a single item, given an index, section pair.
+ * Returns an item for the given index.
  */
-- (CNGridViewItem *) gridView:(CNGridView *) gridView itemAtIndex:(NSInteger) index
-					inSection:(NSInteger) section {
-	// attempt to dequeue a cell; if not possible, allocate one
-	static NSString *reuseIdentifier = @"TSLibraryOverviewLightTablecell";
+- (id /*IKImageBrowserItem*/) imageBrowser:(IKImageBrowserView *) aBrowser itemAtIndex:(NSUInteger)index {
 	
-	TSLibraryLightTableCell *cell = (TSLibraryLightTableCell *) [gridView dequeueReusableItemWithIdentifier:reuseIdentifier];
-	if (cell == nil) {
-		cell = [[TSLibraryLightTableCell alloc] initWithLayout:self.defaultLayout
-											   reuseIdentifier:reuseIdentifier];
-	}
-	
-	cell.hoverLayout = self.hoverLayout;
-	cell.selectionLayout = self.selectionLayout;
-	
-	// set some data on it
-	cell.itemTitle = @"cell lives here pls";
-	cell.itemImage = [NSImage imageNamed:NSImageNameCaution];
-	
-	return cell;
+}
+
+/**
+ * The images at the given index set should be moved to the destination index.
+ *
+ * @note drag re-ordering is ignored, unless a single collection is currently
+ * selected.
+ */
+- (BOOL) imageBrowser:(IKImageBrowserView *) aBrowser
+   moveItemsAtIndexes: (NSIndexSet *) indexes
+			  toIndex:(NSUInteger) destinationIndex {
+	return NO;
 }
 
 #pragma mark Delegate
 /**
- * An item was double-clicked; open the single image view.
+ * An image cell has been right-clicked.
  */
-- (void) gridView:(CNGridView *) gridView didDoubleClickItemAtIndex:(NSUInteger) index
-		inSection:(NSUInteger) section {
+- (void) imageBrowser:(IKImageBrowserView *) aBrowser cellWasRightClickedAtIndex:(NSUInteger) index
+			withEvent:(NSEvent *) event {
 	
 }
 
-#pragma mark Sizing
 /**
- * Recalculates the size of the individual grid cells.
+ * A cell was double-clicked; go to the edit view.
  */
-- (void) recalculateItemSize {
-	CGFloat cellWidth = self.gridView.bounds.size.width / ((CGFloat) self.cellsPerRow);
-	CGFloat cellHeight = cellWidth * 0.667;
+- (void) imageBrowser:(IKImageBrowserView *) aBrowser cellWasDoubleClickedAtIndex:(NSUInteger) index {
 	
-	self.gridView.itemSize = NSMakeSize(cellWidth, cellHeight);
-	[self.gridView reloadData];
 }
 
 @end

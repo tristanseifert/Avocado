@@ -36,4 +36,13 @@ typedef NS_ENUM(int16_t, TSLibraryImageType) {
  */
 @property (atomic) NSTimeInterval dayShotValue;
 
+
+
+/**
+ * An NSImage representation of this image's thumbnail. This will load the
+ * image the first time it's requested, then cache it until the object
+ * becomes a fault again.
+ */
+@property (nonatomic, readonly) NSImage *thumbnail;
+
 @end
