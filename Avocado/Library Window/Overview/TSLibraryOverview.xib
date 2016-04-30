@@ -7,6 +7,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="TSLibraryOverviewController">
             <connections>
+                <outlet property="lightTableView" destination="SWJ-v5-Dde" id="sCs-9H-p4q"/>
                 <outlet property="view" destination="v8k-Ft-lOF" id="uIB-sI-xuA"/>
             </connections>
         </customObject>
@@ -183,6 +184,9 @@
                         <real value="250"/>
                         <real value="250"/>
                     </holdingPriorities>
+                    <connections>
+                        <outlet property="delegate" destination="-2" id="lCz-Sw-LPC"/>
+                    </connections>
                 </splitView>
             </subviews>
             <constraints>

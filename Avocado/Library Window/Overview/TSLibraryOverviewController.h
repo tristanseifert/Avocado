@@ -14,6 +14,9 @@
 
 #import "TSMainLibraryContentViewController.h"
 
-@interface TSLibraryOverviewController : TSMainLibraryContentViewController
+@class CNGridView;
+@interface TSLibraryOverviewController : TSMainLibraryContentViewController <NSSplitViewDelegate>
+
+@property (nonatomic) IBOutlet CNGridView *lightTableView;
 
 @end

@@ -40,6 +40,11 @@
 		6AEC76681CD4773700870FAE /* liblcms2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEC76671CD4773700870FAE /* liblcms2.a */; };
 		6AEC766C1CD4FF2A00870FAE /* TSImportController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC766B1CD4FF2A00870FAE /* TSImportController.m */; };
 		6AEC76701CD5098F00870FAE /* NSDate+AvocadoUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC766F1CD5098F00870FAE /* NSDate+AvocadoUtils.m */; };
+		6AEC76731CD50DDD00870FAE /* TSImportUIController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC76721CD50DDD00870FAE /* TSImportUIController.m */; };
+		6AEC76771CD50E6E00870FAE /* TSImportOpenPanelAccessory.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC76751CD50E6E00870FAE /* TSImportOpenPanelAccessory.m */; };
+		6AEC76781CD50E6E00870FAE /* TSImportPanelAccessory.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC76761CD50E6E00870FAE /* TSImportPanelAccessory.xib */; };
+		6AEC767B1CD516EF00870FAE /* TSLibraryOverviewLightTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC767A1CD516EF00870FAE /* TSLibraryOverviewLightTableController.m */; };
+		6AEC767E1CD5187D00870FAE /* TSLibraryLightTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC767D1CD5187D00870FAE /* TSLibraryLightTableCell.m */; };
 		90D8F3504CA87BC8DFD0DDE7 /* Pods_Avocado.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 819223217746015A3002C6D6 /* Pods_Avocado.framework */; };
 /* End PBXBuildFile section */
 
@@ -116,6 +121,15 @@
 		6AEC766B1CD4FF2A00870FAE /* TSImportController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSImportController.m; path = Importing/TSImportController.m; sourceTree = "<group>"; };
 		6AEC766E1CD5098F00870FAE /* NSDate+AvocadoUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDate+AvocadoUtils.h"; path = "Avocado/Helpers/NSDate+AvocadoUtils.h"; sourceTree = "<group>"; };
 		6AEC766F1CD5098F00870FAE /* NSDate+AvocadoUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDate+AvocadoUtils.m"; path = "Avocado/Helpers/NSDate+AvocadoUtils.m"; sourceTree = "<group>"; };
+		6AEC76711CD50DDD00870FAE /* TSImportUIController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSImportUIController.h; path = Importing/TSImportUIController.h; sourceTree = "<group>"; };
+		6AEC76721CD50DDD00870FAE /* TSImportUIController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSImportUIController.m; path = Importing/TSImportUIController.m; sourceTree = "<group>"; };
+		6AEC76741CD50E6E00870FAE /* TSImportOpenPanelAccessory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSImportOpenPanelAccessory.h; path = Importing/TSImportOpenPanelAccessory.h; sourceTree = "<group>"; };
+		6AEC76751CD50E6E00870FAE /* TSImportOpenPanelAccessory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSImportOpenPanelAccessory.m; path = Importing/TSImportOpenPanelAccessory.m; sourceTree = "<group>"; };
+		6AEC76761CD50E6E00870FAE /* TSImportPanelAccessory.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSImportPanelAccessory.xib; path = Importing/TSImportPanelAccessory.xib; sourceTree = "<group>"; };
+		6AEC76791CD516EE00870FAE /* TSLibraryOverviewLightTableController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryOverviewLightTableController.h; path = "Library Window/Overview/TSLibraryOverviewLightTableController.h"; sourceTree = "<group>"; };
+		6AEC767A1CD516EF00870FAE /* TSLibraryOverviewLightTableController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryOverviewLightTableController.m; path = "Library Window/Overview/TSLibraryOverviewLightTableController.m"; sourceTree = "<group>"; };
+		6AEC767C1CD5187D00870FAE /* TSLibraryLightTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryLightTableCell.h; path = "Library Window/Overview/TSLibraryLightTableCell.h"; sourceTree = "<group>"; };
+		6AEC767D1CD5187D00870FAE /* TSLibraryLightTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryLightTableCell.m; path = "Library Window/Overview/TSLibraryLightTableCell.m"; sourceTree = "<group>"; };
 		70A0E8562B68C925C7E5445C /* Pods-Avocado.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Avocado.release.xcconfig"; path = "Pods/Target Support Files/Pods-Avocado/Pods-Avocado.release.xcconfig"; sourceTree = "<group>"; };
 		819223217746015A3002C6D6 /* Pods_Avocado.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Avocado.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -338,6 +352,10 @@
 				6AEC353E1CD443460033DE0A /* TSLibraryOverviewController.h */,
 				6AEC353F1CD443460033DE0A /* TSLibraryOverviewController.m */,
 				6AEC35401CD443460033DE0A /* TSLibraryOverview.xib */,
+				6AEC76791CD516EE00870FAE /* TSLibraryOverviewLightTableController.h */,
+				6AEC767A1CD516EF00870FAE /* TSLibraryOverviewLightTableController.m */,
+				6AEC767C1CD5187D00870FAE /* TSLibraryLightTableCell.h */,
+				6AEC767D1CD5187D00870FAE /* TSLibraryLightTableCell.m */,
 			);
 			name = "Library Overview Controller";
 			path = Avocado;
@@ -359,6 +377,11 @@
 			children = (
 				6AEC766A1CD4FF2A00870FAE /* TSImportController.h */,
 				6AEC766B1CD4FF2A00870FAE /* TSImportController.m */,
+				6AEC76711CD50DDD00870FAE /* TSImportUIController.h */,
+				6AEC76721CD50DDD00870FAE /* TSImportUIController.m */,
+				6AEC76741CD50E6E00870FAE /* TSImportOpenPanelAccessory.h */,
+				6AEC76751CD50E6E00870FAE /* TSImportOpenPanelAccessory.m */,
+				6AEC76761CD50E6E00870FAE /* TSImportPanelAccessory.xib */,
 			);
 			name = Importing;
 			path = Avocado;
@@ -458,6 +481,7 @@
 				6AE87BD11CD275C90053CD9D /* Assets.xcassets in Resources */,
 				6AEC35481CD443B90033DE0A /* TSLibraryDetail.xib in Resources */,
 				6AE87BD41CD275C90053CD9D /* MainMenu.xib in Resources */,
+				6AEC76781CD50E6E00870FAE /* TSImportPanelAccessory.xib in Resources */,
 				6AEC35131CD43E070033DE0A /* TSMainLibraryWindow.xib in Resources */,
 				6AEC35421CD443460033DE0A /* TSLibraryOverview.xib in Resources */,
 			);
@@ -552,14 +576,17 @@
 				6AEC350C1CD437170033DE0A /* TSCoreDataStore.m in Sources */,
 				6ABC2DB11CD4357E006B959F /* TSLibraryTag.m in Sources */,
 				6ABC2DBE1CD43586006B959F /* _TSLibraryAlbum.m in Sources */,
+				6AEC76731CD50DDD00870FAE /* TSImportUIController.m in Sources */,
 				6AE87C211CD3D5460053CD9D /* TSRawImage.m in Sources */,
 				6AE87BEC1CD276E70053CD9D /* Avocado.xcdatamodeld in Sources */,
 				6ABC2DC31CD43586006B959F /* _TSLibraryTag.m in Sources */,
 				6ABC2DAC1CD4357E006B959F /* TSLibraryAlbum.m in Sources */,
+				6AEC76771CD50E6E00870FAE /* TSImportOpenPanelAccessory.m in Sources */,
 				6AEC35471CD443B90033DE0A /* TSLibraryDetailController.m in Sources */,
 				6ABC2D9C1CD42C4A006B959F /* _TSLibraryImage.m in Sources */,
 				6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */,
 				6AEC35411CD443460033DE0A /* TSLibraryOverviewController.m in Sources */,
+				6AEC767B1CD516EF00870FAE /* TSLibraryOverviewLightTableController.m in Sources */,
 				6AEC766C1CD4FF2A00870FAE /* TSImportController.m in Sources */,
 				6AEC35191CD43F000033DE0A /* TSCoreDataStoreIB.m in Sources */,
 				6AEC76701CD5098F00870FAE /* NSDate+AvocadoUtils.m in Sources */,
@@ -567,6 +594,7 @@
 				6ABC2DAD1CD4357E006B959F /* TSLibraryAlbumCollection.m in Sources */,
 				6ABC2DAE1CD4357E006B959F /* TSLibraryExportService.m in Sources */,
 				6ABC2DC01CD43586006B959F /* _TSLibraryExportService.m in Sources */,
+				6AEC767E1CD5187D00870FAE /* TSLibraryLightTableCell.m in Sources */,
 				6ABC2DBF1CD43586006B959F /* _TSLibraryAlbumCollection.m in Sources */,
 				6ABC2DC21CD43586006B959F /* _TSLibraryImageAdjustment.m in Sources */,
 				6ABC2DB01CD4357E006B959F /* TSLibraryImageAdjustment.m in Sources */,
