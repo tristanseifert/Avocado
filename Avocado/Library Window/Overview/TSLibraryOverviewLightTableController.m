@@ -144,7 +144,7 @@
 	dispatch_async(dispatch_get_main_queue(), ^{
 //		DDLogVerbose(@"did the import thing: %@", n);
 		
-		[self refetchImages];
+//		[self refetchImages];
 	});
 }
 
@@ -161,7 +161,10 @@
 	
 	layout.itemSize = NSMakeSize(cellWidth, cellHeight);
 	
-	DDLogInfo(@"New item size: %@", NSStringFromSize(layout.itemSize));
+//	DDLogInfo(@"New item size: %@", NSStringFromSize(layout.itemSize));
+	
+	// force the thumbnails to be re-created
+	[[NSNotificationCenter defaultCenter] postNotificationName:TSLibraryLightTableInvalidateThumbsNotificationName object:nil];
 }
 
 /**
@@ -169,7 +172,7 @@
  * size.
  */
 - (void) scrollViewSizeChanged:(NSNotification *) n {
-	DDLogVerbose(@"Size of scroll view changed: %@", NSStringFromRect(self.gridView.enclosingScrollView.frame));
+//	DDLogVerbose(@"Size of scroll view changed: %@", NSStringFromRect(self.gridView.enclosingScrollView.frame));
 	
 	[self resizeCells];
 }

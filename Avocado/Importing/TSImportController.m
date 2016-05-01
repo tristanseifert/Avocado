@@ -118,6 +118,9 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		image.dateShot = raw.timestamp;
 		image.imageSize = raw.size;
 		
+		// save the thumb UUID
+		image.thumbUUID = [[NSUUID new].UUIDString stringByAppendingString:@"_raw"];
+		
 		// post notification
 		NSDictionary *info = @{
 			TSFileImportedNotificationUrlKey: actualImageUrl,
@@ -167,6 +170,8 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		image.dateModified = image.dateImported;
 		
 		image.imageSize = [[TSImageIOHelper sharedInstance] sizeOfImageAtUrl:actualImageUrl];
+		
+		image.thumbUUID = [[NSUUID new].UUIDString stringByAppendingString:@"_compressed"];
 		
 		// extract a few keys from the metadata dictionary
 		NSDictionary *exif = meta[TSImageMetadataExifDictionary];

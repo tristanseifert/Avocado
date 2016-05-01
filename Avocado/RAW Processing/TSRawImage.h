@@ -56,4 +56,7 @@ extern NSString *const TSRawImageErrorIsFatalKey;
 /// size of the final image
 @property (nonatomic, readonly, getter=getRawSize) NSSize size;
 
+/// rotation of the image
+@property (nonatomic, readonly, getter=getImageRotation) NSInteger rotation;
+
 @end

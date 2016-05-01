@@ -1,6 +1,7 @@
 #import "TSLibraryImage.h"
 #import "TSRawImage.h"
 #import "NSDate+AvocadoUtils.h"
+#import "TSImageIOHelper.h"
 
 #import <ImageIO/ImageIO.h>
 #import <Quartz/Quartz.h>
@@ -11,17 +12,21 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 
 @interface TSLibraryImage ()
 
-// internal properties
-@property (nonatomic) NSImage *thumbImageCache;
+/// cached LibRAW handle for this file. This may be released after a while.
+@property (nonatomic, readonly) TSRawImage *libRawHandle;
+/// cached ImageIO metadata
+@property (nonatomic, readonly) NSDictionary *imageIOMetadata;
 
+- (void) commonInit;
 - (void) addKVO;
-- (void) extractThumbImageIO;
 
 @end
 
 @implementation TSLibraryImage
 @dynamic metadata, fileUrl, fileTypeValue, dayShotValue;
-@synthesize thumbImageCache;
+@synthesize libRawHandle = _libRawHandleCache;
+@synthesize rotation = _imageRotationFromMetadata;
+@synthesize imageIOMetadata = _imageIOMetadataCache;
 
 #pragma mark Lifecycle
 /**
@@ -30,7 +35,7 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 - (void) awakeFromFetch {
 	[super awakeFromFetch];
 	
-	[self addKVO];
+	[self commonInit];
 }
 
 /**
@@ -39,7 +44,7 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 - (void) awakeFromInsert {
 	[super awakeFromInsert];
 	
-	[self addKVO];
+	[self commonInit];
 }
 
 /**
@@ -53,8 +58,20 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 		[self removeObserver:self forKeyPath:@"dateShots"];
 	} @catch (NSException __unused *exception) { }
 	
-	// clear thumb cache
-	self.thumbImageCache = nil;
+	// clear caches
+	_libRawHandleCache = nil;
+	_imageRotationFromMetadata = TSLibraryImageRotationUnknown;
+}
+
+/**
+ * Common initialization that's performed when the object is fetched or
+ * inserted from a store.
+ */
+- (void) commonInit {
+	[self addKVO];
+	
+	// clear caches
+	_imageRotationFromMetadata = TSLibraryImageRotationUnknown;
 }
 
 #pragma mark KVO
@@ -80,101 +97,6 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 	}
 }
 
-#pragma mark Thumbnail
-/**
- * Getter for the thumbnail property. Causes the thumbnail to be loaded from
- * disk if required.
- */
-- (NSImage *) thumbnail {
-	if(self.thumbImageCache == nil) {
-		// is it a RAW image?
-		if(self.fileTypeValue == TSLibraryImageRaw) {
-			TSRawImage *raw = nil;
-			NSError *err = nil;
-			
-			// load the image
-			raw = [[TSRawImage alloc] initWithContentsOfUrl:self.fileUrl
-													  error:&err];
-			
-			if(err) {
-				DDLogError(@"Couldn't open %@: %@", self.fileUrl, err);
-				self.thumbImageCache = [NSImage imageNamed:NSImageNameCaution];
-				
-				return self.thumbImageCache;
-			}
-			
-			// extract thumbnail
-			if(raw.thumbnail != nil) {
-				self.thumbImageCache = raw.thumbnail;
-			} else {
-				DDLogError(@"No thumbnail in %@; do something useful here", self.fileUrl);
-				self.thumbImageCache = [NSImage imageNamed:NSImageNameMultipleDocuments];
-			}
-		} else if(self.fileTypeValue == TSLibraryImageCompressed) {
-			// use ImageIO
-			[self extractThumbImageIO];
-		}
-	}
-	
-	// return the cache
-	return self.thumbImageCache;
-}
-
-/**
- * Extracts any embedded thumbnails from the compressed image file, if they
- * exist; if not, ImageIO will create one in memory.
- */
-- (void) extractThumbImageIO {
-	CGImageRef        thumbImage = NULL;
-	CGImageSourceRef  imgSource;
-	CFDictionaryRef   thumbOpts = NULL;
-	
-	CFStringRef       myKeys[3];
-	CFTypeRef         myValues[3];
-	
-	CFNumberRef       thumbnailSize;
- 
-	// Create an image source from NSData; no options.
-	imgSource = CGImageSourceCreateWithURL((__bridge CFURLRef) self.fileUrl, NULL);
-	
-	// Make sure the image source exists before continuing.
-	if (imgSource == NULL){
-		DDLogError(@"Could not create image source for %@", self.fileUrl);
-		return;
-	}
- 
-	// Set up the thumbnail options.
-	myKeys[0] = kCGImageSourceCreateThumbnailWithTransform;
-	myValues[0] = (CFTypeRef) kCFBooleanTrue;
-	myKeys[1] = kCGImageSourceCreateThumbnailFromImageIfAbsent;
-	myValues[1] = (CFTypeRef) kCFBooleanTrue;
-
-//	myKeys[2] = kCGImageSourceThumbnailMaxPixelSize;
-//	myValues[2] = (CFTypeRef) CFNumberCreate(NULL, kCFNumberIntType, &imageSize);
- 
-	thumbOpts = CFDictionaryCreate(NULL, (const void **) myKeys,
-								   (const void **) myValues, 1,
-								   &kCFTypeDictionaryKeyCallBacks,
-								   & kCFTypeDictionaryValueCallBacks);
- 
-	// Create the thumbnail image using the specified options.
-	thumbImage = CGImageSourceCreateThumbnailAtIndex(imgSource, 0, thumbOpts);
-	
-	// release options and image source
-//	CFRelease(thumbnailSize);
-	CFRelease(thumbOpts);
-	CFRelease(imgSource);
- 
-	// Make sure the thumbnail image exists before continuing.
-	if(thumbImage == NULL){
-		DDLogError(@"Could not create thumbnail image for %@", self.fileUrl);
-		return;
-	}
-	
-	// convert thumb image
-	self.thumbImageCache = [[NSImage alloc] initWithCGImage:thumbImage size:NSZeroSize];
-}
-
 #pragma mark Properties
 /**
  * Converts the size, stored as a string, to an NSSize.
@@ -192,6 +114,115 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 
 + (NSSet *) keyPathsForValuesAffectingImageSize {
 	return [NSSet setWithObject:@"pvtImageSize"];
+}
+
+/**
+ * Returns the rotation angle.
+ */
+- (TSLibraryImageRotation) rotation {
+	if(_imageRotationFromMetadata == TSLibraryImageRotationUnknown) {
+		// if it's a RAW file, consult LibRaw
+		if(self.fileTypeValue == TSLibraryImageRaw) {
+			// no rotation
+			if(self.libRawHandle.rotation == 0)
+				_imageRotationFromMetadata = TSLibraryImageNoRotation;
+			// 180° rotation
+			else if(self.libRawHandle.rotation == 180)
+				_imageRotationFromMetadata = TSLibraryImage180Degrees;
+			// 90° clockwise rotation
+			else if(self.libRawHandle.rotation == 90)
+				_imageRotationFromMetadata = TSLibraryImage90DegreesCW;
+			// 90° counterclockwise rotation
+			else if(self.libRawHandle.rotation == -90)
+				_imageRotationFromMetadata = TSLibraryImage90DegreesCCW;
+		}
+		// otherwise, query ImageIO
+		else {
+			// get the rotation key
+			NSNumber *rotation = self.imageIOMetadata[TSImageMetadataOrientation];
+			
+			if(rotation.integerValue == 3) {
+				_imageRotationFromMetadata = TSLibraryImage180Degrees;
+			} else if(rotation.integerValue == 6) {
+				_imageRotationFromMetadata = TSLibraryImage90DegreesCW;
+			} else if(rotation.integerValue == 5 || rotation.integerValue == 8) {
+				_imageRotationFromMetadata = TSLibraryImage90DegreesCCW;
+			} else {
+				// unknown (or no rotation)
+				_imageRotationFromMetadata = TSLibraryImageNoRotation;
+			}
+			
+//			DDLogVerbose(@"Determined rotation %lu for %@", rotation.integerValue, self.fileUrl);
+		}
+	}
+	
+	// return the cached rotation
+	return _imageRotationFromMetadata;
+}
+
++ (NSSet *) keyPathsForValuesAffectingRotation {
+	return [NSSet setWithObjects:@"fileUrl", @"metadata", nil];
+}
+
+/**
+ * Returns the rotated image size.
+ */
+- (NSSize) rotatedImageSize {
+	// get the size
+	NSSize pixelSize = self.imageSize;
+	
+	// if rotation is either 90° or -90°, flip the dimensions
+	if(self.rotation == TSLibraryImage90DegreesCW || self.rotation == TSLibraryImage90DegreesCCW) {
+		pixelSize = (NSSize) {
+			.width = pixelSize.height,
+			.height = pixelSize.width
+		};
+	}
+	
+	// done
+	return pixelSize;
+}
+
++ (NSSet *) keyPathsForValuesAffectingRotatedImageSize {
+	return [NSSet setWithObjects:@"rotationAngle", @"imageSize", nil];
+}
+
+#pragma mark Caches
+/**
+ * Gets the LibRAW handle.
+ */
+- (TSRawImage *) libRawHandle {
+	if(_libRawHandleCache == nil) {
+		TSRawImage *raw = nil;
+		NSError *err = nil;
+		
+		// load the image
+		raw = [[TSRawImage alloc] initWithContentsOfUrl:self.fileUrl
+												  error:&err];
+		
+		if(err) {
+			DDLogError(@"Couldn't get RAW handle for %@: %@", self.fileUrl, err);
+			return nil;
+		}
+		
+		// otherwise, store the handle
+		_libRawHandleCache = raw;
+	}
+	
+	return _libRawHandleCache;
+}
+
+/**
+ * Gets ImageIO data.
+ */
+- (NSDictionary *) imageIOMetadata {
+	// read metadata from file, if needed
+	if(_imageIOMetadataCache == nil) {
+		_imageIOMetadataCache = [[TSImageIOHelper sharedInstance] metadataForImageAtUrl:self.fileUrl];
+	}
+	
+	// return our internal cache
+	return _imageIOMetadataCache;
 }
 
 @end

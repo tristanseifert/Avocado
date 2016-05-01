@@ -10,11 +10,12 @@
 
 #import <Quartz/Quartz.h>
 
+extern NSString* _Nonnull const TSLibraryLightTableInvalidateThumbsNotificationName;
+
 @class TSLibraryImage;
 @interface TSLibraryLightTableCell : NSCollectionViewItem
 
 @property (nullable, strong) TSLibraryImage *representedObject;
-
 @property (nonatomic) NSUInteger imageSequence;
 
 - (void) forceRelayout;

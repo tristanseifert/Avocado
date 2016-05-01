@@ -14,6 +14,7 @@
 		6A5C615F1CD67C5B00E3C3C9 /* TSImageIOHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A5C615E1CD67C5B00E3C3C9 /* TSImageIOHelper.m */; };
 		6A75D1351CD5C10D00AC7CFF /* liblcms2.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A75D1341CD5C10D00AC7CFF /* liblcms2.2.dylib */; };
 		6A75D1361CD5C11B00AC7CFF /* liblcms2.2.dylib in Embed dylibs and frameworks */ = {isa = PBXBuildFile; fileRef = 6A75D1341CD5C10D00AC7CFF /* liblcms2.2.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		6A7EC3CB1CD685AF007E91E8 /* TSThumbCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7EC3CA1CD685AF007E91E8 /* TSThumbCache.m */; };
 		6ABC2D9C1CD42C4A006B959F /* _TSLibraryImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2D9B1CD42C4A006B959F /* _TSLibraryImage.m */; };
 		6ABC2DAC1CD4357E006B959F /* TSLibraryAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DA11CD4357E006B959F /* TSLibraryAlbum.m */; };
 		6ABC2DAD1CD4357E006B959F /* TSLibraryAlbumCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DA31CD4357E006B959F /* TSLibraryAlbumCollection.m */; };
@@ -75,6 +76,8 @@
 		6A5C615D1CD67C5B00E3C3C9 /* TSImageIOHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSImageIOHelper.h; path = Avocado/Helpers/TSImageIOHelper.h; sourceTree = "<group>"; };
 		6A5C615E1CD67C5B00E3C3C9 /* TSImageIOHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSImageIOHelper.m; path = Avocado/Helpers/TSImageIOHelper.m; sourceTree = "<group>"; };
 		6A75D1341CD5C10D00AC7CFF /* liblcms2.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = liblcms2.2.dylib; path = "Dependencies/lcms2-2.7/src/.libs/liblcms2.2.dylib"; sourceTree = "<group>"; };
+		6A7EC3C91CD685AF007E91E8 /* TSThumbCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSThumbCache.h; path = "Avocado/Thumb Handling/TSThumbCache.h"; sourceTree = "<group>"; };
+		6A7EC3CA1CD685AF007E91E8 /* TSThumbCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSThumbCache.m; path = "Avocado/Thumb Handling/TSThumbCache.m"; sourceTree = "<group>"; };
 		6ABC2D991CD42C30006B959F /* TSHumanModels.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TSHumanModels.h; path = "Avocado/CoreData/Managed Object Subclasses/TSHumanModels.h"; sourceTree = "<group>"; };
 		6ABC2D9A1CD42C4A006B959F /* _TSLibraryImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _TSLibraryImage.h; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImage.h"; sourceTree = "<group>"; };
 		6ABC2D9B1CD42C4A006B959F /* _TSLibraryImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryImage.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImage.m"; sourceTree = "<group>"; };
@@ -171,6 +174,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6A7EC3C81CD68595007E91E8 /* Thumb Handling */ = {
+			isa = PBXGroup;
+			children = (
+				6A7EC3C91CD685AF007E91E8 /* TSThumbCache.h */,
+				6A7EC3CA1CD685AF007E91E8 /* TSThumbCache.m */,
+			);
+			name = "Thumb Handling";
+			sourceTree = "<group>";
+		};
 		6AE87BBB1CD275C90053CD9D = {
 			isa = PBXGroup;
 			children = (
@@ -351,6 +363,7 @@
 		6AEC350E1CD43DCA0033DE0A /* Avocado App */ = {
 			isa = PBXGroup;
 			children = (
+				6A7EC3C81CD68595007E91E8 /* Thumb Handling */,
 				6AEC766D1CD5097900870FAE /* Categories and Helpers */,
 				6AE87BDC1CD276070053CD9D /* CoreData */,
 				6AEC35431CD443A50033DE0A /* Library Detail Controller */,
@@ -607,6 +620,7 @@
 				6AEC35121CD43E070033DE0A /* TSMainLibraryWindowController.m in Sources */,
 				6AEC765D1CD4679700870FAE /* TSMainLibraryContentViewController.m in Sources */,
 				6AEC350C1CD437170033DE0A /* TSCoreDataStore.m in Sources */,
+				6A7EC3CB1CD685AF007E91E8 /* TSThumbCache.m in Sources */,
 				6ABC2DB11CD4357E006B959F /* TSLibraryTag.m in Sources */,
 				6ABC2DBE1CD43586006B959F /* _TSLibraryAlbum.m in Sources */,
 				6AEC76731CD50DDD00870FAE /* TSImportUIController.m in Sources */,

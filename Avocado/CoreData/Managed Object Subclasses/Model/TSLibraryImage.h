@@ -12,6 +12,18 @@ typedef NS_ENUM(int16_t, TSLibraryImageType) {
 	TSLibraryImageRaw = 0x0002,
 };
 
+/**
+ * Various rotation possibilities for the image.
+ */
+typedef NS_ENUM(NSUInteger, TSLibraryImageRotation) {
+	TSLibraryImageRotationUnknown = -1,
+	
+	TSLibraryImageNoRotation = 0,
+	TSLibraryImage180Degrees,		// 180°
+	TSLibraryImage90DegreesCW,		// 90°, clockwise
+	TSLibraryImage90DegreesCCW,		// 90°, counterclockwise
+};
+
 @interface TSLibraryImage : _TSLibraryImage {}
 
 /**
@@ -36,18 +48,19 @@ typedef NS_ENUM(int16_t, TSLibraryImageType) {
  */
 @property (atomic) NSTimeInterval dayShotValue;
 
-
-
 /**
- * An NSImage representation of this image's thumbnail. This will load the
- * image the first time it's requested, then cache it until the object
- * becomes a fault again.
- */
-@property (nonatomic, readonly) NSImage *thumbnail;
-
-/**
- * The size of the full image.
+ * The pixel size of the full image. This does NOT take into account rotation.
  */
 @property (nonatomic, readwrite) NSSize imageSize;
+
+/**
+ * The actual size of the full image, taking into account rotation.
+ */
+@property (nonatomic, readonly) NSSize rotatedImageSize;
+
+/**
+ * Determines whether the image is rotated.
+ */
+@property (nonatomic, readonly) TSLibraryImageRotation rotation;
 
 @end

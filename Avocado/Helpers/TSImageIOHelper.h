@@ -11,6 +11,9 @@
 
 #import <Foundation/Foundation.h>
 
+/// General: Image orientation
+#define TSImageMetadataOrientation ((NSString *) kCGImagePropertyOrientation)
+
 /// EXIF dictionary
 #define TSImageMetadataExifDictionary ((NSString *) kCGImagePropertyExifDictionary)
 /// EXIF: original date/time captured (as NSDate)

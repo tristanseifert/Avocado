@@ -226,8 +226,8 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
  * Returns the size (width, height) of the image.
  */
 - (NSSize) getRawSize {
-	return NSMakeSize(self.libRaw->sizes.iwidth,
-					  self.libRaw->sizes.iheight);
+	return NSMakeSize(self.libRaw->sizes.width,
+					  self.libRaw->sizes.height);
 }
 
 /**
@@ -326,6 +326,23 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
  */
 - (NSUInteger) getMetaSeries {
 	return self.libRaw->other.shot_order;
+}
+
+/**
+ * Returns the number of degrees the image must be rotated by for output,
+ * assuming that positive values rotate clockwise.
+ */
+- (NSInteger) getImageRotation {
+	if(self.libRaw->sizes.flip == 3) {
+		return 180;
+	} else if(self.libRaw->sizes.flip == 5) {
+		return -90;
+	} else if(self.libRaw->sizes.flip == 6) {
+		return 90;
+	}
+	
+	// no rotation needed, or unknown flip value
+	return 0;
 }
 
 @end

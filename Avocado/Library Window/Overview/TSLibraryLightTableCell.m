@@ -8,7 +8,10 @@
 
 #import "TSLibraryLightTableCell.h"
 
+#import "TSThumbCache.h"
 #import "TSHumanModels.h"
+
+NSString* const TSLibraryLightTableInvalidateThumbsNotificationName = @"TSLibraryLightTableInvalidateThumbsNotification";
 
 /// shared date formatter for shot date
 static NSDateFormatter *shotDateFormatter = nil;
@@ -37,6 +40,7 @@ static const CGFloat kImageVInset = 75.f;
 
 @property (nonatomic) CATextLayer *sequenceNumber;
 @property (nonatomic) CALayer *imageLayer;
+@property (nonatomic) CALayer *imageShadowLayer;
 
 @property (nonatomic) CAShapeLayer *darkBorder; // right, bottom
 @property (nonatomic) CAShapeLayer *lightBorder; // left, top
@@ -55,6 +59,9 @@ static const CGFloat kImageVInset = 75.f;
 
 - (void) layOutContentLayers;
 - (void) layOutTopInfoBox;
+
+- (void) thumbsInvalidatedNotification:(NSNotification *) n;
+- (void) updateThumbnails;
 
 @end
 
@@ -84,7 +91,7 @@ static const CGFloat kImageVInset = 75.f;
 	// at the end, add the light and dark borders
 	[self setUpBordersWithParent:layer];
 	
-	// set up the shot date formatter
+	// set up the shot date formatter and thumb cache
 	static dispatch_once_t onceToken;
 	dispatch_once(&onceToken, ^{
 		shotDateFormatter = [NSDateFormatter new];
@@ -95,9 +102,31 @@ static const CGFloat kImageVInset = 75.f;
 		shotDateFormatter.locale = [NSLocale autoupdatingCurrentLocale];
 		shotDateFormatter.calendar = [NSCalendar autoupdatingCurrentCalendar];
 	});
+	
+	// Add notification handler
+	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+	[nc addObserver:self
+		   selector:@selector(thumbsInvalidatedNotification:)
+			   name:TSLibraryLightTableInvalidateThumbsNotificationName
+			 object:nil];
 }
 
+/**
+ * Clean up some resources when this cell is deallocated.
+ */
+- (void) dealloc {
+	// remove as a notification observer
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
+/**
+ * Requests thumbnails to be created when the view is about to show up.
+ */
+- (void) viewWillAppear {
+	[super viewWillAppear];
+}
+
+#pragma mark Layer Setup
 /**
  * Sets up the main layers.
  */
@@ -121,14 +150,20 @@ static const CGFloat kImageVInset = 75.f;
 	self.imageLayer.borderWidth = 1.f;
 	self.imageLayer.borderColor = kPhotoFrameColour.CGColor;
 	
-	self.imageLayer.shadowColor = [NSColor colorWithCalibratedWhite:0.1 alpha:1.f].CGColor;
-	self.imageLayer.shadowRadius = 4.f;
-	self.imageLayer.shadowOffset = CGSizeMake(4, -4);
-	self.imageLayer.shadowOpacity = 0.2f;
-	
-	self.imageLayer.contentsGravity = kCAGravityResizeAspect;
+	self.imageLayer.masksToBounds = YES;
+	self.imageLayer.contentsGravity = kCAGravityResizeAspectFill; // fix any potential gaps or uglies by scaling the image up
 	
 	[layer addSublayer:self.imageLayer];
+	
+	// set up image shadow layer
+	self.imageShadowLayer = [CALayer layer];
+	
+	self.imageShadowLayer.shadowColor = [NSColor colorWithCalibratedWhite:0.1 alpha:1.f].CGColor;
+	self.imageShadowLayer.shadowRadius = 4.f;
+	self.imageShadowLayer.shadowOffset = CGSizeMake(4, -4);
+	self.imageShadowLayer.shadowOpacity = 0.2f;
+	
+	[layer insertSublayer:self.imageShadowLayer below:self.imageLayer];
 }
 
 /**
@@ -227,11 +262,8 @@ static const CGFloat kImageVInset = 75.f;
 	self.sequenceNumber.frame = CGRectMake(0, frame.size.height - 55, frame.size.width - 8, 52);
 	
 	// lay out image layer
-	NSSize imageSize = self.representedObject.thumbnail.size;
-	
-	// calculate the size
-	CGFloat originalHeight = imageSize.height;
-	CGFloat originalWidth = imageSize.width;
+	CGFloat originalHeight = self.representedObject.rotatedImageSize.height;
+	CGFloat originalWidth = self.representedObject.rotatedImageSize.width;
 	
 	CGFloat xScale = (frame.size.width - (kImageHInset * 2.f)) / originalWidth;
 	CGFloat yScale = (frame.size.height - (kImageVInset * 2.f)) / originalHeight;
@@ -242,7 +274,7 @@ static const CGFloat kImageVInset = 75.f;
 	CGFloat finalHeight = originalHeight * scale;
 	CGFloat finalWidth = originalWidth * scale;
 	
-	imageSize = NSMakeSize(finalWidth, finalHeight);
+	NSSize imageSize = NSMakeSize(finalWidth, finalHeight);
 	
 	// center the image in the main layer, and set its frame
 	CGFloat imageX = (frame.size.width - imageSize.width) / 2.f;
@@ -253,7 +285,9 @@ static const CGFloat kImageVInset = 75.f;
 		.origin = CGPointMake(imageX, imageY)
 	};
 	self.imageLayer.frame = [self.view backingAlignedRect:self.imageLayer.frame options:NSAlignAllEdgesOutward];
-	self.imageLayer.shadowPath = CGPathCreateWithRect(self.imageLayer.bounds, NULL);
+	
+	self.imageShadowLayer.frame = self.imageLayer.frame;
+	self.imageShadowLayer.shadowPath = CGPathCreateWithRect(self.imageLayer.bounds, NULL);
 	
 	
 	// lay out the dark border (right, bottom)
@@ -334,16 +368,26 @@ shouldInheritContentsScale:(CGFloat) newScale
 - (void) setRepresentedObject:(TSLibraryImage *) image {
 	super.representedObject = image;
 	
-	// request thumbnails
-	self.imageLayer.contents = image.thumbnail;
+	// exit if the property was cleared
+	if(image == nil) {
+		self.topInfoFileName.string = @"Empty Cell";
+		self.topInfoSubtitle.string = @"Empty Cell\nEmpty Cell";
+		
+		self.imageLayer.contents = nil;
+		
+		return;
+	}
 	
 	// set filename, etc. for top info box
 	self.topInfoFileName.string = image.fileUrl.lastPathComponent;
 	
-	NSString *sizeString = [NSString stringWithFormat:@"%.0f × %.0f", image.imageSize.width, image.imageSize.height];
+	NSString *sizeString = [NSString stringWithFormat:@"%.0f × %.0f", image.rotatedImageSize.width, image.rotatedImageSize.height];
 	NSString *shotDateString = [shotDateFormatter stringFromDate:image.dateShot];
 	
 	self.topInfoSubtitle.string = [NSString stringWithFormat:@"%@\n%@", sizeString, shotDateString];
+	
+	// do thumbnail images
+	[self updateThumbnails];
 }
 
 /**
@@ -353,6 +397,38 @@ shouldInheritContentsScale:(CGFloat) newScale
 	_imageSequence = seq;
 	
 	self.sequenceNumber.string = [NSString stringWithFormat:@"%lu", (unsigned long) seq];
+}
+
+#pragma mark Thumb Handling
+/**
+ * Notification fired when all thumbnails should be invalidated.
+ */
+- (void) thumbsInvalidatedNotification:(NSNotification *) n {
+	[self updateThumbnails];
+}
+
+/**
+ * Updates the thumbnail image.
+ */
+- (void) updateThumbnails {
+	// request thumbnails
+	NSCollectionViewFlowLayout *layout = (NSCollectionViewFlowLayout *) self.collectionView.collectionViewLayout;
+	NSSize cellSize = layout.itemSize;
+	
+	NSSize thumbSz = (NSSize) {
+		.width = cellSize.width - (kImageHInset * 2),
+		.height = cellSize.height - (kImageVInset * 2),
+	};
+	
+	// actually queue the request
+	[[TSThumbCache sharedInstance] getThumbForImage:self.representedObject
+										   withSize:thumbSz
+										andCallback:^(NSImage *thumb) {
+		// ensure we only access the image layer on the main thread
+		dispatch_async(dispatch_get_main_queue(), ^{
+			self.imageLayer.contents = thumb;
+		});
+	}];
 }
 
 @end
