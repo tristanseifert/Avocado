@@ -12,6 +12,9 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSString *const TSDirectoryImportCompletedNotificationName;
+extern NSString *const TSDirectoryImportCompletedNotificationUrlKey;
+
 @interface TSImportUIController : NSObject
 
 - (void) presentAsSheetOnWindow:(NSWindow *) window;

@@ -1,9 +1,9 @@
 #import "TSLibraryImage.h"
-
+#import "TSRawImage.h"
 #import "NSDate+AvocadoUtils.h"
 
-#import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
+#import <Cocoa/Cocoa.h>
 
 /// context indicating that the date shot has changed
 static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
@@ -19,6 +19,7 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 
 @implementation TSLibraryImage
 @dynamic metadata, fileUrl, fileTypeValue, dayShotValue;
+@synthesize thumbImageCache;
 
 #pragma mark Lifecycle
 /**
@@ -45,8 +46,10 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 - (void) willTurnIntoFault {
 	[super willTurnIntoFault];
 	
-	// remove KVO observers
-	[self removeObserver:self forKeyPath:@"dateShots"];
+	// remove KVO observers (fuck this shit)
+	@try {
+		[self removeObserver:self forKeyPath:@"dateShots"];
+	} @catch (NSException __unused *exception) { }
 	
 	// clear thumb cache
 	self.thumbImageCache = nil;
@@ -82,7 +85,30 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
  */
 - (NSImage *) thumbnail {
 	if(self.thumbImageCache == nil) {
-		
+		// is it a RAW image?
+		if(self.fileTypeValue == TSLibraryImageRaw) {
+			TSRawImage *raw = nil;
+			NSError *err = nil;
+			
+			// load the image
+			raw = [[TSRawImage alloc] initWithContentsOfUrl:self.fileUrl
+													  error:&err];
+			
+			if(err) {
+				DDLogError(@"Couldn't open %@: %@", self.fileUrl, err);
+				self.thumbImageCache = [NSImage imageNamed:NSImageNameCaution];
+				
+				return self.thumbImageCache;
+			}
+			
+			// extract thumbnail
+			if(raw.thumbnail != nil) {
+				self.thumbImageCache = raw.thumbnail;
+			} else {
+				DDLogError(@"No thumbnail in %@; do something useful here", self.fileUrl);
+				self.thumbImageCache = [NSImage imageNamed:NSImageNameMultipleDocuments];
+			}
+		}
 	}
 	
 	// return the cache
@@ -123,7 +149,7 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 			
 		// for compressed images, return the url of the file
 		case TSLibraryImageCompressed:
-			return return self.fileUrl;
+			return self.fileUrl;
 	}
 }
 

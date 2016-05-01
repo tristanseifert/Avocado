@@ -18,7 +18,7 @@
             <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
-                <splitView arrangesAllSubviews="NO" dividerStyle="paneSplitter" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GnK-F1-YfJ">
+                <splitView arrangesAllSubviews="NO" autosaveName="overviewSplitView" dividerStyle="paneSplitter" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GnK-F1-YfJ">
                     <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
                     <subviews>
                         <customView id="XTv-50-Hvf" userLabel="Sidebar pls">
@@ -32,7 +32,7 @@
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="14" outlineTableColumn="3J2-cX-bl2" id="qPx-Wl-SFD">
-                                                <rect key="frame" x="0.0" y="0.0" width="210" height="600"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="210" height="0.0"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="0.0"/>
                                                 <color key="backgroundColor" name="_sourceListBackgroundColor" catalog="System" colorSpace="catalog"/>

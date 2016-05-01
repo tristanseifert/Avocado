@@ -11,6 +11,10 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSString *const TSFileImportedNotificationName;
+extern NSString *const TSFileImportedNotificationUrlKey;
+extern NSString *const TSFileImportedNotificationImageKey;
+
 extern NSString *const TSImportingErrorDomain;
 
 typedef NS_ENUM(NSUInteger, TSImportingErrorCodes) {
@@ -20,5 +24,7 @@ typedef NS_ENUM(NSUInteger, TSImportingErrorCodes) {
 @interface TSImportController : NSObject
 
 - (BOOL) importFile:(NSURL *) url withError:(NSError **) err;
+
+@property (nonatomic) BOOL copyFiles;
 
 @end

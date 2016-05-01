@@ -12,11 +12,15 @@
 
 #import <MagicalRecord/MagicalRecord.h>
 
+NSString *const TSFileImportedNotificationName = @"TSFileImportedNotification";
+NSString *const TSFileImportedNotificationUrlKey = @"TSFileImportedNotificationUrl";
+NSString *const TSFileImportedNotificationImageKey = @"TSFileImportedNotificationImage";
 NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 
 @interface TSImportController ()
 
 - (BOOL) importRaw:(NSURL *) url withError:(NSError **) outErr;
+- (BOOL) importOtherImage:(NSURL *) url withError:(NSError **) outErr;
 
 - (NSURL *) copyFile:(NSURL *) file withError:(NSError **) outErr;
 
@@ -24,6 +28,18 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 
 @implementation TSImportController
 
+/**
+ * Instnatiates the class.
+ */
+- (instancetype) init {
+	if(self = [super init]) {
+		self.copyFiles = YES;
+	}
+	
+	return self;
+}
+
+#pragma mark Importing
 /**
  * Imports the given file.
  */
@@ -34,7 +50,7 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 	NSString *uti;
 	[url getResourceValue:&uti forKey:NSURLTypeIdentifierKey error:nil];
 	
-	if([workspace type:uti conformsToType:@"public.image"]) {
+	if([workspace type:uti conformsToType:@"public.image"] == NO) {
 		*err = [NSError errorWithDomain:TSImportingErrorDomain
 								   code:TSImportingErrorNotAnImage
 							   userInfo:nil];
@@ -45,7 +61,7 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 	if([workspace type:uti conformsToType:@"public.camera-raw-image"]) {
 		return [self importRaw:url withError:err];
 	} else {
-		
+		return [self importOtherImage:url withError:err];
 	}
 	
 	// we should never get here
@@ -61,23 +77,28 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 	TSRawImage *raw = nil;
 	
 	NSDictionary *meta = nil;
-	
-	// try to create a RAW image
-	raw = [[TSRawImage alloc] initWithContentsOfUrl:url error:&err];
-	if(!raw || err) {
-		DDLogError(@"Couldn't create RAW file: %@", err);
-		*outErr = err;
-	}
-	
-	// extract some metadata from it
+	NSURL *actualImageUrl = url;
 	
 	// copy it to the library folder
-	NSURL *newUrl = [self copyFile:url withError:&err];
+	if(self.copyFiles) {
+		actualImageUrl = [self copyFile:url withError:&err];
+		
+		if(actualImageUrl == nil || err) {
+			*outErr = err;
+			return NO;
+		}
+	}
 	
-	if(newUrl == nil || err) {
+	// try to create a RAW image
+	raw = [[TSRawImage alloc] initWithContentsOfUrl:actualImageUrl
+											  error:&err];
+	if(!raw || err) {
+		DDLogError(@"Couldn't load RAW file from %@: %@", actualImageUrl, err);
 		*outErr = err;
 		return NO;
 	}
+	
+	// extract some metadata from it
 	
 	// save it
 	[MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext *ctx) {
@@ -86,7 +107,7 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		
 		// set some basic metadata
 		image.fileTypeValue = TSLibraryImageRaw;
-		image.fileUrl = newUrl;
+		image.fileUrl = actualImageUrl;
 		
 		image.metadata = meta;
 		
@@ -94,6 +115,60 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		image.dateModified = image.dateImported;
 		
 		image.dateShot = raw.timestamp;
+		
+		// post notification
+		NSDictionary *info = @{
+			TSFileImportedNotificationUrlKey: actualImageUrl,
+			TSFileImportedNotificationImageKey: image
+		};
+		[[NSNotificationCenter defaultCenter] postNotificationName:TSFileImportedNotificationName object:self userInfo:info];
+	}];
+	
+	// the import has successed.
+	return YES;
+}
+
+/**
+ * Imports a system-parseable type of image.
+ */
+- (BOOL) importOtherImage:(NSURL *) url withError:(NSError **) outErr {
+	NSError *err = nil;
+	
+	NSDictionary *meta = nil;
+	NSURL *actualImageUrl = url;
+	
+	// extract some metadata from it
+	
+	// copy it to the library folder
+	if(self.copyFiles) {
+		actualImageUrl = [self copyFile:url withError:&err];
+		
+		if(actualImageUrl == nil || err) {
+			*outErr = err;
+			return NO;
+		}
+	}
+	
+	// save it
+	[MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext *ctx) {
+		// create an image
+		TSLibraryImage *image = [TSLibraryImage MR_createEntityInContext:ctx];
+		
+		// set some basic metadata
+		image.fileTypeValue = TSLibraryImageCompressed;
+		image.fileUrl = actualImageUrl;
+		
+		image.metadata = meta;
+		
+		image.dateImported = [NSDate new];
+		image.dateModified = image.dateImported;
+		
+		// post notification
+		NSDictionary *info = @{
+		   TSFileImportedNotificationUrlKey: actualImageUrl,
+		   TSFileImportedNotificationImageKey: image
+		};
+		[[NSNotificationCenter defaultCenter] postNotificationName:TSFileImportedNotificationName object:self userInfo:info];
 	}];
 	
 	// the import has successed.
@@ -129,9 +204,8 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 	
 	// create the YYYY-MM-DD format directory
 	NSDateFormatter *formatter = [NSDateFormatter new];
-	formatter.dateFormat = @"yyyy-MM-dd";
 	formatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
-	formatter.timeStyle = NSDateFormatterNoStyle;
+	formatter.dateFormat = @"yyyy-MM-dd";
 	
 	NSString *dirName = [formatter stringFromDate:date];
 	

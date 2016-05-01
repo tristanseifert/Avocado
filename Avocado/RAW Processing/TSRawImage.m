@@ -19,7 +19,9 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 @property (nonatomic, readwrite) NSImage *thumbnail;
 
 // internal properties
-@property (nonatomic) LibRaw *libRaw;
+@property (nonatomic, assign) libraw_data_t *libRaw;
+@property (nonatomic) NSURL *fileUrl;
+@property (nonatomic) NSData *fileData;
 
 // internal helpers
 - (BOOL) loadFile:(NSURL *) url withError:(NSError **) outErr;
@@ -41,8 +43,10 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
  */
 - (instancetype) initWithContentsOfUrl:(NSURL *) url error:(NSError **) outErr {
 	if(self = [super init]) {
+		self.fileUrl = url;
+		
 		// init libraw
-		self.libRaw = new LibRaw();
+		self.libRaw = libraw_init(0);
 		
 		// load file and parse the thumbnails
 		if([self loadFile:url withError:outErr] == NO) {
@@ -50,6 +54,7 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 		}
 		
 		[self unpackThumbs];
+		[self convertEmbeddedThumbnail];
 	}
 	
 	return self;
@@ -60,9 +65,10 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
  */
 - (void) dealloc {
 	// first, releases resources back to the OS
-	self.libRaw->recycle();
-	// then actually frees the memory occupied by the LibRaw instance
-	delete self.libRaw;
+	libraw_recycle(self.libRaw);
+	
+	// free the buffer of read data
+	self.fileData = nil;
 }
 
 #pragma mark File Handling
@@ -71,13 +77,30 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
  */
 - (BOOL) loadFile:(NSURL *) url withError:(NSError **) outErr {
 	int err = 0;
+	NSError *nsErr = nil;
 	
-	// open the file, pls
-	NSString *string = url.path;
+	// try to read the file
+	self.fileData = [NSData dataWithContentsOfURL:url
+										  options:NSDataReadingUncached
+											error:&nsErr];
 	
-	if((err = self.libRaw->open_file(string.fileSystemRepresentation)) != 0) {
-		DDLogError(@"Error opening RAW file: %i", err);
-		if(outErr) *outErr = [self errorFromCode:err];
+	if(self.fileData == nil) {
+		DDLogError(@"Couldn't read RAW file from %@: %@", url, nsErr);
+		if(outErr) *outErr = nsErr;
+		
+		return NO;
+	}
+	
+	// open the file from the memory buffer
+	void *data = (void *) self.fileData.bytes;
+	size_t len = (size_t) self.fileData.length;
+	
+	
+	if((err = libraw_open_buffer(self.libRaw, data, len)) != LIBRAW_SUCCESS) {
+		nsErr = [self errorFromCode:err];
+		
+		DDLogError(@"Error opening RAW file: %i (%@)", err, nsErr);
+		if(outErr) *outErr = nsErr;
 		
 		return NO;
 	}
@@ -94,7 +117,7 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 	int err = 0;
 	
 	// unpack thumbnails
-	if((err = self.libRaw->unpack_thumb()) != 0) {
+	if((err = libraw_unpack_thumb(self.libRaw)) != LIBRAW_SUCCESS) {
 		NSError *nsErr = [self errorFromCode:err];
 		
 		if(LIBRAW_FATAL_ERROR(err)) {
@@ -114,20 +137,21 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
  * to an NSImage.
  */
 - (void) convertEmbeddedThumbnail {
-	libraw_thumbnail_t *thumb = &self.libRaw->imgdata.thumbnail;
+	// pointer because this is way too fucking long to keep repeating
+	enum LibRaw_thumbnail_formats format = self.libRaw->thumbnail.tformat;
 	
-	enum LibRaw_thumbnail_formats format = thumb->tformat;
-	
-	// create an NSData from the pointer
-	NSData *data = [NSData dataWithBytesNoCopy:thumb->thumb
-										length:thumb->tlength];
+	// create an NSData from the pointer to the thumb data w/o copying bytes
+	NSData *data = [NSData dataWithBytesNoCopy:self.libRaw->thumbnail.thumb
+										length:self.libRaw->thumbnail.tlength
+								  freeWhenDone:NO];
 	
 	// we can only handle JPEG and bitmap thumbnails
 	if(format == LIBRAW_THUMBNAIL_JPEG) {
 		self.thumbnail = [[NSImage alloc] initWithData:data];
 	} else if (format == LIBRAW_THUMBNAIL_BITMAP) {
-		// TODO: Implement this
+		// TODO: Implement this maybe
 	} else {
+		// lol we're fucked, we should do something sophisticated here
 		DDLogWarn(@"Unsupported thumbnail format: %u", format);
 		
 		self.thumbnail = nil;
@@ -141,7 +165,7 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 	int err = 0;
 	
 	// unpack
-	if((err = self.libRaw->unpack()) != 0) {
+	if((err = libraw_unpack(self.libRaw)) != LIBRAW_SUCCESS) {
 		NSError *nsErr = [self errorFromCode:err];
 		
 		if(LIBRAW_FATAL_ERROR(err)) {
@@ -181,7 +205,7 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 							  userInfo:info];
 	} else {
 		// create a custom RAW library error object
-		codeInfo = [NSString stringWithCString:LibRaw::strerror(code)
+		codeInfo = [NSString stringWithCString:libraw_strerror(code)
 									  encoding:NSUTF8StringEncoding];
 		
 		info = @{
@@ -202,15 +226,15 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
  * Returns the size (width, height) of the image.
  */
 - (NSSize) getRawSize {
-	return NSMakeSize(self.libRaw->imgdata.sizes.iwidth,
-					  self.libRaw->imgdata.sizes.iheight);
+	return NSMakeSize(self.libRaw->sizes.iwidth,
+					  self.libRaw->sizes.iheight);
 }
 
 /**
  * Returns a pointer to the image data.
  */
 - (void *) getImageData {
-//	self.libRaw->imgdata.rawdata
+//	self.libRaw.imgdata.rawdata
 	return NULL;
 }
 
@@ -218,28 +242,28 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
  * Returns the ISO speed, as a fraction.
  */
 - (CGFloat) getExifISO {
-	return self.libRaw->imgdata.other.iso_speed;
+	return self.libRaw->other.iso_speed;
 }
 
 /**
  * Returns the shutter speed, as a fraction.
  */
 - (CGFloat) getExifShutter {
-	return self.libRaw->imgdata.other.shutter;
+	return self.libRaw->other.shutter;
 }
 
 /**
  * Returns the aperture.
  */
 - (CGFloat) getExifAperture {
-	return self.libRaw->imgdata.other.aperture;
+	return self.libRaw->other.aperture;
 }
 
 /**
  * Returns the lens' name.
  */
 - (NSString *) getExifLensName {
-	return [NSString stringWithCString:self.libRaw->imgdata.lens.Lens
+	return [NSString stringWithCString:self.libRaw->lens.Lens
 							  encoding:NSUTF8StringEncoding];
 }
 
@@ -247,7 +271,7 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
  * Returns the lens' make.
  */
 - (NSString *) getExifLensMake {
-	return [NSString stringWithCString:self.libRaw->imgdata.lens.Lens
+	return [NSString stringWithCString:self.libRaw->lens.Lens
 							  encoding:NSUTF8StringEncoding];
 }
 
@@ -255,14 +279,14 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
  * Returns the focal length of the lens.
  */
 - (NSUInteger) getExifLensFocalLength {
-	return (NSUInteger) self.libRaw->imgdata.other.focal_len;
+	return (NSUInteger) self.libRaw->other.focal_len;
 }
 
 /**
  * Returns the maker/manufacturer of the camera.
  */
 - (NSString *) getExifCameraMake {
-	return [NSString stringWithCString:self.libRaw->imgdata.idata.make
+	return [NSString stringWithCString:self.libRaw->idata.make
 							  encoding:NSUTF8StringEncoding];
 }
 
@@ -270,7 +294,7 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
  * Returns the model of the camera.
  */
 - (NSString *) getExifCameraModel {
-	return [NSString stringWithCString:self.libRaw->imgdata.idata.model
+	return [NSString stringWithCString:self.libRaw->idata.model
 							  encoding:NSUTF8StringEncoding];
 }
 
@@ -278,7 +302,7 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
  * Get the artist.
  */
 - (NSString *) getMetaArtist {
-	return [NSString stringWithCString:self.libRaw->imgdata.other.artist
+	return [NSString stringWithCString:self.libRaw->other.artist
 							  encoding:NSUTF8StringEncoding];
 }
 
@@ -286,7 +310,7 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
  * Returns the "description" field of the image.
  */
 - (NSString *) getMetaDescription {
-	return [NSString stringWithCString:self.libRaw->imgdata.other.desc
+	return [NSString stringWithCString:self.libRaw->other.desc
 							  encoding:NSUTF8StringEncoding];
 }
 
@@ -294,14 +318,14 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
  * Returns the timestamp embedded in the image.
  */
 - (NSDate *) getMetaTimestamp {
-	return [NSDate dateWithTimeIntervalSince1970:self.libRaw->imgdata.other.timestamp];
+	return [NSDate dateWithTimeIntervalSince1970:self.libRaw->other.timestamp];
 }
 
 /**
  * Returns the number in the 'series' of shot that this image is.
  */
 - (NSUInteger) getMetaSeries {
-	return self.libRaw->imgdata.other.shot_order;
+	return self.libRaw->other.shot_order;
 }
 
 @end

@@ -17,4 +17,6 @@
 
 - (instancetype) initWithGridView:(IKImageBrowserView *) view;
 
+@property (nonatomic) NSFetchRequest *fetchRequest;
+
 @end

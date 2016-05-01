@@ -8,10 +8,10 @@
 
 #import "TSLibraryOverviewController.h"
 #import "TSImportUIController.h"
-
+#import "TSHumanModels.h"
 #import "TSLibraryOverviewLightTableController.h"
 
-#import <CNGridView/CNGridView.h>
+#import <MagicalRecord/MagicalRecord.h>
 
 @interface TSLibraryOverviewController ()
 
@@ -28,6 +28,8 @@
 	
 	// create controller
 	self.lightTableController = [[TSLibraryOverviewLightTableController alloc] initWithGridView:self.lightTableView];
+	
+	self.lightTableController.fetchRequest = [TSLibraryImage MR_createFetchRequest];
 }
 
 /**
@@ -35,8 +37,6 @@
  */
 - (void) viewDidAppear {
 	[super viewDidAppear];
-	
-	[self.lightTableController recalculateItemSize];
 }
 
 
@@ -98,7 +98,7 @@
  * cells.
  */
 - (void)splitViewDidResizeSubviews:(NSNotification *) notification {
-	[self.lightTableController recalculateItemSize];
+
 }
 
 @end

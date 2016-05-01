@@ -9,9 +9,11 @@
 #ifndef Avocado_Prefix_pch
 #define Avocado_Prefix_pch
 
+
 // Include any system framework and library headers here that should be included in all compilation units.
 // You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
 
+#ifdef __OBJC__
 #import <CocoaLumberjack/CocoaLumberjack.h>
 
 // define log level
@@ -19,6 +21,7 @@
 static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 #else
 static const DDLogLevel ddLogLevel = DDLogLevelWarning;
+#endif
 #endif
 
 #endif /* Avocado_Prefix_pch */
