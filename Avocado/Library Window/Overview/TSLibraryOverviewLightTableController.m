@@ -157,7 +157,7 @@
 	
 	// calculate per cell size
 	CGFloat cellWidth = floorf(self.gridView.frame.size.width / ((CGFloat) self.cellsPerRow));
-	CGFloat cellHeight = ceilf(cellWidth * 0.74);
+	CGFloat cellHeight = ceilf(cellWidth * 1.25);
 	
 	layout.itemSize = NSMakeSize(cellWidth, cellHeight);
 	

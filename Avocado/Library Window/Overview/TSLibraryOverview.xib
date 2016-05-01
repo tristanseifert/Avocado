@@ -8,6 +8,8 @@
         <customObject id="-2" userLabel="File's Owner" customClass="TSLibraryOverviewController">
             <connections>
                 <outlet property="lightTableView" destination="aDY-sU-T6e" id="iAM-vn-5jL"/>
+                <outlet property="sidebar" destination="qPx-Wl-SFD" id="ikp-Pr-Ppk"/>
+                <outlet property="sidebarContainer" destination="XTv-50-Hvf" id="tEx-vT-8wa"/>
                 <outlet property="view" destination="v8k-Ft-lOF" id="uIB-sI-xuA"/>
             </connections>
         </customObject>
@@ -31,7 +33,7 @@
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="14" outlineTableColumn="3J2-cX-bl2" id="qPx-Wl-SFD">
-                                                <rect key="frame" x="0.0" y="0.0" width="250" height="600"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="250" height="0.0"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="0.0"/>
                                                 <color key="backgroundColor" name="_sourceListBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -171,7 +173,7 @@
                                         <collectionViewFlowLayout key="collectionViewLayout" id="bE5-Tt-Cxj">
                                             <size key="itemSize" width="100" height="75"/>
                                         </collectionViewFlowLayout>
-                                        <color key="primaryBackgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="primaryBackgroundColor" white="0.45000000000000001" alpha="1" colorSpace="calibratedWhite"/>
                                     </collectionView>
                                 </subviews>
                             </clipView>

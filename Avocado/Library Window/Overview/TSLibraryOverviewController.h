@@ -16,6 +16,11 @@
 
 @interface TSLibraryOverviewController : TSMainLibraryContentViewController <NSSplitViewDelegate>
 
+@property (nonatomic) IBOutlet NSSplitView *splitView;
+
+@property (nonatomic) IBOutlet NSView *sidebarContainer;
+@property (nonatomic) IBOutlet NSOutlineView *sidebar;
+
 @property (nonatomic) IBOutlet NSCollectionView *lightTableView;
 
 @end

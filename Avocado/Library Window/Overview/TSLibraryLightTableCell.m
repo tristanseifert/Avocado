@@ -10,10 +10,13 @@
 
 #import "TSHumanModels.h"
 
-// inset on the left/right side for the image
-static const CGFloat kImageHInset = 20.f;
-// inset on the top/bottom for the image
-static const CGFloat kImageVInset = 30.f;
+/// height of the top information container
+static const CGFloat kTopInfoBoxHeight = 60.f;
+
+/// inset on the left/right side for the image
+static const CGFloat kImageHInset = 15.f;
+/// inset on the top/bottom for the image
+static const CGFloat kImageVInset = 75.f;
 
 @interface TSLibraryLightTableCell ()
 
@@ -22,6 +25,16 @@ static const CGFloat kImageVInset = 30.f;
 
 @property (nonatomic) CAShapeLayer *darkBorder; // right, bottom
 @property (nonatomic) CAShapeLayer *lightBorder; // left, top
+
+@property (nonatomic) CALayer *topInfoContainer;
+@property (nonatomic) CALayer *topInfoBorder;
+
+- (void) setUpMainLayersWithParent:(CALayer *) layer;
+- (void) setUpBordersWithParent:(CALayer *) layer;
+- (void) setUpTopInfoBoxWithParent:(CALayer *) layer;
+
+- (void) layOutContentLayers;
+- (void) layOutTopInfoBox;
 
 @end
 
@@ -36,14 +49,27 @@ static const CGFloat kImageVInset = 30.f;
 	[super viewDidLoad];
 	
 	self.view.wantsLayer = YES;
-	
 	CALayer *layer = self.view.layer;
 	
 	// set up the main layer pls
-	layer.backgroundColor = [NSColor colorWithCalibratedWhite:0.42 alpha:1.f].CGColor;
-	
+//	layer.backgroundColor = [NSColor colorWithCalibratedWhite:0.42 alpha:1.f].CGColor;
 	layer.masksToBounds = YES;
 	
+	// set up main content
+	[self setUpMainLayersWithParent:layer];
+	
+	// set up top box
+	[self setUpTopInfoBoxWithParent:layer];
+	
+	// at the end, add the light and dark borders
+	[self setUpBordersWithParent:layer];
+}
+
+
+/**
+ * Sets up the main layers.
+ */
+- (void) setUpMainLayersWithParent:(CALayer *) layer {
 	// create the sequence number layer
 	self.sequenceNumber = [CATextLayer layer];
 	self.sequenceNumber.delegate = self;
@@ -73,21 +99,50 @@ static const CGFloat kImageVInset = 30.f;
 	self.imageLayer.contentsGravity = kCAGravityResizeAspect;
 	
 	[layer addSublayer:self.imageLayer];
+}
+
+/**
+ * Sets up the top information box's layers.
+ */
+- (void) setUpTopInfoBoxWithParent:(CALayer *) layer {
+	// create top info layer
+	self.topInfoContainer = [CALayer layer];
+	self.topInfoContainer.backgroundColor = [NSColor colorWithCalibratedWhite:0.74 alpha:0.5].CGColor;
 	
+	self.topInfoContainer.masksToBounds = YES;
+	
+	[layer addSublayer:self.topInfoContainer];
+	
+	self.topInfoBorder = [CALayer layer];
+	self.topInfoBorder.backgroundColor = [NSColor colorWithCalibratedWhite:0.40 alpha:0.5].CGColor;
+	
+	[self.topInfoContainer addSublayer:self.topInfoBorder];
+}
+
+/**
+ * Sets up the borders around the perimeter of the cell.
+ */
+- (void) setUpBordersWithParent:(CALayer *) layer {
 	// set up the dark border
 	self.darkBorder = [CAShapeLayer layer];
 	self.darkBorder.delegate = self;
-//	self.darkBorder.fillColor = [NSColor colorWithCalibratedWhite:0.1 alpha:1.f].CGColor;
-	self.darkBorder.fillColor = [NSColor redColor].CGColor;
+	self.darkBorder.fillColor = [NSColor colorWithCalibratedWhite:0.40 alpha:1.f].CGColor;
 	
 	[layer addSublayer:self.darkBorder];
 	
 	self.lightBorder = [CAShapeLayer layer];
 	self.lightBorder.delegate = self;
-//	self.darkBorder.fillColor = [NSColor colorWithCalibratedWhite:0.1 alpha:1.f].CGColor;
-	self.lightBorder.fillColor = [NSColor yellowColor].CGColor;
+	self.lightBorder.fillColor = [NSColor colorWithCalibratedWhite:0.50 alpha:1.f].CGColor;
 	
 	[layer addSublayer:self.lightBorder];
+}
+
+#pragma mark Layouting
+/**
+ * Forces the cell to lay its content out again.
+ */
+- (void) forceRelayout {
+	[self layOutContentLayers];
 }
 
 /**
@@ -95,12 +150,18 @@ static const CGFloat kImageVInset = 30.f;
  */
 - (void) viewDidLayout {
 	[super viewDidLayout];
-	
+	[self layOutContentLayers];
+}
+
+/**
+ * Lays out all of the containing layers.
+ */
+- (void) layOutContentLayers {
 	NSRect frame = self.view.bounds;
 	
 	
-	// lay out text
-	self.sequenceNumber.frame = CGRectMake(0, frame.size.height - 52, frame.size.width - 4, 52);
+	// lay out sequence number
+	self.sequenceNumber.frame = CGRectMake(0, frame.size.height - 53, frame.size.width - 8, 52);
 	
 	
 	// lay out image layer
@@ -130,7 +191,6 @@ static const CGFloat kImageVInset = 30.f;
 		.origin = CGPointMake(imageX, imageY)
 	};
 	self.imageLayer.frame = [self.view backingAlignedRect:self.imageLayer.frame options:NSAlignAllEdgesOutward];
-	DDLogVerbose(@"Image frame: %@", NSStringFromRect(self.imageLayer.frame));
 	self.imageLayer.shadowPath = CGPathCreateWithRect(self.imageLayer.bounds, NULL);
 	
 	
@@ -152,6 +212,25 @@ static const CGFloat kImageVInset = 30.f;
 	
 	// update scale factor
 //	[self updateContentScales];
+	
+	// lay out info box
+	[self layOutTopInfoBox];
+}
+
+/**
+ * Lays out the top info box.
+ */
+- (void) layOutTopInfoBox {
+	NSRect frame = self.view.bounds;
+	
+	// set its width to 100%, height predefined, fixed to top
+	self.topInfoContainer.frame = (CGRect) {
+		.size = CGSizeMake(frame.size.width, kTopInfoBoxHeight),
+		.origin = CGPointMake(0, frame.size.height - kTopInfoBoxHeight)
+	};
+	
+	// add the border at the very bottom
+	self.topInfoBorder.frame = CGRectMake(0, 1, frame.size.width, 1);
 }
 
 /**
