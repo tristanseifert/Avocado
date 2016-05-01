@@ -45,4 +45,9 @@ typedef NS_ENUM(int16_t, TSLibraryImageType) {
  */
 @property (nonatomic, readonly) NSImage *thumbnail;
 
+/**
+ * The size of the full image.
+ */
+@property (nonatomic, readwrite) NSSize imageSize;
+
 @end

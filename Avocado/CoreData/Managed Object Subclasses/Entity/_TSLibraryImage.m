@@ -11,7 +11,8 @@ const struct TSLibraryImageAttributes TSLibraryImageAttributes = {
 	.fileType = @"fileType",
 	.fileUrl = @"fileUrl",
 	.metadata = @"metadata",
-	.thumbData = @"thumbData",
+	.pvtImageSize = @"pvtImageSize",
+	.thumbUUID = @"thumbUUID",
 };
 
 const struct TSLibraryImageRelationships TSLibraryImageRelationships = {
@@ -110,7 +111,9 @@ const struct TSLibraryImageRelationships TSLibraryImageRelationships = {
 
 @dynamic metadata;
 
-@dynamic thumbData;
+@dynamic pvtImageSize;
+
+@dynamic thumbUUID;
 
 @dynamic adjustments;
 

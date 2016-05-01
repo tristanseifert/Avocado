@@ -11,7 +11,8 @@ extern const struct TSLibraryImageAttributes {
 	__unsafe_unretained NSString *fileType;
 	__unsafe_unretained NSString *fileUrl;
 	__unsafe_unretained NSString *metadata;
-	__unsafe_unretained NSString *thumbData;
+	__unsafe_unretained NSString *pvtImageSize;
+	__unsafe_unretained NSString *thumbUUID;
 } TSLibraryImageAttributes;
 
 extern const struct TSLibraryImageRelationships {
@@ -73,9 +74,13 @@ extern const struct TSLibraryImageRelationships {
 
 //- (BOOL)validateMetadata:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) NSData* thumbData;
+@property (nonatomic, strong) NSString* pvtImageSize;
 
-//- (BOOL)validateThumbData:(id*)value_ error:(NSError**)error_;
+//- (BOOL)validatePvtImageSize:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSString* thumbUUID;
+
+//- (BOOL)validateThumbUUID:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSOrderedSet *adjustments;
 
@@ -151,8 +156,11 @@ extern const struct TSLibraryImageRelationships {
 - (id)primitiveMetadata;
 - (void)setPrimitiveMetadata:(id)value;
 
-- (NSData*)primitiveThumbData;
-- (void)setPrimitiveThumbData:(NSData*)value;
+- (NSString*)primitivePvtImageSize;
+- (void)setPrimitivePvtImageSize:(NSString*)value;
+
+- (NSString*)primitiveThumbUUID;
+- (void)setPrimitiveThumbUUID:(NSString*)value;
 
 - (NSMutableOrderedSet*)primitiveAdjustments;
 - (void)setPrimitiveAdjustments:(NSMutableOrderedSet*)value;

@@ -9,6 +9,7 @@
 #import "TSImportController.h"
 #import "TSRawImage.h"
 #import "TSHumanModels.h"
+#import "TSImageIOHelper.h"
 
 #import <MagicalRecord/MagicalRecord.h>
 
@@ -115,6 +116,7 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		image.dateModified = image.dateImported;
 		
 		image.dateShot = raw.timestamp;
+		image.imageSize = raw.size;
 		
 		// post notification
 		NSDictionary *info = @{
@@ -137,8 +139,6 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 	NSDictionary *meta = nil;
 	NSURL *actualImageUrl = url;
 	
-	// extract some metadata from it
-	
 	// copy it to the library folder
 	if(self.copyFiles) {
 		actualImageUrl = [self copyFile:url withError:&err];
@@ -148,6 +148,9 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 			return NO;
 		}
 	}
+	
+	// extract some metadata from the image
+	meta = [[TSImageIOHelper sharedInstance] metadataForImageAtUrl:actualImageUrl];
 	
 	// save it
 	[MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext *ctx) {
@@ -162,6 +165,19 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		
 		image.dateImported = [NSDate new];
 		image.dateModified = image.dateImported;
+		
+		image.imageSize = [[TSImageIOHelper sharedInstance] sizeOfImageAtUrl:actualImageUrl];
+		
+		// extract a few keys from the metadata dictionary
+		NSDictionary *exif = meta[TSImageMetadataExifDictionary];
+		if(exif != nil) {
+			image.dateShot = exif[TSImageMetadataExifDateTimeOriginal];
+		}
+		
+		if(image.dateShot == nil) {
+			// we can't get a decent value for the date shot, so use right now
+			image.dateShot = image.dateImported;
+		}
 		
 		// post notification
 		NSDictionary *info = @{

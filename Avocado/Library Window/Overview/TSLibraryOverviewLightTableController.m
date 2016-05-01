@@ -142,7 +142,7 @@
  */
 - (void) imageDidImportNotification:(NSNotification *) n {
 	dispatch_async(dispatch_get_main_queue(), ^{
-		DDLogVerbose(@"did the import thing: %@", n);
+//		DDLogVerbose(@"did the import thing: %@", n);
 		
 		[self refetchImages];
 	});

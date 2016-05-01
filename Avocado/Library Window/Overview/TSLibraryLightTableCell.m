@@ -10,8 +10,23 @@
 
 #import "TSHumanModels.h"
 
+/// shared date formatter for shot date
+static NSDateFormatter *shotDateFormatter = nil;
+
 /// height of the top information container
-static const CGFloat kTopInfoBoxHeight = 60.f;
+static const CGFloat kTopInfoBoxHeight = 65.f;
+/// horizontal inset (margin) for info box content
+static const CGFloat kInfoBoxHInset = 8.f;
+/// vertical inset (margin) for info box content
+static const CGFloat kInfoBoxVInset = 6.f;
+
+/// primary info box text colour
+#define kInfoBoxPrimaryTextColour [NSColor colorWithCalibratedWhite:0.24 alpha:1.f]
+/// secondary info box text colour
+#define kInfoBoxSecondaryTextColour [NSColor colorWithCalibratedWhite:0.32 alpha:1.f]
+
+/// colour for the photo frame
+#define kPhotoFrameColour [NSColor colorWithCalibratedWhite:0.20 alpha:1.f]
 
 /// inset on the left/right side for the image
 static const CGFloat kImageHInset = 15.f;
@@ -28,6 +43,11 @@ static const CGFloat kImageVInset = 75.f;
 
 @property (nonatomic) CALayer *topInfoContainer;
 @property (nonatomic) CALayer *topInfoBorder;
+@property (nonatomic) CATextLayer *topInfoFileName;
+@property (nonatomic) CATextLayer *topInfoSubtitle;
+
+@property (nonatomic) CALayer *bottomInfoContainer;
+@property (nonatomic) CALayer *bottomInfoBorder;
 
 - (void) setUpMainLayersWithParent:(CALayer *) layer;
 - (void) setUpBordersWithParent:(CALayer *) layer;
@@ -63,6 +83,18 @@ static const CGFloat kImageVInset = 75.f;
 	
 	// at the end, add the light and dark borders
 	[self setUpBordersWithParent:layer];
+	
+	// set up the shot date formatter
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		shotDateFormatter = [NSDateFormatter new];
+		
+		shotDateFormatter.dateStyle = NSDateFormatterMediumStyle;
+		shotDateFormatter.timeStyle = NSDateFormatterLongStyle;
+		
+		shotDateFormatter.locale = [NSLocale autoupdatingCurrentLocale];
+		shotDateFormatter.calendar = [NSCalendar autoupdatingCurrentCalendar];
+	});
 }
 
 
@@ -80,8 +112,6 @@ static const CGFloat kImageVInset = 75.f;
 	
 	self.sequenceNumber.alignmentMode = kCAAlignmentRight;
 	
-	self.sequenceNumber.string = @"1234";
-	
 	[layer addSublayer:self.sequenceNumber];
 	
 	// set up image layer
@@ -89,11 +119,11 @@ static const CGFloat kImageVInset = 75.f;
 	self.imageLayer.delegate = self;
 	
 	self.imageLayer.borderWidth = 1.f;
-	self.imageLayer.borderColor = [NSColor redColor].CGColor;
+	self.imageLayer.borderColor = kPhotoFrameColour.CGColor;
 	
 	self.imageLayer.shadowColor = [NSColor colorWithCalibratedWhite:0.1 alpha:1.f].CGColor;
 	self.imageLayer.shadowRadius = 4.f;
-	self.imageLayer.shadowOffset = CGSizeMake(4, 4);
+	self.imageLayer.shadowOffset = CGSizeMake(4, -4);
 	self.imageLayer.shadowOpacity = 0.2f;
 	
 	self.imageLayer.contentsGravity = kCAGravityResizeAspect;
@@ -113,6 +143,39 @@ static const CGFloat kImageVInset = 75.f;
 	
 	[layer addSublayer:self.topInfoContainer];
 	
+	// create the filename label
+	self.topInfoFileName = [CATextLayer layer];
+	self.topInfoFileName.delegate = self;
+	
+	self.topInfoFileName.font = (__bridge CFTypeRef _Nullable)([NSFont systemFontOfSize:15 weight:NSFontWeightMedium]);
+	self.topInfoFileName.fontSize = 15;
+	self.topInfoFileName.foregroundColor = kInfoBoxPrimaryTextColour.CGColor;
+	
+	self.topInfoFileName.alignmentMode = kCAAlignmentLeft;
+	
+	self.topInfoFileName.string = @"really_long_filename.jpg";
+	
+	self.topInfoFileName.shadowColor = [NSColor blackColor].CGColor;
+	self.topInfoFileName.shadowRadius = 2.f;
+	self.topInfoFileName.shadowOpacity = 0.15f;
+	
+	[self.topInfoContainer addSublayer:self.topInfoFileName];
+	
+	// create the subtitle label
+	self.topInfoSubtitle = [CATextLayer layer];
+	self.topInfoSubtitle.delegate = self;
+	
+	self.topInfoSubtitle.font = (__bridge CFTypeRef _Nullable)([NSFont systemFontOfSize:13 weight:NSFontWeightLight]);
+	self.topInfoSubtitle.fontSize = 13;
+	self.topInfoSubtitle.foregroundColor = kInfoBoxSecondaryTextColour.CGColor;
+	
+	self.topInfoSubtitle.alignmentMode = kCAAlignmentLeft;
+	
+	self.topInfoSubtitle.string = @"First row of subtitle information\nSecond row of subtitle information";
+	
+	[self.topInfoContainer addSublayer:self.topInfoSubtitle];
+	
+	// create the border that'll show at the bottom of the box
 	self.topInfoBorder = [CALayer layer];
 	self.topInfoBorder.backgroundColor = [NSColor colorWithCalibratedWhite:0.40 alpha:0.5].CGColor;
 	
@@ -161,8 +224,7 @@ static const CGFloat kImageVInset = 75.f;
 	
 	
 	// lay out sequence number
-	self.sequenceNumber.frame = CGRectMake(0, frame.size.height - 53, frame.size.width - 8, 52);
-	
+	self.sequenceNumber.frame = CGRectMake(0, frame.size.height - 55, frame.size.width - 8, 52);
 	
 	// lay out image layer
 	NSSize imageSize = self.representedObject.thumbnail.size;
@@ -229,8 +291,19 @@ static const CGFloat kImageVInset = 75.f;
 		.origin = CGPointMake(0, frame.size.height - kTopInfoBoxHeight)
 	};
 	
-	// add the border at the very bottom
+	// position the border at the very bottom
 	self.topInfoBorder.frame = CGRectMake(0, 1, frame.size.width, 1);
+	
+	// position the filename and subtitle labels
+	self.topInfoFileName.frame = (CGRect) {
+		.size = CGSizeMake(frame.size.width - 64, 18),
+		.origin = CGPointMake(kInfoBoxHInset, kTopInfoBoxHeight - 18 - kInfoBoxVInset)
+	};
+	
+	self.topInfoSubtitle.frame = (CGRect) {
+		.size = CGSizeMake(frame.size.width - 64, 30),
+		.origin = CGPointMake(kInfoBoxHInset, kInfoBoxVInset)
+	};
 }
 
 /**
@@ -261,7 +334,16 @@ shouldInheritContentsScale:(CGFloat) newScale
 - (void) setRepresentedObject:(TSLibraryImage *) image {
 	super.representedObject = image;
 	
+	// request thumbnails
 	self.imageLayer.contents = image.thumbnail;
+	
+	// set filename, etc. for top info box
+	self.topInfoFileName.string = image.fileUrl.lastPathComponent;
+	
+	NSString *sizeString = [NSString stringWithFormat:@"%.0f × %.0f", image.imageSize.width, image.imageSize.height];
+	NSString *shotDateString = [shotDateFormatter stringFromDate:image.dateShot];
+	
+	self.topInfoSubtitle.string = [NSString stringWithFormat:@"%@\n%@", sizeString, shotDateString];
 }
 
 /**

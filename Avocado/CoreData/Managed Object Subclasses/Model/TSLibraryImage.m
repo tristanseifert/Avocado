@@ -175,4 +175,23 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 	self.thumbImageCache = [[NSImage alloc] initWithCGImage:thumbImage size:NSZeroSize];
 }
 
+#pragma mark Properties
+/**
+ * Converts the size, stored as a string, to an NSSize.
+ */
+- (NSSize) imageSize {
+	return NSSizeFromString(self.pvtImageSize);
+}
+
+/**
+ * Saves the size as a string.
+ */
+- (void) setImageSize:(NSSize) imageSize {
+	self.pvtImageSize = NSStringFromSize(imageSize);
+}
+
++ (NSSet *) keyPathsForValuesAffectingImageSize {
+	return [NSSet setWithObject:@"pvtImageSize"];
+}
+
 @end

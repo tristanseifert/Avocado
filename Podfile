@@ -12,6 +12,6 @@ target 'Avocado' do
     pod 'GRStatusBar'
 
     # Networking
-    pod 'AFNetworking', '~> 3.0'
+    # pod 'AFNetworking', '~> 3.0'
 end
 
