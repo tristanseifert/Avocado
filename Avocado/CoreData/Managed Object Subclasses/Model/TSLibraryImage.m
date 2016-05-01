@@ -2,6 +2,7 @@
 #import "TSRawImage.h"
 #import "NSDate+AvocadoUtils.h"
 
+#import <ImageIO/ImageIO.h>
 #import <Quartz/Quartz.h>
 #import <Cocoa/Cocoa.h>
 
@@ -14,6 +15,7 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 @property (nonatomic) NSImage *thumbImageCache;
 
 - (void) addKVO;
+- (void) extractThumbImageIO;
 
 @end
 
@@ -108,6 +110,9 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 				DDLogError(@"No thumbnail in %@; do something useful here", self.fileUrl);
 				self.thumbImageCache = [NSImage imageNamed:NSImageNameMultipleDocuments];
 			}
+		} else if(self.fileTypeValue == TSLibraryImageCompressed) {
+			// use ImageIO
+			[self extractThumbImageIO];
 		}
 	}
 	
@@ -115,66 +120,59 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 	return self.thumbImageCache;
 }
 
-#pragma mark ImageKit Support
 /**
- * Returns an unique id for ImageKit caching; in this case, the managed objec
- * id.
+ * Extracts any embedded thumbnails from the compressed image file, if they
+ * exist; if not, ImageIO will create one in memory.
  */
-- (NSString *) imageUID {
-	return self.objectID.URIRepresentation.absoluteString;
-}
-
-/**
- * The image representation provided; for this class, this is an NSImage
- * created from thumbnail data if RAW, or a path if it's a non-RAW file.
- */
-- (NSString *) imageRepresentationType {
-	switch (self.fileTypeValue) {
-		case TSLibraryImageRaw:
-			return IKImageBrowserNSImageRepresentationType;
-			
-		case TSLibraryImageCompressed:
-			return IKImageBrowserNSURLRepresentationType;
+- (void) extractThumbImageIO {
+	CGImageRef        thumbImage = NULL;
+	CGImageSourceRef  imgSource;
+	CFDictionaryRef   thumbOpts = NULL;
+	
+	CFStringRef       myKeys[3];
+	CFTypeRef         myValues[3];
+	
+	CFNumberRef       thumbnailSize;
+ 
+	// Create an image source from NSData; no options.
+	imgSource = CGImageSourceCreateWithURL((__bridge CFURLRef) self.fileUrl, NULL);
+	
+	// Make sure the image source exists before continuing.
+	if (imgSource == NULL){
+		DDLogError(@"Could not create image source for %@", self.fileUrl);
+		return;
 	}
-}
+ 
+	// Set up the thumbnail options.
+	myKeys[0] = kCGImageSourceCreateThumbnailWithTransform;
+	myValues[0] = (CFTypeRef) kCFBooleanTrue;
+	myKeys[1] = kCGImageSourceCreateThumbnailFromImageIfAbsent;
+	myValues[1] = (CFTypeRef) kCFBooleanTrue;
 
-/**
- * Actually returns the image representation to use in rendering the image.
- */
-- (id) imageRepresentation {
-	switch (self.fileTypeValue) {
-		// for uncompressed (raw) images, get the thumbnail from memory
-		case TSLibraryImageRaw:
-			return self.thumbnail;
-			
-		// for compressed images, return the url of the file
-		case TSLibraryImageCompressed:
-			return self.fileUrl;
+//	myKeys[2] = kCGImageSourceThumbnailMaxPixelSize;
+//	myValues[2] = (CFTypeRef) CFNumberCreate(NULL, kCFNumberIntType, &imageSize);
+ 
+	thumbOpts = CFDictionaryCreate(NULL, (const void **) myKeys,
+								   (const void **) myValues, 1,
+								   &kCFTypeDictionaryKeyCallBacks,
+								   & kCFTypeDictionaryValueCallBacks);
+ 
+	// Create the thumbnail image using the specified options.
+	thumbImage = CGImageSourceCreateThumbnailAtIndex(imgSource, 0, thumbOpts);
+	
+	// release options and image source
+//	CFRelease(thumbnailSize);
+	CFRelease(thumbOpts);
+	CFRelease(imgSource);
+ 
+	// Make sure the thumbnail image exists before continuing.
+	if(thumbImage == NULL){
+		DDLogError(@"Could not create thumbnail image for %@", self.fileUrl);
+		return;
 	}
-}
-
-/**
- * Returns an image 'version,' which is used to indicate that the image view
- * must update this image.
- */
-- (NSUInteger) imageVersion {
-	return 1;
-}
-
-/**
- * Returns the caption. This is either the filename, if the caption is nil,
- * or the metadata caption field.
- */
-- (NSString *) imageTitle {
-	return self.fileUrl.lastPathComponent;
-}
-
-/**
- * Returns a subtitle: this can be the image's size, or some other piece of
- * metadata.
- */
-- (NSString *) imageSubtitle {
-	return @"9999 x 9999";
+	
+	// convert thumb image
+	self.thumbImageCache = [[NSImage alloc] initWithCGImage:thumbImage size:NSZeroSize];
 }
 
 @end

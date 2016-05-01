@@ -3,12 +3,11 @@
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
-        <plugIn identifier="com.apple.imagekit.ibplugin" version="10116"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="TSLibraryOverviewController">
             <connections>
-                <outlet property="lightTableView" destination="RIy-6G-NJ2" id="bWt-Ux-Z84"/>
+                <outlet property="lightTableView" destination="aDY-sU-T6e" id="iAM-vn-5jL"/>
                 <outlet property="view" destination="v8k-Ft-lOF" id="uIB-sI-xuA"/>
             </connections>
         </customObject>
@@ -159,28 +158,29 @@
                                 <constraint firstItem="F3b-wo-Geo" firstAttribute="top" secondItem="XTv-50-Hvf" secondAttribute="top" id="yfg-2A-FMv"/>
                             </constraints>
                         </customView>
-                        <scrollView fixedFrame="YES" borderType="none" horizontalLineScroll="122.19999694824219" horizontalPageScroll="10" verticalLineScroll="151" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="W7u-0k-2Qw">
+                        <scrollView fixedFrame="YES" borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="4af-GL-D4w">
                             <rect key="frame" x="260" y="0.0" width="540" height="600"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <clipView key="contentView" copiesOnScroll="NO" id="pU9-ym-4XE">
+                            <clipView key="contentView" id="ka8-5b-nVU">
                                 <rect key="frame" x="0.0" y="0.0" width="540" height="600"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
-                                    <ikImageBrowserView autoresizesSubviews="NO" fixedFrame="YES" zoomValue="0.31622776389122009" animates="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RIy-6G-NJ2" customClass="TSLibraryLightTableView">
-                                        <rect key="frame" x="0.0" y="412" width="534" height="583"/>
-                                        <ikCellsStyle key="cellsStyleMask" shadowed="YES" titled="YES"/>
-                                        <autoresizingMask key="contentResizingMask" heightSizable="YES"/>
-                                        <size key="cellSize" width="91" height="91"/>
-                                    </ikImageBrowserView>
+                                    <collectionView id="aDY-sU-T6e">
+                                        <rect key="frame" x="0.0" y="0.0" width="540" height="600"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <collectionViewFlowLayout key="collectionViewLayout" id="bE5-Tt-Cxj">
+                                            <size key="itemSize" width="100" height="75"/>
+                                        </collectionViewFlowLayout>
+                                        <color key="primaryBackgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </collectionView>
                                 </subviews>
-                                <color key="backgroundColor" red="0.98594677450000001" green="0.0" blue="0.039444983009999997" alpha="1" colorSpace="calibratedRGB"/>
                             </clipView>
-                            <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="gHJ-HR-amQ">
-                                <rect key="frame" x="0.0" y="584" width="540" height="16"/>
+                            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="Dld-9l-LEn">
+                                <rect key="frame" x="1" y="144" width="233" height="15"/>
                                 <autoresizingMask key="autoresizingMask"/>
                             </scroller>
-                            <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="g5M-ss-k7R">
-                                <rect key="frame" x="524" y="0.0" width="16" height="600"/>
+                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="lya-l4-W1p">
+                                <rect key="frame" x="234" y="1" width="15" height="143"/>
                                 <autoresizingMask key="autoresizingMask"/>
                             </scroller>
                         </scrollView>

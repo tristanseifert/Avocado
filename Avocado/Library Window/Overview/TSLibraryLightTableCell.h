@@ -11,8 +11,10 @@
 #import <Quartz/Quartz.h>
 
 @class TSLibraryImage;
-@interface TSLibraryLightTableCell : IKImageBrowserCell
+@interface TSLibraryLightTableCell : NSCollectionViewItem
 
-@property (nonatomic) TSLibraryImage* image;
+@property (nullable, strong) TSLibraryImage *representedObject;
+
+@property (nonatomic) NSUInteger imageSequence;
 
 @end

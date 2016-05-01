@@ -14,9 +14,8 @@
 
 #import "TSMainLibraryContentViewController.h"
 
-@class IKImageBrowserView;
 @interface TSLibraryOverviewController : TSMainLibraryContentViewController <NSSplitViewDelegate>
 
-@property (nonatomic) IBOutlet IKImageBrowserView *lightTableView;
+@property (nonatomic) IBOutlet NSCollectionView *lightTableView;
 
 @end

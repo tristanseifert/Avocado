@@ -11,11 +11,11 @@
 
 #import <Foundation/Foundation.h>
 
-#import <Quartz/Quartz.h>
+#import <Cocoa/Cocoa.h>
 
-@interface TSLibraryOverviewLightTableController : NSObject
+@interface TSLibraryOverviewLightTableController : NSObject <NSCollectionViewDataSource, NSCollectionViewDelegate>
 
-- (instancetype) initWithGridView:(IKImageBrowserView *) view;
+- (instancetype) initWithGridView:(NSCollectionView *) view;
 
 @property (nonatomic) NSFetchRequest *fetchRequest;
 

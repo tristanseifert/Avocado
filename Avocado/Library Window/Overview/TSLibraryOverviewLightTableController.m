@@ -16,7 +16,7 @@
 @interface TSLibraryOverviewLightTableController ()
 
 @property (nonatomic) NSArray<TSLibraryImage *> *imagesToShow;
-@property (nonatomic) IKImageBrowserView *gridView;
+@property (nonatomic) NSCollectionView *gridView;
 
 - (void) refetchImages;
 - (void) imageDidImportNotification:(NSNotification *) n;
@@ -30,7 +30,7 @@
 /**
  * Initialises the controller.
  */
-- (instancetype) initWithGridView:(IKImageBrowserView *) view {
+- (instancetype) initWithGridView:(NSCollectionView *) view {
 	if(self = [super init]) {
 		self.gridView = view;
 		
@@ -40,10 +40,8 @@
 		self.gridView.dataSource = self;
 		self.gridView.delegate = self;
 		
-		// set cell layout and resizing behaviour
-		self.gridView.intercellSpacing = NSZeroSize;
-		
-		[self.gridView setContentResizingMask:NSViewWidthSizable];
+		// register cell
+		[self.gridView registerClass:[TSLibraryLightTableCell class] forItemWithIdentifier:@"ImageCell"];
 		
 		// notificationmaru!~!!!!1~~~
 		NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
@@ -72,19 +70,28 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-#pragma mark Data Source
+#pragma mark Collection View Data Source
 /**
  * Returns the number of images that are in the image browser.
  */
-- (NSUInteger) numberOfItemsInImageBrowser:(IKImageBrowserView *) aBrowser {
+- (NSInteger) collectionView:(NSCollectionView *) collectionView numberOfItemsInSection:(NSInteger) section {
 	return self.imagesToShow.count;
 }
 
 /**
  * Returns an item for the given index.
  */
-- (id /*IKImageBrowserItem*/) imageBrowser:(IKImageBrowserView *) aBrowser itemAtIndex:(NSUInteger) index {
-	return self.imagesToShow[index];
+- (NSCollectionViewItem *) collectionView:(NSCollectionView *) collectionView itemForRepresentedObjectAtIndexPath:(NSIndexPath *) indexPath {
+	// get a cell
+	TSLibraryLightTableCell *cell = [self.gridView makeItemWithIdentifier:@"ImageCell" forIndexPath:indexPath];
+	
+	// set the image
+	NSUInteger idx = [indexPath indexAtPosition:1];
+	
+	cell.representedObject = self.imagesToShow[idx];
+	cell.imageSequence = idx + 1;
+	
+	return cell;
 }
 
 /**
@@ -99,21 +106,7 @@
 	return NO;
 }
 
-#pragma mark Delegate
-/**
- * An image cell has been right-clicked.
- */
-- (void) imageBrowser:(IKImageBrowserView *) aBrowser cellWasRightClickedAtIndex:(NSUInteger) index
-			withEvent:(NSEvent *) event {
-	
-}
-
-/**
- * A cell was double-clicked; go to the edit view.
- */
-- (void) imageBrowser:(IKImageBrowserView *) aBrowser cellWasDoubleClickedAtIndex:(NSUInteger) index {
-	
-}
+#pragma mark Collection View Delegate
 
 #pragma mark Fetch Request Handling
 /**
@@ -160,10 +153,15 @@
  * resizes the cells.
  */
 - (void) resizeCells {
-	CGFloat cellWidth = floorf(self.gridView.frame.size.width / ((CGFloat) self.cellsPerRow));
-	CGFloat cellHeight = cellWidth * 0.74;
+	NSCollectionViewFlowLayout *layout = (NSCollectionViewFlowLayout *) self.gridView.collectionViewLayout;
 	
-	[self.gridView setCellSize:NSMakeSize(cellWidth, cellHeight)];
+	// calculate per cell size
+	CGFloat cellWidth = floorf(self.gridView.frame.size.width / ((CGFloat) self.cellsPerRow));
+	CGFloat cellHeight = ceilf(cellWidth * 0.74);
+	
+	layout.itemSize = NSMakeSize(cellWidth, cellHeight);
+	
+	DDLogInfo(@"New item size: %@", NSStringFromSize(layout.itemSize));
 }
 
 /**
