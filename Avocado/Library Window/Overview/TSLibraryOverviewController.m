@@ -75,6 +75,21 @@
 	[self.importUI presentAsSheetOnWindow:self.view.window];
 }
 
+/**
+ * Displays the view options popover at the origin of the sender.
+ */
+- (IBAction) showViewOptions:(id) sender {
+	if([sender isKindOfClass:[NSView class]]) {
+		NSView *theView = (NSView *) sender;
+		
+		[self.viewOptionsPopover showRelativeToRect:NSZeroRect
+											 ofView:theView
+									  preferredEdge:NSRectEdgeMaxX];
+	} else {
+		DDLogWarn(@"Showing view options with a sender that's not a view; this shouldn't happen");
+	}
+}
+
 #pragma mark Split View Delegate
 /**
  * Constrains the left sidebar to be at least 150px, but no larger than 400px.

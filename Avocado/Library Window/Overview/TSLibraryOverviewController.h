@@ -23,4 +23,6 @@
 
 @property (nonatomic) IBOutlet NSCollectionView *lightTableView;
 
+@property (nonatomic) IBOutlet NSPopover *viewOptionsPopover;
+
 @end

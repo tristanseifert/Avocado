@@ -772,8 +772,6 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
-					"\"AFNetworking\"",
-					"-framework",
 					"\"CocoaLumberjack\"",
 					"-framework",
 					"\"GRStatusBar\"",
@@ -814,8 +812,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					"-framework",
-					"\"AFNetworking\"",
 					"-framework",
 					"\"CocoaLumberjack\"",
 					"-framework",
