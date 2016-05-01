@@ -21,6 +21,8 @@
 - (void) refetchImages;
 - (void) imageDidImportNotification:(NSNotification *) n;
 
+- (void) scrollViewSizeChanged:(NSNotification *) n;
+
 @end
 
 @implementation TSLibraryOverviewLightTableController
@@ -32,19 +34,31 @@
 	if(self = [super init]) {
 		self.gridView = view;
 		
+		self.cellsPerRow = 2;
+		
 		// we're both its delegate and its data source
 		self.gridView.dataSource = self;
 		self.gridView.delegate = self;
 		
-		self.gridView.zoomValue = 0.5;
-		
+		// set cell layout and resizing behaviour
 		self.gridView.intercellSpacing = NSZeroSize;
 		
+		[self.gridView setContentResizingMask:NSViewWidthSizable];
+		
 		// notificationmaru!~!!!!1~~~
-		NSNotificationCenter *tomato = [NSNotificationCenter defaultCenter];
-		[tomato addObserver:self
+		NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+		[center addObserver:self
 				   selector:@selector(imageDidImportNotification:)
 					   name:TSFileImportedNotificationName object:nil];
+		
+		// observe size changes to the enclosing scroll view
+		NSScrollView *scroll = self.gridView.enclosingScrollView;
+		scroll.postsFrameChangedNotifications = YES;
+		
+		[center addObserver:self
+				   selector:@selector(scrollViewSizeChanged:)
+					   name:NSViewFrameDidChangeNotification
+					 object:scroll];
 	}
 	
 	return self;
@@ -139,6 +153,27 @@
 		
 		[self refetchImages];
 	});
+}
+
+#pragma mark Resizing
+/**
+ * resizes the cells.
+ */
+- (void) resizeCells {
+	CGFloat cellWidth = floorf(self.gridView.frame.size.width / ((CGFloat) self.cellsPerRow));
+	CGFloat cellHeight = cellWidth * 0.74;
+	
+	[self.gridView setCellSize:NSMakeSize(cellWidth, cellHeight)];
+}
+
+/**
+ * The frame of the scroll view containing the grid changed, so update the cell
+ * size.
+ */
+- (void) scrollViewSizeChanged:(NSNotification *) n {
+	DDLogVerbose(@"Size of scroll view changed: %@", NSStringFromRect(self.gridView.enclosingScrollView.frame));
+	
+	[self resizeCells];
 }
 
 @end

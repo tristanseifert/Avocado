@@ -19,4 +19,8 @@
 
 @property (nonatomic) NSFetchRequest *fetchRequest;
 
+@property (nonatomic) NSUInteger cellsPerRow;
+
+- (void) resizeCells;
+
 @end

@@ -37,6 +37,8 @@
  */
 - (void) viewDidAppear {
 	[super viewDidAppear];
+	
+	[self.lightTableController resizeCells];
 }
 
 
@@ -53,11 +55,11 @@
 	window.titlebarAppearsTransparent = YES;
 	window.movableByWindowBackground = NO;
 	
-	window.titleVisibility = NSWindowTitleVisible;
+	window.titleVisibility = NSWindowTitleHidden;
 	
 	NSUInteger styleMask = window.styleMask;
-//	window.styleMask = styleMask & (~NSFullSizeContentViewWindowMask);
-	window.styleMask = styleMask | NSFullSizeContentViewWindowMask;
+	window.styleMask = styleMask & (~NSFullSizeContentViewWindowMask);
+//	window.styleMask = styleMask | NSFullSizeContentViewWindowMask;
 }
 
 #pragma mark UI Actions
