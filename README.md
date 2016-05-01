@@ -1,6 +1,18 @@
 # Avocado
 A native OS X Lightroom alternative, with support for RAW file processing via `LibRaw.`
 
+## Building
+The app can be built as normally via Xcode. All dependencies (installed via CocoaPods, and git submodules) must be installed beforehand, however. Several dependencies must also be built:
+
+### LibRaw
+Execute `./configure` followed by `make all` in the LibRaw directory. The library is automagically built, and Xcode will link with the dylib.
+
+### LCMS
+Execute `./configure` followed by `make all` in the lcms2-2.7 directory. The library is automagically built, and Xcode will link with the dylib.
+
+### After all dependencies
+Do not forget to execute the `fix_dependencies_rpath.sh` script in the Dependencies folder, after compiling and building any dependencies. This will fix up paths in these libraries so that they can be properly linked, and will not cause a dylib error at runtime.
+
 ## Licensing
 Avocado is released under the terms of the simplified three-clause BSD license, as reproduced below:
 

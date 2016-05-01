@@ -459,9 +459,6 @@
 				B0DFEA25DCDDB691FBC6651D /* Copy Pods Resources */,
 				6AEC35281CD4406D0033DE0A /* Set Build Version */,
 				6A1068881CD5BF07004BF216 /* Embed dylibs and frameworks */,
-				6A10688A1CD5BFFC004BF216 /* Fix rpath of embedded dylibs */,
-				6A75D1371CD5C16E00AC7CFF /* Fix libraw dependencies rpaths */,
-				6A5C615A1CD5C44300E3C3C9 /* Force Re-Sign Entire App Bundle */,
 			);
 			buildRules = (
 			);
@@ -536,48 +533,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Avocado/Pods-Avocado-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		6A10688A1CD5BFFC004BF216 /* Fix rpath of embedded dylibs */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Fix rpath of embedded dylibs";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/bash;
-			shellScript = "EXECFILE=${BUILT_PRODUCTS_DIR}/${EXECUTABLE_PATH}\nLIBPATH=${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\nNEWLIBPATH=\"@executable_path/../Frameworks\"\n\n# space separated list of libraries\nTARGETS=\"libraw_r.15.dylib liblcms2.2.dylib\"\nfor TARGET in ${TARGETS} ; do\nLIBFILE=${LIBPATH}/${TARGET}\nTARGETID=`otool -DX ${LIBPATH}/$TARGET`\nNEWTARGETID=${NEWLIBPATH}/${TARGET}\ninstall_name_tool -id ${NEWTARGETID} ${LIBFILE}\ninstall_name_tool -change ${TARGETID} ${NEWTARGETID} ${EXECFILE}\ndone";
-		};
-		6A5C615A1CD5C44300E3C3C9 /* Force Re-Sign Entire App Bundle */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Force Re-Sign Entire App Bundle";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "codesign -s ${EXPANDED_CODE_SIGN_IDENTITY} --force --deep ${BUILT_PRODUCTS_DIR}/${EXECUTABLE_NAME}.app";
-		};
-		6A75D1371CD5C16E00AC7CFF /* Fix libraw dependencies rpaths */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Fix libraw dependencies rpaths";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# these are paths\nLIBPATH=${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\nNEWLIBPATH=\"@executable_path/../Frameworks\"\n\n# target = libraw_r.15.dylib\ninstall_name_tool ${LIBPATH}/\"libraw_r.15.dylib\" -change \"/usr/local/lib/liblcms2.2.dylib\" ${NEWLIBPATH}/\"liblcms2.2.dylib\"";
 		};
 		6AE87BED1CD276FD0053CD9D /* Update CoreData Subclasses (mogenerator) */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -806,7 +761,6 @@
 					"\"GRStatusBar\"",
 					"-framework",
 					"\"MagicalRecord\"",
-					"-pthread",
 					"-ObjC",
 					"-all_load",
 				);
@@ -850,7 +804,6 @@
 					"\"GRStatusBar\"",
 					"-framework",
 					"\"MagicalRecord\"",
-					"-pthread",
 					"-ObjC",
 					"-all_load",
 				);

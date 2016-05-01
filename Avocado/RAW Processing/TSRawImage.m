@@ -79,9 +79,9 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 	int err = 0;
 	NSError *nsErr = nil;
 	
-	// try to read the file
+	// try to read the file (or map into memory, if safe)
 	self.fileData = [NSData dataWithContentsOfURL:url
-										  options:NSDataReadingUncached
+										  options:NSDataReadingMappedIfSafe
 											error:&nsErr];
 	
 	if(self.fileData == nil) {
