@@ -11,10 +11,22 @@
 #import "TSThumbCache.h"
 #import "TSHumanModels.h"
 
+static void *TSLightTableCellSelectedCtx = &TSLightTableCellSelectedCtx;
+
 NSString* const TSLibraryLightTableInvalidateThumbsNotificationName = @"TSLibraryLightTableInvalidateThumbsNotification";
 
 /// shared date formatter for shot date
 static NSDateFormatter *shotDateFormatter = nil;
+
+/// background colour of a selected cell
+#define kSelectedBackgroundColour [NSColor colorWithCalibratedWhite:0.833 alpha:1.f]
+/// background colour of a cell that is being hovered over
+#define kHoverBackgroundColour [NSColor colorWithCalibratedWhite:0.9 alpha:1.f]
+
+/// colour for sequence number, for an unselected cell
+#define kSequenceNumberColourUnselected [NSColor colorWithCalibratedWhite:0.875 alpha:1.f]
+/// colour for sequence number, for a selected cell
+#define kSequenceNumberColourSelected [NSColor colorWithCalibratedWhite:0.45 alpha:1.f]
 
 /// height of the top information container
 static const CGFloat kTopInfoBoxHeight = 65.f;
@@ -52,6 +64,8 @@ static const CGFloat kImageVInset = 75.f;
 
 @property (nonatomic) CALayer *bottomInfoContainer;
 @property (nonatomic) CALayer *bottomInfoBorder;
+
+@property (nonatomic) NSTrackingArea *trackingArea;
 
 - (void) setUpMainLayersWithParent:(CALayer *) layer;
 - (void) setUpBordersWithParent:(CALayer *) layer;
@@ -109,6 +123,14 @@ static const CGFloat kImageVInset = 75.f;
 		   selector:@selector(thumbsInvalidatedNotification:)
 			   name:TSLibraryLightTableInvalidateThumbsNotificationName
 			 object:nil];
+	
+	// Add KVO handler for selection
+	[self addObserver:self forKeyPath:@"selected" options:0
+			  context:TSLightTableCellSelectedCtx];
+	
+	// set up the tracking area
+	self.trackingArea = [[NSTrackingArea alloc] initWithRect:NSZeroRect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow | NSTrackingInVisibleRect owner:self userInfo:nil];
+	[self.view addTrackingArea:self.trackingArea];
 }
 
 /**
@@ -126,6 +148,52 @@ static const CGFloat kImageVInset = 75.f;
 	[super viewWillAppear];
 }
 
+#pragma mark Mouse Tracking
+/**
+ * Mouse entered the tracking area; apply hover style.
+ */
+- (void) mouseEntered:(NSEvent *)theEvent {
+	self.view.layer.backgroundColor = kHoverBackgroundColour.CGColor;
+	self.sequenceNumber.foregroundColor = kSequenceNumberColourSelected.CGColor;
+}
+
+/**
+ * Mouse left: apply the regular or highlighted styles.
+ */
+- (void) mouseExited:(NSEvent *)theEvent {
+	if(self.selected) {
+		self.view.layer.backgroundColor = kSelectedBackgroundColour.CGColor;
+		self.sequenceNumber.foregroundColor = kSequenceNumberColourSelected.CGColor;
+	} else {
+		self.view.layer.backgroundColor = nil;
+		self.sequenceNumber.foregroundColor = kSequenceNumberColourUnselected.CGColor;
+	}
+}
+
+#pragma mark KVO
+/**
+ * KVO Handler
+ */
+- (void) observeValueForKeyPath:(NSString *) keyPath
+					   ofObject:(id) object
+						 change:(NSDictionary<NSString *,id> *) change
+						context:(void *) context {
+	// the selection state changed pls
+	if(context == TSLightTableCellSelectedCtx) {
+		if(self.selected) {
+			self.view.layer.backgroundColor = kSelectedBackgroundColour.CGColor;
+			self.sequenceNumber.foregroundColor = kSequenceNumberColourSelected.CGColor;
+		} else {
+			self.view.layer.backgroundColor = nil;
+			self.sequenceNumber.foregroundColor = kSequenceNumberColourUnselected.CGColor;
+		}
+		
+//		DDLogVerbose(@"Selected: %i", self.isSelected);
+	} else {
+		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+	}
+}
+
 #pragma mark Layer Setup
 /**
  * Sets up the main layers.
@@ -137,7 +205,7 @@ static const CGFloat kImageVInset = 75.f;
 	
 	self.sequenceNumber.font = (__bridge CFTypeRef _Nullable)([NSFont monospacedDigitSystemFontOfSize:48 weight:NSFontWeightBold]);
 	self.sequenceNumber.fontSize = 48;
-	self.sequenceNumber.foregroundColor = [NSColor colorWithCalibratedWhite:0.84 alpha:1.f].CGColor;
+	self.sequenceNumber.foregroundColor = kSequenceNumberColourUnselected.CGColor;
 	
 	self.sequenceNumber.alignmentMode = kCAAlignmentRight;
 	
@@ -257,6 +325,9 @@ static const CGFloat kImageVInset = 75.f;
 - (void) layOutContentLayers {
 	NSRect frame = self.view.bounds;
 	
+	// begin a transaction (disabling implicit animations)
+	[CATransaction begin];
+	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 	
 	// lay out sequence number
 	self.sequenceNumber.frame = CGRectMake(0, frame.size.height - 55, frame.size.width - 8, 52);
@@ -311,6 +382,9 @@ static const CGFloat kImageVInset = 75.f;
 	
 	// lay out info box
 	[self layOutTopInfoBox];
+	
+	// commit transaction
+	[CATransaction commit];
 }
 
 /**
@@ -368,6 +442,10 @@ shouldInheritContentsScale:(CGFloat) newScale
 - (void) setRepresentedObject:(TSLibraryImage *) image {
 	super.representedObject = image;
 	
+	// begin a transaction (disabling implicit animations)
+	[CATransaction begin];
+	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
+	
 	// exit if the property was cleared
 	if(image == nil) {
 		self.topInfoFileName.string = @"Empty Cell";
@@ -375,6 +453,7 @@ shouldInheritContentsScale:(CGFloat) newScale
 		
 		self.imageLayer.contents = nil;
 		
+		[CATransaction commit];
 		return;
 	}
 	
@@ -388,6 +467,9 @@ shouldInheritContentsScale:(CGFloat) newScale
 	
 	// do thumbnail images
 	[self updateThumbnails];
+	
+	// commit the transaction
+	[CATransaction commit];
 }
 
 /**

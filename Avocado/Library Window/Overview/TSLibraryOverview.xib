@@ -167,7 +167,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="540" height="600"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
-                                    <collectionView id="aDY-sU-T6e">
+                                    <collectionView selectable="YES" id="aDY-sU-T6e">
                                         <rect key="frame" x="0.0" y="0.0" width="540" height="600"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" id="bE5-Tt-Cxj">
