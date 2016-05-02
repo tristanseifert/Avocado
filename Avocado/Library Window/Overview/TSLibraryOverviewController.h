@@ -25,4 +25,11 @@
 
 @property (nonatomic) IBOutlet NSPopover *viewOptionsPopover;
 
+// view options
+@property (nonatomic) CGFloat voThumbSize;
+@property (nonatomic) NSInteger voSortKey;
+@property (nonatomic) BOOL voShowFavoriting;
+
+@property (nonatomic) BOOL voExtractThumbs;
+
 @end

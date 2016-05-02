@@ -771,12 +771,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					"-framework",
-					"\"CocoaLumberjack\"",
-					"-framework",
-					"\"GRStatusBar\"",
-					"-framework",
-					"\"MagicalRecord\"",
 					"-ObjC",
 					"-all_load",
 				);
@@ -812,12 +806,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					"-framework",
-					"\"CocoaLumberjack\"",
-					"-framework",
-					"\"GRStatusBar\"",
-					"-framework",
-					"\"MagicalRecord\"",
 					"-ObjC",
 					"-all_load",
 				);

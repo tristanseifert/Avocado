@@ -40,4 +40,11 @@
 	[self.store cleanUp];
 }
 
+/**
+ * Cause the app to terminate once the last window closes.
+ */
+- (BOOL) applicationShouldTerminateAfterLastWindowClosed:(NSApplication *) app {
+	return YES;
+}
+
 @end

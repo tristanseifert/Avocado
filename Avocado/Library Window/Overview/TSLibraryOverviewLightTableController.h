@@ -13,11 +13,20 @@
 
 #import <Cocoa/Cocoa.h>
 
+typedef NS_ENUM(NSUInteger, TSLibraryOverviewSortKey) {
+	TSLibraryOverviewNoSort = -1,
+	
+	TSLibraryOverviewSortByDateShot = 1,
+	TSLibraryOverviewSortByDateImported = 2,
+	TSLibraryOverviewSortByFilename = 3,
+};
+
 @interface TSLibraryOverviewLightTableController : NSObject <NSCollectionViewDataSource, NSCollectionViewDelegate>
 
 - (instancetype) initWithGridView:(NSCollectionView *) view;
 
 @property (nonatomic) NSFetchRequest *fetchRequest;
+@property (nonatomic) TSLibraryOverviewSortKey sortKey;
 
 @property (nonatomic) NSUInteger cellsPerRow;
 

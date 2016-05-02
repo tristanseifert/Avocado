@@ -13,6 +13,9 @@
 
 #import <MagicalRecord/MagicalRecord.h>
 
+static void *TSThumbSizeKVO = &TSThumbSizeKVO;
+static void *TSSortKeyKVO = &TSSortKeyKVO;
+
 @interface TSLibraryOverviewController ()
 
 @property (nonatomic) TSImportUIController *importUI;
@@ -28,8 +31,20 @@
 	
 	// create controller
 	self.lightTableController = [[TSLibraryOverviewLightTableController alloc] initWithGridView:self.lightTableView];
-	
 	self.lightTableController.fetchRequest = [TSLibraryImage MR_createFetchRequest];
+	
+	// set up defaults
+	self.voThumbSize = 2.f;
+	self.voSortKey = 1;
+	self.voShowFavoriting = YES;
+	
+	self.voExtractThumbs = YES;
+	
+	// add a few KVO observers for the view options
+	[self addObserver:self forKeyPath:@"voThumbSize" options:0
+			  context:TSThumbSizeKVO];
+	[self addObserver:self forKeyPath:@"voSortKey" options:0
+			  context:TSSortKeyKVO];
 }
 
 /**
@@ -41,6 +56,33 @@
 	[self.lightTableController resizeCells];
 }
 
+#pragma mark KVO
+/**
+ * KVO handler, used to update the view options things.
+ */
+- (void) observeValueForKeyPath:(NSString *) keyPath
+					   ofObject:(id) object
+						 change:(NSDictionary<NSString *,id> *) change
+						context:(void *) context {
+	// thumb size changed
+	if(context == TSThumbSizeKVO) {
+		self.lightTableController.cellsPerRow = (NSUInteger) self.voThumbSize;
+	}
+	// sort key changed
+	else if(context == TSSortKeyKVO) {
+		if(self.voSortKey == 1) {
+			self.lightTableController.sortKey = TSLibraryOverviewSortByDateShot;
+		} else if(self.voSortKey == 2) {
+			self.lightTableController.sortKey = TSLibraryOverviewSortByDateImported;
+		} else if(self.voSortKey == 3) {
+			self.lightTableController.sortKey = TSLibraryOverviewSortByFilename;
+		}
+	}
+	// any other KVO change
+	else {
+		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+	}
+}
 
 #pragma mark Library Window Content View Methods
 /**
@@ -116,6 +158,29 @@
  */
 - (void)splitViewDidResizeSubviews:(NSNotification *) notification {
 
+}
+
+#pragma mark View Options
+/**
+ * Saves view options. Keys should be prefixed by some unique value.
+ */
+- (void) saveViewOptions:(NSKeyedArchiver *) archiver {
+	[archiver encodeDouble:self.voThumbSize forKey:@"LightTable.ThumbSize"];
+	[archiver encodeInteger:self.voSortKey forKey:@"LightTable.SortKey"];
+	[archiver encodeBool:self.voShowFavoriting forKey:@"LightTable.ShowFavoriteControls"];
+	
+	[archiver encodeBool:self.voExtractThumbs forKey:@"LightTable.ExtractThumbs"];
+}
+
+/**
+ * Restores view options. Keys should be prefixed by some unique value.
+ */
+- (void) restoreViewOptions:(NSKeyedUnarchiver *) unArchiver {
+	self.voThumbSize = [unArchiver decodeDoubleForKey:@"LightTable.ThumbSize"];
+	self.voSortKey = [unArchiver decodeIntegerForKey:@"LightTable.SortKey"];
+	self.voShowFavoriting = [unArchiver decodeBoolForKey:@"LightTable.ShowFavoriteControls"];
+	
+	self.voExtractThumbs = [unArchiver decodeBoolForKey:@"LightTable.ExtractThumbs"];
 }
 
 @end

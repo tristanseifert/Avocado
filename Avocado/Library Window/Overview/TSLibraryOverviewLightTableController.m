@@ -13,11 +13,15 @@
 #import "TSLibraryLightTableCell.h"
 #import "TSHumanModels.h"
 
+static void *TSCellsPerRowKVO = &TSCellsPerRowKVO;
+static void *TSSortKeyKVO = &TSSortKeyKVO;
+
 @interface TSLibraryOverviewLightTableController ()
 
 @property (nonatomic) NSArray<TSLibraryImage *> *imagesToShow;
 @property (nonatomic) NSCollectionView *gridView;
 
+- (void) applySortDescriptors;
 - (void) refetchImages;
 - (void) imageDidImportNotification:(NSNotification *) n;
 
@@ -33,8 +37,6 @@
 - (instancetype) initWithGridView:(NSCollectionView *) view {
 	if(self = [super init]) {
 		self.gridView = view;
-		
-		self.cellsPerRow = 2;
 		
 		// we're both its delegate and its data source
 		self.gridView.dataSource = self;
@@ -57,6 +59,18 @@
 				   selector:@selector(scrollViewSizeChanged:)
 					   name:NSViewFrameDidChangeNotification
 					 object:scroll];
+		
+		// set up some default values
+		self.cellsPerRow = 2;
+		
+		self.sortKey = TSLibraryOverviewNoSort;
+		
+		// add KVO observer for some keys
+		[self addObserver:self forKeyPath:@"cellsPerRow" options:0
+				  context:TSCellsPerRowKVO];
+		
+		[self addObserver:self forKeyPath:@"sortKey" options:0
+				  context:TSSortKeyKVO];
 	}
 	
 	return self;
@@ -108,6 +122,25 @@
 
 #pragma mark Collection View Delegate
 
+#pragma mark KVO
+/**
+ * Handles KVO notifications.
+ */
+- (void) observeValueForKeyPath:(NSString *) keyPath
+					   ofObject:(id) object
+						 change:(NSDictionary<NSString *,id> *) change
+						context:(void *) context {
+	// cellsPerRow changed
+	if(context == TSCellsPerRowKVO) {
+		[self resizeCells];
+	}
+	// sort key changed
+	else if(context == TSSortKeyKVO) {
+		[self applySortDescriptors];
+		[self refetchImages];
+	}
+}
+
 #pragma mark Fetch Request Handling
 /**
  * Sets the fetch request, executes it, and updates the grid view.
@@ -122,6 +155,9 @@
 	self.fetchRequest.includesPropertyValues =  YES;
 	self.fetchRequest.shouldRefreshRefetchedObjects = YES;
 	
+	// update its sort descriptors
+	[self applySortDescriptors];
+	
 	// EGGsecute it
 	[self refetchImages];
 }
@@ -130,6 +166,10 @@
  * Executes the fetch request, then updates the image view
  */
 - (void) refetchImages {
+	// ensure we have a valid fetch request
+	if(self.fetchRequest == nil) return;
+	
+	// execute the request and reload data
 	self.imagesToShow = [TSLibraryImage MR_executeFetchRequest:self.fetchRequest];
 	
 	[self.gridView reloadData];
@@ -146,6 +186,38 @@
 		
 //		[self refetchImages];
 	});
+}
+
+/**
+ * Applies the appropriate sort descriptors.
+ */
+- (void) applySortDescriptors {
+	NSSortDescriptor *sd = nil;
+	
+	switch(self.sortKey) {
+		// no sort
+		case TSLibraryOverviewNoSort:
+			self.fetchRequest.sortDescriptors = nil;
+			break;
+			
+		// sort by date shot
+		case TSLibraryOverviewSortByDateShot:
+			sd = [NSSortDescriptor sortDescriptorWithKey:@"dateShot" ascending:NO];
+			self.fetchRequest.sortDescriptors = @[sd];
+			break;
+			
+		// sort by date imported
+		case TSLibraryOverviewSortByDateImported:
+			sd = [NSSortDescriptor sortDescriptorWithKey:@"dateImported" ascending:NO];
+			self.fetchRequest.sortDescriptors = @[sd];
+			break;
+			
+		// sort by filename
+		case TSLibraryOverviewSortByFilename:
+			sd = [NSSortDescriptor sortDescriptorWithKey:@"fileUrl" ascending:NO];
+			self.fetchRequest.sortDescriptors = @[sd];
+			break;
+	}
 }
 
 #pragma mark Resizing

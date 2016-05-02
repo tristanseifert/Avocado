@@ -24,9 +24,9 @@ static NSDateFormatter *shotDateFormatter = nil;
 #define kHoverBackgroundColour [NSColor colorWithCalibratedWhite:0.9 alpha:1.f]
 
 /// colour for sequence number, for an unselected cell
-#define kSequenceNumberColourUnselected [NSColor colorWithCalibratedWhite:0.875 alpha:1.f]
+#define kSequenceNumberColourUnselected [NSColor colorWithCalibratedWhite:0.875 alpha:0.64]
 /// colour for sequence number, for a selected cell
-#define kSequenceNumberColourSelected [NSColor colorWithCalibratedWhite:0.45 alpha:1.f]
+#define kSequenceNumberColourSelected [NSColor colorWithCalibratedWhite:0.45 alpha:0.64]
 
 /// height of the top information container
 static const CGFloat kTopInfoBoxHeight = 65.f;
@@ -46,7 +46,12 @@ static const CGFloat kInfoBoxVInset = 6.f;
 /// inset on the left/right side for the image
 static const CGFloat kImageHInset = 15.f;
 /// inset on the top/bottom for the image
-static const CGFloat kImageVInset = 75.f;
+static const CGFloat kImageVInset = 70.f;
+
+/// vertical inset for thumbnails, not included in centering
+static const CGFloat kThumbVMargin = 10.f;
+/// horizontal inset for thumbnails, not included in centering
+static const CGFloat kThumbHMargin = 5.f;
 
 @interface TSLibraryLightTableCell ()
 
@@ -255,6 +260,7 @@ static const CGFloat kImageVInset = 75.f;
 	self.topInfoFileName.foregroundColor = kInfoBoxPrimaryTextColour.CGColor;
 	
 	self.topInfoFileName.alignmentMode = kCAAlignmentLeft;
+	self.topInfoFileName.truncationMode = kCATruncationEnd;
 	
 	self.topInfoFileName.string = @"really_long_filename.jpg";
 	
@@ -273,6 +279,7 @@ static const CGFloat kImageVInset = 75.f;
 	self.topInfoSubtitle.foregroundColor = kInfoBoxSecondaryTextColour.CGColor;
 	
 	self.topInfoSubtitle.alignmentMode = kCAAlignmentLeft;
+	self.topInfoSubtitle.truncationMode = kCATruncationEnd;
 	
 	self.topInfoSubtitle.string = @"First row of subtitle information\nSecond row of subtitle information";
 	
@@ -336,8 +343,8 @@ static const CGFloat kImageVInset = 75.f;
 	CGFloat originalHeight = self.representedObject.rotatedImageSize.height;
 	CGFloat originalWidth = self.representedObject.rotatedImageSize.width;
 	
-	CGFloat xScale = (frame.size.width - (kImageHInset * 2.f)) / originalWidth;
-	CGFloat yScale = (frame.size.height - (kImageVInset * 2.f)) / originalHeight;
+	CGFloat xScale = (frame.size.width - (kImageHInset * 2.f) - (kThumbHMargin * 2.f)) / originalWidth;
+	CGFloat yScale = (frame.size.height - (kImageVInset) - (kThumbVMargin * 2.f)) / originalHeight;
 	
 //	CGFloat scale = (originalWidth < originalHeight) ? fminf(xScale, yScale) : fmaxf(xScale, yScale);
 	CGFloat scale = fminf(xScale, yScale);
@@ -350,6 +357,7 @@ static const CGFloat kImageVInset = 75.f;
 	// center the image in the main layer, and set its frame
 	CGFloat imageX = (frame.size.width - imageSize.width) / 2.f;
 	CGFloat imageY = (frame.size.height - imageSize.height) / 2.f;
+	imageY -= ((kImageVInset - (kImageVInset - kTopInfoBoxHeight)) / 2.f);
 	
 	self.imageLayer.frame = (CGRect) {
 		.size = imageSize,
@@ -498,8 +506,8 @@ shouldInheritContentsScale:(CGFloat) newScale
 	NSSize cellSize = layout.itemSize;
 	
 	NSSize thumbSz = (NSSize) {
-		.width = cellSize.width - (kImageHInset * 2),
-		.height = cellSize.height - (kImageVInset * 2),
+		.width = cellSize.width - (kImageHInset * 2.f),
+		.height = cellSize.height - (kImageVInset),
 	};
 	
 	// actually queue the request

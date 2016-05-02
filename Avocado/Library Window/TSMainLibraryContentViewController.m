@@ -21,4 +21,18 @@
 	
 }
 
+/**
+ * Saves any view options. Keys should be prefixed by some unique value.
+ */
+- (void) saveViewOptions:(NSKeyedArchiver *) archiver {
+	
+}
+
+/**
+ * Restores view options. Keys should be prefixed by some unique value.
+ */
+- (void) restoreViewOptions:(NSKeyedUnarchiver *) unArchiver {
+	
+}
+
 @end
