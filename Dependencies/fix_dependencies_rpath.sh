@@ -10,8 +10,12 @@ install_name_tool LibRaw/lib/.libs/libraw_r.15.dylib -id @executable_path/../Fra
 install_name_tool lensfun-code/cmake_build/libs/lensfun/liblensfun.0.3.2.dylib -id @executable_path/../Frameworks/liblensfun.0.3.2.dylib
 
 install_name_tool lensfun-code/cmake_build/libs/lensfun/liblensfun.0.3.2.dylib -change /usr/local/opt/gettext/lib/libintl.8.dylib @rpath/libintl.8.dylib
+install_name_tool lensfun-code/cmake_build/libs/lensfun/liblensfun.0.3.2.dylib -change /usr/local/opt/glib/lib/libglib-2.0.0.dylib @rpath/libglib-2.0.0.dylib
 
 # gettext (libintl)
 install_name_tool gettext-0.19.7/gettext-runtime/intl/.libs/libintl.8.dylib -id @executable_path/../Frameworks/libintl.8.dylib
 
 # glib
+install_name_tool libglib-2.0.0.dylib -id @executable_path/../Frameworks/libglib-2.0.0.dylib
+
+install_name_tool libglib-2.0.0.dylib -change /usr/local/opt/gettext/lib/libintl.8.dylib @rpath/libintl.8.dylib
