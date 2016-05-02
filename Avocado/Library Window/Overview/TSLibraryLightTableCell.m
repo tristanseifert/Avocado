@@ -181,6 +181,8 @@ static const CGFloat kThumbHMargin = 5.f;
  * view.
  */
 - (void) mouseDown:(NSEvent *) theEvent {
+	[super mouseDown:theEvent];
+	
 	// only perform double click action if an object is associated with the cell
 	if(theEvent.clickCount == 2 && self.representedObject != nil) {
 		[self.controller cellWasDoubleClicked:self];
