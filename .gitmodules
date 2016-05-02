@@ -13,6 +13,3 @@
 [submodule "Dependencies/lensfun-code"]
 	path = Dependencies/lensfun-code
 	url = http://git.code.sf.net/p/lensfun/code
-[submodule "Dependencies/glib"]
-	path = Dependencies/glib
-	url = git://git.gnome.org/glib
