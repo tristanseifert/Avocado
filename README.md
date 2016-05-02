@@ -5,13 +5,12 @@ A native OS X Lightroom alternative, with support for RAW file processing via `L
 The app can be built as normally via Xcode. All dependencies (installed via CocoaPods, and git submodules) must be installed beforehand, however. Several dependencies must also be built:
 
 ### LibRaw
-Execute `./configure` followed by `make all` in the LibRaw directory. The library is automagically built, and Xcode will link with the dylib.
+Execute `./configure --disable-lcms --disable-openmp --disable-static` followed by `make all` in the LibRaw directory. The library is automagically built, and Xcode will link with the dylib.
 
-### LCMS
-Execute `./configure` followed by `make all` in the lcms2-2.7 directory. The library is automagically built, and Xcode will link with the dylib.
+Note that this will disable colour management support in LibRaw; this is not a problem, since we do our own colour management using Cocoa APIs, but this means that all RGB data coming out of LibRaw will be in the sensor colour space.
 
 ### gettext
-This library is needed as a dependency for Lensfun, as OS X does not ship with gettext by default; as thus, it must be built before Lensfun. To build, change into the directory, then run `./configure` followed by `make.`
+This library is needed as a dependency for Lensfun, as OS X does not ship with gettext by default; as thus, it must be built before Lensfun. To build, change into the directory, then run `./configure --disable-java --disable-native-java --disable-curses --disable-libasprintf --disable-openmp --enable-rpath` followed by `make.`
 
 You will need to acquire the gettext source separately, and place it into the Dependencies folder. gettext-0.19.7 is the version used.
 

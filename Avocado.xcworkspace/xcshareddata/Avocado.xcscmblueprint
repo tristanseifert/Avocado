@@ -5,17 +5,24 @@
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
     "FD20869EDA851F60430302C1413AAE5CB043C00D" : 0,
+    "075158AB966662F9FA32B9EDBE6C0C2C513BAE2F" : 0,
     "6BEFAB3BB130345C190F12C07BC483F253E59D5C" : 0
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "4A838C44-F924-4171-A26B-D00EE2C8CE90",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
     "FD20869EDA851F60430302C1413AAE5CB043C00D" : "Avocado\/Dependencies\/LibRaw\/",
+    "075158AB966662F9FA32B9EDBE6C0C2C513BAE2F" : "Avocado\/Dependencies\/lensfun-code\/",
     "6BEFAB3BB130345C190F12C07BC483F253E59D5C" : "Avocado\/"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "Avocado",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
   "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Avocado.xcworkspace",
   "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/git.code.sf.net\/p\/lensfun\/code",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "075158AB966662F9FA32B9EDBE6C0C2C513BAE2F"
+    },
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "gitlab.com:tristanseifert\/avocado.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
