@@ -8,6 +8,11 @@
 
 #import "TSLibraryDetailController.h"
 
+#import "TSHumanModels.h"
+#import "TSMainLibraryWindowController.h"
+
+static void *TSImageKVO = &TSImageKVO;
+
 @interface TSLibraryDetailController ()
 
 @property (nonatomic) NSImage *displayedImage;
@@ -25,16 +30,16 @@
 	
 	// set up image view
 	self.imageDisplayView = [[NSView alloc] initWithFrame:NSZeroRect];
-	
 	self.imageDisplayView.wantsLayer = YES;
 	
 	self.scrollView.documentView = self.imageDisplayView;
 	
 	// uuuh… fugu?
-//	self.displayedImage = [[NSImage alloc] initWithContentsOfFile:@"/Volumes/Datas/Photog/2016/2016-03-24/IMG_0018.CR2"];
-	self.displayedImage = [[NSImage alloc] initWithContentsOfFile:@"/Volumes/Datas/Photog/2016/2016-04-27/IMG_5330.JPG"];
+//	self.displayedImage = [[NSImage alloc] initWithContentsOfFile:@"/Volumes/Datas/Photog/2016/2016-04-27/IMG_5330.JPG"];
+//	[self updateImageView];
 	
-	[self updateImageView];
+	// add KVO for the image
+	[self addObserver:self forKeyPath:@"image" options:0 context:TSImageKVO];
 }
 
 /**
@@ -45,7 +50,7 @@
 	[super prepareWindowForAppearance:window];
 	
 	// set up the custom window appearance
-	window.toolbar.visible = NO;
+	window.toolbar.visible = YES;
 	window.titlebarAppearsTransparent = YES;
 	window.movableByWindowBackground = YES;
 	
@@ -53,6 +58,22 @@
 	
 	NSUInteger styleMask = window.styleMask;
 	window.styleMask = styleMask | NSFullSizeContentViewWindowMask;
+}
+
+#pragma mark KVO
+/**
+ * Handles KVO, including that for the image changing.
+ */
+- (void) observeValueForKeyPath:(NSString *) keyPath
+					   ofObject:(id) object
+						 change:(NSDictionary<NSString *,id> *) change
+						context:(void *) context {
+	// the image property changed
+	if(context == TSImageKVO) {
+		DDLogVerbose(@"Changed image: %@", self.image.fileUrl);
+	} else {
+		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+	}
 }
 
 #pragma mark Image Handling
@@ -75,6 +96,14 @@
 	((NSView *) self.scrollView.documentView).frame = self.imageDisplayView.frame;
 	
 	// zoom out to fit the image
+}
+
+#pragma mark UI Actions
+/**
+ * Returns to the light table.
+ */
+- (IBAction) returnToLightTable:(id) sender {
+	[self.windowController openLightTable];
 }
 
 @end

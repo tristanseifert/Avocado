@@ -8,6 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class TSMainLibraryWindowController;
 @interface TSMainLibraryContentViewController : NSViewController
 
 /**
@@ -24,5 +25,10 @@
  * Restores view options. Keys should be prefixed by some unique value.
  */
 - (void) restoreViewOptions:(NSKeyedUnarchiver *) unArchiver;
+
+/// weak reference to the window controller
+@property (nonatomic, weak) TSMainLibraryWindowController *windowController;
+/// a toolbar that is displayed in the window, if desired
+@property (nonatomic) IBOutlet NSToolbar *windowToolbar;
 
 @end

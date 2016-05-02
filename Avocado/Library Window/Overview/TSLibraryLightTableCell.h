@@ -12,11 +12,15 @@
 
 extern NSString* _Nonnull const TSLibraryLightTableInvalidateThumbsNotificationName;
 
-@class TSLibraryImage;
+@class TSLibraryImage, TSLibraryOverviewLightTableController;
 @interface TSLibraryLightTableCell : NSCollectionViewItem
 
 @property (nullable, strong) TSLibraryImage *representedObject;
 @property (nonatomic) NSUInteger imageSequence;
+
+@property (nullable, nonatomic) IBOutlet NSMenu *contextMenu;
+
+@property (weak, nullable, nonatomic) TSLibraryOverviewLightTableController *controller;
 
 - (void) forceRelayout;
 

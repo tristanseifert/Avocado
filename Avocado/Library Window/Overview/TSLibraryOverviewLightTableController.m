@@ -12,6 +12,8 @@
 #import "TSImportController.h"
 #import "TSLibraryLightTableCell.h"
 #import "TSHumanModels.h"
+#import "TSLibraryOverviewController.h"
+#import "TSMainLibraryWindowController.h"
 
 static void *TSCellsPerRowKVO = &TSCellsPerRowKVO;
 static void *TSSortKeyKVO = &TSSortKeyKVO;
@@ -89,7 +91,7 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
  * Returns the number of images that are in the image browser.
  */
 - (NSInteger) collectionView:(NSCollectionView *) collectionView numberOfItemsInSection:(NSInteger) section {
-	return self.imagesToShow.count;
+	return self.imagesToShow.count * 100;
 }
 
 /**
@@ -98,11 +100,12 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
 - (NSCollectionViewItem *) collectionView:(NSCollectionView *) collectionView itemForRepresentedObjectAtIndexPath:(NSIndexPath *) indexPath {
 	// get a cell
 	TSLibraryLightTableCell *cell = [self.gridView makeItemWithIdentifier:@"ImageCell" forIndexPath:indexPath];
+	cell.controller = self;
 	
 	// set the image
 	NSUInteger idx = [indexPath indexAtPosition:1];
 	
-	cell.representedObject = self.imagesToShow[idx];
+	cell.representedObject = self.imagesToShow[idx % self.imagesToShow.count];
 	cell.imageSequence = idx + 1;
 	
 	return cell;
@@ -247,6 +250,17 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
 //	DDLogVerbose(@"Size of scroll view changed: %@", NSStringFromRect(self.gridView.enclosingScrollView.frame));
 	
 	[self resizeCells];
+}
+
+#pragma mark Cell Actions
+/**
+ * When a cell is double clicked, the editing view controller is to be displayed
+ * with the selected image as its content.
+ */
+- (void) cellWasDoubleClicked:(TSLibraryLightTableCell *) cell {
+	TSLibraryImage *image = cell.representedObject;
+	
+	[self.overviewController.windowController openEditorForImage:image];
 }
 
 @end

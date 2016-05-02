@@ -7,6 +7,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="TSLibraryLightTableCell">
             <connections>
+                <outlet property="contextMenu" destination="LmF-HR-meP" id="K68-aD-CXo"/>
                 <outlet property="view" destination="c22-O7-iKe" id="Yq5-6e-OR6"/>
             </connections>
         </customObject>
@@ -15,6 +16,23 @@
         <customView wantsLayer="YES" id="c22-O7-iKe">
             <rect key="frame" x="0.0" y="0.0" width="480" height="272"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <connections>
+                <outlet property="menu" destination="LmF-HR-meP" id="BWn-q7-Oz4"/>
+            </connections>
         </customView>
+        <menu id="LmF-HR-meP">
+            <items>
+                <menuItem title="Item 1" id="9nS-Op-vVV">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+                <menuItem title="Item 2" id="CiU-BU-D66">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+                <menuItem title="Item 3" id="bjP-DW-Vwf">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+            </items>
+            <point key="canvasLocation" x="491.5" y="675.5"/>
+        </menu>
     </objects>
 </document>

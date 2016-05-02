@@ -13,8 +13,13 @@
 
 #import "TSMainLibraryContentViewController.h"
 
+@class TSLibraryImage;
 @interface TSLibraryDetailController : TSMainLibraryContentViewController
 
 @property (nonatomic) IBOutlet NSScrollView *scrollView;
+
+@property (nonatomic) TSLibraryImage *image;
+
+- (IBAction) returnToLightTable:(id) sender;
 
 @end

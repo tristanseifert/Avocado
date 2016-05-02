@@ -21,35 +21,6 @@
                 <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
                 <autoresizingMask key="autoresizingMask"/>
             </view>
-            <toolbar key="toolbar" implicitIdentifier="F5F16D90-D93D-499B-B134-27B12AD2DA9A" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="ZzB-fR-c2b">
-                <allowedToolbarItems>
-                    <toolbarItem implicitItemIdentifier="NSToolbarShowColorsItem" id="AlQ-Se-exV"/>
-                    <toolbarItem implicitItemIdentifier="NSToolbarShowFontsItem" id="vQM-w8-0KN"/>
-                    <toolbarItem implicitItemIdentifier="NSToolbarPrintItem" id="1YE-eA-tM0"/>
-                    <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="HIB-Ag-AoG"/>
-                    <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="oAZ-Vo-ERI"/>
-                    <toolbarItem implicitItemIdentifier="1BCB200E-FD9D-4798-A1C9-E92F5F3A5D25" label="Search" paletteLabel="Search" id="apT-vH-PX5">
-                        <nil key="toolTip"/>
-                        <size key="minSize" width="225" height="22"/>
-                        <size key="maxSize" width="225" height="22"/>
-                        <searchField key="view" wantsLayer="YES" verticalHuggingPriority="750" id="cxh-Jx-n9X">
-                            <rect key="frame" x="0.0" y="14" width="225" height="22"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" placeholderString="Search" usesSingleLineMode="YES" bezelStyle="round" sendsWholeSearchString="YES" recentsAutosaveName="mainSearchField" id="mew-tp-y1J">
-                                <font key="font" metaFont="system"/>
-                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                            </searchFieldCell>
-                        </searchField>
-                    </toolbarItem>
-                </allowedToolbarItems>
-                <defaultToolbarItems>
-                    <toolbarItem reference="AlQ-Se-exV"/>
-                    <toolbarItem reference="vQM-w8-0KN"/>
-                    <toolbarItem reference="oAZ-Vo-ERI"/>
-                    <toolbarItem reference="apT-vH-PX5"/>
-                </defaultToolbarItems>
-            </toolbar>
             <connections>
                 <outlet property="delegate" destination="-2" id="0bl-1N-AYu"/>
             </connections>

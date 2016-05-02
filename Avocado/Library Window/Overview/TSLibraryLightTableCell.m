@@ -7,6 +7,7 @@
 //
 
 #import "TSLibraryLightTableCell.h"
+#import "TSLibraryOverviewLightTableController.h"
 
 #import "TSThumbCache.h"
 #import "TSHumanModels.h"
@@ -172,6 +173,17 @@ static const CGFloat kThumbHMargin = 5.f;
 	} else {
 		self.view.layer.backgroundColor = nil;
 		self.sequenceNumber.foregroundColor = kSequenceNumberColourUnselected.CGColor;
+	}
+}
+
+/**
+ * Mouse was clicked; on double-click event, send a message to enter the editing
+ * view.
+ */
+- (void) mouseDown:(NSEvent *) theEvent {
+	// only perform double click action if an object is associated with the cell
+	if(theEvent.clickCount == 2 && self.representedObject != nil) {
+		[self.controller cellWasDoubleClicked:self];
 	}
 }
 
@@ -412,12 +424,12 @@ static const CGFloat kThumbHMargin = 5.f;
 	
 	// position the filename and subtitle labels
 	self.topInfoFileName.frame = (CGRect) {
-		.size = CGSizeMake(frame.size.width - 64, 18),
+		.size = CGSizeMake(frame.size.width - (kInfoBoxHInset * 2.f), 18),
 		.origin = CGPointMake(kInfoBoxHInset, kTopInfoBoxHeight - 18 - kInfoBoxVInset)
 	};
 	
 	self.topInfoSubtitle.frame = (CGRect) {
-		.size = CGSizeMake(frame.size.width - 64, 30),
+		.size = CGSizeMake(frame.size.width - (kInfoBoxHInset * 2.f), 30),
 		.origin = CGPointMake(kInfoBoxHInset, kInfoBoxVInset)
 	};
 }

@@ -31,6 +31,8 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
 	
 	// create controller
 	self.lightTableController = [[TSLibraryOverviewLightTableController alloc] initWithGridView:self.lightTableView];
+	self.lightTableController.overviewController = self;
+	
 	self.lightTableController.fetchRequest = [TSLibraryImage MR_createFetchRequest];
 	
 	// set up defaults
@@ -94,14 +96,14 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
 	
 	// set up the custom window appearance
 	window.toolbar.visible = YES;
-	window.titlebarAppearsTransparent = YES;
+	window.titlebarAppearsTransparent = NO;
 	window.movableByWindowBackground = NO;
 	
 	window.titleVisibility = NSWindowTitleHidden;
 	
 	NSUInteger styleMask = window.styleMask;
-	window.styleMask = styleMask & (~NSFullSizeContentViewWindowMask);
-//	window.styleMask = styleMask | NSFullSizeContentViewWindowMask;
+//	window.styleMask = styleMask & (~NSFullSizeContentViewWindowMask);
+	window.styleMask = styleMask | NSFullSizeContentViewWindowMask;
 }
 
 #pragma mark UI Actions

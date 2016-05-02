@@ -8,6 +8,18 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class TSLibraryImage;
 @interface TSMainLibraryWindowController : NSWindowController <NSWindowDelegate>
+
+/**
+ * Sets the editing/detail controller as the content view controller, then
+ * loads the specified image into it.
+ */
+- (void) openEditorForImage:(TSLibraryImage *) image;
+
+/**
+ * Switches to the light table view.
+ */
+- (void) openLightTable;
 
 @end
