@@ -10,3 +10,6 @@
 [submodule "Dependencies/LibRaw-demosaic-pack-GPL3"]
 	path = Dependencies/LibRaw-demosaic-pack-GPL3
 	url = https://github.com/LibRaw/LibRaw-demosaic-pack-GPL3.git
+[submodule "Dependencies/lensfun-code"]
+	path = Dependencies/lensfun-code
+	url = http://git.code.sf.net/p/lensfun/code

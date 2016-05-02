@@ -10,6 +10,14 @@ Execute `./configure` followed by `make all` in the LibRaw directory. The librar
 ### LCMS
 Execute `./configure` followed by `make all` in the lcms2-2.7 directory. The library is automagically built, and Xcode will link with the dylib.
 
+### gettext
+This library is needed as a dependency for Lensfun, as OS X does not ship with gettext by default; as thus, it must be built before Lensfun. To build, change into the directory, then run `./configure` followed by `make.`
+
+You will need to acquire the gettext source separately, and place it into the Dependencies folder. gettext-0.19.7 is the version used.
+
+### Lensfun
+Create a directory named cmake_build, change into it, then execute `cmake ..` to create Makefiles. Build as you normally would. The CMakeList file may need to be patched to use `@rpath` for the install name, and to modify the library search path to use our copy of gettext and glib — see the `lensfun-patches` directory.
+
 ### After all dependencies
 Do not forget to execute the `fix_dependencies_rpath.sh` script in the Dependencies folder, after compiling and building any dependencies. This will fix up paths in these libraries so that they can be properly linked, and will not cause a dylib error at runtime.
 
