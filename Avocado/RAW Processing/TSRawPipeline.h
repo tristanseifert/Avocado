@@ -14,8 +14,9 @@
  * it into usable RGB data that can be processed much more conveniently.
  *
  * Note that up until step 4, data will be in a 16 bit/component unsigned
- * integer (RGBX; 64bpp) format; after applying lens corrections, the image
- * buffer is converted to 16 bit 
+ * integer (RGB; 48bpp) format; after applying lens corrections, the image
+ * buffer is converted to planar 16b floating point RGB. After step 8 is
+ * completed, it is converted to chunky 16b floating point RGBX (64bpp).
  *
  *	1. Debayering of RAW data
  *	2. Demosaicing Bayer data
@@ -26,21 +27,19 @@
  *		b. Geometry corrections (scaling, projection, distortion, chromatic
  *		abberations)
  *	4. vImage gamma correction
- *	5. Conversion to working colour space
- *	6. Rotation and bitmap creation
- *	7. vImage (de)convolution operations
- *	8. vImage rotation/flip
- *	9. vImage 'morphological' operations
- *	10. vImage histogram operations (exposure, contrast, etc.)
- *	11. CoreImage filter pass
+ *	5. vImage rotation/flip (to account for flipped status of image)
+ *	6. vImage (de)convolution operations
+ *	7. vImage 'morphological' operations
+ *	8. vImage histogram operations (exposure, contrast, etc.)
+ *	9. CoreImage filter pass
  *		a. Noise reduction, blurs
  *		b. Sharpening (luminance, unsharp mask)
  *		c. Colour adjustments and effects
  *		d. Distortion effects
  *		e. Geometry adjustments (crop, scaling, straightening, etc.)
  *		f. Vignetting and grain
- *	12. Generate final histogram (displayed in UI)
- *	13. Display transformations
+ *	10. Generate final histogram (displayed in UI)
+ *	11. Display transformations
  *		a. Convert to output (display/sRGB/Adobe RGB) colour space
  *		b. Convert to a different bitmap format
  *
@@ -71,23 +70,21 @@ typedef NS_ENUM(NSUInteger, TSRawPipelineStage) {
 	TSRawPipelineStageLensDistortions		= (3 << 16) | 2,
 	
 	TSRawPipelineStageGammaCorrection		= (4 << 16),
-	TSRawPipelineStageColourSpaceConversion	= (5 << 16),
-	TSRawPipelineStageRotation				= (6 << 16),
-	TSRawPipelineStageConvolution			= (7 << 16),
-	TSRawPipelineStageRotationFlip			= (8 << 16),
-	TSRawPipelineStageMorphological			= (9 << 16),
-	TSRawPipelineStageHistogramModification	= (10 << 16),
+	TSRawPipelineStageRotationFlip			= (5 << 16),
+	TSRawPipelineStageConvolution			= (6 << 16),
+	TSRawPipelineStageMorphological			= (7 << 16),
+	TSRawPipelineStageHistogramModification	= (8 << 16),
 	
-	TSRawPipelineStageCoreImageFilter		= (11 << 16),
-	TSRawPipelineStageCINoiseReduceBlur		= (11 << 16) | 1,
-	TSRawPipelineStageCISharpening			= (11 << 16) | 2,
-	TSRawPipelineStageCIColourAdjustments	= (11 << 16) | 3,
-	TSRawPipelineStageCIDistortionEffects	= (11 << 16) | 4,
-	TSRawPipelineStageCIGeometryAdjustments	= (11 << 16) | 5,
-	TSRawPipelineStageCIVignetteGrain		= (11 << 16) | 6,
+	TSRawPipelineStageCoreImageFilter		= (9 << 16),
+	TSRawPipelineStageCINoiseReduceBlur		= (9 << 16) | 1,
+	TSRawPipelineStageCISharpening			= (9 << 16) | 2,
+	TSRawPipelineStageCIColourAdjustments	= (9 << 16) | 3,
+	TSRawPipelineStageCIDistortionEffects	= (9 << 16) | 4,
+	TSRawPipelineStageCIGeometryAdjustments	= (9 << 16) | 5,
+	TSRawPipelineStageCIVignetteGrain		= (9 << 16) | 6,
 	
-	TSRawPipelineStageGenerateHistogram		= (12 << 16),
-	TSRAWPipelineStageDisplayTransform		= (13 << 16)
+	TSRawPipelineStageGenerateHistogram		= (10 << 16),
+	TSRAWPipelineStageDisplayTransform		= (11 << 16)
 };
 
 /// mask for the major pipeline stage

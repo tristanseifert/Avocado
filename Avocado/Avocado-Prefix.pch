@@ -16,6 +16,13 @@
 #ifdef __OBJC__
 #import <CocoaLumberjack/CocoaLumberjack.h>
 
+// define C assert
+#define DDCAssert(condition, frmt, ...)                                                \
+	if (!(condition)) {                                                           \
+		NSString *description = [NSString stringWithFormat:frmt, ## __VA_ARGS__]; \
+		DDLogError(@"%@", description);                                           \
+		NSCAssert(NO, description);                                                \
+}
 // define log level
 #if DEBUG
 static const DDLogLevel ddLogLevel = DDLogLevelVerbose;

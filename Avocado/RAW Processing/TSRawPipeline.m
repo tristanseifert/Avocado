@@ -7,9 +7,16 @@
 //
 
 #import "TSRawPipeline.h"
+#import "TSRawPipeline_Types.h"
+#import "TSRawPipeline_PixelFormat.h"
 
 #import "TSHumanModels.h"
 #import "TSRawImage.h"
+
+#import <Foundation/Foundation.h>
+#import <CoreGraphics/CoreGraphics.h>
+#import <CoreImage/CoreImage.h>
+#import <Accelerate/Accelerate.h>
 
 @interface TSRawPipeline ()
 
@@ -18,6 +25,9 @@
 
 /// raw stage cache; each image's URL + stage is the key
 @property (nonatomic) NSCache *rawStageCache;
+
+/// CoreImage context; hardware-accelerated processing for filters
+@property (nonatomic) CIContext *ciContext;
 
 @end
 
@@ -38,6 +48,17 @@
 		
 		// set up cache
 		self.rawStageCache = [NSCache new];
+		
+		// set up CoreImage context
+		NSDictionary *ciOptions = @{
+			// request GPU rendering if possible
+			kCIContextUseSoftwareRenderer: @NO,
+			// use RGBAF format
+			kCIContextWorkingFormat: @(kCIFormatRGBAh)
+		};
+		
+		self.ciContext = [CIContext contextWithOptions:ciOptions];
+		DDAssert(self.ciContext != nil, @"Could not allocate CIContext");
 	}
 	
 	return self;
