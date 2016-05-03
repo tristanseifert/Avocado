@@ -524,6 +524,14 @@ shouldInheritContentsScale:(CGFloat) newScale
 		.height = cellSize.height - (kImageVInset),
 	};
 	
+	// ensure no component is negative
+	if(thumbSz.width < 0 || thumbSz.height < 0) {
+		DDLogVerbose(@"Ignoring invalid size for %@", self.representedObject.fileUrl);
+		return;
+	}
+	
+//	DDLogVerbose(@"Sz = %@ for %@", NSStringFromSize(thumbSz), self.representedObject.fileUrl);
+	
 	// actually queue the request
 	[[TSThumbCache sharedInstance] getThumbForImage:self.representedObject
 										   withSize:thumbSz
