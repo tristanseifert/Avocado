@@ -13,52 +13,224 @@
 #import "TSRawPipeline_PixelFormat.h"
 #import "TSRawPipeline_Types.h"
 
+static inline vImage_Buffer TSRawPipelinevImageBufferForPlane(TSPixelConverterRef converter, NSUInteger plane);
+
+#pragma mark Types
+/**
+ * Pipeline pixel convertion state structure. This contains pointers to the
+ * various buffers used, as well as some information about the source image and
+ * its data.
+ */
+struct TSPixelConverter {
+	/// Input data, 48bpp unsigned int RGB
+	uint16_t *inData;
+	
+	/// Buffer for final output (interleaved floating point RGBA, 128bpp)
+	Pixel_FFFF *outData;
+	/// Size of the outData buffer
+	size_t outDataSize;
+	/// Number of bytes per line in the output data
+	size_t outDataBytesPerLine;
+	
+	/// Buffer for interleaved three component floating point RGB
+	Pixel_F *interleavedFloatData;
+	/// Number of bytes per line in the interleaved float data
+	size_t interleavedFloatDataBytesPerLine;
+	
+	/// Buffers for each of the R, G and B planes
+	Pixel_F *plane[3];
+	/// Size of each of the planes
+	size_t planeSize;
+	/// Number of bytes per line in each of the planes
+	size_t planeBytesPerLine;
+	
+	/// width of the source image
+	NSUInteger inWidth;
+	/// height of the source image
+	NSUInteger inHeight;
+};
+
+#pragma mark Initializers
+/**
+ * Sets up an instance of the conversion pipeline, with the given input data
+ * and size.
+ */
+TSPixelConverterRef TSRawPipelineCreateConverter(void *inData, size_t inWidth, size_t inHeight) {
+	// validate parameters
+	DDCAssert(inData != NULL, @"input buffer may not be NULL");
+	DDCAssert(inWidth > 0, @"width may not be 0");
+	DDCAssert(inHeight > 0, @"height may not be 0");
+	
+	// allocate memory for an info struct
+	TSPixelConverterRef info = calloc(1, sizeof(struct TSPixelConverter));
+	
+	// copy data
+	info->inData = inData;
+	info->inWidth = inWidth;
+	info->inHeight = inHeight;
+	
+	
+	// assume no additional packing in bytes/line for interleaved float data
+	info->interleavedFloatDataBytesPerLine = (inWidth * 3 * sizeof(Pixel_F));
+	
+	// calculate bytes/line and buffer size for output
+	info->outDataBytesPerLine = inWidth * sizeof(Pixel_FFFF);
+	
+	if(info->outDataBytesPerLine & 0x1F) {
+		// align to a 32 byte boundary
+		info->outDataBytesPerLine += (0x20 - (info->outDataBytesPerLine & 0x1F));
+	}
+	
+	info->outDataSize = info->outDataBytesPerLine * inHeight;
+	
+	// calculate bytes/line and buffer size for each of the planes
+	info->planeBytesPerLine = inWidth * sizeof(Pixel_F);
+	
+	if(info->planeBytesPerLine & 0x1F) {
+		// align to a 32 byte boundary
+		info->planeBytesPerLine += (0x20 - (info->planeBytesPerLine & 0x1F));
+	}
+	
+	info->planeSize = info->planeBytesPerLine * inHeight;
+	
+	
+	// allocate buffers
+	info->outData = (Pixel_FFFF *) valloc(info->outDataSize);
+	
+	for(NSUInteger i = 0; i < 3; i++) {
+		info->plane[i] = (Pixel_F *) valloc(info->planeSize);
+	}
+	
+	/*
+	 * To save on memory, use the 4 component buffer for the 3 component
+	 * interleaved data, since that is only needed temporarily while the data
+	 * is converted to planar format.
+	 */
+	info->interleavedFloatData = (Pixel_F *) info->outData;
+	
+	return info;
+}
+
+/**
+ * Destroys the given pixel conveter, deallocating any memory that was allocated
+ * previously.
+ */
+void TSRawPipelineFreeConverter(TSPixelConverterRef converter) {
+	// free the buffers
+	for(NSUInteger i = 0; i < 3; i++) {
+		free(converter->plane[i]);
+	}
+	
+	// free the interleaved float and output data pointers
+	free(converter->interleavedFloatData);
+	
+	if(((intptr_t) converter->interleavedFloatData) != ((intptr_t) converter->outData))
+		free(converter->outData);
+	
+	// free the structure itself
+	free(converter);
+}
+
+#pragma mark Helpers
+/**
+ * Returns a prepopulated vImage struct for one of the three planes of a given
+ * converter.
+ */
+static inline vImage_Buffer TSRawPipelinevImageBufferForPlane(TSPixelConverterRef converter, NSUInteger plane) {
+	return (vImage_Buffer) {
+		.data = converter->plane[plane],
+		.rowBytes = converter->planeBytesPerLine,
+		.width = converter->inWidth,
+		.height = converter->inHeight
+	};
+}
+
+#pragma mark Getters
+/**
+ * Returns a pointer to the original input data.
+ *
+ * @param converter Converter whose info to return.
+ */
+void *TSRawPipelineGetOriginalData(TSPixelConverterRef converter) {
+	return converter->inData;
+}
+
+/**
+ * Returns a pointer to the final RGBX data.
+ *
+ * @param converter Converter whose info to return.
+ */
+Pixel_FFFF *TSRawPipelineGetRGBXPointer(TSPixelConverterRef converter) {
+	return converter->outData;
+}
+
+/**
+ * Places the width and height in the given pointer variables.
+ *
+ * @param converter Converter from which to get the information.
+ * @param outWidth Pointer to a variable to hold width, or NULL.
+ * @param outHeight Pointer to a variable to hold height, or NULL.
+ */
+void TSRawPipelineGetSize(TSPixelConverterRef converter, NSUInteger *outWidth, NSUInteger *outHeight) {
+	// width
+	if(outWidth != NULL)
+		*outWidth = converter->inWidth;
+	
+	// height
+	if(outHeight != NULL)
+		*outHeight = converter->inHeight;
+}
+
+/**
+ * Returns the vImage buffer for a given plane.
+ *
+ * @param converter Converter from which to get the information.
+ * @param plane The numbered plane for which to get data, in the range [0..2].
+ */
+vImage_Buffer TSRawPipelineGetPlanevImageBufferBuffer(TSPixelConverterRef converter, NSUInteger plane) {
+	// just use the internal function for now
+	return TSRawPipelinevImageBufferForPlane(converter, plane);
+}
+
 #pragma mark Format Conversions
 /**
  * Converts input RGB data (in RGB, 48bpp format, unsigned int) to a interleaved
  * floating point (out RGB, 96bpp) format.
  *
- * @param inBuf Input buffer, in RGB format.
- * @param inWidth Width of the image, in pixels.
- * @param inHeight Height of the image, in pixels.
+ * @param converter Converter object to use, containing the buffers into which
+ * data is written.
  * @param maxValue Maximum value in the input pixel data. The floating point
  * buffer is normalized, such that this value corresponds to 1.0.
- * @param outBuf Output buffer, (inWidth * inHeight * 3 * sizeof(Pixel_F)) bytes
- * long at a minimum. Must be aligned to at least a 64 byte boundary; use of
- * valloc is reccomended.
  *
  * @return YES if successful, NO otherwise.
  *
  * @note The output data will still be RGB format, but instead expanded to be
  * 32bit floating point per component.
  */
-BOOL TSRawPipelineConvertRGB16UToFloat(void *inBuf, size_t inWidth, size_t inHeight, uint16_t maxValue, void *outBuf) {
+BOOL TSRawPipelineConvertRGB16UToFloat(TSPixelConverterRef converter, uint16_t maxValue) {
 	vImage_Error error = kvImageNoError;
 	vImage_Buffer vImageBufIn, vImageBufOut;
 	
-	// validate input values
-	DDCAssert(inBuf != NULL, @"input buffer may not be NULL");
-	DDCAssert(inWidth > 0, @"width may not be 0");
-	DDCAssert(inHeight > 0, @"height may not be 0");
+	// validate parameters
+	DDCAssert(converter != NULL, @"converter may not be NULL");
 	DDCAssert(maxValue > 0, @"maximum value may not be 0");
-	DDCAssert(outBuf != NULL, @"output buffer may not be NULL");
 	
 	// calculate the scale of input values
 	float scale = 1 / ((float) maxValue);
 	
 	// create a vImage buffer for the input and output
 	vImageBufIn = (vImage_Buffer) {
-		.data = inBuf,
-		.width = (inWidth * 3), // trick to convert each component
-		.height = inHeight,
-		.rowBytes = (inWidth * 3 * sizeof(uint16_t))
+		.data = converter->inData,
+		.width = (converter->inWidth * 3), // trick to convert each component
+		.height = converter->inHeight,
+		.rowBytes = (converter->inWidth * 3 * sizeof(uint16_t))
 	};
 	
 	vImageBufOut = (vImage_Buffer) {
-		.data = outBuf,
-		.width = (inWidth * 3),
-		.height = inHeight,
-		.rowBytes = (inWidth * 3 * sizeof(Pixel_F))
+		.data = converter->interleavedFloatData,
+		.width = (converter->inWidth * 3),
+		.height = converter->inHeight,
+		.rowBytes = converter->interleavedFloatDataBytesPerLine
 	};
 	
 	// perform the conversion and check for errors
@@ -74,76 +246,33 @@ BOOL TSRawPipelineConvertRGB16UToFloat(void *inBuf, size_t inWidth, size_t inHei
 }
 
 /**
- * Takes a buffer of interleaved RGB data (RGB, 96bpp, 32-bit float) and splits
- * it into three planar arrays.
+ * Converts the interlaced 96bpp floating point RGB data to three distinct
+ * 32bit planes; one for each of the three colour components.
  *
- * @param inBuf A buffer that contains interleaved 96bpp data, such as the one
- * filled by TSRawPipelineConvertRGB16UToFloat. This buffer is re-used for one
- * of the planes.
- * @param inWidth Width of the image, in pixels.
- * @param inHeight Height of the image, in pixels.
+ * @param converter Converter object whose planes should be converted.
  *
- * @return A pointer to a planar buffer struct if successful, NULL otherwise.
+ * @return YES if successful, NO otherwise.
+ *
+ * @note This must be called after `TSRawPipelineConvertRGB16UToFloat` or the
+ * results will be undefined.
  */
-TSPlanarBufferRGB *TSRawPipelineConvertRGBFFFToPlanarF(void *inBuf, size_t inWidth, size_t inHeight) {
+BOOL TSRawPipelineConvertRGBFFFToPlanarF(TSPixelConverterRef converter) {
 	vImage_Error error = kvImageNoError;
 	
-	// ensure input values are logical
-	DDCAssert(inBuf != NULL, @"input buffer may not be NULL");
-	DDCAssert(inWidth > 0, @"width may not be 0");
-	DDCAssert(inHeight > 0, @"height may not be 0");
+	// validate parameters
+	DDCAssert(converter != NULL, @"converter may not be NULL");
 	
-	// figure out bytes/line that's a multiple of 32 bytes, and size for the G/B planes
-	size_t planarBytesPerRow = inWidth * sizeof(Pixel_F);
-	
-	if(planarBytesPerRow & 0x1F) {
-		planarBytesPerRow += (0x20 - (planarBytesPerRow & 0x1F));
-	}
-	
-	size_t planarBufSize = planarBytesPerRow * inHeight;
-	
-	// allocate planar output buffers for R/G/B
-	Pixel_F *pGBuffer = valloc(planarBufSize);
-	Pixel_F *pBBuffer = valloc(planarBufSize);
-	
-	/*
-	 * Create vImage buffer descriptors for each of the planes with all the
-	 * information previously discovered.
-	 *
-	 * Note that the red channel buffer utilizes the input buffer as its
-	 * buffer pointer; this is no mistake. Even though the input buffer is thrice
-	 * as large as it needs to be for this purpose, it saves the cost of yet
-	 * another memory allocation, and saves quite a bit of memory.
-	 */
-	vImage_Buffer vImageBufR = {
-		.data = inBuf,
-		.rowBytes = planarBytesPerRow,
-		.width = inWidth,
-		.height = inHeight
-	};
-	
-	vImage_Buffer vImageBufG = {
-		.data = pGBuffer,
-		.rowBytes = planarBytesPerRow,
-		.width = inWidth,
-		.height = inHeight
-	};
-	
-	vImage_Buffer vImageBufB = {
-		.data = pBBuffer,
-		.rowBytes = planarBytesPerRow,
-		.width = inWidth,
-		.height = inHeight
-	};
+	// create vImage descriptors for all three planes
+	vImage_Buffer vImageBufR = TSRawPipelinevImageBufferForPlane(converter, 0);
+	vImage_Buffer vImageBufG = TSRawPipelinevImageBufferForPlane(converter, 1);
+	vImage_Buffer vImageBufB = TSRawPipelinevImageBufferForPlane(converter, 2);
 	
 	// set up struct for input buffer
 	vImage_Buffer vImageBufIn = {
-		.data = inBuf,
-		.width = inWidth,
-		.height = inHeight,
-		
-		// there is no additional padding per line on the input buffer
-		.rowBytes = (inWidth * 3)
+		.data = converter->interleavedFloatData,
+		.width = converter->inWidth,
+		.height = converter->inHeight,
+		.rowBytes = converter->interleavedFloatDataBytesPerLine
 	};
 	
 	// perform the conversion and check for errors
@@ -151,101 +280,52 @@ TSPlanarBufferRGB *TSRawPipelineConvertRGBFFFToPlanarF(void *inBuf, size_t inWid
 	
 	if(error != kvImageNoError) {
 		DDLogError(@"Error converting RGBFFF -> PlanarF: %li", error);
-		return NULL;
+		return NO;
 	}
 	
-	// return the buffer
-	TSPlanarBufferRGB *buffer = (TSPlanarBufferRGB *) calloc(1, sizeof(TSPlanarBufferRGB));
-	
-	buffer->components[0] = inBuf;
-	buffer->components[1] = pGBuffer;
-	buffer->components[2] = pBBuffer;
-	
-	buffer->componentsFree = (1 << 1) | (1 << 2);
-	
-	buffer->bytes_per_line = planarBytesPerRow;
-	buffer->width = inWidth;
-	buffer->height = inHeight;
-	
-	return buffer;
+	// we're done
+	return YES;
 }
 
 /**
- * Converts a planar 32bit floating point buffer to a 128bpp RGBX interleaved
- * buffer.
+ * Converts the the three 32bit floating point planes to a single interleaved
+ * 128bpp RGBX buffer. In this case, X is fixed at 1.0.
  *
- * @param buffer Input buffer to convert to RGBX. The input buffer will be
- * freed as part of this operation.
+ * @param converter Converter object whose planes should be converted.
  *
- * @return An interleaved buffer structure with relevant information.
+ * @return YES if successful, NO otherwise.
+ *
+ * @note This must be called after the planes have been filled in with correct
+ * data, such as after a call to `TSRawPipelineConvertRGBFFFToPlanarF;` the
+ * output is otherwise undefined.
  */
-TSInterleavedBufferRGBX *TSRawPipelineConvertPlanarFToRGBXFFFF(TSPlanarBufferRGB *inBuffer) {
+BOOL TSRawPipelineConvertPlanarFToRGBXFFFF(TSPixelConverterRef converter) {
 	vImage_Error error = kvImageNoError;
 	
-	// ensure input values are logical
-	DDCAssert(inBuffer != NULL, @"input buffer may not be NULL");
+	// validate parameters
+	DDCAssert(converter != NULL, @"converter may not be NULL");
 	
-	// figure out bytes/line that's a multiple of 32 bytes, and the buffer size
-	size_t chunkyBytesPerRow = inBuffer->width * sizeof(Pixel_FFFF);
-	
-	if(chunkyBytesPerRow & 0x1F) {
-		chunkyBytesPerRow += (0x20 - (chunkyBytesPerRow & 0x1F));
-	}
-	
-	size_t chunkyBufSize = chunkyBytesPerRow * inBuffer->height;
-	
-	// allocate memory for, and create a vImage buffer struct for the dest buffer
-	Pixel_F *chunkyBuf = (Pixel_F *) valloc(chunkyBufSize);
-	
+	// create vImage buffer struct for output buffer
 	vImage_Buffer vImageBufDest = {
-		.data = chunkyBuf,
-		.rowBytes = chunkyBytesPerRow,
-		.width = inBuffer->width,
-		.height = inBuffer->height
+		.data = converter->outData,
+		.rowBytes = converter->outDataBytesPerLine,
+		.width = converter->inWidth,
+		.height = converter->inHeight
 	};
 	
-	// create vImage buffer structs for the input components
-	vImage_Buffer vImageBufR = {
-		.data = inBuffer->components[0],
-		.rowBytes = inBuffer->bytes_per_line,
-		.width = inBuffer->width,
-		.height = inBuffer->height
-	};
-	
-	vImage_Buffer vImageBufG = {
-		.data = inBuffer->components[1],
-		.rowBytes = inBuffer->bytes_per_line,
-		.width = inBuffer->width,
-		.height = inBuffer->height
-	};
-	
-	vImage_Buffer vImageBufB = {
-		.data = inBuffer->components[2],
-		.rowBytes = inBuffer->bytes_per_line,
-		.width = inBuffer->width,
-		.height = inBuffer->height
-	};
+	// create vImage descriptors for all three planes
+	vImage_Buffer vImageBufR = TSRawPipelinevImageBufferForPlane(converter, 0);
+	vImage_Buffer vImageBufG = TSRawPipelinevImageBufferForPlane(converter, 1);
+	vImage_Buffer vImageBufB = TSRawPipelinevImageBufferForPlane(converter, 2);
 	
 	// perform the conversion and check for errors
 	error = vImageConvert_PlanarFToRGBXFFFF(&vImageBufR, &vImageBufG, &vImageBufB, 1.f, &vImageBufDest, kvImageNoFlags);
 	
 	if(error != kvImageNoError) {
 		DDLogError(@"Error converting 3xPlanarF -> RGBX: %li", error);
-		return NULL;
+		return NO;
 	}
 	
-	// free the input buffer
-	TSFreePlanarBufferRGB(inBuffer);
-	
-	// create a buffer struct and populate it
-	TSInterleavedBufferRGBX *buffer = (TSInterleavedBufferRGBX *) calloc(1, sizeof(TSInterleavedBufferRGBX));
-	
-	buffer->data = chunkyBuf;
-	buffer->componentsFree = (1 << 0);
-	
-	buffer->bytes_per_line = chunkyBytesPerRow;
-	buffer->width = inBuffer->width;
-	buffer->height = inBuffer->height;
-	
-	return buffer;
+	// we're done
+	return YES;
 }

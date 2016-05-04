@@ -14,51 +14,97 @@
 #ifndef TSRawPipeline_PixelFormat_h
 #define TSRawPipeline_PixelFormat_h
 
+#import <Accelerate/Accelerate.h>
+
 #import "TSRawPipeline_Types.h"
 
+#pragma mark Initializers
+/**
+ * Sets up an instance of the conversion pipeline, with the given input data
+ * and size.
+ */
+TSPixelConverterRef TSRawPipelineCreateConverter(void *inData, size_t inWidth, size_t inHeight);
+
+/**
+ * Destroys the given pixel conveter, deallocating any memory that was allocated
+ * previously.
+ */
+void TSRawPipelineFreeConverter(TSPixelConverterRef converter);
+
+#pragma mark Getters
+/**
+ * Returns a pointer to the original input data.
+ *
+ * @param converter Converter whose info to return.
+ */
+void *TSRawPipelineGetOriginalData(TSPixelConverterRef converter);
+
+/**
+ * Returns a pointer to the final RGBX data.
+ *
+ * @param converter Converter whose info to return.
+ */
+Pixel_FFFF *TSRawPipelineGetRGBXPointer(TSPixelConverterRef converter);
+
+/**
+ * Places the width and height in the given pointer variables.
+ *
+ * @param converter Converter from which to get the information.
+ * @param outWidth Pointer to a variable to hold width, or NULL.
+ * @param outHeight Pointer to a variable to hold height, or NULL.
+ */
+void TSRawPipelineGetSize(TSPixelConverterRef converter, NSUInteger *outWidth, NSUInteger *outHeight);
+
+/**
+ * Returns the vImage buffer for a given plane.
+ *
+ * @param converter Converter from which to get the information.
+ * @param plane The numbered plane for which to get data, in the range [0..2].
+ */
+vImage_Buffer TSRawPipelineGetPlanevImageBufferBuffer(TSPixelConverterRef converter, NSUInteger plane);
+
+#pragma mark Format Conversions
 /**
  * Converts input RGB data (in RGB, 48bpp format, unsigned int) to a interleaved
  * floating point (out RGB, 96bpp) format.
  *
- * @param inBuf Input buffer, in RGB format.
- * @param inWidth Width of the image, in pixels.
- * @param inHeight Height of the image, in pixels.
+ * @param converter Converter object to use, containing the buffers into which
+ * data is written.
  * @param maxValue Maximum value in the input pixel data. The floating point
  * buffer is normalized, such that this value corresponds to 1.0.
- * @param outBuf Output buffer, (inWidth * inHeight * 3 * sizeof(Pixel_F)) bytes
- * long at a minimum. Must be aligned to at least a 64 byte boundary; use of
- * valloc is reccomended.
  *
  * @return YES if successful, NO otherwise.
  *
  * @note The output data will still be RGB format, but instead expanded to be
  * 32bit floating point per component.
  */
-BOOL TSRawPipelineConvertRGB16UToFloat(void *inBuf, size_t inWidth, size_t inHeight, uint16_t maxValue, void *outBuf);
+BOOL TSRawPipelineConvertRGB16UToFloat(TSPixelConverterRef converter, uint16_t maxValue);
 
 /**
- * Takes a buffer of interleaved RGB data (RGB, 96bpp, 32-bit float) and splits
- * it into three planar arrays.
+ * Converts the interlaced 96bpp floating point RGB data to three distinct
+ * 32bit planes; one for each of the three colour components.
  *
- * @param inBuf A buffer that contains interleaved 96bpp data, such as the one
- * filled by TSRawPipelineConvertRGB16UToFloat. This buffer is re-used for one
- * of the planes.
- * @param inWidth Width of the image, in pixels.
- * @param inHeight Height of the image, in pixels.
+ * @param converter Converter object whose planes should be converted.
  *
- * @return A pointer to a planar buffer struct if successful, NULL otherwise.
+ * @return YES if successful, NO otherwise.
+ *
+ * @note This must be called after `TSRawPipelineConvertRGB16UToFloat` or the
+ * results will be undefined.
  */
-TSPlanarBufferRGB *TSRawPipelineConvertRGBFFFToPlanarF(void *inBuf, size_t inWidth, size_t inHeight);
+BOOL TSRawPipelineConvertRGBFFFToPlanarF(TSPixelConverterRef converter);
 
 /**
- * Converts a planar 32bit floating point buffer to a 128bpp RGBX interleaved
- * buffer.
+ * Converts the the three 32bit floating point planes to a single interleaved
+ * 128bpp RGBX buffer. In this case, X is fixed at 1.0.
  *
- * @param buffer Input buffer to convert to RGBX. The input buffer will be
- * freed as part of this operation.
+ * @param converter Converter object whose planes should be converted.
  *
- * @return An interleaved buffer structure with relevant information.
+ * @return YES if successful, NO otherwise.
+ *
+ * @note This must be called after the planes have been filled in with correct
+ * data, such as after a call to `TSRawPipelineConvertRGBFFFToPlanarF;` the
+ * output is otherwise undefined.
  */
-TSInterleavedBufferRGBX *TSRawPipelineConvertPlanarFToRGBXFFFF(TSPlanarBufferRGB *inBuffer);
+BOOL TSRawPipelineConvertPlanarFToRGBXFFFF(TSPixelConverterRef converter);
 
 #endif /* TSRawPipeline_PixelFormat_h */

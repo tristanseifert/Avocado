@@ -10,18 +10,43 @@
 
 #import "TSRawPipeline_PixelFormat.h"
 
+struct TSPixelConverter {
+	/// Input data, 48bpp unsigned int RGB
+	uint16_t *inData;
+	
+	/// Buffer for final output (interleaved floating point RGBA, 128bpp)
+	Pixel_FFFF *outData;
+	/// Size of the outData buffer
+	size_t outDataSize;
+	/// Number of bytes per line in the output data
+	size_t outDataBytesPerLine;
+	
+	/// Buffer for interleaved three component floating point RGB
+	Pixel_F *interleavedFloatData;
+	/// Number of bytes per line in the interleaved float data
+	size_t interleavedFloatDataBytesPerLine;
+	
+	/// Buffers for each of the R, G and B planes
+	Pixel_F *plane[3];
+	/// Size of each of the planes
+	size_t planeSize;
+	/// Number of bytes per line in each of the planes
+	size_t planeBytesPerLine;
+	
+	/// width of the source image
+	NSUInteger inWidth;
+	/// height of the source image
+	NSUInteger inHeight;
+};
+
 /// sets the size of the test
-static NSUInteger imgWidth = 1024;
-static NSUInteger imgHeight = 768;
+static NSUInteger imgWidth = 5760; // 1024;
+static NSUInteger imgHeight = 3840; // 768;
 
 @interface TSRawPipelinePixelFormatTests : XCTestCase
 
 @property (nonatomic) uint16_t *imageBuffer;
-
-// re-useable helpers
-- (void *) produceFloatBufferInterleaved;
-- (TSPlanarBufferRGB *) producePlanarFromInterleaved:(void *) inBuf;
-- (TSInterleavedBufferRGBX *) produceInterleavedFromPlanar:(TSPlanarBufferRGB *) inBuf;
+@property (nonatomic) TSPixelConverterRef converter;
 
 @end
 
@@ -45,11 +70,15 @@ static NSUInteger imgHeight = 768;
 			*imagePtr++ = 0x4000; // B
 		}
 	}
+	
+	// set up the converterizor pls.
+	self.converter = TSRawPipelineCreateConverter(self.imageBuffer, imgWidth, imgHeight);
 }
 
 - (void) tearDown {
 	// free the buffer
 	free(self.imageBuffer);
+	TSRawPipelineFreeConverter(self.converter);
 	
 	// perform super behaviour
     [super tearDown];
@@ -62,12 +91,12 @@ static NSUInteger imgHeight = 768;
 - (void) testInterleaved16UToInterleavedF {
 	// time conversion to float data
 	[self measureBlock:^{
-		Pixel_F *floatData = [self produceFloatBufferInterleaved];
-		
-		// ensure it isn't nil
-		XCTAssert(floatData != NULL, @"Error during short -> float conversion");
+		BOOL success = TSRawPipelineConvertRGB16UToFloat(self.converter, 0x4000);
+		XCTAssertTrue(success, @"Error during short -> float conversion");
 		
 		// ensure that there are certain test values
+		Pixel_F *floatData = self.converter->interleavedFloatData;
+		
 		XCTAssertEqual(floatData[0], 0.25f, @"imageData[0] (R) != 0.25");
 		XCTAssertEqual(floatData[1], 0.5f, @"imageData[1] (G) != 0.5");
 		XCTAssertEqual(floatData[2], 1.f, @"imageData[2] (B) != 1.0");
@@ -83,24 +112,20 @@ static NSUInteger imgHeight = 768;
 - (void) testInterleavedFToPlanarF {
 	// time conversion to planar
 	[self measureBlock:^{
+		BOOL success;
+		
 		// first, convert to float
-		Pixel_F *floatData = [self produceFloatBufferInterleaved];
-		XCTAssert(floatData != NULL, @"Error during short -> float conversion");
+		success = TSRawPipelineConvertRGB16UToFloat(self.converter, 0x4000);
+		XCTAssertTrue(success, @"Error during short -> float conversion");
 		
-		// convert pls
-		TSPlanarBufferRGB *buf = [self producePlanarFromInterleaved:floatData];
-		
-		// ensure it isn't nil
-		XCTAssert(buf != NULL, @"Error during float interleaved -> planar");
+		// convert to planar
+		success = TSRawPipelineConvertRGBFFFToPlanarF(self.converter);
+		XCTAssertTrue(success, @"Error during float interleaved -> planar");
 		
 		// ensure that there are certain test values
-		XCTAssertEqual(buf->components[0][0], 0.25f, @"plane[0][0] (R) != 0.25");
-		XCTAssertEqual(buf->components[1][0], 0.5f, @"plane[1][0] (G) != 0.5");
-		XCTAssertEqual(buf->components[2][0], 1.f, @"plane[2][0] (B) != 1.0");
-		
-		// clean up
-//		free(floatData);
-//		TSFreePlanarBufferRGB(buf);
+		XCTAssertEqual(self.converter->plane[0][0], 0.25f, @"plane[0][0] (R) != 0.25");
+		XCTAssertEqual(self.converter->plane[1][0], 0.5f, @"plane[1][0] (G) != 0.5");
+		XCTAssertEqual(self.converter->plane[2][0], 1.f, @"plane[2][0] (B) != 1.0");
 	}];
 }
 
@@ -111,65 +136,29 @@ static NSUInteger imgHeight = 768;
 - (void) testPlanarFToRGBXFFFF {
 	// time conversion to planar
 	[self measureBlock:^{
+		BOOL success;
+		
 		// first, convert to float
-		Pixel_F *floatData = [self produceFloatBufferInterleaved];
-		XCTAssert(floatData != NULL, @"Error during short -> float conversion");
+		success = TSRawPipelineConvertRGB16UToFloat(self.converter, 0x4000);
+		XCTAssertTrue(success, @"Error during short -> float conversion");
 		
 		// convert to planar
-		TSPlanarBufferRGB *buf = [self producePlanarFromInterleaved:floatData];
+		success = TSRawPipelineConvertRGBFFFToPlanarF(self.converter);
+		XCTAssertTrue(success, @"Error during float interleaved -> planar");
 		
 		// now, convert to RGBX (alpha should be fixed at 1.f)
-		TSInterleavedBufferRGBX *bufInterleaved = [self produceInterleavedFromPlanar:buf];
-		
-		// ensure it isn't nil
-		XCTAssert(bufInterleaved != NULL, @"Error during float planar -> interleaved");
+		success = TSRawPipelineConvertPlanarFToRGBXFFFF(self.converter);
+		XCTAssertTrue(success, @"Error during float planar -> interleaved");
 		
 		// ensure that there are certain test values
-		XCTAssertEqual(bufInterleaved->data[0], 0.25f, @"data[0] (R) != 0.25");
-		XCTAssertEqual(bufInterleaved->data[1], 0.5f, @"data[1] (G) != 0.5");
-		XCTAssertEqual(bufInterleaved->data[2], 1.f, @"data[2] (B) != 1.0");
+		Pixel_F *data = (Pixel_F *) TSRawPipelineGetRGBXPointer(self.converter);
 		
-		XCTAssertEqual(bufInterleaved->data[3], 1.f, @"data[3] (alpha) != 1.0");
+		XCTAssertEqual(data[0], 0.25f, @"data[0] (R) != 0.25");
+		XCTAssertEqual(data[1], 0.5f, @"data[1] (G) != 0.5");
+		XCTAssertEqual(data[2], 1.f, @"data[2] (B) != 1.0");
+		
+		XCTAssertEqual(data[3], 1.f, @"data[3] (alpha) != 1.0");
 	}];
-}
-
-#pragma mark Helpers (re-useable components)
-/**
- * Converts the uint16_t input RGB array to floating point.
- */
-- (void *) produceFloatBufferInterleaved {
-	BOOL success;
-	
-	// allocate a buffer into which the floating data goes, and convert
-	Pixel_F *floatData = valloc(imgWidth * imgHeight * 3 * sizeof(Pixel_F));
-	success = TSRawPipelineConvertRGB16UToFloat(self.imageBuffer, imgWidth, imgHeight, 0x4000, floatData);
-	
-	// ensure it isn't nil
-	XCTAssert(success == YES, @"Error during conversion from short to float");
-	
-	return floatData;
-}
-
-/**
- * Converts the given interleaved buffer to planar.
- */
-- (TSPlanarBufferRGB *) producePlanarFromInterleaved:(void *) inBuf {
-	TSPlanarBufferRGB *buf = TSRawPipelineConvertRGBFFFToPlanarF(inBuf, imgWidth, imgHeight);
-	
-	// ensure it isn't nil
-	XCTAssert(buf != NULL, @"Error during chunky -> planar conversion");
-	return buf;
-}
-
-/**
- * Converts the given planar buffer to an RGBX interleaved buffer.
- */
-- (TSInterleavedBufferRGBX *) produceInterleavedFromPlanar:(TSPlanarBufferRGB *) inBuf {
-	TSInterleavedBufferRGBX *buf = TSRawPipelineConvertPlanarFToRGBXFFFF(inBuf);
-	
-	// ensure it isn't nil
-	XCTAssert(buf != NULL, @"Error during chunky -> planar conversion");
-	return buf;
 }
 
 @end
