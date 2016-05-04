@@ -1,5 +1,5 @@
 //
-//  TSRawPipeline_PixelFormat.m
+//  TSPixelFormatConverter.m
 //  Avocado
 //
 //  Created by Tristan Seifert on 20160503.
@@ -10,8 +10,7 @@
 
 #import <Accelerate/Accelerate.h>
 
-#import "TSRawPipeline_PixelFormat.h"
-#import "TSRawPipeline_Types.h"
+#import "TSPixelFormatConverter.h"
 
 static inline vImage_Buffer TSRawPipelinevImageBufferForPlane(TSPixelConverterRef converter, NSUInteger plane);
 
@@ -55,7 +54,7 @@ struct TSPixelConverter {
  * Sets up an instance of the conversion pipeline, with the given input data
  * and size.
  */
-TSPixelConverterRef TSRawPipelineCreateConverter(void *inData, size_t inWidth, size_t inHeight) {
+TSPixelConverterRef TSPixelConverterCreate(void *inData, size_t inWidth, size_t inHeight) {
 	// validate parameters
 	DDCAssert(inData != NULL, @"input buffer may not be NULL");
 	DDCAssert(inWidth > 0, @"width may not be 0");
@@ -115,7 +114,7 @@ TSPixelConverterRef TSRawPipelineCreateConverter(void *inData, size_t inWidth, s
  * Destroys the given pixel conveter, deallocating any memory that was allocated
  * previously.
  */
-void TSRawPipelineFreeConverter(TSPixelConverterRef converter) {
+void TSPixelConverterFree(TSPixelConverterRef converter) {
 	// free the buffers
 	for(NSUInteger i = 0; i < 3; i++) {
 		free(converter->plane[i]);
@@ -151,7 +150,7 @@ static inline vImage_Buffer TSRawPipelinevImageBufferForPlane(TSPixelConverterRe
  *
  * @param converter Converter whose info to return.
  */
-void *TSRawPipelineGetOriginalData(TSPixelConverterRef converter) {
+void *TSPixelConverterGetOriginalData(TSPixelConverterRef converter) {
 	return converter->inData;
 }
 
@@ -160,7 +159,7 @@ void *TSRawPipelineGetOriginalData(TSPixelConverterRef converter) {
  *
  * @param converter Converter whose info to return.
  */
-Pixel_FFFF *TSRawPipelineGetRGBXPointer(TSPixelConverterRef converter) {
+Pixel_FFFF *TSPixelConverterGetRGBXPointer(TSPixelConverterRef converter) {
 	return converter->outData;
 }
 
@@ -171,7 +170,7 @@ Pixel_FFFF *TSRawPipelineGetRGBXPointer(TSPixelConverterRef converter) {
  * @param outWidth Pointer to a variable to hold width, or NULL.
  * @param outHeight Pointer to a variable to hold height, or NULL.
  */
-void TSRawPipelineGetSize(TSPixelConverterRef converter, NSUInteger *outWidth, NSUInteger *outHeight) {
+void TSPixelConverterGetSize(TSPixelConverterRef converter, NSUInteger *outWidth, NSUInteger *outHeight) {
 	// width
 	if(outWidth != NULL)
 		*outWidth = converter->inWidth;
@@ -187,7 +186,7 @@ void TSRawPipelineGetSize(TSPixelConverterRef converter, NSUInteger *outWidth, N
  * @param converter Converter from which to get the information.
  * @param plane The numbered plane for which to get data, in the range [0..2].
  */
-vImage_Buffer TSRawPipelineGetPlanevImageBufferBuffer(TSPixelConverterRef converter, NSUInteger plane) {
+vImage_Buffer TSPixelConverterGetPlanevImageBufferBuffer(TSPixelConverterRef converter, NSUInteger plane) {
 	// just use the internal function for now
 	return TSRawPipelinevImageBufferForPlane(converter, plane);
 }
@@ -207,7 +206,7 @@ vImage_Buffer TSRawPipelineGetPlanevImageBufferBuffer(TSPixelConverterRef conver
  * @note The output data will still be RGB format, but instead expanded to be
  * 32bit floating point per component.
  */
-BOOL TSRawPipelineConvertRGB16UToFloat(TSPixelConverterRef converter, uint16_t maxValue) {
+BOOL TSPixelConverterRGB16UToFloat(TSPixelConverterRef converter, uint16_t maxValue) {
 	vImage_Error error = kvImageNoError;
 	vImage_Buffer vImageBufIn, vImageBufOut;
 	
@@ -256,7 +255,7 @@ BOOL TSRawPipelineConvertRGB16UToFloat(TSPixelConverterRef converter, uint16_t m
  * @note This must be called after `TSRawPipelineConvertRGB16UToFloat` or the
  * results will be undefined.
  */
-BOOL TSRawPipelineConvertRGBFFFToPlanarF(TSPixelConverterRef converter) {
+BOOL TSPixelConverterRGBFFFToPlanarF(TSPixelConverterRef converter) {
 	vImage_Error error = kvImageNoError;
 	
 	// validate parameters
@@ -299,7 +298,7 @@ BOOL TSRawPipelineConvertRGBFFFToPlanarF(TSPixelConverterRef converter) {
  * data, such as after a call to `TSRawPipelineConvertRGBFFFToPlanarF;` the
  * output is otherwise undefined.
  */
-BOOL TSRawPipelineConvertPlanarFToRGBXFFFF(TSPixelConverterRef converter) {
+BOOL TSPixelConverterPlanarFToRGBXFFFF(TSPixelConverterRef converter) {
 	vImage_Error error = kvImageNoError;
 	
 	// validate parameters

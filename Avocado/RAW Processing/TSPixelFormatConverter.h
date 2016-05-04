@@ -1,5 +1,5 @@
 //
-//  TSRawPipeline_PixelFormat.h
+//  TSPixelFormatConverter.h
 //  Avocado
 //
 //	Specifies various functions that are used to convert between the different
@@ -16,20 +16,25 @@
 
 #import <Accelerate/Accelerate.h>
 
-#import "TSRawPipeline_Types.h"
+#pragma mark Types
+/**
+ * Opaque type defining all data that the pixel conversion routines need to
+ * properly operate, including pointers to memory.
+ */
+typedef struct TSPixelConverter* TSPixelConverterRef;
 
 #pragma mark Initializers
 /**
  * Sets up an instance of the conversion pipeline, with the given input data
  * and size.
  */
-TSPixelConverterRef TSRawPipelineCreateConverter(void *inData, size_t inWidth, size_t inHeight);
+TSPixelConverterRef TSPixelConverterCreate(void *inData, size_t inWidth, size_t inHeight);
 
 /**
  * Destroys the given pixel conveter, deallocating any memory that was allocated
  * previously.
  */
-void TSRawPipelineFreeConverter(TSPixelConverterRef converter);
+void TSPixelConverterFree(TSPixelConverterRef converter);
 
 #pragma mark Getters
 /**
@@ -37,14 +42,14 @@ void TSRawPipelineFreeConverter(TSPixelConverterRef converter);
  *
  * @param converter Converter whose info to return.
  */
-void *TSRawPipelineGetOriginalData(TSPixelConverterRef converter);
+void *TSPixelConverterGetOriginalData(TSPixelConverterRef converter);
 
 /**
  * Returns a pointer to the final RGBX data.
  *
  * @param converter Converter whose info to return.
  */
-Pixel_FFFF *TSRawPipelineGetRGBXPointer(TSPixelConverterRef converter);
+Pixel_FFFF *TSPixelConverterGetRGBXPointer(TSPixelConverterRef converter);
 
 /**
  * Places the width and height in the given pointer variables.
@@ -53,7 +58,7 @@ Pixel_FFFF *TSRawPipelineGetRGBXPointer(TSPixelConverterRef converter);
  * @param outWidth Pointer to a variable to hold width, or NULL.
  * @param outHeight Pointer to a variable to hold height, or NULL.
  */
-void TSRawPipelineGetSize(TSPixelConverterRef converter, NSUInteger *outWidth, NSUInteger *outHeight);
+void TSPixelConverterGetSize(TSPixelConverterRef converter, NSUInteger *outWidth, NSUInteger *outHeight);
 
 /**
  * Returns the vImage buffer for a given plane.
@@ -61,7 +66,7 @@ void TSRawPipelineGetSize(TSPixelConverterRef converter, NSUInteger *outWidth, N
  * @param converter Converter from which to get the information.
  * @param plane The numbered plane for which to get data, in the range [0..2].
  */
-vImage_Buffer TSRawPipelineGetPlanevImageBufferBuffer(TSPixelConverterRef converter, NSUInteger plane);
+vImage_Buffer TSPixelConverterGetPlanevImageBufferBuffer(TSPixelConverterRef converter, NSUInteger plane);
 
 #pragma mark Format Conversions
 /**
@@ -78,7 +83,7 @@ vImage_Buffer TSRawPipelineGetPlanevImageBufferBuffer(TSPixelConverterRef conver
  * @note The output data will still be RGB format, but instead expanded to be
  * 32bit floating point per component.
  */
-BOOL TSRawPipelineConvertRGB16UToFloat(TSPixelConverterRef converter, uint16_t maxValue);
+BOOL TSPixelConverterRGB16UToFloat(TSPixelConverterRef converter, uint16_t maxValue);
 
 /**
  * Converts the interlaced 96bpp floating point RGB data to three distinct
@@ -91,7 +96,7 @@ BOOL TSRawPipelineConvertRGB16UToFloat(TSPixelConverterRef converter, uint16_t m
  * @note This must be called after `TSRawPipelineConvertRGB16UToFloat` or the
  * results will be undefined.
  */
-BOOL TSRawPipelineConvertRGBFFFToPlanarF(TSPixelConverterRef converter);
+BOOL TSPixelConverterRGBFFFToPlanarF(TSPixelConverterRef converter);
 
 /**
  * Converts the the three 32bit floating point planes to a single interleaved
@@ -105,6 +110,6 @@ BOOL TSRawPipelineConvertRGBFFFToPlanarF(TSPixelConverterRef converter);
  * data, such as after a call to `TSRawPipelineConvertRGBFFFToPlanarF;` the
  * output is otherwise undefined.
  */
-BOOL TSRawPipelineConvertPlanarFToRGBXFFFF(TSPixelConverterRef converter);
+BOOL TSPixelConverterPlanarFToRGBXFFFF(TSPixelConverterRef converter);
 
 #endif /* TSRawPipeline_PixelFormat_h */

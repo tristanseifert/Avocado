@@ -14,7 +14,7 @@
 		6A28F05A1CD7FEB000228067 /* liblensfun.0.3.2.dylib in Embed dylibs and frameworks */ = {isa = PBXBuildFile; fileRef = 6A28F0581CD7FEA400228067 /* liblensfun.0.3.2.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		6A28F05E1CD810E200228067 /* libglib-2.0.0.dylib in Embed dylibs and frameworks */ = {isa = PBXBuildFile; fileRef = 6A28F05C1CD810D300228067 /* libglib-2.0.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		6A28F0631CD8190600228067 /* TSRawPipeline.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A28F0621CD8190600228067 /* TSRawPipeline.m */; };
-		6A28F0681CD940E500228067 /* TSRawPipeline_PixelFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A28F0661CD940E500228067 /* TSRawPipeline_PixelFormat.m */; };
+		6A28F0681CD940E500228067 /* TSPixelFormatConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A28F0661CD940E500228067 /* TSPixelFormatConverter.m */; };
 		6A28F0701CD94A6400228067 /* TSRawPipelinePixelFormatTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A28F06F1CD94A6400228067 /* TSRawPipelinePixelFormatTests.m */; };
 		6A28F0771CD94CCD00228067 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEC351C1CD43FF00033DE0A /* CoreImage.framework */; };
 		6A28F0781CD94CD000228067 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEC351A1CD43FED0033DE0A /* Accelerate.framework */; };
@@ -97,9 +97,8 @@
 		6A28F05C1CD810D300228067 /* libglib-2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libglib-2.0.0.dylib"; path = "Dependencies/libglib-2.0.0.dylib"; sourceTree = "<group>"; };
 		6A28F0611CD8190600228067 /* TSRawPipeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSRawPipeline.h; path = "Avocado/RAW Processing/TSRawPipeline.h"; sourceTree = "<group>"; };
 		6A28F0621CD8190600228067 /* TSRawPipeline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSRawPipeline.m; path = "Avocado/RAW Processing/TSRawPipeline.m"; sourceTree = "<group>"; };
-		6A28F0641CD93E8700228067 /* TSRawPipeline_Types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TSRawPipeline_Types.h; path = "Avocado/RAW Processing/TSRawPipeline_Types.h"; sourceTree = "<group>"; };
-		6A28F0661CD940E500228067 /* TSRawPipeline_PixelFormat.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = TSRawPipeline_PixelFormat.m; path = "Avocado/RAW Processing/TSRawPipeline_PixelFormat.m"; sourceTree = "<group>"; };
-		6A28F0671CD940E500228067 /* TSRawPipeline_PixelFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSRawPipeline_PixelFormat.h; path = "Avocado/RAW Processing/TSRawPipeline_PixelFormat.h"; sourceTree = "<group>"; };
+		6A28F0661CD940E500228067 /* TSPixelFormatConverter.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = TSPixelFormatConverter.m; path = "Avocado/RAW Processing/TSPixelFormatConverter.m"; sourceTree = "<group>"; };
+		6A28F0671CD940E500228067 /* TSPixelFormatConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSPixelFormatConverter.h; path = "Avocado/RAW Processing/TSPixelFormatConverter.h"; sourceTree = "<group>"; };
 		6A28F06D1CD94A6400228067 /* AvocadoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AvocadoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A28F06F1CD94A6400228067 /* TSRawPipelinePixelFormatTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TSRawPipelinePixelFormatTests.m; sourceTree = "<group>"; };
 		6A28F0711CD94A6400228067 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -247,7 +246,6 @@
 				6A28F0551CD7FDE100228067 /* lensfun */,
 				6A28F0611CD8190600228067 /* TSRawPipeline.h */,
 				6A28F0621CD8190600228067 /* TSRawPipeline.m */,
-				6A28F0641CD93E8700228067 /* TSRawPipeline_Types.h */,
 				6A28F0651CD940C400228067 /* Conversion Helpers */,
 			);
 			name = "RAW Processing";
@@ -265,8 +263,8 @@
 		6A28F0651CD940C400228067 /* Conversion Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				6A28F0661CD940E500228067 /* TSRawPipeline_PixelFormat.m */,
-				6A28F0671CD940E500228067 /* TSRawPipeline_PixelFormat.h */,
+				6A28F0661CD940E500228067 /* TSPixelFormatConverter.m */,
+				6A28F0671CD940E500228067 /* TSPixelFormatConverter.h */,
 			);
 			name = "Conversion Helpers";
 			sourceTree = "<group>";
@@ -790,7 +788,7 @@
 				6AEC767E1CD5187D00870FAE /* TSLibraryLightTableCell.m in Sources */,
 				6ABC2DBF1CD43586006B959F /* _TSLibraryAlbumCollection.m in Sources */,
 				6A28F0631CD8190600228067 /* TSRawPipeline.m in Sources */,
-				6A28F0681CD940E500228067 /* TSRawPipeline_PixelFormat.m in Sources */,
+				6A28F0681CD940E500228067 /* TSPixelFormatConverter.m in Sources */,
 				6ABC2DC21CD43586006B959F /* _TSLibraryImageAdjustment.m in Sources */,
 				6ABC2DB01CD4357E006B959F /* TSLibraryImageAdjustment.m in Sources */,
 			);
@@ -1005,6 +1003,7 @@
 				6A28F0761CD94A6400228067 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6AE87BBF1CD275C90053CD9D /* Build configuration list for PBXProject "Avocado" */ = {
 			isa = XCConfigurationList;

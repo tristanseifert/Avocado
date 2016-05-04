@@ -7,11 +7,10 @@
 //
 
 #import "TSRawPipeline.h"
-#import "TSRawPipeline_Types.h"
-#import "TSRawPipeline_PixelFormat.h"
+#import "TSPixelFormatConverter.h"
+#import "TSRawImage.h"
 
 #import "TSHumanModels.h"
-#import "TSRawImage.h"
 
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>

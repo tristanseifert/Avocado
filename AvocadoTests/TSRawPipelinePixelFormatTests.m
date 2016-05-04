@@ -8,7 +8,7 @@
 
 #import <XCTest/XCTest.h>
 
-#import "TSRawPipeline_PixelFormat.h"
+#import "TSPixelFormatConverter.h"
 
 struct TSPixelConverter {
 	/// Input data, 48bpp unsigned int RGB
@@ -52,6 +52,9 @@ static NSUInteger imgHeight = 3840; // 768;
 
 @implementation TSRawPipelinePixelFormatTests
 
+/**
+ * Allocates an image buffer and converter instance.
+ */
 - (void) setUp {
     [super setUp];
 	
@@ -72,13 +75,16 @@ static NSUInteger imgHeight = 3840; // 768;
 	}
 	
 	// set up the converterizor pls.
-	self.converter = TSRawPipelineCreateConverter(self.imageBuffer, imgWidth, imgHeight);
+	self.converter = TSPixelConverterCreate(self.imageBuffer, imgWidth, imgHeight);
 }
 
+/**
+ * Cleans up memory.
+ */
 - (void) tearDown {
 	// free the buffer
 	free(self.imageBuffer);
-	TSRawPipelineFreeConverter(self.converter);
+	TSPixelConverterFree(self.converter);
 	
 	// perform super behaviour
     [super tearDown];
@@ -91,7 +97,7 @@ static NSUInteger imgHeight = 3840; // 768;
 - (void) testInterleaved16UToInterleavedF {
 	// time conversion to float data
 	[self measureBlock:^{
-		BOOL success = TSRawPipelineConvertRGB16UToFloat(self.converter, 0x4000);
+		BOOL success = TSPixelConverterRGB16UToFloat(self.converter, 0x4000);
 		XCTAssertTrue(success, @"Error during short -> float conversion");
 		
 		// ensure that there are certain test values
@@ -115,11 +121,11 @@ static NSUInteger imgHeight = 3840; // 768;
 		BOOL success;
 		
 		// first, convert to float
-		success = TSRawPipelineConvertRGB16UToFloat(self.converter, 0x4000);
+		success = TSPixelConverterRGB16UToFloat(self.converter, 0x4000);
 		XCTAssertTrue(success, @"Error during short -> float conversion");
-		
+
 		// convert to planar
-		success = TSRawPipelineConvertRGBFFFToPlanarF(self.converter);
+		success = TSPixelConverterRGBFFFToPlanarF(self.converter);
 		XCTAssertTrue(success, @"Error during float interleaved -> planar");
 		
 		// ensure that there are certain test values
@@ -139,19 +145,19 @@ static NSUInteger imgHeight = 3840; // 768;
 		BOOL success;
 		
 		// first, convert to float
-		success = TSRawPipelineConvertRGB16UToFloat(self.converter, 0x4000);
+		success = TSPixelConverterRGB16UToFloat(self.converter, 0x4000);
 		XCTAssertTrue(success, @"Error during short -> float conversion");
 		
 		// convert to planar
-		success = TSRawPipelineConvertRGBFFFToPlanarF(self.converter);
+		success = TSPixelConverterRGBFFFToPlanarF(self.converter);
 		XCTAssertTrue(success, @"Error during float interleaved -> planar");
 		
 		// now, convert to RGBX (alpha should be fixed at 1.f)
-		success = TSRawPipelineConvertPlanarFToRGBXFFFF(self.converter);
+		success = TSPixelConverterPlanarFToRGBXFFFF(self.converter);
 		XCTAssertTrue(success, @"Error during float planar -> interleaved");
 		
 		// ensure that there are certain test values
-		Pixel_F *data = (Pixel_F *) TSRawPipelineGetRGBXPointer(self.converter);
+		Pixel_F *data = (Pixel_F *) TSPixelConverterGetRGBXPointer(self.converter);
 		
 		XCTAssertEqual(data[0], 0.25f, @"data[0] (R) != 0.25");
 		XCTAssertEqual(data[1], 0.5f, @"data[1] (G) != 0.5");
