@@ -11,13 +11,24 @@
 #ifndef TSRawPipeline_types_h
 #define TSRawPipeline_types_h
 
+/*
+ * Define any required Accelerate.framework types. This way, we needn't import
+ * the header and save a bit of effort, and the type sizes should not change
+ * any time soon.
+ */
+#ifndef Pixel_F
+	typedef float       Pixel_F;
+#endif
+
 #pragma mark Types
 /**
  * Struct that encompasses a planar RGB vImage buffer.
  */
 typedef struct _TSPlanarBufferRGB {
 	/// planar buffer for the red, green and blue (in that order) components
-	void *components[3];
+	Pixel_F *components[3];
+	/// Bitmask of what buffers should be freed. Each bit is the index in components
+	uint32_t componentsFree;
 	
 	/// how many bytes are in each line; this is the same for each plane.
 	size_t bytes_per_line;
@@ -30,7 +41,9 @@ typedef struct _TSPlanarBufferRGB {
  */
 typedef struct _TSInterleavedBufferRGBX {
 	/// pointer to the actual buffer data
-	void *data;
+	Pixel_F *data;
+	/// when set, free the data on deallocation
+	uint32_t componentsFree;
 	
 	/// how many bytes are in each line
 	size_t bytes_per_line;
@@ -45,15 +58,15 @@ typedef struct _TSInterleavedBufferRGBX {
  */
 static inline void TSFreePlanarBufferRGB(TSPlanarBufferRGB *buffer) {
 	// free red component
-	if(buffer->components[0] != NULL)
+	if((buffer->componentsFree & (1 << 0)) && buffer->components[0] != NULL)
 		free(buffer->components[0]);
 	
 	// free green component
-	if(buffer->components[1] != NULL)
+	if((buffer->componentsFree & (1 << 1)) && buffer->components[1] != NULL)
 		free(buffer->components[1]);
 	
 	// free blue component
-	if(buffer->components[2] != NULL)
+	if((buffer->componentsFree & (1 << 2)) && buffer->components[2] != NULL)
 		free(buffer->components[2]);
 }
 
@@ -63,7 +76,7 @@ static inline void TSFreePlanarBufferRGB(TSPlanarBufferRGB *buffer) {
  */
 static inline void TSFreeInterleavedBufferRGBX(TSInterleavedBufferRGBX *buffer) {
 	// free buffer
-	if(buffer->data != NULL)
+	if((buffer->componentsFree & (1 << 0)) && buffer->data != NULL)
 		free(buffer->data);
 }
 

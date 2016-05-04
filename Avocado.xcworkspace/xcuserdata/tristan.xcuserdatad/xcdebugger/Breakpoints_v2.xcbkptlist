@@ -221,5 +221,98 @@
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "AvocadoTests/TSRawPipelinePixelFormatTests.m"
+            timestampString = "484020090.733601"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "97"
+            endingLineNumber = "97"
+            landmarkName = "-testInterleavedFToPlanarF"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__41-[AvocadoTests testInterleavedFToPlanarF]_block_invoke"
+                  moduleName = "AvocadoTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/tristan/Photography/Avocado/AvocadoTests/TSRawPipelinePixelFormatTests.m"
+                  timestampString = "484018847.419262"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "91"
+                  endingLineNumber = "91"
+                  offsetFromSymbolStart = "509">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__41-[AvocadoTests testInterleavedFToPlanarF]_block_invoke"
+                  moduleName = "AvocadoTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/tristan/Photography/Avocado/AvocadoTests/TSRawPipelinePixelFormatTests.m"
+                  timestampString = "484018847.419624"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "91"
+                  endingLineNumber = "91"
+                  offsetFromSymbolStart = "556">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__41-[AvocadoTests testInterleavedFToPlanarF]_block_invoke"
+                  moduleName = "AvocadoTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/tristan/Photography/Avocado/AvocadoTests/TSRawPipelinePixelFormatTests.m"
+                  timestampString = "484018847.419971"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "91"
+                  endingLineNumber = "91"
+                  offsetFromSymbolStart = "2216">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__41-[AvocadoTests testInterleavedFToPlanarF]_block_invoke"
+                  moduleName = "AvocadoTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/tristan/Photography/Avocado/AvocadoTests/TSRawPipelinePixelFormatTests.m"
+                  timestampString = "484018847.42023"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "91"
+                  endingLineNumber = "91"
+                  offsetFromSymbolStart = "2990">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__41-[AvocadoTests testInterleavedFToPlanarF]_block_invoke"
+                  moduleName = "AvocadoTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/tristan/Photography/Avocado/AvocadoTests/TSRawPipelinePixelFormatTests.m"
+                  timestampString = "484018847.420559"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "91"
+                  endingLineNumber = "91"
+                  offsetFromSymbolStart = "3118">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

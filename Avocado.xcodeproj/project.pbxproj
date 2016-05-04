@@ -15,6 +15,9 @@
 		6A28F05E1CD810E200228067 /* libglib-2.0.0.dylib in Embed dylibs and frameworks */ = {isa = PBXBuildFile; fileRef = 6A28F05C1CD810D300228067 /* libglib-2.0.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		6A28F0631CD8190600228067 /* TSRawPipeline.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A28F0621CD8190600228067 /* TSRawPipeline.m */; };
 		6A28F0681CD940E500228067 /* TSRawPipeline_PixelFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A28F0661CD940E500228067 /* TSRawPipeline_PixelFormat.m */; };
+		6A28F0701CD94A6400228067 /* TSRawPipelinePixelFormatTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A28F06F1CD94A6400228067 /* TSRawPipelinePixelFormatTests.m */; };
+		6A28F0771CD94CCD00228067 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEC351C1CD43FF00033DE0A /* CoreImage.framework */; };
+		6A28F0781CD94CD000228067 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEC351A1CD43FED0033DE0A /* Accelerate.framework */; };
 		6A34B12A1CD5936200252288 /* TSLibraryImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2D9E1CD42C56006B959F /* TSLibraryImage.m */; };
 		6A5C615C1CD64B7100E3C3C9 /* TSLibraryLightTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A5C615B1CD64B7100E3C3C9 /* TSLibraryLightTableCell.xib */; };
 		6A5C615F1CD67C5B00E3C3C9 /* TSImageIOHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A5C615E1CD67C5B00E3C3C9 /* TSImageIOHelper.m */; };
@@ -57,6 +60,16 @@
 		90D8F3504CA87BC8DFD0DDE7 /* Pods_Avocado.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 819223217746015A3002C6D6 /* Pods_Avocado.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		6A28F0721CD94A6400228067 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6AE87BBC1CD275C90053CD9D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6AE87BC31CD275C90053CD9D;
+			remoteInfo = Avocado;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		6A1068881CD5BF07004BF216 /* Embed dylibs and frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -87,6 +100,9 @@
 		6A28F0641CD93E8700228067 /* TSRawPipeline_Types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TSRawPipeline_Types.h; path = "Avocado/RAW Processing/TSRawPipeline_Types.h"; sourceTree = "<group>"; };
 		6A28F0661CD940E500228067 /* TSRawPipeline_PixelFormat.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = TSRawPipeline_PixelFormat.m; path = "Avocado/RAW Processing/TSRawPipeline_PixelFormat.m"; sourceTree = "<group>"; };
 		6A28F0671CD940E500228067 /* TSRawPipeline_PixelFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSRawPipeline_PixelFormat.h; path = "Avocado/RAW Processing/TSRawPipeline_PixelFormat.h"; sourceTree = "<group>"; };
+		6A28F06D1CD94A6400228067 /* AvocadoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AvocadoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6A28F06F1CD94A6400228067 /* TSRawPipelinePixelFormatTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TSRawPipelinePixelFormatTests.m; sourceTree = "<group>"; };
+		6A28F0711CD94A6400228067 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6A5C615B1CD64B7100E3C3C9 /* TSLibraryLightTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSLibraryLightTableCell.xib; path = "Library Window/Overview/TSLibraryLightTableCell.xib"; sourceTree = "<group>"; };
 		6A5C615D1CD67C5B00E3C3C9 /* TSImageIOHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSImageIOHelper.h; path = Avocado/Helpers/TSImageIOHelper.h; sourceTree = "<group>"; };
 		6A5C615E1CD67C5B00E3C3C9 /* TSImageIOHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSImageIOHelper.m; path = Avocado/Helpers/TSImageIOHelper.m; sourceTree = "<group>"; };
@@ -173,6 +189,15 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		6A28F06A1CD94A6400228067 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6A28F0781CD94CD000228067 /* Accelerate.framework in Frameworks */,
+				6A28F0771CD94CCD00228067 /* CoreImage.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6AE87BC11CD275C90053CD9D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -246,6 +271,23 @@
 			name = "Conversion Helpers";
 			sourceTree = "<group>";
 		};
+		6A28F06E1CD94A6400228067 /* AvocadoTests */ = {
+			isa = PBXGroup;
+			children = (
+				6A28F0791CD9869700228067 /* RAW Processing */,
+				6A28F0711CD94A6400228067 /* Info.plist */,
+			);
+			path = AvocadoTests;
+			sourceTree = "<group>";
+		};
+		6A28F0791CD9869700228067 /* RAW Processing */ = {
+			isa = PBXGroup;
+			children = (
+				6A28F06F1CD94A6400228067 /* TSRawPipelinePixelFormatTests.m */,
+			);
+			name = "RAW Processing";
+			sourceTree = "<group>";
+		};
 		6A7EC3C81CD68595007E91E8 /* Thumb Handling */ = {
 			isa = PBXGroup;
 			children = (
@@ -258,7 +300,8 @@
 		6AE87BBB1CD275C90053CD9D = {
 			isa = PBXGroup;
 			children = (
-				6AEC350E1CD43DCA0033DE0A /* Avocado App */,
+				6A28F06E1CD94A6400228067 /* AvocadoTests */,
+				6AEC350E1CD43DCA0033DE0A /* Avocado Main App */,
 				6AE87BC51CD275C90053CD9D /* Products */,
 				8A1D7E197716AC0277E58CE5 /* Pods */,
 				F4FC62D8D3C46EB93528ACF1 /* Frameworks */,
@@ -269,6 +312,7 @@
 			isa = PBXGroup;
 			children = (
 				6AE87BC41CD275C90053CD9D /* Avocado.app */,
+				6A28F06D1CD94A6400228067 /* AvocadoTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -424,7 +468,7 @@
 			path = Avocado;
 			sourceTree = "<group>";
 		};
-		6AEC350E1CD43DCA0033DE0A /* Avocado App */ = {
+		6AEC350E1CD43DCA0033DE0A /* Avocado Main App */ = {
 			isa = PBXGroup;
 			children = (
 				6AEC766D1CD5097900870FAE /* Categories and Helpers */,
@@ -438,7 +482,7 @@
 				6AE87BDB1CD275FA0053CD9D /* Resources */,
 				6AE87BCA1CD275C90053CD9D /* Supporting Files */,
 			);
-			name = "Avocado App";
+			name = "Avocado Main App";
 			sourceTree = "<group>";
 		};
 		6AEC353D1CD4431B0033DE0A /* Library Overview Controller */ = {
@@ -525,6 +569,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		6A28F06C1CD94A6400228067 /* AvocadoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6A28F0741CD94A6400228067 /* Build configuration list for PBXNativeTarget "AvocadoTests" */;
+			buildPhases = (
+				6A28F0691CD94A6400228067 /* Sources */,
+				6A28F06A1CD94A6400228067 /* Frameworks */,
+				6A28F06B1CD94A6400228067 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6A28F0731CD94A6400228067 /* PBXTargetDependency */,
+			);
+			name = AvocadoTests;
+			productName = AvocadoTests;
+			productReference = 6A28F06D1CD94A6400228067 /* AvocadoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		6AE87BC31CD275C90053CD9D /* Avocado */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6AE87BD81CD275C90053CD9D /* Build configuration list for PBXNativeTarget "Avocado" */;
@@ -557,6 +619,10 @@
 				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = "Tristan Seifert";
 				TargetAttributes = {
+					6A28F06C1CD94A6400228067 = {
+						CreatedOnToolsVersion = 7.3;
+						TestTargetID = 6AE87BC31CD275C90053CD9D;
+					};
 					6AE87BC31CD275C90053CD9D = {
 						CreatedOnToolsVersion = 7.3;
 						DevelopmentTeam = 8QDQ246B94;
@@ -577,11 +643,19 @@
 			projectRoot = "";
 			targets = (
 				6AE87BC31CD275C90053CD9D /* Avocado */,
+				6A28F06C1CD94A6400228067 /* AvocadoTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		6A28F06B1CD94A6400228067 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6AE87BC21CD275C90053CD9D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -675,6 +749,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		6A28F0691CD94A6400228067 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6A28F0701CD94A6400228067 /* TSRawPipelinePixelFormatTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6AE87BC01CD275C90053CD9D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -716,6 +798,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		6A28F0731CD94A6400228067 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6AE87BC31CD275C90053CD9D /* Avocado */;
+			targetProxy = 6A28F0721CD94A6400228067 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		6AE87BD21CD275C90053CD9D /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
@@ -728,6 +818,32 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		6A28F0751CD94A6400228067 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = AvocadoTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.tseifert.AvocadoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Avocado.app/Contents/MacOS/Avocado";
+			};
+			name = Debug;
+		};
+		6A28F0761CD94A6400228067 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = AvocadoTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.tseifert.AvocadoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Avocado.app/Contents/MacOS/Avocado";
+			};
+			name = Release;
+		};
 		6AE87BD61CD275C90053CD9D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -882,6 +998,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		6A28F0741CD94A6400228067 /* Build configuration list for PBXNativeTarget "AvocadoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6A28F0751CD94A6400228067 /* Debug */,
+				6A28F0761CD94A6400228067 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		6AE87BBF1CD275C90053CD9D /* Build configuration list for PBXProject "Avocado" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

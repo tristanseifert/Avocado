@@ -17,29 +17,48 @@
 #import "TSRawPipeline_Types.h"
 
 /**
- * Converts the RGB data produced by demosaicing of Bayer data and lens
- * corrections to planar 16bit floating point.
- */
-TSPlanarBufferRGB TSRawPipelineConvertRGB16UToPlanar16U(void *inBuf, size_t inWidth, size_t inHeight);
-
-/**
- * Converts a planar 16bit unsigned integer buffer to 16bit floating point,
- * normalizing pixel values in the range of [0..1].
+ * Converts input RGB data (in RGB, 48bpp format, unsigned int) to a interleaved
+ * floating point (out RGB, 96bpp) format.
  *
- * @param inBuffer Planar buffer structure to operate on. Buffers are modified
- * in place.
- * @param maxValue Maximum value in the buffer; used to normalize numbers.
+ * @param inBuf Input buffer, in RGB format.
+ * @param inWidth Width of the image, in pixels.
+ * @param inHeight Height of the image, in pixels.
+ * @param maxValue Maximum value in the input pixel data. The floating point
+ * buffer is normalized, such that this value corresponds to 1.0.
+ * @param outBuf Output buffer, (inWidth * inHeight * 3 * sizeof(Pixel_F)) bytes
+ * long at a minimum. Must be aligned to at least a 64 byte boundary; use of
+ * valloc is reccomended.
+ *
+ * @return YES if successful, NO otherwise.
+ *
+ * @note The output data will still be RGB format, but instead expanded to be
+ * 32bit floating point per component.
  */
-void TSRawPipelineConvertPlanar16UToFloatingPoint(TSPlanarBufferRGB *inBuffer, uint16_t maxValue);
+BOOL TSRawPipelineConvertRGB16UToFloat(void *inBuf, size_t inWidth, size_t inHeight, uint16_t maxValue, void *outBuf);
 
 /**
- * Converts a planar 16bit floating point buffer to a 64bpp RGBX interleaved
+ * Takes a buffer of interleaved RGB data (RGB, 96bpp, 32-bit float) and splits
+ * it into three planar arrays.
+ *
+ * @param inBuf A buffer that contains interleaved 96bpp data, such as the one
+ * filled by TSRawPipelineConvertRGB16UToFloat. This buffer is re-used for one
+ * of the planes.
+ * @param inWidth Width of the image, in pixels.
+ * @param inHeight Height of the image, in pixels.
+ *
+ * @return A pointer to a planar buffer struct if successful, NULL otherwise.
+ */
+TSPlanarBufferRGB *TSRawPipelineConvertRGBFFFToPlanarF(void *inBuf, size_t inWidth, size_t inHeight);
+
+/**
+ * Converts a planar 32bit floating point buffer to a 128bpp RGBX interleaved
  * buffer.
  *
- * @param inBuffer Input buffer to convert.
+ * @param buffer Input buffer to convert to RGBX. The input buffer will be
+ * freed as part of this operation.
  *
  * @return An interleaved buffer structure with relevant information.
  */
-TSInterleavedBufferRGBX TSRawPipelineConvertPlanarFToRGBXFFFF(TSPlanarBufferRGB *inBuffer);
+TSInterleavedBufferRGBX *TSRawPipelineConvertPlanarFToRGBXFFFF(TSPlanarBufferRGB *inBuffer);
 
 #endif /* TSRawPipeline_PixelFormat_h */
