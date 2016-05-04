@@ -43,7 +43,7 @@
  *		a. Convert to output (display/sRGB/Adobe RGB) colour space
  *		b. Convert to a different bitmap format
  *
- * The output of stage 5, stage 10, and stage 11 are cached.
+ * The output of stage 5, and stage 10 are cached.
  *
  * Pipeline plugins can chose to process data at any major numbered
  * position in the pipeline. They are called _before_ the built-in pipeline
@@ -59,6 +59,8 @@
  * contain the substep.
  */
 typedef NS_ENUM(NSUInteger, TSRawPipelineStage) {
+	TSRawPipelineStageInitializing			= 0,
+	
 	TSRawPipelineStageDebayering			= (1 << 16),
 	
 	TSRawPipelineStageDemosaicing			= (2 << 16),

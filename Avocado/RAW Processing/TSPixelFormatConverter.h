@@ -7,6 +7,11 @@
 //
 //	They exist primarily as wrappers around the relevant vImage functions.
 //
+//	NOTE: This class is not thread safe. While one instance may be used from
+//	different threads, the caller is responsible for ensuring that only a single
+//	thread is using the converter at a time, since it contains pointers to
+//	memory buffers that the functions will mutate.
+//
 //  Created by Tristan Seifert on 20160503.
 //  Copyright © 2016 Tristan Seifert. All rights reserved.
 //

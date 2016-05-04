@@ -9,6 +9,7 @@
 #import "TSRawPipeline.h"
 #import "TSPixelFormatConverter.h"
 #import "TSRawImage.h"
+#import "TSRawPipelineState.h"
 
 #import "TSHumanModels.h"
 
@@ -28,6 +29,9 @@
 /// CoreImage context; hardware-accelerated processing for filters
 @property (nonatomic) CIContext *ciContext;
 
+// helpers
+- (NSBlockOperation *) opDebayer:(TSRawPipelineState *) state;
+
 @end
 
 @implementation TSRawPipeline
@@ -41,7 +45,7 @@
 		self.queue = [NSOperationQueue new];
 		
 		self.queue.qualityOfService = NSQualityOfServiceUserInitiated;
-		self.queue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount;
+		self.queue.maxConcurrentOperationCount = 1;
 		
 		self.queue.name = @"TSRawPipeline";
 		
@@ -52,8 +56,8 @@
 		NSDictionary *ciOptions = @{
 			// request GPU rendering if possible
 			kCIContextUseSoftwareRenderer: @NO,
-			// use RGBAF format
-			kCIContextWorkingFormat: @(kCIFormatRGBAh)
+			// use 128bpp floating point RGBA format
+			kCIContextWorkingFormat: @(kCIFormatRGBAf)
 		};
 		
 		self.ciContext = [CIContext contextWithOptions:ciOptions];
@@ -86,7 +90,49 @@
    completionCallback:(nonnull TSRawPipelineCompletionCallback) complete
 	 progressCallback:(nullable TSRawPipelineProgressCallback) progress
    conversionProgress:(NSProgress * _Nullable * _Nonnull) outProgress {
+	// initialize some variables
+	NSProgress *convertProgress = nil;
 	
+	NSBlockOperation *opDebayer, *opDemosaic, *opLensCorrect, *opGamma;
+	NSBlockOperation *opRotate, *opConvolute, *opMorpological, *opHisto;
+	NSBlockOperation *opCoreImage, *opOutputHistogram, *opDisplayTrans;
+	
+	TSRawPipelineState *state;
+	
+	// set up a progress object to track the progress
+	convertProgress = [NSProgress progressWithTotalUnitCount:11];
+	
+	if(outProgress)
+		*outProgress = convertProgress;
+	
+	// create the pipeline state
+	state = [TSRawPipelineState new];
+	
+	state.image = image;
+	state.stage = TSRawPipelineStageInitializing;
+	state.shouldCache = cache;
+	
+	// set up the various operations
+	opDebayer = [self opDebayer:state];
+	
+	// set up interdependencies between the operations
+	
+	// add them to the queue to vamenos the operations
 }
+
+#pragma mark - RAW Processing Steps
+#pragma mark Interpolation and Lens Corrections
+/**
+ * Creates the block operation to debayer the RAW data.
+ */
+- (NSBlockOperation *) opDebayer:(TSRawPipelineState *) state {
+	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		// debayer the image data
+	}];
+	
+	op.name = @"Debayering";
+	return op;
+}
+
 
 @end
