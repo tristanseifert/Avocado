@@ -10,13 +10,25 @@
 #import "TSPixelFormatConverter.h"
 #import "TSRawImage.h"
 #import "TSRawPipelineState.h"
+#import "TSPixelFormatConverter.h"
 
 #import "TSHumanModels.h"
+
+#import "NSBlockOperation+AvocadoUtils.h"
 
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
 #import <CoreImage/CoreImage.h>
 #import <Accelerate/Accelerate.h>
+
+#define TSAddOperation(operation, state) \
+	[state addOperation:operation]; \
+	[self.queue addOperation:operation]; \
+
+// TODO: figure out a way to more better expose this from a header?
+@interface TSLibraryImage ()
+@property (nonatomic, readonly) TSRawImage *libRawHandle;
+@end
 
 @interface TSRawPipeline ()
 
@@ -25,12 +37,15 @@
 
 /// raw stage cache; each image's URL + stage is the key
 @property (nonatomic) NSCache *rawStageCache;
+/// pixel format converter
+@property (nonatomic) TSPixelConverterRef pixelConverter;
 
 /// CoreImage context; hardware-accelerated processing for filters
 @property (nonatomic) CIContext *ciContext;
 
 // helpers
 - (NSBlockOperation *) opDebayer:(TSRawPipelineState *) state;
+- (NSBlockOperation *) opDemosaic:(TSRawPipelineState *) state;
 
 @end
 
@@ -99,6 +114,20 @@
 	
 	TSRawPipelineState *state;
 	
+	// figure out whether we can use the existing converter
+	if(self.pixelConverter != NULL) {
+		NSUInteger w, h;
+		TSPixelConverterGetSize(self.pixelConverter, &w, &h);
+		
+		// if size of existing converter is too small, create a new one
+		if(w < image.imageSize.width || h < image.imageSize.height) {
+			TSPixelConverterResize(self.pixelConverter, image.imageSize.width, image.imageSize.height);
+		}
+	} else {
+		// there is no pixel converter; create one
+		self.pixelConverter = TSPixelConverterCreate(NULL, image.imageSize.width, image.imageSize.height);
+	}
+	
 	// set up a progress object to track the progress
 	convertProgress = [NSProgress progressWithTotalUnitCount:11];
 	
@@ -112,12 +141,25 @@
 	state.stage = TSRawPipelineStageInitializing;
 	state.shouldCache = cache;
 	
+	state.converter = self.pixelConverter;
+	
+	state.completionCallback = complete;
+	state.progressCallback = progress;
+	
+	state.progress = convertProgress;
+	
+	state.rawImage = image.libRawHandle;
+	
 	// set up the various operations
 	opDebayer = [self opDebayer:state];
+	opDemosaic = [self opDemosaic:state];
 	
 	// set up interdependencies between the operations
+	[opDemosaic addDependency:opDebayer];
 	
 	// add them to the queue to vamenos the operations
+	TSAddOperation(opDebayer, state);
+	TSAddOperation(opDemosaic, state);
 }
 
 #pragma mark - RAW Processing Steps
@@ -126,13 +168,36 @@
  * Creates the block operation to debayer the RAW data.
  */
 - (NSBlockOperation *) opDebayer:(TSRawPipelineState *) state {
-	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
-		// debayer the image data
+	NSBlockOperation *op = [NSBlockOperation operationWithBlock:^(NSBlockOperation *thisOp) {
+		NSError *err = nil;
+		
+		state.stage = TSRawPipelineStageDebayering;
+		
+		// unpack image data
+		if([state.rawImage unpackRawData:&err] != YES) {
+			DDLogError(@"Error unpacking raw data: %@", err);
+			
+			[state terminateWithError:err];
+			return;
+		}
 	}];
 	
 	op.name = @"Debayering";
 	return op;
 }
 
+/**
+ * Decodes the raw Bayer data from the raw file.
+ */
+- (NSBlockOperation *) opDemosaic:(TSRawPipelineState *) state {
+	NSBlockOperation *op = [NSBlockOperation operationWithBlock:^(NSBlockOperation *thisOp) {
+		state.stage = TSRawPipelineStageDemosaicing;
+		
+		// demosaic the image data
+	}];
+	
+	op.name = @"Demosaicing";
+	return op;
+}
 
 @end

@@ -133,6 +133,31 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 }
 
 /**
+ * Unpacks Bayer data from the raw file
+ */
+- (BOOL) unpackRawData:(NSError **) outErr {
+	int err = 0;
+	
+	// unpack raw data
+	if((err = libraw_unpack(self.libRaw)) != LIBRAW_SUCCESS) {
+		// get the error and put it into the output
+		NSError *nsErr = [self errorFromCode:err];
+		if(outErr) *outErr = nsErr;
+		
+		// parse the error pls
+		if(LIBRAW_FATAL_ERROR(err)) {
+			DDLogError(@"Couldn't unpack raw data: %@", nsErr);
+			return NO;
+		} else {
+			DDLogWarn(@"Something happened trying to unpack raw data, but it was not a fatal error: %@", nsErr);
+		}
+	}
+	
+	// done
+	return YES;
+}
+
+/**
  * Converts the thumbnail from whatever format is stored within the RAW image
  * to an NSImage.
  */

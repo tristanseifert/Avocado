@@ -12,6 +12,9 @@
 
 #import "TSPixelFormatConverter.h"
 
+static void TSAllocateBuffers(TSPixelConverterRef info);
+static void TSFreeBuffers(TSPixelConverterRef converter);
+
 static inline vImage_Buffer TSRawPipelinevImageBufferForPlane(TSPixelConverterRef converter, NSUInteger plane);
 
 #pragma mark Types
@@ -54,43 +57,53 @@ struct TSPixelConverter {
  * Sets up an instance of the conversion pipeline, with the given input data
  * and size.
  */
-TSPixelConverterRef TSPixelConverterCreate(void *inData, size_t inWidth, size_t inHeight) {
+TSPixelConverterRef TSPixelConverterCreate(void *inData, NSUInteger inWidth, NSUInteger inHeight) {
 	// validate parameters
-	DDCAssert(inData != NULL, @"input buffer may not be NULL");
 	DDCAssert(inWidth > 0, @"width may not be 0");
 	DDCAssert(inHeight > 0, @"height may not be 0");
 	
 	// allocate memory for an info struct
 	TSPixelConverterRef info = calloc(1, sizeof(struct TSPixelConverter));
 	
-	// copy data
-	info->inData = inData;
+	// copy size
 	info->inWidth = inWidth;
 	info->inHeight = inHeight;
 	
+	// copy pointer
+	info->inData = inData;
 	
+	// allocate the buffers
+	TSAllocateBuffers(info);
+	
+	return info;
+}
+
+/**
+ * Allocates internal buffers.
+ */
+static void TSAllocateBuffers(TSPixelConverterRef info) {
 	// assume no additional packing in bytes/line for interleaved float data
-	info->interleavedFloatDataBytesPerLine = (inWidth * 3 * sizeof(Pixel_F));
+	info->interleavedFloatDataBytesPerLine = (info->inWidth * 3 * sizeof(Pixel_F));
 	
 	// calculate bytes/line and buffer size for output
-	info->outDataBytesPerLine = inWidth * sizeof(Pixel_FFFF);
+	info->outDataBytesPerLine = info->inWidth * sizeof(Pixel_FFFF);
 	
 	if(info->outDataBytesPerLine & 0x1F) {
 		// align to a 32 byte boundary
 		info->outDataBytesPerLine += (0x20 - (info->outDataBytesPerLine & 0x1F));
 	}
 	
-	info->outDataSize = info->outDataBytesPerLine * inHeight;
+	info->outDataSize = info->outDataBytesPerLine * info->inHeight;
 	
 	// calculate bytes/line and buffer size for each of the planes
-	info->planeBytesPerLine = inWidth * sizeof(Pixel_F);
+	info->planeBytesPerLine = info->inWidth * sizeof(Pixel_F);
 	
 	if(info->planeBytesPerLine & 0x1F) {
 		// align to a 32 byte boundary
 		info->planeBytesPerLine += (0x20 - (info->planeBytesPerLine & 0x1F));
 	}
 	
-	info->planeSize = info->planeBytesPerLine * inHeight;
+	info->planeSize = info->planeBytesPerLine * info->inHeight;
 	
 	
 	// allocate buffers
@@ -106,8 +119,6 @@ TSPixelConverterRef TSPixelConverterCreate(void *inData, size_t inWidth, size_t 
 	 * is converted to planar format.
 	 */
 	info->interleavedFloatData = (Pixel_F *) info->outData;
-	
-	return info;
 }
 
 /**
@@ -115,6 +126,17 @@ TSPixelConverterRef TSPixelConverterCreate(void *inData, size_t inWidth, size_t 
  * previously.
  */
 void TSPixelConverterFree(TSPixelConverterRef converter) {
+	// free buffers
+	TSFreeBuffers(converter);
+	
+	// free the structure itself
+	free(converter);
+}
+
+/**
+ * Frees the internal buffers.
+ */
+static void TSFreeBuffers(TSPixelConverterRef converter) {
 	// free the buffers
 	for(NSUInteger i = 0; i < 3; i++) {
 		free(converter->plane[i]);
@@ -125,9 +147,21 @@ void TSPixelConverterFree(TSPixelConverterRef converter) {
 	
 	if(((intptr_t) converter->interleavedFloatData) != ((intptr_t) converter->outData))
 		free(converter->outData);
+}
+
+/**
+ * Resizes the pixel converter to the given size. The old memory will be de-
+ * allocated, and new buffers are allocated. No data is copied.
+ */
+void TSPixelConverterResize(TSPixelConverterRef converter, NSUInteger newWidth, NSUInteger newHeight) {
+	// free old buffers
 	
-	// free the structure itself
-	free(converter);
+	// set new height
+	converter->inWidth = newWidth;
+	converter->inHeight = newHeight;
+	
+	// allocate new buffers
+	TSAllocateBuffers(converter);
 }
 
 #pragma mark Helpers
@@ -189,6 +223,17 @@ void TSPixelConverterGetSize(TSPixelConverterRef converter, NSUInteger *outWidth
 vImage_Buffer TSPixelConverterGetPlanevImageBufferBuffer(TSPixelConverterRef converter, NSUInteger plane) {
 	// just use the internal function for now
 	return TSRawPipelinevImageBufferForPlane(converter, plane);
+}
+
+#pragma mark Setters
+/**
+ * Sets the RGB data input buffer.
+ *
+ * @param converter Converter whose input buffer to set.
+ * @param inData Input data buffer.
+ */
+void TSPixelConverterSetInData(TSPixelConverterRef converter, void *inData) {
+	converter->inData = inData;
 }
 
 #pragma mark Format Conversions

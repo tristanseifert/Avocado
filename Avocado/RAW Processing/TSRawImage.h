@@ -20,6 +20,8 @@ extern NSString *const TSRawImageErrorIsFatalKey;
 
 - (instancetype) initWithContentsOfUrl:(NSURL *) url error:(NSError **) outErr;
 
+- (BOOL) unpackRawData:(NSError **) outErr;
+
 
 /// iso speed
 @property (nonatomic, readonly, getter=getExifISO) CGFloat isoSpeed;

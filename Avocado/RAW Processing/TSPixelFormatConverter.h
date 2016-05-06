@@ -33,13 +33,19 @@ typedef struct TSPixelConverter* TSPixelConverterRef;
  * Sets up an instance of the conversion pipeline, with the given input data
  * and size.
  */
-TSPixelConverterRef TSPixelConverterCreate(void *inData, size_t inWidth, size_t inHeight);
+TSPixelConverterRef TSPixelConverterCreate(void *inData, NSUInteger inWidth, NSUInteger inHeight);
 
 /**
  * Destroys the given pixel conveter, deallocating any memory that was allocated
  * previously.
  */
 void TSPixelConverterFree(TSPixelConverterRef converter);
+
+/**
+ * Resizes the pixel converter to the given size. The old memory will be de-
+ * allocated, and new buffers are allocated. No data is copied.
+ */
+void TSPixelConverterResize(TSPixelConverterRef converter, NSUInteger newWidth, NSUInteger newHeight);
 
 #pragma mark Getters
 /**
@@ -72,6 +78,15 @@ void TSPixelConverterGetSize(TSPixelConverterRef converter, NSUInteger *outWidth
  * @param plane The numbered plane for which to get data, in the range [0..2].
  */
 vImage_Buffer TSPixelConverterGetPlanevImageBufferBuffer(TSPixelConverterRef converter, NSUInteger plane);
+
+#pragma mark Setters
+/**
+ * Sets the RGB data input buffer.
+ *
+ * @param converter Converter whose input buffer to set.
+ * @param inData Input data buffer.
+ */
+void TSPixelConverterSetInData(TSPixelConverterRef converter, void *inData);
 
 #pragma mark Format Conversions
 /**

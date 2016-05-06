@@ -10,6 +10,7 @@
 
 #import "TSRawPipeline.h"
 #import "TSPixelFormatConverter.h"
+#import "TSRawPipeline.h"
 
 @class TSLibraryImage;
 @class TSRawImage;
@@ -17,6 +18,8 @@
 
 /// the current processing step
 @property (nonatomic) TSRawPipelineStage stage;
+/// a progress object with which to track progress
+@property (nonatomic) NSProgress *progress;
 
 /// library image that is being processed
 @property (nonatomic, strong) TSLibraryImage *image;
@@ -27,5 +30,20 @@
 
 /// pixel format converter (may be shared/re-used)
 @property (nonatomic) TSPixelConverterRef converter;
+
+/// completion callback
+@property (nonatomic) TSRawPipelineCompletionCallback completionCallback;
+/// progress callback
+@property (nonatomic) TSRawPipelineProgressCallback progressCallback;
+
+/**
+ * Adds an operation to the list of operations associated with the op.
+ */
+-(void) addOperation:(NSOperation *) op;
+
+/**
+ * Terminates the RAW pipeline with an error message.
+ */
+- (void) terminateWithError:(NSError *) err;
 
 @end
