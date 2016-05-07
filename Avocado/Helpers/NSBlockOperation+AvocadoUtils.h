@@ -14,6 +14,6 @@
  * Creates a block operation, passing a pointer to the operation in the
  * block.
  */
-+ (instancetype) operationWithBlock:(void (^_Nonnull)(NSBlockOperation *)) block;
++ (_Nullable instancetype) operationWithBlock:(void (^_Nonnull)(NSBlockOperation * _Nonnull)) block;
 
 @end

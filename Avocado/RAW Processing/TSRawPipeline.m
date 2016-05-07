@@ -11,6 +11,8 @@
 #import "TSRawImage.h"
 #import "TSRawPipelineState.h"
 #import "TSPixelFormatConverter.h"
+
+#import "TSRawImageDataHelpers.h"
 #import "ahd_interpolate_mod.h"
 
 #import "TSHumanModels.h"
@@ -40,6 +42,11 @@
 @property (nonatomic) NSCache *rawStageCache;
 /// pixel format converter
 @property (nonatomic) TSPixelConverterRef pixelConverter;
+
+/// internal buffer for the temporary storage of interpolated RGB data
+@property (nonatomic) void *interpolatedColourBuf;
+/// size (in bytes) of the interpolated colour buffer
+@property (nonatomic) size_t interpolatedColourBufSz;
 
 /// CoreImage context; hardware-accelerated processing for filters
 @property (nonatomic) CIContext *ciContext;
@@ -106,6 +113,9 @@
    completionCallback:(nonnull TSRawPipelineCompletionCallback) complete
 	 progressCallback:(nullable TSRawPipelineProgressCallback) progress
    conversionProgress:(NSProgress * _Nullable * _Nonnull) outProgress {
+	// debugging info about the file
+	DDLogDebug(@"Image size: %@", NSStringFromSize(image.imageSize));
+	
 	// initialize some variables
 	NSProgress *convertProgress = nil;
 	
@@ -116,7 +126,7 @@
 	TSRawPipelineState *state;
 	
 	// figure out whether we can use the existing converter
-	if(self.pixelConverter != NULL) {
+	if(self.pixelConverter != nil) {
 		NSUInteger w, h;
 		TSPixelConverterGetSize(self.pixelConverter, &w, &h);
 		
@@ -127,6 +137,28 @@
 	} else {
 		// there is no pixel converter; create one
 		self.pixelConverter = TSPixelConverterCreate(NULL, image.imageSize.width, image.imageSize.height);
+	}
+	
+	// allocate the temporary buffer for interpolated colour
+	size_t newColourBufSz = (image.imageSize.width * image.imageSize.height) * 4 * sizeof(uint16_t);
+	
+	if(self.interpolatedColourBuf != nil) {
+		// is the buffer large enough?
+		if(self.interpolatedColourBufSz < newColourBufSz) {
+			// free old buffer
+			free(self.interpolatedColourBuf);
+			
+			// allocate new buffer
+			self.interpolatedColourBuf = valloc(newColourBufSz);
+			self.interpolatedColourBufSz = newColourBufSz;
+			
+			DDLogDebug(@"Re-allocated %lu bytes for interpolated colour buffer", self.interpolatedColourBufSz);
+		}
+	} else {
+		self.interpolatedColourBuf = valloc(newColourBufSz);
+		self.interpolatedColourBufSz = newColourBufSz;
+		
+		DDLogDebug(@"Allocated %lu bytes for interpolated colour buffer", self.interpolatedColourBufSz);
 	}
 	
 	// set up a progress object to track the progress
@@ -150,6 +182,7 @@
 	state.progress = convertProgress;
 	
 	state.rawImage = image.libRawHandle;
+	state.interpolatedColourBuf = self.interpolatedColourBuf;
 	
 	// set up the various operations
 	opDebayer = [self opDebayer:state];
@@ -201,15 +234,61 @@
 	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
 		state.stage = TSRawPipelineStageDemosaicing;
 		
+		// copy RAW data into buffer
+		libraw_data_t *libRaw = state.rawImage.libRaw;
+//		DDLogDebug(@"Colours = %i, filters = 0x%08X", libRaw->idata.colors, libRaw->idata.filters);
+//		DDLogDebug(@"raw alloc = %p, raw data = %p, 3 colour = %p, 4 colour = %p, image = %p", libRaw->rawdata.raw_alloc, libRaw->rawdata.raw_image, libRaw->rawdata.color3_image, libRaw->rawdata.color4_image, libRaw->image);
+		
+		DDLogDebug(@"Copying data to raw buffer: %p", self.interpolatedColourBuf);
+		[state.rawImage copyRawDataToBuffer:self.interpolatedColourBuf];
+		DDLogDebug(@"Finished copying data to raw buffer");
+		
 		// remove dark frame
 		
-		// adjust black level
+		// perform pre-interpolation tasks
+		TSRawPreInterpolation(libRaw, self.interpolatedColourBuf);
 		
 		// interpolate
-		libraw_data_t *data = state.rawImage.libRaw;
+		DDLogVerbose(@"Beginning colour interpolation");
+		ahd_interpolate_mod(self.interpolatedColourBuf, libRaw);
+		DDLogVerbose(@"Completed colour interpolation");
 		
-		DDLogDebug(@"Colours = %i, filters = 0x%08X", data->idata.colors, data->idata.filters);
-		DDLogDebug(@"raw alloc = %p, raw data = %p, 3 colour = %p, 4 colour = %p, image = %p", data->rawdata.raw_alloc, data->rawdata.raw_image, data->rawdata.color3_image, data->rawdata.color4_image, data->image);
+		// convert to RGB
+		DDLogVerbose(@"Beginning RGB conversion");
+		
+		void *outBuf = TSPixelConverterGetRGBXPointer(state.converter);
+		TSRawConvertToRGB(libRaw, self.interpolatedColourBuf, outBuf);
+		DDLogVerbose(@"Completed RGB conversion");
+		
+		// save buffer to disk
+		NSFileManager *fm = [NSFileManager defaultManager];
+		NSURL *appSupportURL = [[fm URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
+		appSupportURL = [appSupportURL URLByAppendingPathComponent:@"me.tseifert.Avocado"];
+		
+		// save the raw data
+		NSData *rawData = [NSData dataWithBytesNoCopy:outBuf length:(state.rawImage.size.width * 3 * 2) * state.rawImage.size.height freeWhenDone:NO];
+		[rawData writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_data.raw"] atomically:NO];
+		
+		// create a bitmap from it pls
+		NSBitmapImageRep *im;
+		
+		unsigned char* ptrs[1] = { outBuf };
+		
+		im = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:(unsigned char **) &ptrs
+													 pixelsWide:state.rawImage.size.width
+													 pixelsHigh:state.rawImage.size.height
+												  bitsPerSample:16
+												samplesPerPixel:3
+													   hasAlpha:NO
+													   isPlanar:NO
+												 colorSpaceName:NSCalibratedRGBColorSpace
+													bytesPerRow:(state.rawImage.size.width * 3 * 2)
+												   bitsPerPixel:48];
+		
+		NSData *colourData = [im TIFFRepresentationUsingCompression:NSTIFFCompressionNone factor:1.f];
+		[colourData writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_data.tiff"] atomically:NO];
+		
+		DDLogVerbose(@"Finished writing debug data");
 	}];
 	
 	op.name = @"Demosaicing";

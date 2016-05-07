@@ -178,14 +178,15 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 		// TODO: Implement this maybe
 	} else {
 		// lol we're fucked, we should do something sophisticated here
-		DDLogWarn(@"Unsupported thumbnail format: %u", format);
+		DDLogError(@"Unsupported thumbnail format: %u", format);
 		
 		self.thumbnail = nil;
 	}
 }
 
 /**
- * Unpacks the RAW file and processes it.
+ * Unpacks the RAW file and processes it. This really just copies the
+ * raw pixel data into memory
  */
 - (BOOL) unpackRaw {
 	int err = 0;
@@ -208,17 +209,22 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 
 #pragma mark Raw data copying
 /**
- * Copies the Bayer data from the raw file into the four colour buffer given as
- * an input.
+ * Copies the raw data from the file into the four colour buffer given as
+ * an input. This is usually in the single component Bayer format, which
+ * must be processed before it can be displayed meaningfully, though some
+ * RAW files may contain data in a different format.
+ *
+ * @param outBuffer A buffer at least (width * height) * 4 * 2 bytes in
+ * length. Assume each row has (width * 8) bytes.
  */
-- (void) copyBayerDataToBuffer:(void *) outBuffer {
+- (void) copyRawDataToBuffer:(void *) outBuffer {
 	// adjust black levels
 	unsigned short cblack[4] = {0,0,0,0};
 	unsigned short dmax = 0;
 	
 	// use the appropriate copying routine
 	if(self.libRaw->idata.filters || self.libRaw->idata.colors == 1) { // bayer, one component
-		
+		TSRawCopyBayerData(self.libRaw, cblack, &dmax, outBuffer);
 	} else {
 		DDLogError(@"Got an unsupported RAW format: filters = 0x%08x, colours = %i", self.libRaw->idata.filters, self.libRaw->idata.colors);
 		DDAssert(false, @"Unsupported RAW format provided: %@", self.fileUrl);

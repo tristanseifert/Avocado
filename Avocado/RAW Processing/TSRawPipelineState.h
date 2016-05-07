@@ -28,6 +28,9 @@
 /// whether results of this processing step should be cached or naw
 @property (nonatomic) BOOL shouldCache;
 
+/// 64bpp buffer for the interpolated RGBX data; used by converter.
+@property (nonatomic) void *interpolatedColourBuf;
+
 /// pixel format converter (may be shared/re-used)
 @property (nonatomic) TSPixelConverterRef converter;
 

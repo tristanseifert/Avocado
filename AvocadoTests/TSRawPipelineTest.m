@@ -30,7 +30,19 @@
 	self.pipeline = [TSRawPipeline new];
 	
 	// find the image
-	self.image = [TSLibraryImage MR_findFirstByAttribute:@"fileType" withValue:@(TSLibraryImageRaw)];
+	NSArray<TSLibraryImage *> *images = [TSLibraryImage MR_findAll];
+	
+	[images enumerateObjectsUsingBlock:^(TSLibraryImage *image, NSUInteger idx, BOOL *stop) {
+		// check filetype
+		if(image.fileTypeValue == TSLibraryImageRaw) {
+			// is it a CR2 file?
+			if([image.fileUrl.lastPathComponent containsString:@".CR2"]) {
+				self.image = image;
+				
+				*stop = YES;
+			}
+		}
+	}];
 }
 
 - (void) tearDown {
@@ -69,7 +81,7 @@
 			 conversionProgress:&progress];
 	
 	// wait
-	[self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+	[self waitForExpectationsWithTimeout:20 handler:^(NSError *error) {
 		if(error) {
 			DDLogError(@"Error meeting RAW conversion expectation: %@", error);
 		} else {

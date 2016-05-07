@@ -28,10 +28,15 @@ extern NSString *const TSRawImageErrorIsFatalKey;
 - (BOOL) unpackRawData:(NSError **) outErr;
 
 /**
- * Copies the Bayer data from the raw file into the four colour buffer given as
- * an input.
+ * Copies the raw data from the file into the four colour buffer given as
+ * an input. This is usually in the single component Bayer format, which
+ * must be processed before it can be displayed meaningfully, though some
+ * RAW files may contain data in a different format.
+ *
+ * @param outBuffer A buffer at least (width * height) * 4 * 2 bytes in
+ * length. Assume each row has (width * 8) bytes.
  */
-- (void) copyBayerDataToBuffer:(void *) outBuffer;
+- (void) copyRawDataToBuffer:(void *) outBuffer;
 
 /// pointer to the libraw struct; shouldn't be usually accessible
 @property (nonatomic, readonly) libraw_data_t *libRaw;

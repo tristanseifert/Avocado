@@ -61,9 +61,6 @@ static const double xyz_rgb[3][3] = {
 
 static const float d65_white[3] =  { 0.950456f, 1.0f, 1.088754f };
 
-/// force three colours
-static const int colors = 3;
-
 /// define a bunch of shit
 #define FORC(cnt) for (c=0; c < cnt; c++)
 #define FORC3 FORC(3)
@@ -79,65 +76,70 @@ static const int colors = 3;
 #define CLIP(x) LIM((int)(x),0,65535)
 #define SWAP(a,b) { a=a+b; b=a-b; a=a-b; }
 
-#define FC(row,col) \
+#define FC(row, col, filters) \
 (filters >> ((((row) << 1 & 14) + ((col) & 1)) << 1) & 3)
 
 /**
- * filters = filters property from libraw_iparams_t
+ * I honestly have no fucking clue what this does but it seems required
  */
-static inline int fcol(int row, int col, int filters) {
-//	static const char filter[16][16] =
-//	{ { 2,1,1,3,2,3,2,0,3,2,3,0,1,2,1,0 },
-//		{ 0,3,0,2,0,1,3,1,0,1,1,2,0,3,3,2 },
-//		{ 2,3,3,2,3,1,1,3,3,1,2,1,2,0,0,3 },
-//		{ 0,1,0,1,0,2,0,2,2,0,3,0,1,3,2,1 },
-//		{ 3,1,1,2,0,1,0,2,1,3,1,3,0,1,3,0 },
-//		{ 2,0,0,3,3,2,3,1,2,0,2,0,3,2,2,1 },
-//		{ 2,3,3,1,2,1,2,1,2,1,1,2,3,0,0,1 },
-//		{ 1,0,0,2,3,0,0,3,0,3,0,3,2,1,2,3 },
-//		{ 2,3,3,1,1,2,1,0,3,2,3,0,2,3,1,3 },
-//		{ 1,0,2,0,3,0,3,2,0,1,1,2,0,1,0,2 },
-//		{ 0,1,1,3,3,2,2,1,1,3,3,0,2,1,3,2 },
-//		{ 2,3,2,0,0,1,3,0,2,0,1,2,3,0,1,0 },
-//		{ 1,3,1,2,3,2,3,2,0,2,0,1,1,0,3,0 },
-//		{ 0,2,0,3,1,0,0,1,1,3,3,2,3,2,2,1 },
-//		{ 2,1,3,2,3,1,2,1,0,3,0,2,0,2,0,2 },
-//		{ 0,3,1,0,0,2,0,3,2,1,3,1,1,3,1,3 } };
+static inline int fcol(size_t row, size_t col, unsigned int filters, ushort top_margin, ushort left_margin) {
+	static const char filter[16][16] = {
+		{ 2,1,1,3,2,3,2,0,3,2,3,0,1,2,1,0 },
+		{ 0,3,0,2,0,1,3,1,0,1,1,2,0,3,3,2 },
+		{ 2,3,3,2,3,1,1,3,3,1,2,1,2,0,0,3 },
+		{ 0,1,0,1,0,2,0,2,2,0,3,0,1,3,2,1 },
+		{ 3,1,1,2,0,1,0,2,1,3,1,3,0,1,3,0 },
+		{ 2,0,0,3,3,2,3,1,2,0,2,0,3,2,2,1 },
+		{ 2,3,3,1,2,1,2,1,2,1,1,2,3,0,0,1 },
+		{ 1,0,0,2,3,0,0,3,0,3,0,3,2,1,2,3 },
+		{ 2,3,3,1,1,2,1,0,3,2,3,0,2,3,1,3 },
+		{ 1,0,2,0,3,0,3,2,0,1,1,2,0,1,0,2 },
+		{ 0,1,1,3,3,2,2,1,1,3,3,0,2,1,3,2 },
+		{ 2,3,2,0,0,1,3,0,2,0,1,2,3,0,1,0 },
+		{ 1,3,1,2,3,2,3,2,0,2,0,1,1,0,3,0 },
+		{ 0,2,0,3,1,0,0,1,1,3,3,2,3,2,2,1 },
+		{ 2,1,3,2,3,1,2,1,0,3,0,2,0,2,0,2 },
+		{ 0,3,1,0,0,2,0,3,2,1,3,1,1,3,1,3 }
+	};
 	
-//	if (filters == 1) return filter[(row+top_margin)&15][(col+left_margin)&15];
-//	if (filters == 9) return xtrans[(row+6) % 6][(col+6) % 6];
-	return FC(row, col);
+	if (filters == 1) return filter[(row+top_margin)&15][(col+left_margin)&15];
+	
+	// cut out support for Fuji X-Trans sensors for now
+	//	if (filters == 9) return xtrans[(row+6) % 6][(col+6) % 6];
+	
+	return FC(row, col, filters);
 }
 
-static inline void border_interpolate(int border, int width, int height, ushort (*image)[4], int filters) {
+static inline void border_interpolate(int border, int width, int height, ushort (*image)[4], int filters, ushort top_margin, ushort left_margin, ushort colors) {
 	unsigned row, col, y, x, f, c, sum[8];
 	
-	for (row=0; row < height; row++)
-		for (col=0; col < width; col++) {
-			if (col==border && row >= border && row < height-border)
+	for(row=0; row < height; row++)
+		for(col=0; col < width; col++) {
+			if(col==border && row >= border && row < height-border)
 				col = width-border;
-			memset (sum, 0, sizeof sum);
-			for (y=row-1; y != row+2; y++)
-				for (x=col-1; x != col+2; x++)
-					if (y < height && x < width) {
-						f = fcol(y,x, filters);
+			memset(sum, 0, sizeof sum);
+			for(y=row-1; y != row+2; y++)
+				for(x=col-1; x != col+2; x++)
+					if(y < height && x < width) {
+						f = fcol(y,x, filters, top_margin, left_margin);
 						sum[f] += image[y*width+x][f];
 						sum[f+4]++;
 					}
-			f = fcol(row,col, filters);
-			FORCC if (c != f && sum[c+4])
-				image[row*width+col][c] = sum[c] / sum[c+4];
+			f = fcol(row, col, filters, top_margin, left_margin);
+			
+			FORCC {
+				if(c != f && sum[c+4]) {
+					image[row*width+col][c] = sum[c] / sum[c+4];
+				}
+			}
 		}
 }
 
 /**
  * @param image Image pointer, input
- * @param width Image width
- * @param height Image height
- * @param filters filters property from libraw_iparams_t
- * @param rgb_cam rgb_cam field from libraw_colordata_t
+ * @param imageData Pointer to the libraw structure
  */
-void ahd_interpolate_mod(ushort (*image)[4], int width, int height, int filters, float rgb_cam[3][4]) {
+void ahd_interpolate_mod(uint16_t (*image)[4], libraw_data_t *imageData) {
 	int i, j, k, top, left, row, col, tr, tc, c, d, val, hm[2];
 	ushort (*pix)[4], (*rix)[3];
 	static const int dir[4] = { -1, 1, -TS, TS };
@@ -146,10 +148,15 @@ void ahd_interpolate_mod(ushort (*image)[4], int width, int height, int filters,
 	ushort (*rgb)[TS][TS][3];
 	short (*lab)[TS][TS][3], (*lix)[3];
 	char (*homo)[TS][TS], *buffer;
-
-#ifdef DCRAW_VERBOSE
-	if (verbose) fprintf (stderr,_("AHD interpolation (modified for anti-aliasing)...\n"));
-#endif
+	
+	// read out a bunch of data
+	ushort width = imageData->sizes.width;
+	ushort height = imageData->sizes.height;
+	unsigned int filters = imageData->idata.filters;
+	ushort top_margin = imageData->sizes.top_margin;
+	ushort left_margin = imageData->sizes.left_margin;
+	
+	int colors = imageData->idata.colors;
 
 	// some sort of thingie generated
 	for (i=0; i < 0x10000; i++) {
@@ -161,9 +168,9 @@ void ahd_interpolate_mod(ushort (*image)[4], int width, int height, int filters,
 	for (i=0; i < 3; i++)
 		for (j=0; j < colors; j++)
 			for (xyz_cam[i][j] = k=0; k < 3; k++)
-				xyz_cam[i][j] += xyz_rgb[i][k] * rgb_cam[k][j] / d65_white[i];
+				xyz_cam[i][j] += xyz_rgb[i][k] * imageData->color.rgb_cam[k][j] / d65_white[i];
 
-	border_interpolate(6, width, height, image, filters);
+	border_interpolate(6, width, height, image, filters, top_margin, left_margin, colors);
 	buffer = (char *) malloc (26*TS*TS);		/* 1664 kB */
 //	merror (buffer, "ahd_interpolate()");
 	rgb  = (ushort(*)[TS][TS][3]) buffer;
@@ -173,10 +180,10 @@ void ahd_interpolate_mod(ushort (*image)[4], int width, int height, int filters,
 	for (top=3; top < height-6; top += TS-7)
 		for (left=3; left < width-6; left += TS-7) {
 
-			/*  Interpolate green horizontally and vertically:		*/
+			/*  Interpolate green horizontally and vertically: */
 			for (row = top; row < top+TS && row < height-3; row++) {
-				col = left + (FC(row,left) & 1);
-				for (c = FC(row,col); col < left+TS && col < width-3; col+=2) {
+				col = left + (FC(row, left, filters) & 1);
+				for (c = FC(row, col, filters); col < left+TS && col < width-3; col+=2) {
 					pix = image + row*width+col;
 					val = ((pix[-1][1] + pix[0][c] + pix[1][1]) * 2
 						- pix[-2][c] - pix[2][c] + 2) >> 2;
@@ -205,15 +212,15 @@ void ahd_interpolate_mod(ushort (*image)[4], int width, int height, int filters,
 				}
 			}
 			
-			/*  Interpolate red and blue, and convert to CIELab:		*/
+			/*  Interpolate red and blue, and convert to CIELab: */
 			for (d=0; d < 2; d++)
 				for (row=top+1; row < top+TS-1 && row < height-4; row++)
 					for (col=left+1; col < left+TS-1 && col < width-4; col++) {
 						pix = image + row*width+col;
 						rix = &rgb[d][row-top][col-left];
 						lix = &lab[d][row-top][col-left];
-						if ((c = 2 - FC(row,col)) == 1) {
-							c = FC(row+1,col);
+						if ((c = 2 - FC(row, col, filters)) == 1) {
+							c = FC(row+1, col, filters);
 							val = pix[0][1] + (( pix[-1][2-c] + pix[1][2-c]
 							- rix[-1][1] - rix[1][1] + 1) >> 1);
 							if (val < 0 || val > 65535)
@@ -232,7 +239,7 @@ void ahd_interpolate_mod(ushort (*image)[4], int width, int height, int filters,
 								val = (pix[-width-1][c] + pix[-width+1][c] +
 								pix[ width-1][c] + pix[ width+1][c] + 2) >> 2; }
 						rix[0][c] = val;
-						c = FC(row,col);
+						c = FC(row, col, filters);
 						rix[0][c] = pix[0][c];
 						xyz[0] = xyz[1] = xyz[2] = 0.5;
 						FORCC {
@@ -248,7 +255,7 @@ void ahd_interpolate_mod(ushort (*image)[4], int width, int height, int filters,
 						lix[0][2] = 64 * 200 * (xyz[1] - xyz[2]);
 					}
 			
-					/*  Build homogeneity maps from the CIELab images:		*/
+					/*  Build homogeneity maps from the CIELab images: */
 					memset (homo, 0, 2*TS*TS);
 					for (row=top+2; row < top+TS-2 && row < height-5; row++) {
 						tr = row-top;
@@ -273,7 +280,7 @@ void ahd_interpolate_mod(ushort (*image)[4], int width, int height, int filters,
 						}
 					}
 			
-					/*  Combine the most homogenous pixels for the final result:	*/
+					/*  Combine the most homogenous pixels for the final result: */
 					for (row=top+3; row < top+TS-3 && row < height-6; row++) {
 						tr = row-top;
 						for (col=left+3; col < left+TS-3 && col < width-6; col++) {
