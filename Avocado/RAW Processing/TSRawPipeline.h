@@ -22,6 +22,7 @@
  *	2. Demosaicing Bayer data
  *		a. Apply white balance
  *		b. Interpolate colour values for missing pixels
+ *		c. Convert to RGB
  *	3. Apply lens corrections (using LensFun library)
  *		a. Devignetting
  *		b. Geometry corrections (scaling, projection, distortion, chromatic
@@ -66,6 +67,7 @@ typedef NS_ENUM(NSUInteger, TSRawPipelineStage) {
 	TSRawPipelineStageDemosaicing			= (2 << 16),
 	TSRawPipelineStageWhiteBalance			= (2 << 16) | 1,
 	TSRawPipelineStageInterpolateColour		= (2 << 16) | 2,
+	TSRawPipelineStageConvertToRGB			= (2 << 16) | 3,
 	
 	TSRawPipelineStageLensCorrection		= (3 << 16),
 	TSRawPipelineStageLensVignetting		= (3 << 16) | 1,

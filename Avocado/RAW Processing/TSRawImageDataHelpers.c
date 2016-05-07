@@ -8,6 +8,7 @@
 
 #include "TSRawImageDataHelpers.h"
 
+#include <float.h>
 #include <string.h>
 #include <memory.h>
 #include <stdlib.h>
@@ -17,13 +18,21 @@
 
 /// size struct
 #define S libRaw->sizes
+#define C libRaw->color
 
 #pragma mark Helpers
+static void TSRawPreInterpolationScaleColours(libraw_data_t *libRaw, uint16_t (*image)[4]);
+
+#define FORC(cnt) for (c=0; c < cnt; c++)
+#define FORC3 FORC(3)
+#define FORC4 FORC(4)
+#define FORCC FORC(colors)
 
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
 #define LIM(x,min,max) MAX(min,MIN(x,max))
 #define CLIP(x) LIM((int)(x),0,65535)
+#define SWAP(a,b) { a=a+b; b=a-b; a=a-b; }
 
 #define FC(row, col, filters) \
 (filters >> ((((row) << 1 & 14) + ((col) & 1)) << 1) & 3)
@@ -56,20 +65,6 @@ static inline int fcol(size_t row, size_t col, unsigned int filters, ushort top_
 	// cut out support for Fuji X-Trans sensors for now
 //	if (filters == 9) return xtrans[(row+6) % 6][(col+6) % 6];
 	return FC(row, col, filters);
-}
-
-/**
- * Applies the gamma correction on the given value.
- */
-static inline uint16_t TSRawApplyGamma(float value, float exp) {
-	value /= 65535;
-	
-	// Exact sRGB gamma
-	if (value <= 0.0031308) {
-		return (uint16_t) CLIP(846712.2 * value);
-	} else {
-		return (uint16_t) CLIP(65535*(1.055*pow(value,exp)-0.055));
-	}
 }
 
 #pragma mark Conversion and Copying
@@ -123,6 +118,7 @@ void TSRawCopyBayerData(libraw_data_t *libRaw, unsigned short cblack[4], unsigne
 	}
 }
 
+#pragma mark Black Level
 /**
  * Adjusts the black level of the image.
  *
@@ -132,8 +128,6 @@ void TSRawCopyBayerData(libraw_data_t *libRaw, unsigned short cblack[4], unsigne
  * @param image Image buffer
  */
 void TSRawAdjustBlackLevel(libraw_data_t *libRaw, uint16_t (*image)[4]) {
-#define C libRaw->color
-	
 	// Add common part to cblack[] early
 	if (libRaw->idata.filters > 1000 && (C.cblack[4]+1)/2 == 1 && (C.cblack[5]+1)/2 == 1) {
 		for(int c=0; c<4; c++)
@@ -173,7 +167,6 @@ void TSRawAdjustBlackLevel(libraw_data_t *libRaw, uint16_t (*image)[4]) {
 	}
 	
 	for(c=0;c<4;c++) C.cblack[c] += C.black;
-#undef C
 }
 
 /**
@@ -183,7 +176,6 @@ void TSRawAdjustBlackLevel(libraw_data_t *libRaw, uint16_t (*image)[4]) {
  * @param image Image buffer
  */
 void TSRawSubtractBlack(libraw_data_t *libRaw, uint16_t (*image)[4]) {
-#define C libRaw->color
 	if((C.cblack[0] || C.cblack[1] || C.cblack[2] || C.cblack[3] || (C.cblack[4] && C.cblack[5]) )) {
 #define BAYERC(row,col,c) imgdata.image[((row) >> IO.shrink)*S.iwidth + ((col) >> IO.shrink)][c]
 		int cblk[4], i;
@@ -191,9 +183,6 @@ void TSRawSubtractBlack(libraw_data_t *libRaw, uint16_t (*image)[4]) {
 			cblk[i] = C.cblack[i];
 		
 		int size = S.iheight * S.iwidth;
-#define MIN(a,b) ((a) < (b) ? (a) : (b))
-#define MAX(a,b) ((a) > (b) ? (a) : (b))
-#define LIM(x,min,max) MAX(min,MIN(x,max))
 		
 		int dmax = 0;
 		if(C.cblack[4] && C.cblack[5]) {
@@ -217,11 +206,6 @@ void TSRawSubtractBlack(libraw_data_t *libRaw, uint16_t (*image)[4]) {
 		}
 		
 		C.data_maximum = dmax & 0xffff;
-#undef MIN
-#undef MAX
-#undef LIM
-#undef CLIP
-		
 		C.maximum -= C.black;
 		
 		// clear the values to zero
@@ -242,9 +226,9 @@ void TSRawSubtractBlack(libraw_data_t *libRaw, uint16_t (*image)[4]) {
 		
 		C.data_maximum = dmax;
 	}
-#undef C
 }
 
+#pragma mark - Pre-Interpolation
 /**
  * Performs pre-interpolation tasks on the colour data.
  *
@@ -270,6 +254,119 @@ void TSRawPreInterpolation(libraw_data_t *libRaw, uint16_t (*image)[4]) {
 	}
 }
 
+#pragma mark Colour Scaling
+/**
+ * Inner colour scaling loop.
+ */
+static inline void TSRawScaleColourLoop(libraw_data_t *libRaw, uint16_t (*image)[4], float scale_mul[4]) {
+	unsigned size = S.iheight * S.iwidth;
+	
+	if (C.cblack[4] && C.cblack[5]) {
+		int val;
+		for (unsigned i=0; i < size*4; i++) {
+			if (!(val = image[0][i])) continue;
+			val -= C.cblack[6 + i/4 / S.iwidth % C.cblack[4] * C.cblack[5] +
+							i/4 % S.iwidth % C.cblack[5]];
+			val -= C.cblack[i & 3];
+			val *= scale_mul[i & 3];
+			image[0][i] = CLIP(val);
+		}
+	} else if(C.cblack[0]||C.cblack[1]||C.cblack[2]||C.cblack[3]) {
+		for (size_t i=0; i < size*4; i++) {
+			int val = image[0][i];
+			if (!val) continue;
+			val -= C.cblack[i & 3];
+			val *= scale_mul[i & 3];
+			image[0][i] = CLIP(val);
+		}
+	} else { // BL is zero
+		for (size_t i=0; i < size*4; i++) {
+			int val = image[0][i];
+			val *= scale_mul[i & 3];
+			image[0][i] = CLIP(val);
+		}
+	}
+}
+
+/**
+ * Applies contrast and scaling to colour data; this applies white balance.
+ *
+ * @param libRaw LibRaw instance from which to acquire some image info
+ * @param image Image buffer
+ */
+void TSRawPreInterpolationApplyWB(libraw_data_t *libRaw, uint16_t (*image)[4]) {
+	unsigned int row, col, c, sum[8];
+	int val, dark, sat;
+	double dmin, dmax;
+	float scale_mul[4];
+	
+	// get some data from the struct
+	unsigned int filters = libRaw->idata.filters;
+	
+	if (/*use_camera_wb &&*/ libRaw->color.cam_mul[0] != -1) {
+		memset (sum, 0, sizeof sum);
+		for (row=0; row < 8; row++)
+			for (col=0; col < 8; col++) {
+				c = FC(row, col, filters);
+				
+				if ((val = libRaw->color.white[row][col] - libRaw->color.cblack[c]) > 0)
+					sum[c] += val;
+				sum[c+4]++;
+			}
+
+#ifdef LIBRAW_LIBRARY_BUILD
+		if(load_raw == &LibRaw::nikon_load_sraw) {
+			// Nikon sRAW: camera WB already applied:
+			libRaw->color.pre_mul[0]=libRaw->color.pre_mul[1]=libRaw->color.pre_mul[2]=libRaw->color.pre_mul[3] = 1.0;
+		} else
+#endif
+			if (sum[0] && sum[1] && sum[2] && sum[3])
+				FORC4 libRaw->color.pre_mul[c] = (float) sum[c+4] / sum[c];
+			else if (libRaw->color.cam_mul[0] && libRaw->color.cam_mul[2])
+				memcpy(libRaw->color.pre_mul, libRaw->color.cam_mul, sizeof libRaw->color.pre_mul);
+			else {
+				// bad white balance
+			}
+	}
+//#ifdef LIBRAW_LIBRARY_BUILD
+//	// Nikon sRAW, daylight
+//	if (load_raw == &LibRaw::nikon_load_sraw
+//		&& !use_camera_wb && !use_auto_wb
+//		&& cam_mul[0] > 0.001f && cam_mul[1] > 0.001f && cam_mul[2] > 0.001f )
+//	{
+//		for(c=0;c<3;c++)
+//			pre_mul[c]/=cam_mul[c];
+//	}
+//#endif
+	
+	if (libRaw->color.pre_mul[1] == 0) libRaw->color.pre_mul[1] = 1;
+	if (libRaw->color.pre_mul[3] == 0) libRaw->color.pre_mul[3] = libRaw->idata.colors < 4 ? libRaw->color.pre_mul[1] : 1;
+	
+	dark = libRaw->color.black;
+	sat = libRaw->color.maximum;
+	
+	libRaw->color.maximum -= libRaw->color.black;
+	
+	for(dmin = DBL_MAX, dmax=c=0; c < 4; c++) {
+		if (dmin > libRaw->color.pre_mul[c])
+			dmin = libRaw->color.pre_mul[c];
+		if (dmax < libRaw->color.pre_mul[c])
+			dmax = libRaw->color.pre_mul[c];
+	}
+	
+	dmax = dmin;
+	FORC4 scale_mul[c] = (libRaw->color.pre_mul[c] /= dmax) * 65535.0 / libRaw->color.maximum;
+	
+	if (filters > 1000 && (libRaw->color.cblack[4]+1)/2 == 1 && (libRaw->color.cblack[5]+1)/2 == 1) {
+		FORC4 libRaw->color.cblack[FC(c/2,c%2, filters)] += libRaw->color.cblack[6 + c/2 % libRaw->color.cblack[4] * libRaw->color.cblack[5] + c%2 % libRaw->color.cblack[5]];
+		libRaw->color.cblack[4] = libRaw->color.cblack[5] = 0;
+	}
+	
+	// perform the scaling loop
+	TSRawScaleColourLoop(libRaw, image, scale_mul);
+}
+
+#pragma mark - Post-interpolation
 /**
  * Performs post-interpolation green channel mixing.
  *
@@ -279,8 +376,68 @@ void TSRawPreInterpolation(libraw_data_t *libRaw, uint16_t (*image)[4]) {
 void TSRawPostInterpolationMixGreen(libraw_data_t *libRaw, uint16_t (*image)[4]) {
 	int i;
 	
-	for(libRaw->idata.colors = 3, i = 0; i < (S.height * S.width); i++) {
-		image[i][1] = (image[i][1] + image[i][3]) >> 1;
+	// we're now down to three colours
+	libRaw->idata.colors = 3;
+	
+	// average green channels
+	for(i = 0; i < (S.height * S.width); i++) {
+		image[i][1] = image[i][3] = (image[i][1] + image[i][3]) / 2;
+	}
+}
+
+/**
+ * Performs a median filter on the image to remove any anomalies.
+ *
+ * @param libRaw LibRaw instance from which to acquire some image info
+ * @param image Image buffer
+ * @param med_passes How many passes of the median filter to go through.
+ */
+void TSRawPostInterpolationMedianFilter(libraw_data_t *libRaw, uint16_t (*image)[4], int med_passes) {
+	ushort (*pix)[4];
+	int pass, c, i, j, k, med[9];
+	
+	// get some data from the struct
+	ushort width = libRaw->sizes.width;
+	ushort height = libRaw->sizes.height;
+	
+	static const uchar opt[] =	/* Optimal 9-element median search */
+	{ 1,2, 4,5, 7,8, 0,1, 3,4, 6,7, 1,2, 4,5, 7,8,
+		0,3, 5,8, 4,7, 3,6, 1,4, 2,5, 4,7, 4,2, 6,4, 4,2 };
+	
+	for (pass=1; pass <= med_passes; pass++) {
+		printf("Began median filter pass %i\n", pass);
+		
+		for (c=0; c < 3; c+=2) {
+			for (pix = image; pix < image+width*height; pix++)
+				pix[0][3] = pix[0][c];
+			for (pix = image+width; pix < image+width*(height-1); pix++) {
+				if ((pix-image+1) % width < 2) continue;
+				for (k=0, i = -width; i <= width; i += width)
+					for (j = i-1; j <= i+1; j++)
+						med[k++] = pix[j][3] - pix[j][1];
+				for (i=0; i < sizeof opt; i+=2)
+					if     (med[opt[i]] > med[opt[i+1]])
+						SWAP (med[opt[i]] , med[opt[i+1]]);
+				pix[0][c] = CLIP(med[4] + pix[0][1]);
+			}
+		}
+		
+		printf("Completed median filter pass %i\n", pass);
+	}
+}
+
+#pragma mark - Output
+/**
+ * Applies the gamma correction on the given value.
+ */
+static inline uint16_t TSRawApplyGamma(float value, float exp) {
+	value /= 65535;
+	
+	// Exact sRGB gamma
+	if (value <= 0.0031308) {
+		return (uint16_t) CLIP(846712.2 * value);
+	} else {
+		return (uint16_t) CLIP(65535*(1.055*pow(value,exp)-0.055));
 	}
 }
 
@@ -330,7 +487,7 @@ void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*o
 	for (i=0; i < 3; i++)
 		for (j=0; j < libRaw->idata.colors; j++)
 			for (out_cam[i][j] = k=0; k < 3; k++)
-				out_cam[i][j] += out_rgb[1][i][k] * libRaw->color.rgb_cam[k][j];
+				out_cam[i][j] += out_rgb[0][i][k] * libRaw->color.rgb_cam[k][j];
 	
 	// get some data from the struct
 	ushort width = libRaw->sizes.width;

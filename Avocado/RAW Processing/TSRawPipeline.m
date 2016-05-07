@@ -249,22 +249,30 @@
 		TSRawSubtractBlack(libRaw, self.interpolatedColourBuf);
 		DDLogVerbose(@"Completed black level adjustment");
 		
-		// perform pre-interpolation tasks
+		
+		// white balance (colour scaling) and pre-interpolation
+		state.stage = TSRawPipelineStageWhiteBalance;
+		
+		TSRawPreInterpolationApplyWB(libRaw, self.interpolatedColourBuf);
 		TSRawPreInterpolation(libRaw, self.interpolatedColourBuf);
 		
-		// interpolate the colour data
+		
+		// interpolate colour data
 		state.stage = TSRawPipelineStageInterpolateColour;
 		
-		DDLogVerbose(@"Beginning colour interpolation");
+		DDLogVerbose(@"Beginning colour interpolation (c = %i)", libRaw->idata.colors);
 		ahd_interpolate_mod(self.interpolatedColourBuf, libRaw);
 		DDLogVerbose(@"Completed colour interpolation");
 		
-		// Mixing green channels
-		DDLogVerbose(@"Beginning green channel mixing");
-		TSRawPostInterpolationMixGreen(libRaw, self.interpolatedColourBuf);
-		DDLogVerbose(@"Completed green channel mixing");
 		
 		// convert to RGB
+		state.stage = TSRawPipelineStageConvertToRGB;
+		
+		DDLogVerbose(@"Beginning green channel mixing and median filter");
+//		TSRawPostInterpolationMixGreen(libRaw, self.interpolatedColourBuf);
+		TSRawPostInterpolationMedianFilter(libRaw, self.interpolatedColourBuf, 1);
+		DDLogVerbose(@"Completed green channel mixing and median filter");
+		
 		DDLogVerbose(@"Beginning RGB conversion");
 		void *outBuf = TSPixelConverterGetRGBXPointer(state.converter);
 		TSRawConvertToRGB(libRaw, self.interpolatedColourBuf, outBuf);

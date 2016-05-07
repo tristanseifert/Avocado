@@ -49,12 +49,30 @@ void TSRawSubtractBlack(libraw_data_t *libRaw, uint16_t (*image)[4]);
 void TSRawPreInterpolation(libraw_data_t *libRaw, uint16_t (*image)[4]);
 
 /**
+ * Applies contrast and scaling to colour data; this applies white balance.
+ *
+ * @param libRaw LibRaw instance from which to acquire some image info
+ * @param image Image buffer
+ */
+void TSRawPreInterpolationApplyWB(libraw_data_t *libRaw, uint16_t (*image)[4]);
+
+/**
  * Performs post-interpolation green channel mixing.
  *
  * @param libRaw LibRaw instance from which to acquire some image info
  * @param image Image buffer
  */
 void TSRawPostInterpolationMixGreen(libraw_data_t *libRaw, uint16_t (*image)[4]);
+
+/**
+ * Performs a median filter on the image to remove any anomalies.
+ *
+ * @param libRaw LibRaw instance from which to acquire some image info
+ * @param image Image buffer
+ * @param med_passes How many passes of the median filter to go through. A good
+ * default value is 3.
+ */
+void TSRawPostInterpolationMedianFilter(libraw_data_t *libRaw, uint16_t (*image)[4], int med_passes);
 
 /**
  * Converts the output data to RGB format. This should be run after

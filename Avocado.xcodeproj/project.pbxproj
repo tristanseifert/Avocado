@@ -115,10 +115,10 @@
 		6A7987671CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSBlockOperation+AvocadoUtils.h"; path = "Avocado/Helpers/NSBlockOperation+AvocadoUtils.h"; sourceTree = "<group>"; };
 		6A7987681CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSBlockOperation+AvocadoUtils.m"; path = "Avocado/Helpers/NSBlockOperation+AvocadoUtils.m"; sourceTree = "<group>"; };
 		6A79876A1CDD5CA200FB3A8E /* ahd_interpolate_mod.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ahd_interpolate_mod.c; path = "Avocado/RAW Processing/ahd_interpolate_mod.c"; sourceTree = "<group>"; };
-		6A79876C1CDD607300FB3A8E /* ahd_interpolate_mod.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ahd_interpolate_mod.h; path = "Avocado/RAW Processing/ahd_interpolate_mod.h"; sourceTree = "<group>"; };
 		6A79876D1CDD60EB00FB3A8E /* TSRawPipelineTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSRawPipelineTest.m; sourceTree = "<group>"; };
 		6A7EC3C91CD685AF007E91E8 /* TSThumbCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSThumbCache.h; path = "Avocado/Thumb Handling/TSThumbCache.h"; sourceTree = "<group>"; };
 		6A7EC3CA1CD685AF007E91E8 /* TSThumbCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSThumbCache.m; path = "Avocado/Thumb Handling/TSThumbCache.m"; sourceTree = "<group>"; };
+		6AB32E9A1CDDBAC9004FF7A3 /* ahd_interpolate_mod.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ahd_interpolate_mod.h; path = "Avocado/RAW Processing/ahd_interpolate_mod.h"; sourceTree = "<group>"; };
 		6ABC2D991CD42C30006B959F /* TSHumanModels.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TSHumanModels.h; path = "Avocado/CoreData/Managed Object Subclasses/TSHumanModels.h"; sourceTree = "<group>"; };
 		6ABC2D9A1CD42C4A006B959F /* _TSLibraryImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _TSLibraryImage.h; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImage.h"; sourceTree = "<group>"; };
 		6ABC2D9B1CD42C4A006B959F /* _TSLibraryImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryImage.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImage.m"; sourceTree = "<group>"; };
@@ -287,7 +287,7 @@
 		6A28F0651CD940C400228067 /* Conversion Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				6A79876C1CDD607300FB3A8E /* ahd_interpolate_mod.h */,
+				6AB32E9A1CDDBAC9004FF7A3 /* ahd_interpolate_mod.h */,
 				6A79876A1CDD5CA200FB3A8E /* ahd_interpolate_mod.c */,
 				6A28F0661CD940E500228067 /* TSPixelFormatConverter.m */,
 				6A28F0671CD940E500228067 /* TSPixelFormatConverter.h */,
