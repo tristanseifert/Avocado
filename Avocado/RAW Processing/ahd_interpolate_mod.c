@@ -136,10 +136,10 @@ static inline void border_interpolate(int border, int width, int height, ushort 
 }
 
 /**
- * @param image Image pointer, input
  * @param imageData Pointer to the libraw structure
+ * @param image Image pointer, input
  */
-void ahd_interpolate_mod(uint16_t (*image)[4], libraw_data_t *imageData) {
+void ahd_interpolate_mod(libraw_data_t *imageData, uint16_t (*image)[4]) {
 	int i, j, k, top, left, row, col, tr, tc, c, d, val, hm[2];
 	ushort (*pix)[4], (*rix)[3];
 	static const int dir[4] = { -1, 1, -TS, TS };
@@ -280,7 +280,7 @@ void ahd_interpolate_mod(uint16_t (*image)[4], libraw_data_t *imageData) {
 						}
 					}
 			
-					/*  Combine the most homogenous pixels for the final result: */
+					/* Combine the most homogenous pixels for the final result: */
 					for (row=top+3; row < top+TS-3 && row < height-6; row++) {
 						tr = row-top;
 						for (col=left+3; col < left+TS-3 && col < width-6; col++) {
@@ -300,4 +300,5 @@ void ahd_interpolate_mod(uint16_t (*image)[4], libraw_data_t *imageData) {
 	
 		free(buffer);
 }
+
 #undef TS

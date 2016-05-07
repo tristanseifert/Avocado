@@ -14,9 +14,9 @@
 #include "libraw.h"
 
 /**
- * @param image Image pointer, input
  * @param imageData Pointer to the libraw structure
+ * @param image Image pointer, input
  */
-void ahd_interpolate_mod(uint16_t (*image)[4], libraw_data_t *imageData);
+void ahd_interpolate_mod(libraw_data_t *imageData, uint16_t (*image)[4]);
 
 #endif /* ahd_interpolate_mod_h */

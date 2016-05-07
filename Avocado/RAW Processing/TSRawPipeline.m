@@ -236,8 +236,6 @@
 		
 		// copy RAW data into buffer
 		libraw_data_t *libRaw = state.rawImage.libRaw;
-//		DDLogDebug(@"Colours = %i, filters = 0x%08X", libRaw->idata.colors, libRaw->idata.filters);
-//		DDLogDebug(@"raw alloc = %p, raw data = %p, 3 colour = %p, 4 colour = %p, image = %p", libRaw->rawdata.raw_alloc, libRaw->rawdata.raw_image, libRaw->rawdata.color3_image, libRaw->rawdata.color4_image, libRaw->image);
 		
 		DDLogDebug(@"Copying data to raw buffer: %p", self.interpolatedColourBuf);
 		[state.rawImage copyRawDataToBuffer:self.interpolatedColourBuf];
@@ -261,55 +259,26 @@
 		state.stage = TSRawPipelineStageInterpolateColour;
 		
 		DDLogVerbose(@"Beginning colour interpolation (c = %i)", libRaw->idata.colors);
-		ahd_interpolate_mod(self.interpolatedColourBuf, libRaw);
+		ahd_interpolate_mod(libRaw, self.interpolatedColourBuf);
 		DDLogVerbose(@"Completed colour interpolation");
 		
 		
 		// convert to RGB
 		state.stage = TSRawPipelineStageConvertToRGB;
 		
-		DDLogVerbose(@"Beginning green channel mixing and median filter");
-//		TSRawPostInterpolationMixGreen(libRaw, self.interpolatedColourBuf);
-		TSRawPostInterpolationMedianFilter(libRaw, self.interpolatedColourBuf, 1);
-		DDLogVerbose(@"Completed green channel mixing and median filter");
-		
 		DDLogVerbose(@"Beginning RGB conversion");
 		void *outBuf = TSPixelConverterGetRGBXPointer(state.converter);
 		TSRawConvertToRGB(libRaw, self.interpolatedColourBuf, outBuf);
 		DDLogVerbose(@"Completed RGB conversion");
 		
-		// save buffer to disk
+		
+		// save buffer to disk (debug testing)
 		NSFileManager *fm = [NSFileManager defaultManager];
 		NSURL *appSupportURL = [[fm URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
 		appSupportURL = [appSupportURL URLByAppendingPathComponent:@"me.tseifert.Avocado"];
 		
-		// save the raw data
 		NSData *rawData = [NSData dataWithBytesNoCopy:outBuf length:(state.rawImage.size.width * 3 * 2) * state.rawImage.size.height freeWhenDone:NO];
 		[rawData writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_data.raw"] atomically:NO];
-		
-		// create a bitmap from it pls
-		NSBitmapImageRep *im;
-		
-		unsigned char* ptrs[1] = { outBuf };
-		
-		im = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:(unsigned char **) &ptrs
-													 pixelsWide:state.rawImage.size.width
-													 pixelsHigh:state.rawImage.size.height
-												  bitsPerSample:16
-												samplesPerPixel:3
-													   hasAlpha:NO
-													   isPlanar:NO
-												 colorSpaceName:NSCalibratedRGBColorSpace
-													bytesPerRow:(state.rawImage.size.width * 3 * 2)
-												   bitsPerPixel:48];
-		
-		DDLogDebug(@"Camera colour space: %@", state.rawImage.cameraColourSpace);
-		DDLogDebug(@"ICC ptr = %p, length = %i", libRaw->color.profile, libRaw->color.profile_length);
-		
-		im = [im bitmapImageRepByRetaggingWithColorSpace:state.rawImage.cameraColourSpace];
-		
-		NSData *colourData = [im TIFFRepresentationUsingCompression:NSTIFFCompressionNone factor:1.f];
-		[colourData writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_data.tiff"] atomically:NO];
 		
 		DDLogVerbose(@"Finished writing debug data");
 	}];
