@@ -25,12 +25,36 @@
 void TSRawCopyBayerData(libraw_data_t *libRaw, unsigned short cblack[4], unsigned short *dmaxp, uint16_t (*outBuf)[4]);
 
 /**
+ * Adjusts the black level of the image.
+ *
+ * @param libRaw LibRaw instance from which to acquire some image info
+ * @param image Image buffer
+ */
+void TSRawAdjustBlackLevel(libraw_data_t *libRaw, uint16_t (*image)[4]);
+
+/**
+ * Subtracts black to bring the image's black level into whack.
+ *
+ * @param libRaw LibRaw instance from which to acquire some image info
+ * @param image Image buffer
+ */
+void TSRawSubtractBlack(libraw_data_t *libRaw, uint16_t (*image)[4]);
+
+/**
  * Performs pre-interpolation tasks on the colour data.
  *
  * @param libRaw LibRaw instance from which to acquire some image info
  * @param image Image buffer
  */
 void TSRawPreInterpolation(libraw_data_t *libRaw, uint16_t (*image)[4]);
+
+/**
+ * Performs post-interpolation green channel mixing.
+ *
+ * @param libRaw LibRaw instance from which to acquire some image info
+ * @param image Image buffer
+ */
+void TSRawPostInterpolationMixGreen(libraw_data_t *libRaw, uint16_t (*image)[4]);
 
 /**
  * Converts the output data to RGB format. This should be run after

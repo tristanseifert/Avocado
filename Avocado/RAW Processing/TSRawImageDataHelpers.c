@@ -102,7 +102,7 @@ void TSRawCopyBayerData(libraw_data_t *libRaw, unsigned short cblack[4], unsigne
 			// adjust black levels
 			if(val > cblack[cc]) {
 				// subtract black level
-//				val -= cblack[cc];
+				val -= cblack[cc];
 				
 				// if it's higher than the existing max, store it
 				if(val > ldmax) {
@@ -115,13 +115,134 @@ void TSRawCopyBayerData(libraw_data_t *libRaw, unsigned short cblack[4], unsigne
 			
 			// excrete the pixel value
 			outBuf[(row * S.iwidth) + col][cc] = val;
-//			outBuf[(row * S.iwidth) + col][3] = 0xFFFF; // TEST: Force alpha to max
 		}
 		
 		// store the highest pixel value
 		if(*dmaxp < ldmax)
 			*dmaxp = ldmax;
 	}
+}
+
+/**
+ * Adjusts the black level of the image.
+ *
+ * This corresponds to LibRaw::adjust_bl().
+ *
+ * @param libRaw LibRaw instance from which to acquire some image info
+ * @param image Image buffer
+ */
+void TSRawAdjustBlackLevel(libraw_data_t *libRaw, uint16_t (*image)[4]) {
+#define C libRaw->color
+	
+	// Add common part to cblack[] early
+	if (libRaw->idata.filters > 1000 && (C.cblack[4]+1)/2 == 1 && (C.cblack[5]+1)/2 == 1) {
+		for(int c=0; c<4; c++)
+			C.cblack[c] += C.cblack[6 + c/2 % C.cblack[4] * C.cblack[5] + c%2 % C.cblack[5]];
+		C.cblack[4]=C.cblack[5]=0;
+	}
+	
+	else if(libRaw->idata.filters <= 1000 && C.cblack[4]==1 && C.cblack[5]==1) { // Fuji RAF dng
+		for(int c=0; c<4; c++)
+			C.cblack[c] += C.cblack[6];
+		C.cblack[4]=C.cblack[5]=0;
+	}
+	
+	// remove common part from C.cblack[]
+	int i = C.cblack[3];
+	int c;
+	for(c=0;c<3;c++) if (i > C.cblack[c]) i = C.cblack[c];
+	
+	for(c=0;c<4;c++) C.cblack[c] -= i; // remove common part
+	C.black += i;
+	
+	// Now calculate common part for cblack[6+] part and move it to C.black
+	if(C.cblack[4] && C.cblack[5]) {
+		i = C.cblack[6];
+		for(c=1; c<C.cblack[4]*C.cblack[5]; c++)
+			if(i>C.cblack[6+c]) i = C.cblack[6+c];
+		// Remove i from cblack[6+]
+		int nonz=0;
+		for(c=0; c<C.cblack[4]*C.cblack[5]; c++)
+		{
+			C.cblack[6+c]-=i;
+			if(C.cblack[6+c])nonz++;
+		}
+		C.black +=i;
+		if(!nonz)
+			C.cblack[4] = C.cblack[5] = 0;
+	}
+	
+	for(c=0;c<4;c++) C.cblack[c] += C.black;
+#undef C
+}
+
+/**
+ * Subtracts black to bring the image's black level into whack.
+ *
+ * @param libRaw LibRaw instance from which to acquire some image info
+ * @param image Image buffer
+ */
+void TSRawSubtractBlack(libraw_data_t *libRaw, uint16_t (*image)[4]) {
+#define C libRaw->color
+	if((C.cblack[0] || C.cblack[1] || C.cblack[2] || C.cblack[3] || (C.cblack[4] && C.cblack[5]) )) {
+#define BAYERC(row,col,c) imgdata.image[((row) >> IO.shrink)*S.iwidth + ((col) >> IO.shrink)][c]
+		int cblk[4], i;
+		for(i=0; i < 4; i++)
+			cblk[i] = C.cblack[i];
+		
+		int size = S.iheight * S.iwidth;
+#define MIN(a,b) ((a) < (b) ? (a) : (b))
+#define MAX(a,b) ((a) > (b) ? (a) : (b))
+#define LIM(x,min,max) MAX(min,MIN(x,max))
+		
+		int dmax = 0;
+		if(C.cblack[4] && C.cblack[5]) {
+			for(i = 0; i< (size * 4); i++) {
+				int val = image[0][i];
+				
+				val -= C.cblack[6 + i/4 / S.iwidth % C.cblack[4] * C.cblack[5] +
+								i/4 % S.iwidth % C.cblack[5]];
+				val -= cblk[i & 3];
+				
+				image[0][i] = CLIP(val);
+				if(dmax < val) dmax = val;
+			}
+		} else {
+			for(i = 0; i < (size * 4); i++) {
+				int val = image[0][i];
+				val -= cblk[i & 3];
+				image[0][i] = CLIP(val);
+				if(dmax < val) dmax = val;
+			}
+		}
+		
+		C.data_maximum = dmax & 0xffff;
+#undef MIN
+#undef MAX
+#undef LIM
+#undef CLIP
+		
+		C.maximum -= C.black;
+		
+		// clear the values to zero
+		memset(&C.cblack, 0, sizeof(C.cblack));
+		C.black = 0;
+		
+#undef BAYERC
+	} else {
+		// Nothing to Do, maximum is already calculated, black level is 0, so no change
+		// only calculate channel maximum;
+		int idx;
+		ushort *p = (ushort*) image;
+		int dmax = 0;
+		
+		for(idx=0; idx < (S.iheight * S.iwidth * 4); idx++) {
+			if(dmax < p[idx]) dmax = p[idx];
+		}
+		
+		C.data_maximum = dmax;
+	}
+#undef C
 }
 
 /**
@@ -150,7 +271,21 @@ void TSRawPreInterpolation(libraw_data_t *libRaw, uint16_t (*image)[4]) {
 }
 
 /**
- * Converts the output data to RGB format. This should be run after 
+ * Performs post-interpolation green channel mixing.
+ *
+ * @param libRaw LibRaw instance from which to acquire some image info
+ * @param image Image buffer
+ */
+void TSRawPostInterpolationMixGreen(libraw_data_t *libRaw, uint16_t (*image)[4]) {
+	int i;
+	
+	for(libRaw->idata.colors = 3, i = 0; i < (S.height * S.width); i++) {
+		image[i][1] = (image[i][1] + image[i][3]) >> 1;
+	}
+}
+
+/**
+ * Converts the output data to RGB format. This should be run after
  * interpolation.
  *
  * @param libRaw LibRaw instance from which to acquire some image info
@@ -220,7 +355,6 @@ void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*o
 			// apply gamma correction and save to output
 			for(c = 0; c < 3; c++) {
 				outPtr[c] = TSRawApplyGamma(out[c], gamma_exp);
-//				outPtr[c] = img[c] << 2;
 			}
 		}
 	}

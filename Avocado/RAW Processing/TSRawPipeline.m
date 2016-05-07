@@ -243,19 +243,29 @@
 		[state.rawImage copyRawDataToBuffer:self.interpolatedColourBuf];
 		DDLogDebug(@"Finished copying data to raw buffer");
 		
-		// remove dark frame
+		// adjust black level
+		DDLogVerbose(@"Beginning black level adjustment");
+		TSRawAdjustBlackLevel(libRaw, self.interpolatedColourBuf);
+		TSRawSubtractBlack(libRaw, self.interpolatedColourBuf);
+		DDLogVerbose(@"Completed black level adjustment");
 		
 		// perform pre-interpolation tasks
 		TSRawPreInterpolation(libRaw, self.interpolatedColourBuf);
 		
-		// interpolate
+		// interpolate the colour data
+		state.stage = TSRawPipelineStageInterpolateColour;
+		
 		DDLogVerbose(@"Beginning colour interpolation");
 		ahd_interpolate_mod(self.interpolatedColourBuf, libRaw);
 		DDLogVerbose(@"Completed colour interpolation");
 		
+		// Mixing green channels
+		DDLogVerbose(@"Beginning green channel mixing");
+		TSRawPostInterpolationMixGreen(libRaw, self.interpolatedColourBuf);
+		DDLogVerbose(@"Completed green channel mixing");
+		
 		// convert to RGB
 		DDLogVerbose(@"Beginning RGB conversion");
-		
 		void *outBuf = TSPixelConverterGetRGBXPointer(state.converter);
 		TSRawConvertToRGB(libRaw, self.interpolatedColourBuf, outBuf);
 		DDLogVerbose(@"Completed RGB conversion");
@@ -284,6 +294,11 @@
 												 colorSpaceName:NSCalibratedRGBColorSpace
 													bytesPerRow:(state.rawImage.size.width * 3 * 2)
 												   bitsPerPixel:48];
+		
+		DDLogDebug(@"Camera colour space: %@", state.rawImage.cameraColourSpace);
+		DDLogDebug(@"ICC ptr = %p, length = %i", libRaw->color.profile, libRaw->color.profile_length);
+		
+		im = [im bitmapImageRepByRetaggingWithColorSpace:state.rawImage.cameraColourSpace];
 		
 		NSData *colourData = [im TIFFRepresentationUsingCompression:NSTIFFCompressionNone factor:1.f];
 		[colourData writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_data.tiff"] atomically:NO];

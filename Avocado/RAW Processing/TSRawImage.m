@@ -396,4 +396,24 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 	return 0;
 }
 
+/**
+ * Returns an NSColorSpace object for the camera's embedded ICC profile.
+ */
+- (NSColorSpace *) getCameraColourProfile {
+	NSData *icc;
+	
+	if(self.libRaw->color.profile != nil) {
+		// create data
+		icc = [NSData dataWithBytesNoCopy:self.libRaw->color.profile
+								   length:self.libRaw->color.profile_length
+							 freeWhenDone:NO];
+		
+		// create a color space instance
+		return [[NSColorSpace alloc] initWithICCProfileData:icc];
+	}
+	
+	// profile wasn't created or somehow broke
+	return nil;
+}
+
 @end

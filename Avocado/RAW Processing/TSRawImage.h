@@ -79,4 +79,8 @@ extern NSString *const TSRawImageErrorIsFatalKey;
 /// rotation of the image
 @property (nonatomic, readonly, getter=getImageRotation) NSInteger rotation;
 
+
+/// camera colour space
+@property (nonatomic, readonly, getter=getCameraColourProfile) NSColorSpace *cameraColourSpace;
+
 @end
