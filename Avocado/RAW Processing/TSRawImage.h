@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
 
+#import "libraw.h"
+
 extern NSString *const TSRawImageErrorDomain;
 
 extern NSString *const TSRawImageErrorIsFatalKey;
@@ -20,8 +22,19 @@ extern NSString *const TSRawImageErrorIsFatalKey;
 
 - (instancetype) initWithContentsOfUrl:(NSURL *) url error:(NSError **) outErr;
 
+/**
+ * Unpacks Bayer data from the raw file
+ */
 - (BOOL) unpackRawData:(NSError **) outErr;
 
+/**
+ * Copies the Bayer data from the raw file into the four colour buffer given as
+ * an input.
+ */
+- (void) copyBayerDataToBuffer:(void *) outBuffer;
+
+/// pointer to the libraw struct; shouldn't be usually accessible
+@property (nonatomic, readonly) libraw_data_t *libRaw;
 
 /// iso speed
 @property (nonatomic, readonly, getter=getExifISO) CGFloat isoSpeed;

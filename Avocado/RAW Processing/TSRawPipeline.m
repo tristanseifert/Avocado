@@ -11,6 +11,7 @@
 #import "TSRawImage.h"
 #import "TSRawPipelineState.h"
 #import "TSPixelFormatConverter.h"
+#import "ahd_interpolate_mod.h"
 
 #import "TSHumanModels.h"
 
@@ -165,10 +166,11 @@
 #pragma mark - RAW Processing Steps
 #pragma mark Interpolation and Lens Corrections
 /**
- * Creates the block operation to debayer the RAW data.
+ * Creates the block operation to debayer the RAW data. This is accomplished
+ * by calling the "unpackRawData" method on the RAW file handle.
  */
 - (NSBlockOperation *) opDebayer:(TSRawPipelineState *) state {
-	NSBlockOperation *op = [NSBlockOperation operationWithBlock:^(NSBlockOperation *thisOp) {
+	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
 		NSError *err = nil;
 		
 		state.stage = TSRawPipelineStageDebayering;
@@ -188,12 +190,26 @@
 
 /**
  * Decodes the raw Bayer data from the raw file.
+ *
+ * This involves:
+ * 1. Subtracting a dark frame (hot pixel removal)
+ * 2. Adjusting the black level
+ * 3. Performing interpolation
+ * 4. Converting to actual RGB data
  */
 - (NSBlockOperation *) opDemosaic:(TSRawPipelineState *) state {
-	NSBlockOperation *op = [NSBlockOperation operationWithBlock:^(NSBlockOperation *thisOp) {
+	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
 		state.stage = TSRawPipelineStageDemosaicing;
 		
-		// demosaic the image data
+		// remove dark frame
+		
+		// adjust black level
+		
+		// interpolate
+		libraw_data_t *data = state.rawImage.libRaw;
+		
+		DDLogDebug(@"Colours = %i, filters = 0x%08X", data->idata.colors, data->idata.filters);
+		DDLogDebug(@"raw alloc = %p, raw data = %p, 3 colour = %p, 4 colour = %p, image = %p", data->rawdata.raw_alloc, data->rawdata.raw_image, data->rawdata.color3_image, data->rawdata.color4_image, data->image);
 	}];
 	
 	op.name = @"Demosaicing";

@@ -8,6 +8,7 @@
 
 #import "TSRawImage.h"
 
+#import "TSRawImageDataHelpers.h"
 #import "libraw.h"
 
 NSString *const TSRawImageErrorDomain = @"TSRawImageErrorDomain";
@@ -203,6 +204,25 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 	
 	// done
 	return YES;
+}
+
+#pragma mark Raw data copying
+/**
+ * Copies the Bayer data from the raw file into the four colour buffer given as
+ * an input.
+ */
+- (void) copyBayerDataToBuffer:(void *) outBuffer {
+	// adjust black levels
+	unsigned short cblack[4] = {0,0,0,0};
+	unsigned short dmax = 0;
+	
+	// use the appropriate copying routine
+	if(self.libRaw->idata.filters || self.libRaw->idata.colors == 1) { // bayer, one component
+		
+	} else {
+		DDLogError(@"Got an unsupported RAW format: filters = 0x%08x, colours = %i", self.libRaw->idata.filters, self.libRaw->idata.colors);
+		DDAssert(false, @"Unsupported RAW format provided: %@", self.fileUrl);
+	}
 }
 
 #pragma mark Helpers

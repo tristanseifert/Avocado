@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:Avocado/RAW Processing/ahd_interpolate_mod.h">
+   </FileRef>
+   <FileRef
       location = "group:Avocado.xcodeproj">
    </FileRef>
    <FileRef

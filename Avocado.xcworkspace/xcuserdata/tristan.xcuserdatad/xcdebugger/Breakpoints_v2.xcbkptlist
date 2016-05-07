@@ -407,5 +407,68 @@
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Avocado/RAW Processing/TSRawPipeline.m"
+            timestampString = "484272071.67297"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "212"
+            endingLineNumber = "212"
+            landmarkName = "-opDemosaic:"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__28-[TSRawPipeline opDemosaic:]_block_invoke"
+                  moduleName = "Avocado"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/tristan/Photography/Avocado/Avocado/RAW%20Processing/TSRawPipeline.m"
+                  timestampString = "484271571.896628"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "214"
+                  endingLineNumber = "214"
+                  offsetFromSymbolStart = "546">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__copy_helper_block_.107"
+                  moduleName = "Avocado"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/tristan/Photography/Avocado/Avocado/RAW%20Processing/TSRawPipeline.m"
+                  timestampString = "484271571.896802"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "214"
+                  endingLineNumber = "214"
+                  offsetFromSymbolStart = "51">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__destroy_helper_block_.108"
+                  moduleName = "Avocado"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/tristan/Photography/Avocado/Avocado/RAW%20Processing/TSRawPipeline.m"
+                  timestampString = "484271571.896981"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "214"
+                  endingLineNumber = "214"
+                  offsetFromSymbolStart = "29">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>
