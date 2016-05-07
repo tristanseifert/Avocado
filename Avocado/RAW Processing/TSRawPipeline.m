@@ -14,6 +14,7 @@
 
 #import "TSRawImageDataHelpers.h"
 #import "ahd_interpolate_mod.h"
+#import "lmmse_interpolate.h"
 
 #import "TSHumanModels.h"
 
@@ -259,7 +260,8 @@
 		state.stage = TSRawPipelineStageInterpolateColour;
 		
 		DDLogVerbose(@"Beginning colour interpolation (c = %i)", libRaw->idata.colors);
-		ahd_interpolate_mod(libRaw, self.interpolatedColourBuf);
+//		ahd_interpolate_mod(libRaw, self.interpolatedColourBuf);
+		lmmse_interpolate(libRaw, self.interpolatedColourBuf, 0);
 		DDLogVerbose(@"Completed colour interpolation");
 		
 		
