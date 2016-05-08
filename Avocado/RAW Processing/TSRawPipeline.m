@@ -19,6 +19,7 @@
 #import "TSHumanModels.h"
 
 #import "NSBlockOperation+AvocadoUtils.h"
+#import "NSColorSpace+ExtraColourSpaces.h"
 
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
@@ -285,7 +286,22 @@
 		NSData *rawData = [NSData dataWithBytesNoCopy:outBuf length:(state.rawImage.size.width * 3 * 2) * state.rawImage.size.height freeWhenDone:NO];
 		[rawData writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_data.raw"] atomically:NO];
 		
+		// convert to bitmap
+		NSBitmapImageRep *bm, *bmc;
 		
+		unsigned char *ptrs = { outBuf };
+		
+		bm = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:&ptrs pixelsWide:state.rawImage.size.width pixelsHigh:state.rawImage.size.height bitsPerSample:16 samplesPerPixel:3 hasAlpha:NO isPlanar:NO colorSpaceName:NSCustomColorSpace bitmapFormat:NS16BitLittleEndianBitmapFormat bytesPerRow:(state.rawImage.size.width * 3 * 2) bitsPerPixel:48];
+		
+		[[bm TIFFRepresentationUsingCompression:NSTIFFCompressionNone factor:1] writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_data_untagged.tiff"] atomically:NO];
+		
+		NSColorSpace *srgb = [NSColorSpace proPhotoRGBColorSpace];
+		bmc = [bm bitmapImageRepByRetaggingWithColorSpace:srgb];
+		
+		[[bmc TIFFRepresentationUsingCompression:NSTIFFCompressionNone factor:1] writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_data_tagged.tiff"] atomically:NO];
+		
+		
+		// write histogram and curves
 		rawData = [NSData dataWithBytesNoCopy:state.histogramBuf length:0x2000 * 4 * sizeof(int) freeWhenDone:NO];
 		[rawData writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_histo.raw"] atomically:NO];
 		

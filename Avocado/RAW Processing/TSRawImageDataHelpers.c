@@ -458,7 +458,7 @@ void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*o
 	for(i = 0; i < 3; i++) {
 		for(j = 0; j < libRaw->idata.colors; j++) {
 			for(out_cam[i][j] = k = 0; k < 3; k++) {
-				out_cam[i][j] += rgb_rgb[i][k] * libRaw->color.rgb_cam[k][j];
+				out_cam[i][j] += prophoto_rgb[i][k] * libRaw->color.rgb_cam[k][j];
 			}
 		}
 	}

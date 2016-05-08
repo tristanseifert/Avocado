@@ -27,6 +27,7 @@
 		6A79876E1CDD60EB00FB3A8E /* TSRawPipelineTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A79876D1CDD60EB00FB3A8E /* TSRawPipelineTest.m */; };
 		6A7EC3CB1CD685AF007E91E8 /* TSThumbCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7EC3CA1CD685AF007E91E8 /* TSThumbCache.m */; };
 		6AB32E9C1CDE4574004FF7A3 /* lmmse_interpolate.c in Sources */ = {isa = PBXBuildFile; fileRef = 6AB32E9B1CDE4574004FF7A3 /* lmmse_interpolate.c */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive -Ofast"; }; };
+		6AB32EA11CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AB32EA01CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m */; };
 		6ABC2D9C1CD42C4A006B959F /* _TSLibraryImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2D9B1CD42C4A006B959F /* _TSLibraryImage.m */; };
 		6ABC2DAC1CD4357E006B959F /* TSLibraryAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DA11CD4357E006B959F /* TSLibraryAlbum.m */; };
 		6ABC2DAD1CD4357E006B959F /* TSLibraryAlbumCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DA31CD4357E006B959F /* TSLibraryAlbumCollection.m */; };
@@ -123,6 +124,8 @@
 		6AB32E9B1CDE4574004FF7A3 /* lmmse_interpolate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lmmse_interpolate.c; path = "Avocado/RAW Processing/lmmse_interpolate.c"; sourceTree = "<group>"; };
 		6AB32E9D1CDE4586004FF7A3 /* lmmse_interpolate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = lmmse_interpolate.h; path = "Avocado/RAW Processing/lmmse_interpolate.h"; sourceTree = "<group>"; };
 		6AB32E9E1CDE47C4004FF7A3 /* interpolation_shared.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = interpolation_shared.h; path = "Avocado/RAW Processing/interpolation_shared.h"; sourceTree = "<group>"; };
+		6AB32E9F1CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSColorSpace+ExtraColourSpaces.h"; path = "Avocado/Helpers/NSColorSpace+ExtraColourSpaces.h"; sourceTree = "<group>"; };
+		6AB32EA01CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSColorSpace+ExtraColourSpaces.m"; path = "Avocado/Helpers/NSColorSpace+ExtraColourSpaces.m"; sourceTree = "<group>"; };
 		6ABC2D991CD42C30006B959F /* TSHumanModels.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TSHumanModels.h; path = "Avocado/CoreData/Managed Object Subclasses/TSHumanModels.h"; sourceTree = "<group>"; };
 		6ABC2D9A1CD42C4A006B959F /* _TSLibraryImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _TSLibraryImage.h; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImage.h"; sourceTree = "<group>"; };
 		6ABC2D9B1CD42C4A006B959F /* _TSLibraryImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryImage.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImage.m"; sourceTree = "<group>"; };
@@ -568,6 +571,8 @@
 				6A5C615E1CD67C5B00E3C3C9 /* TSImageIOHelper.m */,
 				6A7987671CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.h */,
 				6A7987681CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m */,
+				6AB32E9F1CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.h */,
+				6AB32EA01CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m */,
 			);
 			name = "Categories and Helpers";
 			sourceTree = "<group>";
@@ -808,6 +813,7 @@
 				6AEC76731CD50DDD00870FAE /* TSImportUIController.m in Sources */,
 				6AE87C211CD3D5460053CD9D /* TSRawImage.m in Sources */,
 				6AC3E7D01CDD6A880099B932 /* TSRawImageDataHelpers.c in Sources */,
+				6AB32EA11CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m in Sources */,
 				6AE87BEC1CD276E70053CD9D /* Avocado.xcdatamodeld in Sources */,
 				6A34B12A1CD5936200252288 /* TSLibraryImage.m in Sources */,
 				6ABC2DC31CD43586006B959F /* _TSLibraryTag.m in Sources */,
