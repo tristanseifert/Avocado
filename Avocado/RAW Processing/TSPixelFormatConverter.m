@@ -482,7 +482,7 @@ BOOL TSPixelConverterPlanarFToRGBXFFFF(TSPixelConverterRef converter) {
  * Rotates the image by the given multiple of 90 degrees. 0 is no rotation, 1 is
  * 90° counter-clockwise, and so forth.
  *
- * @param converter Converter object whose planes should be converted.
+ * @param converter Converter object whose planes should be rotated.
  * @param rotation Rotation, multiple of 90°.
  *
  * @return YES if successful, NO otherwise.
@@ -527,6 +527,48 @@ BOOL TSPixelConverterRotate90(TSPixelConverterRef converter, ssize_t rotation) {
 		converter->planesAreRotated = YES;
 	} else {
 		converter->planesAreRotated = NO;
+	}
+	
+	// successed
+	return YES;
+}
+
+#pragma mark Histogram Operations
+/**
+ * Stretches the contrast of the image, such that all values between the
+ * minimum and maximum points are linearly stretched and distributed evenly.
+ *
+ * @param converter Converter object whose planes should be adjusted.
+ * @param min Minimum bound for the contrast stretch.
+ * @param max Maximum bound for the contrast stretch.
+ */
+BOOL TSPixelConverterContrastStretch(TSPixelConverterRef converter, Pixel_F min, Pixel_F max) {
+	vImage_Error error;
+	vImage_Buffer inBuf;
+	
+	// calculate the size of the temporary buffer
+	inBuf = TSRawPipelinevImageBufferForPlane(converter, 0);
+	error = vImageContrastStretch_PlanarF(&inBuf, &inBuf, NULL, 0x2000, min, max, kvImageGetTempBufferSize);
+	
+	if(error > 0) {
+		printf("TSPixelConverter: Temp buffer for contrast stretch size: %li\n", error);
+	} else {
+		printf("TSPixelConverter: Couldn't calculate temp buffer size: %li\n", error);
+	}
+	
+	// we need to run the contrast adjustment on each plane separately
+	for(int c = 0; c < 3; c++) {
+		// get the buffer, pls
+		inBuf = TSRawPipelinevImageBufferForPlane(converter, c);
+		
+		// actually do the stretching
+		error = vImageContrastStretch_PlanarF(&inBuf, &inBuf, NULL, 0x2000, min, max, kvImageNoFlags);
+		
+		// check for errors
+		if(error != kvImageNoError) {
+			DDLogError(@"Error stretching contrast PlanarF (%f, %f): %li", min, max, error);
+			return NO;
+		}
 	}
 	
 	// successed

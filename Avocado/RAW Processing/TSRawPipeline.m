@@ -446,6 +446,8 @@
 - (NSBlockOperation *) opConvolve:(TSRawPipelineState *) state {
 	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
 		state.stage = TSRawPipelineStageConvolution;
+		
+		// apply sharpening and other kernels?
 	}];
 	
 	op.name = @"Convolution";

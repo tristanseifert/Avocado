@@ -144,11 +144,22 @@ BOOL TSPixelConverterPlanarFToRGBXFFFF(TSPixelConverterRef converter);
  * Rotates the image by the given multiple of 90 degrees. 0 is no rotation, 1 is
  * 90° counter-clockwise, and so forth.
  *
- * @param converter Converter object whose planes should be converted.
+ * @param converter Converter object whose planes should be rotated.
  * @param rotation Rotation, multiple of 90°.
  *
  * @return YES if successful, NO otherwise.
  */
 BOOL TSPixelConverterRotate90(TSPixelConverterRef converter, ssize_t rotation);
+
+#pragma mark Histogram Operations
+/**
+ * Stretches the contrast of the image, such that all values between the
+ * minimum and maximum points are linearly stretched and distributed evenly.
+ *
+ * @param converter Converter object whose planes should be adjusted.
+ * @param min Minimum bound for the contrast stretch.
+ * @param max Maximum bound for the contrast stretch.
+ */
+BOOL TSPixelConverterContrastStretch(TSPixelConverterRef converter, Pixel_F min, Pixel_F max);
 
 #endif /* TSRawPipeline_PixelFormat_h */
