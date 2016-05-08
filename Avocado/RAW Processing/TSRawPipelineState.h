@@ -35,6 +35,9 @@
 /// gamma curve buffer, 0x10000 * sizeof(uint16_t)
 @property (nonatomic) uint16_t *gammaCurveBuf;
 
+/// output size of the image; if rotation is applied, this is changed as needed.
+@property (nonatomic) NSSize outputSize;
+
 /// pixel format converter (may be shared/re-used)
 @property (nonatomic) TSPixelConverterRef converter;
 

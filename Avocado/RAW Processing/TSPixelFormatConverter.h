@@ -63,6 +63,13 @@ void *TSPixelConverterGetOriginalData(TSPixelConverterRef converter);
 Pixel_FFFF *TSPixelConverterGetRGBXPointer(TSPixelConverterRef converter);
 
 /**
+ * Returns the stride (bytes / row) of the output buffer.
+ *
+ * @param Converter whose info to return.
+ */
+size_t TSPixelConverterGetRGBXStride(TSPixelConverterRef converter);
+
+/**
  * Places the width and height in the given pointer variables.
  *
  * @param converter Converter from which to get the information.
@@ -131,5 +138,17 @@ BOOL TSPixelConverterRGBFFFToPlanarF(TSPixelConverterRef converter);
  * output is otherwise undefined.
  */
 BOOL TSPixelConverterPlanarFToRGBXFFFF(TSPixelConverterRef converter);
+
+#pragma mark Geometric Operations
+/**
+ * Rotates the image by the given multiple of 90 degrees. 0 is no rotation, 1 is
+ * 90° counter-clockwise, and so forth.
+ *
+ * @param converter Converter object whose planes should be converted.
+ * @param rotation Rotation, multiple of 90°.
+ *
+ * @return YES if successful, NO otherwise.
+ */
+BOOL TSPixelConverterRotate90(TSPixelConverterRef converter, ssize_t rotation);
 
 #endif /* TSRawPipeline_PixelFormat_h */

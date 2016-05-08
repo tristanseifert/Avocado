@@ -129,12 +129,12 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 			// 180° rotation
 			else if(self.libRawHandle.rotation == 180)
 				_imageRotationFromMetadata = TSLibraryImage180Degrees;
-			// 90° clockwise rotation
-			else if(self.libRawHandle.rotation == 90)
-				_imageRotationFromMetadata = TSLibraryImage90DegreesCW;
 			// 90° counterclockwise rotation
-			else if(self.libRawHandle.rotation == -90)
+			else if(self.libRawHandle.rotation == 90)
 				_imageRotationFromMetadata = TSLibraryImage90DegreesCCW;
+			// 90° clockwise rotation
+			else if(self.libRawHandle.rotation == -90)
+				_imageRotationFromMetadata = TSLibraryImage90DegreesCW;
 		}
 		// otherwise, query ImageIO
 		else {

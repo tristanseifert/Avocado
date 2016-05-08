@@ -27,24 +27,25 @@
  *		a. Devignetting
  *		b. Geometry corrections (scaling, projection, distortion, chromatic
  *		abberations)
- *	4. vImage gamma correction
+ *	4. Convert to planar floating point
  *	5. vImage rotation/flip (to account for flipped status of image)
  *	6. vImage (de)convolution operations
  *	7. vImage 'morphological' operations
  *	8. vImage histogram operations (exposure, contrast, etc.)
- *	9. CoreImage filter pass
+ *	9. Convert to interleaved RGBA floating-point
+ * 10. CoreImage filter pass
  *		a. Noise reduction, blurs
  *		b. Sharpening (luminance, unsharp mask)
  *		c. Colour adjustments and effects
  *		d. Distortion effects
  *		e. Geometry adjustments (crop, scaling, straightening, etc.)
  *		f. Vignetting and grain
- *	10. Generate final histogram (displayed in UI)
- *	11. Display transformations
+ * 10. Generate final histogram (displayed in UI)
+ * 11. Display transformations
  *		a. Convert to output (display/sRGB/Adobe RGB) colour space
  *		b. Convert to a different bitmap format
  *
- * The output of stage 5, and stage 10 are cached.
+ * The outputs of stage 4, and stage 7 can be cached.
  *
  * Pipeline plugins can chose to process data at any major numbered
  * position in the pipeline. They are called _before_ the built-in pipeline
@@ -73,22 +74,25 @@ typedef NS_ENUM(NSUInteger, TSRawPipelineStage) {
 	TSRawPipelineStageLensVignetting		= (3 << 16) | 1,
 	TSRawPipelineStageLensDistortions		= (3 << 16) | 2,
 	
-	TSRawPipelineStageGammaCorrection		= (4 << 16),
+	TSRawPipelineStageConvertToPlanar		= (4 << 16),
+	
 	TSRawPipelineStageRotationFlip			= (5 << 16),
 	TSRawPipelineStageConvolution			= (6 << 16),
 	TSRawPipelineStageMorphological			= (7 << 16),
 	TSRawPipelineStageHistogramModification	= (8 << 16),
 	
-	TSRawPipelineStageCoreImageFilter		= (9 << 16),
-	TSRawPipelineStageCINoiseReduceBlur		= (9 << 16) | 1,
-	TSRawPipelineStageCISharpening			= (9 << 16) | 2,
-	TSRawPipelineStageCIColourAdjustments	= (9 << 16) | 3,
-	TSRawPipelineStageCIDistortionEffects	= (9 << 16) | 4,
-	TSRawPipelineStageCIGeometryAdjustments	= (9 << 16) | 5,
-	TSRawPipelineStageCIVignetteGrain		= (9 << 16) | 6,
+	TSRawPipelineStageConvertToInterleaved	= (9 << 16),
 	
-	TSRawPipelineStageGenerateHistogram		= (10 << 16),
-	TSRAWPipelineStageDisplayTransform		= (11 << 16)
+	TSRawPipelineStageCoreImageFilter		= (10 << 16),
+	TSRawPipelineStageCINoiseReduceBlur		= (10 << 16) | 1,
+	TSRawPipelineStageCISharpening			= (10 << 16) | 2,
+	TSRawPipelineStageCIColourAdjustments	= (10 << 16) | 3,
+	TSRawPipelineStageCIDistortionEffects	= (10 << 16) | 4,
+	TSRawPipelineStageCIGeometryAdjustments	= (10 << 16) | 5,
+	TSRawPipelineStageCIVignetteGrain		= (10 << 16) | 6,
+
+	TSRawPipelineStageGenerateHistogram		= (11 << 16),
+	TSRAWPipelineStageDisplayTransform		= (12 << 16)
 };
 
 /// mask for the major pipeline stage

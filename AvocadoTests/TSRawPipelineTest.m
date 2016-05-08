@@ -81,7 +81,7 @@
 			 conversionProgress:&progress];
 	
 	// wait
-	[self waitForExpectationsWithTimeout:20 handler:^(NSError *error) {
+	[self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
 		if(error) {
 			DDLogError(@"Error meeting RAW conversion expectation: %@", error);
 		} else {

@@ -381,15 +381,18 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 
 /**
  * Returns the number of degrees the image must be rotated by for output,
- * assuming that positive values rotate clockwise.
+ * assuming that positive values rotate counter-clockwise.
  */
 - (NSInteger) getImageRotation {
 	if(self.libRaw->sizes.flip == 3) {
+		// 180°
 		return 180;
 	} else if(self.libRaw->sizes.flip == 5) {
-		return -90;
-	} else if(self.libRaw->sizes.flip == 6) {
+		// 90° CCW
 		return 90;
+	} else if(self.libRaw->sizes.flip == 6) {
+		// 90° CW
+		return -90;
 	}
 	
 	// no rotation needed, or unknown flip value

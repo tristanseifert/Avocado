@@ -56,6 +56,19 @@
 // helpers
 - (NSBlockOperation *) opDebayer:(TSRawPipelineState *) state;
 - (NSBlockOperation *) opDemosaic:(TSRawPipelineState *) state;
+- (NSBlockOperation *) opLensCorrect:(TSRawPipelineState *) state;
+
+- (NSBlockOperation *) opConvertToPlanar:(TSRawPipelineState *) state;
+
+- (NSBlockOperation *) opRotateFlip:(TSRawPipelineState *) state;
+- (NSBlockOperation *) opConvolve:(TSRawPipelineState *) state;
+- (NSBlockOperation *) opMorphological:(TSRawPipelineState *) state;
+- (NSBlockOperation *) opHistogramAdjust:(TSRawPipelineState *) state;
+
+- (NSBlockOperation *) opConvertToInterleaved:(TSRawPipelineState *) state;
+
+// debugging
+- (void) dumpImageBufferInterleaved:(TSRawPipelineState *) state;
 
 @end
 
@@ -121,9 +134,10 @@
 	// initialize some variables
 	NSProgress *convertProgress = nil;
 	
-	NSBlockOperation *opDebayer, *opDemosaic, *opLensCorrect, *opGamma;
-	NSBlockOperation *opRotate, *opConvolute, *opMorpological, *opHisto;
-	NSBlockOperation *opCoreImage, *opOutputHistogram, *opDisplayTrans;
+	NSBlockOperation *opDebayer, *opDemosaic, *opLensCorrect, *opConvertPlanar;
+	NSBlockOperation *opRotate, *opConvolute, *opMorphological, *opHisto;
+	NSBlockOperation *opConvertInterleaved, *opCoreImage, *opOutputHistogram;
+	NSBlockOperation *opDisplayTrans;
 	
 	TSRawPipelineState *state;
 	
@@ -189,20 +203,52 @@
 	state.histogramBuf = valloc(sizeof(int) * 4 * 0x2000);
 	state.gammaCurveBuf = valloc(sizeof(uint16_t) * 0x10000);
 	
+	state.outputSize = state.rawImage.size;
+	
 	// set up the various operations
 	opDebayer = [self opDebayer:state];
 	opDemosaic = [self opDemosaic:state];
+	opLensCorrect = [self opLensCorrect:state];
+	
+	opConvertPlanar = [self opConvertToPlanar:state];
+	
+	opRotate = [self opRotateFlip:state];
+	opConvolute = [self opConvolve:state];
+	opMorphological = [self opMorphological:state];
+	opHisto = [self opHistogramAdjust:state];
+	
+	opConvertInterleaved = [self opConvertToInterleaved:state];
 	
 	// set up interdependencies between the operations
 	[opDemosaic addDependency:opDebayer];
+	[opLensCorrect addDependency:opDemosaic];
+	
+	[opConvertPlanar addDependency:opLensCorrect];
+	
+	[opRotate addDependency:opConvertPlanar];
+	[opConvolute addDependency:opRotate];
+	[opMorphological addDependency:opConvolute];
+	[opHisto addDependency:opMorphological];
+	
+	[opConvertInterleaved addDependency:opHisto];
 	
 	// add them to the queue to vamenos the operations
 	TSAddOperation(opDebayer, state);
 	TSAddOperation(opDemosaic, state);
+	TSAddOperation(opLensCorrect, state);
+	
+	TSAddOperation(opConvertPlanar, state);
+	
+	TSAddOperation(opRotate, state);
+	TSAddOperation(opConvolute, state);
+	TSAddOperation(opMorphological, state);
+	TSAddOperation(opHisto, state);
+	
+	TSAddOperation(opConvertInterleaved, state);
 }
 
 #pragma mark - RAW Processing Steps
-#pragma mark Interpolation and Lens Corrections
+#pragma mark Interpolation and Data Reading
 /**
  * Creates the block operation to debayer the RAW data. This is accomplished
  * by calling the "unpackRawData" method on the RAW file handle.
@@ -273,8 +319,7 @@
 		state.stage = TSRawPipelineStageConvertToRGB;
 		
 		DDLogVerbose(@"Beginning RGB conversion");
-		void *outBuf = TSPixelConverterGetRGBXPointer(state.converter);
-		TSRawConvertToRGB(libRaw, self.interpolatedColourBuf, outBuf, state.histogramBuf, state.gammaCurveBuf);
+		TSRawConvertToRGB(libRaw, self.interpolatedColourBuf, self.interpolatedColourBuf, state.histogramBuf, state.gammaCurveBuf);
 		DDLogVerbose(@"Completed RGB conversion");
 		
 		
@@ -283,37 +328,188 @@
 		NSURL *appSupportURL = [[fm URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
 		appSupportURL = [appSupportURL URLByAppendingPathComponent:@"me.tseifert.Avocado"];
 		
-		NSData *rawData = [NSData dataWithBytesNoCopy:outBuf length:(state.rawImage.size.width * 3 * 2) * state.rawImage.size.height freeWhenDone:NO];
+		NSData *rawData = [NSData dataWithBytesNoCopy:self.interpolatedColourBuf length:(state.rawImage.size.width * 3 * 2) * state.rawImage.size.height freeWhenDone:NO];
 		[rawData writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_data.raw"] atomically:NO];
 		
-		// convert to bitmap
-		NSBitmapImageRep *bm, *bmc;
-		
-		unsigned char *ptrs = { outBuf };
-		
-		bm = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:&ptrs pixelsWide:state.rawImage.size.width pixelsHigh:state.rawImage.size.height bitsPerSample:16 samplesPerPixel:3 hasAlpha:NO isPlanar:NO colorSpaceName:NSCustomColorSpace bitmapFormat:NS16BitLittleEndianBitmapFormat bytesPerRow:(state.rawImage.size.width * 3 * 2) bitsPerPixel:48];
-		
-		[[bm TIFFRepresentationUsingCompression:NSTIFFCompressionNone factor:1] writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_data_untagged.tiff"] atomically:NO];
-		
-		NSColorSpace *srgb = [NSColorSpace proPhotoRGBColorSpace];
-		bmc = [bm bitmapImageRepByRetaggingWithColorSpace:srgb];
-		
-		[[bmc TIFFRepresentationUsingCompression:NSTIFFCompressionNone factor:1] writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_data_tagged.tiff"] atomically:NO];
-		
+		// write thumbnail extracted from image
+		rawData = [state.rawImage.thumbnail TIFFRepresentationUsingCompression:NSTIFFCompressionNone factor:1.f];
+		[rawData writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_thumb.tiff"] atomically:NO];
 		
 		// write histogram and curves
 		rawData = [NSData dataWithBytesNoCopy:state.histogramBuf length:0x2000 * 4 * sizeof(int) freeWhenDone:NO];
-		[rawData writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_histo.raw"] atomically:NO];
+		[rawData writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_histo.bin"] atomically:NO];
 		
 		
 		rawData = [NSData dataWithBytesNoCopy:state.gammaCurveBuf length:0x10000 * sizeof(uint16_t) freeWhenDone:NO];
-		[rawData writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_gcurv.raw"] atomically:NO];
+		[rawData writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_gcurv.bin"] atomically:NO];
+		
+		
+		rawData = [NSData dataWithBytesNoCopy:libRaw->color.curve length:0x10000 * sizeof(uint16_t) freeWhenDone:NO];
+		[rawData writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_tcurv.bin"] atomically:NO];
 		
 		DDLogVerbose(@"Finished writing debug data");
 	}];
 	
 	op.name = @"Demosaicing";
 	return op;
+}
+
+#pragma mark Lens Corrections
+/**
+ * Performs lens correction.
+ */
+- (NSBlockOperation *) opLensCorrect:(TSRawPipelineState *) state {
+	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		state.stage = TSRawPipelineStageLensCorrection;
+	}];
+	
+	op.name = @"Lens Corrections";
+	return op;
+}
+
+#pragma mark Pixel Format Conversions
+/**
+ * Converts the image from the 16 bit/component unsigned short RGB format to
+ * a 32 bit/component floating-point RGBA format.
+ */
+- (NSBlockOperation *) opConvertToPlanar:(TSRawPipelineState *) state {
+	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		state.stage = TSRawPipelineStageConvertToPlanar;
+		
+		// set the input buffer and begin converting
+		TSPixelConverterSetInData(state.converter, self.interpolatedColourBuf);
+		
+		// convert; the gamma curve normalized values with a max of 0xFFFF
+		TSPixelConverterRGB16UToFloat(state.converter, 0xFFFF);
+		TSPixelConverterRGBFFFToPlanarF(state.converter);
+		
+	}];
+	
+	op.name = @"Conver to Planar Floating Point";
+	return op;
+}
+
+/**
+ * Converts planar RGB floating-point data to interleaved RGBA. The alpha
+ * component is fixed at 1.f.
+ */
+- (NSBlockOperation *) opConvertToInterleaved:(TSRawPipelineState *) state {
+	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		state.stage = TSRawPipelineStageConvertToInterleaved;
+		
+		// do the conversion
+		TSPixelConverterPlanarFToRGBXFFFF(state.converter);
+		
+		[self dumpImageBufferInterleaved:state];
+		
+	}];
+	
+	op.name = @"Convert to Interleaved Floating Point";
+	return op;
+}
+
+#pragma mark vImage Steps
+/**
+ * Rotates or flips the image to account for the camera's orientation.
+ */
+- (NSBlockOperation *) opRotateFlip:(TSRawPipelineState *) state {
+	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		state.stage = TSRawPipelineStageRotationFlip;
+		
+		// do we need to apply rotation?
+		if(state.rawImage.rotation == 0) return;
+		
+		// calculate the correct rotation angle
+		NSInteger rotation = state.rawImage.rotation;
+		
+		if(rotation < 0) {
+			rotation = 360 - rotation;
+		}
+		
+		// if rotation is not 0° or 180°, swap size
+		if(rotation != 0 && rotation != 180) {
+			NSSize regularSize = state.outputSize;
+			state.outputSize = NSMakeSize(regularSize.height, regularSize.width);
+		}
+		
+		// perform the rotation
+		TSPixelConverterRotate90(state.converter, (rotation / 90));
+	}];
+	
+	op.name = @"Rotation and Flipping";
+	return op;
+}
+
+/**
+ * Applies convolution kernels on the image.
+ */
+- (NSBlockOperation *) opConvolve:(TSRawPipelineState *) state {
+	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		state.stage = TSRawPipelineStageConvolution;
+	}];
+	
+	op.name = @"Convolution";
+	return op;
+}
+
+/**
+ * Applies morphological operations on the image.
+ */
+- (NSBlockOperation *) opMorphological:(TSRawPipelineState *) state {
+	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		state.stage = TSRawPipelineStageMorphological;
+	}];
+	
+	op.name = @"Morphological";
+	return op;
+}
+
+/**
+ * Adjusts the histogram.
+ */
+- (NSBlockOperation *) opHistogramAdjust:(TSRawPipelineState *) state {
+	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		state.stage = TSRawPipelineStageHistogramModification;
+	}];
+	
+	op.name = @"Histogram Adjustments";
+	return op;
+}
+
+#pragma mark - Debugging Helpers
+/**
+ * Dumps the floating point image buffer of the given pipeline stage to a
+ * TIFF file in the Application Support directory.
+ */
+- (void) dumpImageBufferInterleaved:(TSRawPipelineState *) state {
+	NSFileManager *fm = [NSFileManager defaultManager];
+	NSURL *appSupportURL = [[fm URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
+	appSupportURL = [appSupportURL URLByAppendingPathComponent:@"me.tseifert.Avocado"];
+	
+	void *buffer = TSPixelConverterGetRGBXPointer(state.converter);
+	
+	// create a bitmap rep
+	NSBitmapImageRep *bm;
+	unsigned char *ptrs = { buffer };
+	
+	bm = [[NSBitmapImageRep alloc]
+		  initWithBitmapDataPlanes:&ptrs
+		  pixelsWide:state.outputSize.width
+		  pixelsHigh:state.outputSize.height
+		  bitsPerSample:32
+		  samplesPerPixel:4
+		  hasAlpha:YES
+		  isPlanar:NO
+		  colorSpaceName:NSCustomColorSpace
+		  bitmapFormat:NSFloatingPointSamplesBitmapFormat
+		  bytesPerRow:TSPixelConverterGetRGBXStride(state.converter)
+		  bitsPerPixel:128];
+	
+	// tag it with the colour space
+	NSColorSpace *colourSpace = [NSColorSpace proPhotoRGBColorSpace];
+	bm = [bm bitmapImageRepByRetaggingWithColorSpace:colourSpace];
+	
+	[[bm TIFFRepresentationUsingCompression:NSTIFFCompressionNone factor:1] writeToURL:[appSupportURL URLByAppendingPathComponent:@"raw_pipeline_tagged.tiff"] atomically:NO];
 }
 
 @end

@@ -411,18 +411,40 @@ void TSRawPostInterpolationMedianFilter(libraw_data_t *libRaw, uint16_t (*image)
  * @param outBuf Output data buffer
  * @param histogram Pointer to the histogram to be created. Has 0x2000 bins,
  * times four for four possible colours.
- * @param curve Gamma curve buffer
+ * @param gammaCurve Gamma curve buffer
  */
-void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*outBuf)[3], int *histogram, uint16_t *curve) {
+void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*outBuf)[3], int *histogram, uint16_t *gammaCurve) {
 	size_t i, j, k;
 	size_t row, col, c;
 	uint16_t *img;
 	uint16_t *outPtr;
 	
+	// fill the gamma array
 	double gamm[6];
 	
-	gamm[0] = (1.f / 2.4f);
-	gamm[1] = 12.92;
+	// sRGB gamma
+//	gamm[0] = (1.f / 2.2f);
+//	gamm[1] = 12.92;
+	// Adobe RGB gamma
+//	gamm[0] = (1.f / 2.2f);
+//	gamm[1] = 0.f;
+	// ProPhoto gamma
+	gamm[0] = (1.f / 1.8f);
+	gamm[1] = 0.f;
+	
+	TSBuildGammaCurve(gamm[0], gamm[1], 0, 0, gammaCurve, gamm);
+	
+	printf("gamm: \n");
+	for(int i = 0; i < 6; i++) {
+		printf("%5.5f ", gamm[i]);
+	}
+	printf("\n");
+	
+	printf("gamm (output): \n");
+	for(int i = 0; i < 6; i++) {
+		printf("%5.5f ", libRaw->params.gamm[i]);
+	}
+	printf("\n");
 	
 	// get some data from the struct
 	ushort width = libRaw->sizes.width;
@@ -430,8 +452,6 @@ void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*o
 	
 	// build the camera output profile
 	float out[3], out_cam[3][4];
-	
-	TSBuildGammaCurve(gamm[0], gamm[1], 0, 0, curve, gamm);
 	
 	// print gamma curves
 	printf("cam_xyz: \n");
@@ -452,7 +472,7 @@ void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*o
 		printf("\n");
 	}
 	
-	// make the output camera matrix
+	// calculate the output camera matrix
 	memcpy(out_cam, libRaw->color.rgb_cam, sizeof out_cam);
 	
 	for(i = 0; i < 3; i++) {
@@ -502,7 +522,8 @@ void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*o
 		}
 	}
 	
-	TSBuildGammaCurve(gamm[0], gamm[1], 2, (t_white << 3), curve, gamm);
+	printf("t_white = 0x%08x\n", t_white);
+	TSBuildGammaCurve(gamm[0], gamm[1], 2, (t_white << 3), gammaCurve, gamm);
 	
 	// do gamma correction
 	img = image[0];
@@ -511,7 +532,8 @@ void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*o
 	for(row = 0; row < height; row++) {
 		for(col = 0; col < width; col++, img += 4, outPtr += 3) {
 			for(c = 0; c < 3; c++) {
-				outPtr[c] = curve[img[c]];
+				// apply curve
+				outPtr[c] = libRaw->color.curve[gammaCurve[img[c]]];
 			}
 		}
 	}
@@ -524,26 +546,39 @@ static void TSBuildGammaCurve(double pwr, double ts, int mode, int imax, uint16_
 //	printf("imax = %i\n", imax);
 	
 	int i;
-	double g[6], bnd[2]={0,0}, r;
+	double g[6], bnd[2] = {0,0}, r;
 	
 	g[0] = pwr;
 	g[1] = ts;
 	g[2] = g[3] = g[4] = 0;
 	bnd[g[1] >= 1] = 1;
-	if (g[1] && (g[1]-1)*(g[0]-1) <= 0) {
-		for (i=0; i < 48; i++) {
+	
+	if (g[1] && (g[1] - 1) * (g[0] - 1) <= 0) {
+		for (i = 0; i < 48; i++) {
 			g[2] = (bnd[0] + bnd[1])/2;
-			if (g[0]) bnd[(pow(g[2]/g[1],-g[0]) - 1)/g[0] - 1/g[2] > -1] = g[2];
-			else	bnd[g[2]/exp(1-1/g[2]) < g[1]] = g[2];
+			
+			if (g[0]) {
+				bnd[(pow(g[2]/g[1],-g[0]) - 1)/g[0] - 1/g[2] > -1] = g[2];
+			} else {
+				bnd[g[2]/exp(1-1/g[2]) < g[1]] = g[2];
+			}
 		}
+		
 		g[3] = g[2] / g[1];
-		if (g[0]) g[4] = g[2] * (1/g[0] - 1);
+		
+		if (g[0]) {
+			g[4] = g[2] * (1/g[0] - 1);
+		}
 	}
-	if (g[0]) g[5] = 1 / (g[1]*SQR(g[3])/2 - g[4]*(1 - g[3]) +
+	
+	if (g[0]) {
+		g[5] = 1 / (g[1]*SQR(g[3])/2 - g[4]*(1 - g[3]) +
 						  (1 - pow(g[3],1+g[0]))*(1 + g[4])/(1 + g[0])) - 1;
-	else      g[5] = 1 / (g[1]*SQR(g[3])/2 + 1
+	} else {
+		g[5] = 1 / (g[1]*SQR(g[3])/2 + 1
 						  - g[2] - g[3] -	g[2]*g[3]*(log(g[3]) - 1)) - 1;
-
+	}
+		
 	// no clue what the hell this is supposed to do
 	if (!mode--) {
 		memcpy(gamm, g, (sizeof(double) * 6));
@@ -555,7 +590,7 @@ static void TSBuildGammaCurve(double pwr, double ts, int mode, int imax, uint16_
 		curve[i] = 0xffff;
 		
 		if ((r = (double) i / imax) < 1)
-			curve[i] = 0x10000 * ( mode
+			curve[i] = 0x10000 * (mode
 								  ? (r < g[3] ? r*g[1] : (g[0] ? pow( r,g[0])*(1+g[4])-g[4]    : log(r)*g[2]+1))
 								  : (r < g[2] ? r/g[1] : (g[0] ? pow((r+g[4])/(1+g[4]),1/g[0]) : exp((r-1)/g[2]))));
 	}
