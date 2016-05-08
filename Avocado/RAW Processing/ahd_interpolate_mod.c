@@ -54,13 +54,6 @@ AHD interpolation with built-in anti-aliasing feature
 */
 #define TS 256		/* Tile Size */
 
-/// some colour space constants
-static const double xyz_rgb[3][3] = {
-	{ 0.412453, 0.357580, 0.180423 },
-	{ 0.212671, 0.715160, 0.072169 },
-	{ 0.019334, 0.119193, 0.950227 }
-};
-
 static const float d65_white[3] =  { 0.950456f, 1.0f, 1.088754f };
 
 static inline void border_interpolate(int border, int width, int height, ushort (*image)[4], int filters, ushort top_margin, ushort left_margin, ushort colors) {

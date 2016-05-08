@@ -27,6 +27,33 @@
 #define FC(row, col, filters) \
 (filters >> ((((row) << 1 & 14) + ((col) & 1)) << 1) & 3)
 
+/// some colour space constants
+static const double xyz_rgb[3][3] = {
+	{ 0.412453, 0.357580, 0.180423 },
+	{ 0.212671, 0.715160, 0.072169 },
+	{ 0.019334, 0.119193, 0.950227 }
+};
+
+static const double rgb_rgb[3][3] =
+{ { 1,0,0 }, { 0,1,0 }, { 0,0,1 } };
+
+static const double adobe_rgb[3][3] =
+{ { 0.715146, 0.284856, 0.000000 },
+	{ 0.000000, 1.000000, 0.000000 },
+	{ 0.000000, 0.041166, 0.958839 } };
+
+static const double wide_rgb[3][3] =
+{ { 0.593087, 0.404710, 0.002206 },
+	{ 0.095413, 0.843149, 0.061439 },
+	{ 0.011621, 0.069091, 0.919288 } };
+
+static const double prophoto_rgb[3][3] =
+{ { 0.529317, 0.330092, 0.140588 },
+	{ 0.098368, 0.873465, 0.028169 },
+	{ 0.016879, 0.117663, 0.865457 } };
+
+static const double (*out_rgb[])[3] = { rgb_rgb, adobe_rgb, wide_rgb, prophoto_rgb };
+
 /**
  * I honestly have no fucking clue what this does but it seems required
  */

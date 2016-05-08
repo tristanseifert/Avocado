@@ -7,6 +7,7 @@
 //
 
 #include "TSRawImageDataHelpers.h"
+#include "interpolation_shared.h"
 
 #include <float.h>
 #include <string.h>
@@ -18,53 +19,8 @@
 
 /// size struct
 #define S libRaw->sizes
+/// color struct
 #define C libRaw->color
-
-#pragma mark Helpers
-
-#define FORC(cnt) for (c=0; c < cnt; c++)
-#define FORC3 FORC(3)
-#define FORC4 FORC(4)
-#define FORCC FORC(colors)
-
-#define MIN(a,b) ((a) < (b) ? (a) : (b))
-#define MAX(a,b) ((a) > (b) ? (a) : (b))
-#define LIM(x,min,max) MAX(min,MIN(x,max))
-#define CLIP(x) LIM((int)(x),0,65535)
-#define SWAP(a,b) { a=a+b; b=a-b; a=a-b; }
-
-#define FC(row, col, filters) \
-(filters >> ((((row) << 1 & 14) + ((col) & 1)) << 1) & 3)
-
-/**
- * I honestly have no fucking clue what this does but it seems required
- */
-static inline int fcol(size_t row, size_t col, unsigned int filters, ushort top_margin, ushort left_margin) {
-	static const char filter[16][16] = {
-		{ 2,1,1,3,2,3,2,0,3,2,3,0,1,2,1,0 },
-		{ 0,3,0,2,0,1,3,1,0,1,1,2,0,3,3,2 },
-		{ 2,3,3,2,3,1,1,3,3,1,2,1,2,0,0,3 },
-		{ 0,1,0,1,0,2,0,2,2,0,3,0,1,3,2,1 },
-		{ 3,1,1,2,0,1,0,2,1,3,1,3,0,1,3,0 },
-		{ 2,0,0,3,3,2,3,1,2,0,2,0,3,2,2,1 },
-		{ 2,3,3,1,2,1,2,1,2,1,1,2,3,0,0,1 },
-		{ 1,0,0,2,3,0,0,3,0,3,0,3,2,1,2,3 },
-		{ 2,3,3,1,1,2,1,0,3,2,3,0,2,3,1,3 },
-		{ 1,0,2,0,3,0,3,2,0,1,1,2,0,1,0,2 },
-		{ 0,1,1,3,3,2,2,1,1,3,3,0,2,1,3,2 },
-		{ 2,3,2,0,0,1,3,0,2,0,1,2,3,0,1,0 },
-		{ 1,3,1,2,3,2,3,2,0,2,0,1,1,0,3,0 },
-		{ 0,2,0,3,1,0,0,1,1,3,3,2,3,2,2,1 },
-		{ 2,1,3,2,3,1,2,1,0,3,0,2,0,2,0,2 },
-		{ 0,3,1,0,0,2,0,3,2,1,3,1,1,3,1,3 }
-	};
-	
-	if (filters == 1) return filter[(row + top_margin) & 15][(col + left_margin) & 15];
-
-	// cut out support for Fuji X-Trans sensors for now
-//	if (filters == 9) return xtrans[(row+6) % 6][(col+6) % 6];
-	return FC(row, col, filters);
-}
 
 #pragma mark Conversion and Copying
 /**
@@ -127,45 +83,68 @@ void TSRawCopyBayerData(libraw_data_t *libRaw, unsigned short cblack[4], unsigne
  * @param image Image buffer
  */
 void TSRawAdjustBlackLevel(libraw_data_t *libRaw, uint16_t (*image)[4]) {
-	// Add common part to cblack[] early
-	if (libRaw->idata.filters > 1000 && (C.cblack[4]+1)/2 == 1 && (C.cblack[5]+1)/2 == 1) {
-		for(int c=0; c<4; c++)
-			C.cblack[c] += C.cblack[6 + c/2 % C.cblack[4] * C.cblack[5] + c%2 % C.cblack[5]];
-		C.cblack[4]=C.cblack[5]=0;
-	}
+	int c;
 	
-	else if(libRaw->idata.filters <= 1000 && C.cblack[4]==1 && C.cblack[5]==1) { // Fuji RAF dng
-		for(int c=0; c<4; c++)
+	// Add common part to cblack[] early
+	if (libRaw->idata.filters > 1000 && (C.cblack[4] + 1) / 2 == 1 && (C.cblack[5] + 1) / 2 == 1) {
+		for(c = 0; c < 4; c++){
+			C.cblack[c] += C.cblack[6 + c/2 % C.cblack[4] * C.cblack[5] + c%2 % C.cblack[5]];
+		}
+		
+		C.cblack[4] = C.cblack[5] = 0;
+	}
+	// Fuji RAF dng
+	else if(libRaw->idata.filters <= 1000 && C.cblack[4] == 1 && C.cblack[5] == 1) {
+		for(c = 0; c < 4; c++) {
 			C.cblack[c] += C.cblack[6];
-		C.cblack[4]=C.cblack[5]=0;
+		}
+		
+		C.cblack[4] = C.cblack[5]=0;
 	}
 	
 	// remove common part from C.cblack[]
 	int i = C.cblack[3];
-	int c;
-	for(c=0;c<3;c++) if (i > C.cblack[c]) i = C.cblack[c];
+	for(c = 0; c < 3; c++) {
+		if (i > C.cblack[c]) {
+			i = C.cblack[c];
+		}
+	}
 	
-	for(c=0;c<4;c++) C.cblack[c] -= i; // remove common part
+	// remove common part
+	for(c = 0; c < 4; c++) {
+		C.cblack[c] -= i;
+	}
 	C.black += i;
 	
 	// Now calculate common part for cblack[6+] part and move it to C.black
 	if(C.cblack[4] && C.cblack[5]) {
 		i = C.cblack[6];
-		for(c=1; c<C.cblack[4]*C.cblack[5]; c++)
-			if(i>C.cblack[6+c]) i = C.cblack[6+c];
-		// Remove i from cblack[6+]
-		int nonz=0;
-		for(c=0; c<C.cblack[4]*C.cblack[5]; c++)
-		{
-			C.cblack[6+c]-=i;
-			if(C.cblack[6+c])nonz++;
+		for(c = 1; c < (C.cblack[4] * C.cblack[5]); c++) {
+			if(i > C.cblack[6+c]) {
+				i = C.cblack[6+c];
+			}
 		}
+	
+		// Remove i from cblack[6+]
+		int nonz = 0;
+		
+		for(c = 0; c < (C.cblack[4] * C.cblack[5]); c++) {
+			C.cblack[6+c]-=i;
+			
+			if(C.cblack[6+c]) {
+				nonz++;
+			}
+		}
+		
 		C.black +=i;
-		if(!nonz)
+		if(!nonz) {
 			C.cblack[4] = C.cblack[5] = 0;
+		}
 	}
 	
-	for(c=0;c<4;c++) C.cblack[c] += C.black;
+	for(c = 0; c < 4; c++) {
+		C.cblack[c] += C.black;
+	}
 }
 
 /**
@@ -178,7 +157,7 @@ void TSRawSubtractBlack(libraw_data_t *libRaw, uint16_t (*image)[4]) {
 	if((C.cblack[0] || C.cblack[1] || C.cblack[2] || C.cblack[3] || (C.cblack[4] && C.cblack[5]) )) {
 #define BAYERC(row,col,c) imgdata.image[((row) >> IO.shrink)*S.iwidth + ((col) >> IO.shrink)][c]
 		int cblk[4], i;
-		for(i=0; i < 4; i++)
+		for(i = 0; i < 4; i++)
 			cblk[i] = C.cblack[i];
 		
 		int size = S.iheight * S.iwidth;
@@ -304,6 +283,13 @@ void TSRawPreInterpolationApplyWB(libraw_data_t *libRaw, uint16_t (*image)[4]) {
 	// get some data from the struct
 	unsigned int filters = libRaw->idata.filters;
 	
+	// copy user multipliers, if existent
+#if 0
+	if(user_white_balance) {
+		memcpy(libRaw->color.pre_mul, NULL, sizeof libRaw->color.pre_mul);
+	}
+#endif
+	
 	if (/*use_camera_wb &&*/ libRaw->color.cam_mul[0] != -1) {
 		memset (sum, 0, sizeof sum);
 		for (row=0; row < 8; row++)
@@ -315,11 +301,11 @@ void TSRawPreInterpolationApplyWB(libraw_data_t *libRaw, uint16_t (*image)[4]) {
 				sum[c+4]++;
 			}
 		
-			if (sum[0] && sum[1] && sum[2] && sum[3])
+			if(sum[0] && sum[1] && sum[2] && sum[3]) {
 				FORC4 libRaw->color.pre_mul[c] = (float) sum[c+4] / sum[c];
-			else if (libRaw->color.cam_mul[0] && libRaw->color.cam_mul[2])
+			} else if(libRaw->color.cam_mul[0] && libRaw->color.cam_mul[2]) {
 				memcpy(libRaw->color.pre_mul, libRaw->color.cam_mul, sizeof libRaw->color.pre_mul);
-			else {
+			} else {
 				// bad white balance
 			}
 	}
@@ -440,35 +426,20 @@ void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*o
 	uint16_t *img;
 	uint16_t *outPtr;
 	
-	// colour profile data (shamelessly stolen from dcraw.c)
-	static const double rgb_rgb[3][3] =
-	{ { 1,0,0 }, { 0,1,0 }, { 0,0,1 } };
-	static const double adobe_rgb[3][3] =
-	{ { 0.715146, 0.284856, 0.000000 },
-		{ 0.000000, 1.000000, 0.000000 },
-		{ 0.000000, 0.041166, 0.958839 } };
-	static const double wide_rgb[3][3] =
-	{ { 0.593087, 0.404710, 0.002206 },
-		{ 0.095413, 0.843149, 0.061439 },
-		{ 0.011621, 0.069091, 0.919288 } };
-	static const double prophoto_rgb[3][3] =
-	{ { 0.529317, 0.330092, 0.140588 },
-		{ 0.098368, 0.873465, 0.028169 },
-		{ 0.016879, 0.117663, 0.865457 } };
-	static const double (*out_rgb[])[3] =
-	{ rgb_rgb, adobe_rgb, wide_rgb, prophoto_rgb };
-	
-	float gamma_exp = 1.f / 2.4; // default gamma of 2.4
+	float gamma_exp = 1.f / 2.4f; // default gamma of 2.4
 	
 	// build the camera output profile
 	float out[3], out_cam[3][4];
 	
 	memcpy(out_cam, libRaw->color.rgb_cam, sizeof out_cam);
 	
-	for (i=0; i < 3; i++)
-		for (j=0; j < libRaw->idata.colors; j++)
-			for (out_cam[i][j] = k=0; k < 3; k++)
-				out_cam[i][j] += out_rgb[1][i][k] * libRaw->color.rgb_cam[k][j];
+	for(i = 0; i < 3; i++) {
+		for(j=0; j < libRaw->idata.colors; j++) {
+			for(out_cam[i][j] = k=0; k < 3; k++) {
+				out_cam[i][j] += out_rgb[0][i][k] * libRaw->color.rgb_cam[k][j];
+			}
+		}
+	}
 	
 	// get some data from the struct
 	ushort width = libRaw->sizes.width;
