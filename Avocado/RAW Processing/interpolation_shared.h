@@ -34,25 +34,48 @@ static const double xyz_rgb[3][3] = {
 	{ 0.019334, 0.119193, 0.950227 }
 };
 
-static const double rgb_rgb[3][3] =
-{ { 1,0,0 }, { 0,1,0 }, { 0,0,1 } };
+/// XYZ to sRGB
+static const double xyz_sRgb[3][3] = {
+	{ 3.2404542, -1.5371385, -0.4985314},
+	{-0.9692660, 1.8760108, 0.0415560},
+	{0.0556434, -0.2040259, 1.0572252}
+};
 
-static const double adobe_rgb[3][3] =
-{ { 0.715146, 0.284856, 0.000000 },
+// sRGB
+static const double rgb_rgb[3][3] = {
+	{ 1,0,0 },
+	{ 0,1,0 },
+	{ 0,0,1 }
+};
+
+// Adobe RGB
+static const double adobe_rgb[3][3] = {
+	{ 0.715146, 0.284856, 0.000000 },
 	{ 0.000000, 1.000000, 0.000000 },
-	{ 0.000000, 0.041166, 0.958839 } };
+	{ 0.000000, 0.041166, 0.958839 }
+};
 
-static const double wide_rgb[3][3] =
-{ { 0.593087, 0.404710, 0.002206 },
+// Wide RGB?
+static const double wide_rgb[3][3] = {
+	{ 0.593087, 0.404710, 0.002206 },
 	{ 0.095413, 0.843149, 0.061439 },
-	{ 0.011621, 0.069091, 0.919288 } };
+	{ 0.011621, 0.069091, 0.919288 }
+};
 
-static const double prophoto_rgb[3][3] =
-{ { 0.529317, 0.330092, 0.140588 },
+// ProPhoto RGB
+static const double prophoto_rgb[3][3] ={
+	{ 0.529317, 0.330092, 0.140588 },
 	{ 0.098368, 0.873465, 0.028169 },
-	{ 0.016879, 0.117663, 0.865457 } };
+	{ 0.016879, 0.117663, 0.865457 }
+};
 
 static const double (*out_rgb[])[3] = { rgb_rgb, adobe_rgb, wide_rgb, prophoto_rgb };
+static const double out_gamma[][6] = {
+	{ (1.f / 2.4f), 12.92 }, // sRGB
+	{},
+	{},
+	{}
+};
 
 /**
  * I honestly have no fucking clue what this does but it seems required

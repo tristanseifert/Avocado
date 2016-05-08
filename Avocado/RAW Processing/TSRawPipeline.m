@@ -185,6 +185,9 @@
 	state.rawImage = image.libRawHandle;
 	state.interpolatedColourBuf = self.interpolatedColourBuf;
 	
+	state.histogramBuf = valloc(sizeof(int) * 4 * 0x2000);
+	state.gammaCurveBuf = valloc(sizeof(uint16_t) * 0x10000);
+	
 	// set up the various operations
 	opDebayer = [self opDebayer:state];
 	opDemosaic = [self opDemosaic:state];
@@ -270,7 +273,7 @@
 		
 		DDLogVerbose(@"Beginning RGB conversion");
 		void *outBuf = TSPixelConverterGetRGBXPointer(state.converter);
-		TSRawConvertToRGB(libRaw, self.interpolatedColourBuf, outBuf);
+		TSRawConvertToRGB(libRaw, self.interpolatedColourBuf, outBuf, state.histogramBuf, state.gammaCurveBuf);
 		DDLogVerbose(@"Completed RGB conversion");
 		
 		
@@ -281,6 +284,14 @@
 		
 		NSData *rawData = [NSData dataWithBytesNoCopy:outBuf length:(state.rawImage.size.width * 3 * 2) * state.rawImage.size.height freeWhenDone:NO];
 		[rawData writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_data.raw"] atomically:NO];
+		
+		
+		rawData = [NSData dataWithBytesNoCopy:state.histogramBuf length:0x2000 * 4 * sizeof(int) freeWhenDone:NO];
+		[rawData writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_histo.raw"] atomically:NO];
+		
+		
+		rawData = [NSData dataWithBytesNoCopy:state.gammaCurveBuf length:0x10000 * sizeof(uint16_t) freeWhenDone:NO];
+		[rawData writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_gcurv.raw"] atomically:NO];
 		
 		DDLogVerbose(@"Finished writing debug data");
 	}];

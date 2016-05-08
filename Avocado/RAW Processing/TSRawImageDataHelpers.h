@@ -81,7 +81,10 @@ void TSRawPostInterpolationMedianFilter(libraw_data_t *libRaw, uint16_t (*image)
  * @param libRaw LibRaw instance from which to acquire some image info
  * @param image Image buffer (after interpolation)
  * @param outBuf Output data buffer
+ * @param histogram Pointer to the histogram to be created. Has 0x2000 bins,
+ * times four for four possible colours.
+ * @param curve Gamma curve buffer
  */
-void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*outBuf)[3]);
+void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*outBuf)[3], int *histogram, uint16_t *curve);
 
 #endif /* TSRawImageDataHelpers_h */

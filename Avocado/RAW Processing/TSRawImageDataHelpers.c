@@ -22,6 +22,9 @@
 /// color struct
 #define C libRaw->color
 
+#pragma mark Helpers
+static void TSBuildGammaCurve(double pwr, double ts, int mode, int imax, uint16_t *curve, double *gamm);
+
 #pragma mark Conversion and Copying
 /**
  * Copies single component Bayer data from the given LibRaw instance into the
@@ -232,7 +235,7 @@ void TSRawPreInterpolation(libraw_data_t *libRaw, uint16_t (*image)[4]) {
 	}
 }
 
-#pragma mark Colour Scaling
+#pragma mark Colour Scaling (White Balance)
 /**
  * Inner colour scaling loop.
  */
@@ -241,15 +244,16 @@ static inline void TSRawScaleColourLoop(libraw_data_t *libRaw, uint16_t (*image)
 	
 	if(C.cblack[4] && C.cblack[5]) {
 		int val;
-		for(unsigned i=0; i < size*4; i++) {
+		
+		for(size_t i = 0; i < size * 4; i++) {
 			if (!(val = image[0][i])) continue;
-			val -= C.cblack[6 + i/4 / S.iwidth % C.cblack[4] * C.cblack[5] +
-							i/4 % S.iwidth % C.cblack[5]];
+			
+			val -= C.cblack[6 + i/4 / S.iwidth % C.cblack[4] * C.cblack[5] + i/4 % S.iwidth % C.cblack[5]];
 			val -= C.cblack[i & 3];
 			val *= scale_mul[i & 3];
 			image[0][i] = CLIP(val);
 		}
-	} else if(C.cblack[0]||C.cblack[1]||C.cblack[2]||C.cblack[3]) {
+	} else if(C.cblack[0] || C.cblack[1] || C.cblack[2] || C.cblack[3]) {
 		for(size_t i=0; i < size*4; i++) {
 			int val = image[0][i];
 			if (!val) continue;
@@ -376,9 +380,9 @@ void TSRawPostInterpolationMedianFilter(libraw_data_t *libRaw, uint16_t (*image)
 		0,3, 5,8, 4,7, 3,6, 1,4, 2,5, 4,7, 4,2, 6,4, 4,2 };
 	
 	for (pass=1; pass <= med_passes; pass++) {
-		printf("Began median filter pass %i\n", pass);
+//		printf("Began median filter pass %i\n", pass);
 		
-		for (c=0; c < 3; c+=2) {
+		for (c = 0; c < 3; c += 2) {
 			for (pix = image; pix < image+width*height; pix++)
 				pix[0][3] = pix[0][c];
 			for (pix = image+width; pix < image+width*(height-1); pix++) {
@@ -393,25 +397,11 @@ void TSRawPostInterpolationMedianFilter(libraw_data_t *libRaw, uint16_t (*image)
 			}
 		}
 		
-		printf("Completed median filter pass %i\n", pass);
+//		printf("Completed median filter pass %i\n", pass);
 	}
 }
 
 #pragma mark - Output
-/**
- * Applies the gamma correction on the given value.
- */
-static inline uint16_t TSRawApplyGamma(float value, float exp) {
-	value /= 65535;
-	
-	// Exact sRGB gamma
-	if (value <= 0.0031308) {
-		return (uint16_t) CLIP(846712.2 * value);
-	} else {
-		return (uint16_t) CLIP(65535*(1.055*pow(value,exp)-0.055));
-	}
-}
-
 /**
  * Converts the output data to RGB format. This should be run after
  * interpolation.
@@ -419,40 +409,68 @@ static inline uint16_t TSRawApplyGamma(float value, float exp) {
  * @param libRaw LibRaw instance from which to acquire some image info
  * @param image Image buffer (after interpolation)
  * @param outBuf Output data buffer
+ * @param histogram Pointer to the histogram to be created. Has 0x2000 bins,
+ * times four for four possible colours.
+ * @param curve Gamma curve buffer
  */
-void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*outBuf)[3]) {
+void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*outBuf)[3], int *histogram, uint16_t *curve) {
 	size_t i, j, k;
 	size_t row, col, c;
 	uint16_t *img;
 	uint16_t *outPtr;
 	
-	float gamma_exp = 1.f / 2.4f; // default gamma of 2.4
+	double gamm[6];
 	
-	// build the camera output profile
-	float out[3], out_cam[3][4];
-	
-	memcpy(out_cam, libRaw->color.rgb_cam, sizeof out_cam);
-	
-	for(i = 0; i < 3; i++) {
-		for(j=0; j < libRaw->idata.colors; j++) {
-			for(out_cam[i][j] = k=0; k < 3; k++) {
-				out_cam[i][j] += out_rgb[0][i][k] * libRaw->color.rgb_cam[k][j];
-			}
-		}
-	}
+	gamm[0] = (1.f / 2.4f);
+	gamm[1] = 12.92;
 	
 	// get some data from the struct
 	ushort width = libRaw->sizes.width;
 	ushort height = libRaw->sizes.height;
 	
-	// set up for colour space conversion
-	img = image[0];
-	outPtr = outBuf[0];
+	// build the camera output profile
+	float out[3], out_cam[3][4];
 	
-	// iterate through each pixel
+	TSBuildGammaCurve(gamm[0], gamm[1], 0, 0, curve, gamm);
+	
+	// print gamma curves
+	printf("cam_xyz: \n");
+	for(int y = 0; y < 4; y++) {
+		for(int x = 0; x < 3; x++) {
+			printf("%2.5f ", libRaw->color.cam_xyz[y][x]);
+		}
+		
+		printf("\n");
+	}
+	
+	printf("rgb_cam: \n");
+	for(int y = 0; y < 4; y++) {
+		for(int x = 0; x < 3; x++) {
+			printf("%2.5f ", libRaw->color.rgb_cam[y][x]);
+		}
+		
+		printf("\n");
+	}
+	
+	// make the output camera matrix
+	memcpy(out_cam, libRaw->color.rgb_cam, sizeof out_cam);
+	
+	for(i = 0; i < 3; i++) {
+		for(j = 0; j < libRaw->idata.colors; j++) {
+			for(out_cam[i][j] = k = 0; k < 3; k++) {
+				out_cam[i][j] += rgb_rgb[i][k] * libRaw->color.rgb_cam[k][j];
+			}
+		}
+	}
+	
+	// set up for conversion to RGB
+	img = image[0];
+	
+	memset(histogram, 0, sizeof(int) * 0x2000 * 4);
+	
 	for(row = 0; row < height; row++) {
-		for(col = 0; col < width; col++, img += 4, outPtr += 3) {
-			// perform profile conversion
+		for(col = 0; col < width; col++, img += 4) {
+			// perform conversion
 			out[0] = out[1] = out[2] = 0;
 			
 			for(c = 0; c < libRaw->idata.colors; c++) {
@@ -461,10 +479,84 @@ void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*o
 				out[2] += out_cam[2][c] * img[c];
 			}
 			
-			// apply gamma correction and save to output
+			// write it back into the image buffer, as an integer value
 			for(c = 0; c < 3; c++) {
-				outPtr[c] = TSRawApplyGamma(out[c], gamma_exp);
+				img[c] = CLIP((int) out[c]);
+			}
+			
+			// update histogram
+			for(c = 0; c < libRaw->idata.colors; c++) {
+				histogram[(c * 0x2000) + (img[c] >> 3)]++;
 			}
 		}
+	}
+	
+	// calculate gamma curve based off histogram? idk
+	int perc, val, total, t_white = 0x2000;
+	perc = S.width * S.height;
+	
+	for (t_white = c = 0; c < libRaw->idata.colors; c++) {
+		for (val = 0x2000, total = 0; --val > 32;) {
+			if ((total += histogram[(c * 0x2000) + val]) > perc) break;
+			if (t_white < val) t_white = val;
+		}
+	}
+	
+	TSBuildGammaCurve(gamm[0], gamm[1], 2, (t_white << 3), curve, gamm);
+	
+	// do gamma correction
+	img = image[0];
+	outPtr = outBuf[0];
+	
+	for(row = 0; row < height; row++) {
+		for(col = 0; col < width; col++, img += 4, outPtr += 3) {
+			for(c = 0; c < 3; c++) {
+				outPtr[c] = curve[img[c]];
+			}
+		}
+	}
+}
+
+/**
+ * Builds the gamma curve.
+ */
+static void TSBuildGammaCurve(double pwr, double ts, int mode, int imax, uint16_t *curve, double *gamm) {
+//	printf("imax = %i\n", imax);
+	
+	int i;
+	double g[6], bnd[2]={0,0}, r;
+	
+	g[0] = pwr;
+	g[1] = ts;
+	g[2] = g[3] = g[4] = 0;
+	bnd[g[1] >= 1] = 1;
+	if (g[1] && (g[1]-1)*(g[0]-1) <= 0) {
+		for (i=0; i < 48; i++) {
+			g[2] = (bnd[0] + bnd[1])/2;
+			if (g[0]) bnd[(pow(g[2]/g[1],-g[0]) - 1)/g[0] - 1/g[2] > -1] = g[2];
+			else	bnd[g[2]/exp(1-1/g[2]) < g[1]] = g[2];
+		}
+		g[3] = g[2] / g[1];
+		if (g[0]) g[4] = g[2] * (1/g[0] - 1);
+	}
+	if (g[0]) g[5] = 1 / (g[1]*SQR(g[3])/2 - g[4]*(1 - g[3]) +
+						  (1 - pow(g[3],1+g[0]))*(1 + g[4])/(1 + g[0])) - 1;
+	else      g[5] = 1 / (g[1]*SQR(g[3])/2 + 1
+						  - g[2] - g[3] -	g[2]*g[3]*(log(g[3]) - 1)) - 1;
+
+	// no clue what the hell this is supposed to do
+	if (!mode--) {
+		memcpy(gamm, g, (sizeof(double) * 6));
+		return;
+	}
+	
+	// actually build the curve?
+	for (i = 0; i < 0x10000; i++) {
+		curve[i] = 0xffff;
+		
+		if ((r = (double) i / imax) < 1)
+			curve[i] = 0x10000 * ( mode
+								  ? (r < g[3] ? r*g[1] : (g[0] ? pow( r,g[0])*(1+g[4])-g[4]    : log(r)*g[2]+1))
+								  : (r < g[2] ? r/g[1] : (g[0] ? pow((r+g[4])/(1+g[4]),1/g[0]) : exp((r-1)/g[2]))));
 	}
 }

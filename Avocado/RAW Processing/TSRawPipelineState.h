@@ -30,6 +30,10 @@
 
 /// 64bpp buffer for the interpolated RGBX data; used by converter.
 @property (nonatomic) void *interpolatedColourBuf;
+/// histogram buffer; 0x2000 bins for each of the four possible colours, 32-bit int value per
+@property (nonatomic) int *histogramBuf;
+/// gamma curve buffer, 0x10000 * sizeof(uint16_t)
+@property (nonatomic) uint16_t *gammaCurveBuf;
 
 /// pixel format converter (may be shared/re-used)
 @property (nonatomic) TSPixelConverterRef converter;
