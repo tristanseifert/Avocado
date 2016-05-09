@@ -69,7 +69,16 @@
 				 if(err) {
 					 DDLogError(@"Error processing RAW file: %@", err);
 				 } else {
-					 DDLogDebug(@"Processed RAW file: %@", img);
+					 DDLogDebug(@"Processed image file: %@", img);
+					 
+					 
+					 NSFileManager *fm = [NSFileManager defaultManager];
+					 NSURL *appSupportURL = [[fm URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
+					 appSupportURL = [appSupportURL URLByAppendingPathComponent:@"me.tseifert.Avocado"];
+					 
+					 NSData *tiff = [img TIFFRepresentationUsingCompression:NSTIFFCompressionNone factor:1];
+					 
+					 [tiff writeToURL:[appSupportURL URLByAppendingPathComponent:@"testRawConversion_result.tiff"] atomically:YES];
 				 }
 				 
 				 // fulfill expectation

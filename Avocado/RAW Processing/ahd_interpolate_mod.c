@@ -125,7 +125,6 @@ void ahd_interpolate_mod(libraw_data_t *imageData, uint16_t (*image)[4]) {
 
 	for (top=3; top < height-6; top += TS-7)
 		for (left=3; left < width-6; left += TS-7) {
-
 			/*  Interpolate green horizontally and vertically: */
 			for (row = top; row < top+TS && row < height-3; row++) {
 				col = left + (FC(row, left, filters) & 1);

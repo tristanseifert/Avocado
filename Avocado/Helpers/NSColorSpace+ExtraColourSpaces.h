@@ -8,6 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 
+/// ProPhoto RGB ICC profile
+extern const uint8_t TSColourSpace_ProPhotoICC[];
+/// Length of the ProPhoto RGB ICC profile data blob
+extern const NSUInteger TSColourSpace_ProPhotoICC_Length;
+
 @interface NSColorSpace (ExtraColourSpaces)
 
 /**

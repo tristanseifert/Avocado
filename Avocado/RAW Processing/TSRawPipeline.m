@@ -7,13 +7,12 @@
 //
 
 #import "TSRawPipeline.h"
-#import "TSPixelFormatConverter.h"
+#import "TSCoreImagePipeline.h"
 #import "TSRawImage.h"
 #import "TSRawPipelineState.h"
-#import "TSPixelFormatConverter.h"
 
+#import "TSPixelFormatConverter.h"
 #import "TSRawImageDataHelpers.h"
-#import "ahd_interpolate_mod.h"
 #import "lmmse_interpolate.h"
 
 #import "TSHumanModels.h"
@@ -50,8 +49,8 @@
 /// size (in bytes) of the interpolated colour buffer
 @property (nonatomic) size_t interpolatedColourBufSz;
 
-/// CoreImage context; hardware-accelerated processing for filters
-@property (nonatomic) CIContext *ciContext;
+/// CoreImage pipeline
+@property (nonatomic) TSCoreImagePipeline *ciPipeline;
 
 // helpers
 - (NSBlockOperation *) opDebayer:(TSRawPipelineState *) state;
@@ -67,8 +66,16 @@
 
 - (NSBlockOperation *) opConvertToInterleaved:(TSRawPipelineState *) state;
 
+- (NSBlockOperation *) opCoreImageFilters:(TSRawPipelineState *) state;
+
+- (NSBlockOperation *) opGenerateDisplayHistogram:(TSRawPipelineState *) state;
+
+// conversion
+- (CIImage *) ciImageFromPixelConverter:(TSPixelConverterRef) converter andSize:(NSSize) outputSize;
+
 // debugging
 - (void) dumpImageBufferInterleaved:(TSRawPipelineState *) state;
+- (void) dumpImageBufferCoreImage:(TSRawPipelineState *) state;
 
 @end
 
@@ -90,16 +97,8 @@
 		// set up cache
 		self.rawStageCache = [NSCache new];
 		
-		// set up CoreImage context
-		NSDictionary *ciOptions = @{
-			// request GPU rendering if possible
-			kCIContextUseSoftwareRenderer: @NO,
-			// use 128bpp floating point RGBA format
-			kCIContextWorkingFormat: @(kCIFormatRGBAf)
-		};
-		
-		self.ciContext = [CIContext contextWithOptions:ciOptions];
-		DDAssert(self.ciContext != nil, @"Could not allocate CIContext");
+		// create CoreImage pipeline
+		self.ciPipeline = [TSCoreImagePipeline new];
 	}
 	
 	return self;
@@ -137,7 +136,6 @@
 	NSBlockOperation *opDebayer, *opDemosaic, *opLensCorrect, *opConvertPlanar;
 	NSBlockOperation *opRotate, *opConvolute, *opMorphological, *opHisto;
 	NSBlockOperation *opConvertInterleaved, *opCoreImage, *opOutputHistogram;
-	NSBlockOperation *opDisplayTrans;
 	
 	TSRawPipelineState *state;
 	
@@ -219,6 +217,10 @@
 	
 	opConvertInterleaved = [self opConvertToInterleaved:state];
 	
+	opCoreImage = [self opCoreImageFilters:state];
+	
+	opOutputHistogram = [self opGenerateDisplayHistogram:state];
+	
 	// set up interdependencies between the operations
 	[opDemosaic addDependency:opDebayer];
 	[opLensCorrect addDependency:opDemosaic];
@@ -231,6 +233,10 @@
 	[opHisto addDependency:opMorphological];
 	
 	[opConvertInterleaved addDependency:opHisto];
+	
+	[opCoreImage addDependency:opConvertInterleaved];
+	
+	[opOutputHistogram addDependency:opCoreImage];
 	
 	// add them to the queue to vamenos the operations
 	TSAddOperation(opDebayer, state);
@@ -245,6 +251,10 @@
 	TSAddOperation(opHisto, state);
 	
 	TSAddOperation(opConvertInterleaved, state);
+	
+	TSAddOperation(opCoreImage, state);
+	
+	TSAddOperation(opOutputHistogram, state);
 }
 
 #pragma mark - RAW Processing Steps
@@ -397,15 +407,60 @@
 	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
 		state.stage = TSRawPipelineStageConvertToInterleaved;
 		
-		// do the conversion
+		// do the conversion from planar to interleaved
 		TSPixelConverterPlanarFToRGBXFFFF(state.converter);
-		
 		[self dumpImageBufferInterleaved:state];
 		
+		// create CIImage
+		state.coreImageInput = [self ciImageFromPixelConverter:state.converter andSize:state.outputSize];
+		
+		// dump CIImage
+		[self dumpImageBufferCoreImage:state];
 	}];
 	
 	op.name = @"Convert to Interleaved Floating Point";
 	return op;
+}
+
+
+/**
+ * Creates a CIImage from the state's bitmap converter output.
+ */
+- (CIImage *) ciImageFromPixelConverter:(TSPixelConverterRef) converter andSize:(NSSize) outputSize {
+	NSBitmapImageRep *bm;
+	CIImage *im;
+	
+	// get info about the input buffer
+	NSUInteger bytesPerRow = TSPixelConverterGetRGBXStride(converter);
+	void *buf = TSPixelConverterGetRGBXPointer(converter);
+	
+	// create bitmap representation, and re-tag with colour space
+	unsigned char *ptrs = { buf };
+	
+	bm = [[NSBitmapImageRep alloc]
+		  initWithBitmapDataPlanes:&ptrs
+		  pixelsWide:outputSize.width
+		  pixelsHigh:outputSize.height
+		  bitsPerSample:32
+		  samplesPerPixel:4
+		  hasAlpha:YES
+		  isPlanar:NO
+		  colorSpaceName:NSCustomColorSpace
+		  bitmapFormat:NSFloatingPointSamplesBitmapFormat
+		  bytesPerRow:bytesPerRow
+		  bitsPerPixel:128];
+	
+	NSColorSpace *proPhoto = [NSColorSpace proPhotoRGBColorSpace];
+	bm = [bm bitmapImageRepByRetaggingWithColorSpace:proPhoto];
+	
+	// create a CIImage
+	im = [[CIImage alloc] initWithBitmapImageRep:bm];
+	DDAssert(im != nil, @"Couldn't create CIImage from NSBitmapImageRep");
+	
+	DDLogDebug(@"CIImage metadata: %@", im.properties);
+	
+	// done
+	return im;
 }
 
 #pragma mark vImage Steps
@@ -478,6 +533,50 @@
 	return op;
 }
 
+#pragma mark CoreImage Filtering
+/**
+ * Applies all required CoreImage filters.
+ */
+- (NSBlockOperation *) opCoreImageFilters:(TSRawPipelineState *) state {
+	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		NSImage *im;
+		TSCoreImagePipelineJob *job;
+		
+		state.stage = TSRawPipelineStageCoreImageFilter;
+		
+		// produce a job object
+		job = [[TSCoreImagePipelineJob alloc] initWithInput:state.coreImageInput];
+		
+		// process it pls
+		im = [self.ciPipeline produceImageFromJob:job
+									inPixelFormat:TSCIPixelFormatRGBA16
+								   andColourSpace:nil];
+		state.result = im;
+	}];
+	
+	op.name = @"CoreImage Filters";
+	return op;
+}
+
+#pragma mark Output
+/**
+ * Calculates the final histogram over the image before calling the success
+ * callback;
+ */
+- (NSBlockOperation *) opGenerateDisplayHistogram:(TSRawPipelineState *) state {
+	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		state.stage = TSRawPipelineStageGenerateHistogram;
+		
+		// TODO: calculate histogram
+		
+		// execute success callback
+		[state completeWithImage:state.result];
+	}];
+	
+	op.name = @"Display Histogram Calculation";
+	return op;
+}
+
 #pragma mark - Debugging Helpers
 /**
  * Dumps the floating point image buffer of the given pipeline stage to a
@@ -512,6 +611,26 @@
 	bm = [bm bitmapImageRepByRetaggingWithColorSpace:colourSpace];
 	
 	[[bm TIFFRepresentationUsingCompression:NSTIFFCompressionNone factor:1] writeToURL:[appSupportURL URLByAppendingPathComponent:@"raw_pipeline_tagged.tiff"] atomically:NO];
+}
+
+/**
+ * Dumps the CoreImage `CIImage` object in the state struct.
+ */
+- (void) dumpImageBufferCoreImage:(TSRawPipelineState *) state {
+	NSBitmapImageRep *rep;
+	NSData *tiff;
+	
+	NSFileManager *fm = [NSFileManager defaultManager];
+	NSURL *appSupportURL = [[fm URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
+	appSupportURL = [appSupportURL URLByAppendingPathComponent:@"me.tseifert.Avocado"];
+	
+	// get the representation, TIFF data, and write it
+	rep = [[NSBitmapImageRep alloc] initWithCIImage:state.coreImageInput];
+	
+	tiff = [rep TIFFRepresentationUsingCompression:NSTIFFCompressionNone
+											factor:1];
+	
+	[tiff writeToURL:[appSupportURL URLByAppendingPathComponent:@"raw_pipeline_coreimage_tagged.tiff"] atomically:YES];
 }
 
 @end

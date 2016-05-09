@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6A06F4371CE0169E001DFC4C /* TSCoreImagePipeline.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A06F4361CE0169E001DFC4C /* TSCoreImagePipeline.m */; };
+		6A06F43A1CE01767001DFC4C /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A06F4381CE01767001DFC4C /* Quartz.framework */; };
+		6A06F43B1CE01767001DFC4C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A06F4391CE01767001DFC4C /* QuartzCore.framework */; };
+		6A06F4481CE01C3C001DFC4C /* TSCoreImagePipelineJob.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A06F4471CE01C3C001DFC4C /* TSCoreImagePipelineJob.m */; };
+		6A06F44C1CE0205D001DFC4C /* TSCoreImageFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A06F44B1CE0205D001DFC4C /* TSCoreImageFilter.m */; };
 		6A1068871CD5BF00004BF216 /* libraw_r.15.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A1068861CD5BF00004BF216 /* libraw_r.15.dylib */; };
 		6A1068891CD5BF14004BF216 /* libraw_r.15.dylib in Embed dylibs and frameworks */ = {isa = PBXBuildFile; fileRef = 6A1068861CD5BF00004BF216 /* libraw_r.15.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		6A1307CC1CDA4A6E00FFC99A /* TSRawPipelineState.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A1307CB1CDA4A6E00FFC99A /* TSRawPipelineState.m */; };
@@ -23,10 +28,10 @@
 		6A5C615C1CD64B7100E3C3C9 /* TSLibraryLightTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A5C615B1CD64B7100E3C3C9 /* TSLibraryLightTableCell.xib */; };
 		6A5C615F1CD67C5B00E3C3C9 /* TSImageIOHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A5C615E1CD67C5B00E3C3C9 /* TSImageIOHelper.m */; };
 		6A7987691CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7987681CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m */; };
-		6A79876B1CDD5CA200FB3A8E /* ahd_interpolate_mod.c in Sources */ = {isa = PBXBuildFile; fileRef = 6A79876A1CDD5CA200FB3A8E /* ahd_interpolate_mod.c */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive -Ofast"; }; };
+		6A79876B1CDD5CA200FB3A8E /* ahd_interpolate_mod.c in Sources */ = {isa = PBXBuildFile; fileRef = 6A79876A1CDD5CA200FB3A8E /* ahd_interpolate_mod.c */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive"; }; };
 		6A79876E1CDD60EB00FB3A8E /* TSRawPipelineTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A79876D1CDD60EB00FB3A8E /* TSRawPipelineTest.m */; };
 		6A7EC3CB1CD685AF007E91E8 /* TSThumbCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7EC3CA1CD685AF007E91E8 /* TSThumbCache.m */; };
-		6AB32E9C1CDE4574004FF7A3 /* lmmse_interpolate.c in Sources */ = {isa = PBXBuildFile; fileRef = 6AB32E9B1CDE4574004FF7A3 /* lmmse_interpolate.c */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive -Ofast"; }; };
+		6AB32E9C1CDE4574004FF7A3 /* lmmse_interpolate.c in Sources */ = {isa = PBXBuildFile; fileRef = 6AB32E9B1CDE4574004FF7A3 /* lmmse_interpolate.c */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive"; }; };
 		6AB32EA11CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AB32EA01CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m */; };
 		6ABC2D9C1CD42C4A006B959F /* _TSLibraryImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2D9B1CD42C4A006B959F /* _TSLibraryImage.m */; };
 		6ABC2DAC1CD4357E006B959F /* TSLibraryAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DA11CD4357E006B959F /* TSLibraryAlbum.m */; };
@@ -39,7 +44,7 @@
 		6ABC2DC01CD43586006B959F /* _TSLibraryExportService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DB71CD43586006B959F /* _TSLibraryExportService.m */; };
 		6ABC2DC21CD43586006B959F /* _TSLibraryImageAdjustment.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DBB1CD43586006B959F /* _TSLibraryImageAdjustment.m */; };
 		6ABC2DC31CD43586006B959F /* _TSLibraryTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DBD1CD43586006B959F /* _TSLibraryTag.m */; };
-		6AC3E7D01CDD6A880099B932 /* TSRawImageDataHelpers.c in Sources */ = {isa = PBXBuildFile; fileRef = 6AC3E7CE1CDD6A880099B932 /* TSRawImageDataHelpers.c */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive -Ofast"; }; };
+		6AC3E7D01CDD6A880099B932 /* TSRawImageDataHelpers.c in Sources */ = {isa = PBXBuildFile; fileRef = 6AC3E7CE1CDD6A880099B932 /* TSRawImageDataHelpers.c */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive"; }; };
 		6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */; };
 		6AE87BCC1CD275C90053CD9D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BCB1CD275C90053CD9D /* main.m */; };
 		6AE87BD11CD275C90053CD9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AE87BD01CD275C90053CD9D /* Assets.xcassets */; };
@@ -51,7 +56,6 @@
 		6AEC35131CD43E070033DE0A /* TSMainLibraryWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC35111CD43E070033DE0A /* TSMainLibraryWindow.xib */; };
 		6AEC35191CD43F000033DE0A /* TSCoreDataStoreIB.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC35181CD43F000033DE0A /* TSCoreDataStoreIB.m */; };
 		6AEC351B1CD43FED0033DE0A /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEC351A1CD43FED0033DE0A /* Accelerate.framework */; };
-		6AEC351D1CD43FF00033DE0A /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEC351C1CD43FF00033DE0A /* CoreImage.framework */; };
 		6AEC35411CD443460033DE0A /* TSLibraryOverviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC353F1CD443460033DE0A /* TSLibraryOverviewController.m */; };
 		6AEC35421CD443460033DE0A /* TSLibraryOverview.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC35401CD443460033DE0A /* TSLibraryOverview.xib */; };
 		6AEC35471CD443B90033DE0A /* TSLibraryDetailController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC35451CD443B90033DE0A /* TSLibraryDetailController.m */; };
@@ -96,6 +100,14 @@
 
 /* Begin PBXFileReference section */
 		072E3CE76E3BE9A62C321D67 /* Pods-Avocado.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Avocado.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Avocado/Pods-Avocado.debug.xcconfig"; sourceTree = "<group>"; };
+		6A06F4351CE0169E001DFC4C /* TSCoreImagePipeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSCoreImagePipeline.h; path = "Avocado/Image Processing/TSCoreImagePipeline.h"; sourceTree = "<group>"; };
+		6A06F4361CE0169E001DFC4C /* TSCoreImagePipeline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSCoreImagePipeline.m; path = "Avocado/Image Processing/TSCoreImagePipeline.m"; sourceTree = "<group>"; };
+		6A06F4381CE01767001DFC4C /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
+		6A06F4391CE01767001DFC4C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		6A06F4461CE01C3C001DFC4C /* TSCoreImagePipelineJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSCoreImagePipelineJob.h; path = "Avocado/Image Processing/TSCoreImagePipelineJob.h"; sourceTree = "<group>"; };
+		6A06F4471CE01C3C001DFC4C /* TSCoreImagePipelineJob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSCoreImagePipelineJob.m; path = "Avocado/Image Processing/TSCoreImagePipelineJob.m"; sourceTree = "<group>"; };
+		6A06F44A1CE0205D001DFC4C /* TSCoreImageFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSCoreImageFilter.h; path = "Avocado/Image Processing/TSCoreImageFilter.h"; sourceTree = "<group>"; };
+		6A06F44B1CE0205D001DFC4C /* TSCoreImageFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSCoreImageFilter.m; path = "Avocado/Image Processing/TSCoreImageFilter.m"; sourceTree = "<group>"; };
 		6A1068841CD5BACF004BF216 /* libpthread.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libpthread.tbd; path = usr/lib/libpthread.tbd; sourceTree = SDKROOT; };
 		6A1068861CD5BF00004BF216 /* libraw_r.15.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libraw_r.15.dylib; path = Dependencies/LibRaw/lib/.libs/libraw_r.15.dylib; sourceTree = "<group>"; };
 		6A1307CA1CDA4A6E00FFC99A /* TSRawPipelineState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSRawPipelineState.h; path = "Avocado/RAW Processing/TSRawPipelineState.h"; sourceTree = "<group>"; };
@@ -222,7 +234,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6AEC351D1CD43FF00033DE0A /* CoreImage.framework in Frameworks */,
+				6A06F43A1CE01767001DFC4C /* Quartz.framework in Frameworks */,
+				6A06F43B1CE01767001DFC4C /* QuartzCore.framework in Frameworks */,
 				6AEC351B1CD43FED0033DE0A /* Accelerate.framework in Frameworks */,
 				90D8F3504CA87BC8DFD0DDE7 /* Pods_Avocado.framework in Frameworks */,
 				6A1068871CD5BF00004BF216 /* libraw_r.15.dylib in Frameworks */,
@@ -233,6 +246,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6A06F4341CE01541001DFC4C /* General Image Processing */ = {
+			isa = PBXGroup;
+			children = (
+				6A06F4351CE0169E001DFC4C /* TSCoreImagePipeline.h */,
+				6A06F4361CE0169E001DFC4C /* TSCoreImagePipeline.m */,
+				6A06F4461CE01C3C001DFC4C /* TSCoreImagePipelineJob.h */,
+				6A06F4471CE01C3C001DFC4C /* TSCoreImagePipelineJob.m */,
+				6A06F4491CE02048001DFC4C /* Filters */,
+			);
+			name = "General Image Processing";
+			sourceTree = "<group>";
+		};
+		6A06F4491CE02048001DFC4C /* Filters */ = {
+			isa = PBXGroup;
+			children = (
+				6A06F44A1CE0205D001DFC4C /* TSCoreImageFilter.h */,
+				6A06F44B1CE0205D001DFC4C /* TSCoreImageFilter.m */,
+			);
+			name = Filters;
+			sourceTree = "<group>";
+		};
 		6A1307CD1CDA4A7D00FFC99A /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
@@ -510,6 +544,7 @@
 			children = (
 				6AEC766D1CD5097900870FAE /* Categories and Helpers */,
 				6A7EC3C81CD68595007E91E8 /* Thumb Handling */,
+				6A06F4341CE01541001DFC4C /* General Image Processing */,
 				6A28F05F1CD8185400228067 /* RAW Processing */,
 				6AE87BDC1CD276070053CD9D /* CoreData */,
 				6A28F0601CD8186900228067 /* Main UI Controllers */,
@@ -599,6 +634,8 @@
 		F4FC62D8D3C46EB93528ACF1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6A06F4381CE01767001DFC4C /* Quartz.framework */,
+				6A06F4391CE01767001DFC4C /* QuartzCore.framework */,
 				6A1068841CD5BACF004BF216 /* libpthread.tbd */,
 				6AEC351C1CD43FF00033DE0A /* CoreImage.framework */,
 				6AEC351A1CD43FED0033DE0A /* Accelerate.framework */,
@@ -820,6 +857,7 @@
 				6ABC2DAC1CD4357E006B959F /* TSLibraryAlbum.m in Sources */,
 				6AEC76771CD50E6E00870FAE /* TSImportOpenPanelAccessory.m in Sources */,
 				6AEC35471CD443B90033DE0A /* TSLibraryDetailController.m in Sources */,
+				6A06F44C1CE0205D001DFC4C /* TSCoreImageFilter.m in Sources */,
 				6ABC2D9C1CD42C4A006B959F /* _TSLibraryImage.m in Sources */,
 				6A1307CC1CDA4A6E00FFC99A /* TSRawPipelineState.m in Sources */,
 				6AB32E9C1CDE4574004FF7A3 /* lmmse_interpolate.c in Sources */,
@@ -833,6 +871,7 @@
 				6AEC35191CD43F000033DE0A /* TSCoreDataStoreIB.m in Sources */,
 				6AEC76701CD5098F00870FAE /* NSDate+AvocadoUtils.m in Sources */,
 				6ABC2DAD1CD4357E006B959F /* TSLibraryAlbumCollection.m in Sources */,
+				6A06F4371CE0169E001DFC4C /* TSCoreImagePipeline.m in Sources */,
 				6ABC2DAE1CD4357E006B959F /* TSLibraryExportService.m in Sources */,
 				6ABC2DC01CD43586006B959F /* _TSLibraryExportService.m in Sources */,
 				6AEC767E1CD5187D00870FAE /* TSLibraryLightTableCell.m in Sources */,
@@ -841,6 +880,7 @@
 				6A28F0681CD940E500228067 /* TSPixelFormatConverter.m in Sources */,
 				6ABC2DC21CD43586006B959F /* _TSLibraryImageAdjustment.m in Sources */,
 				6ABC2DB01CD4357E006B959F /* TSLibraryImageAdjustment.m in Sources */,
+				6A06F4481CE01C3C001DFC4C /* TSCoreImagePipelineJob.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

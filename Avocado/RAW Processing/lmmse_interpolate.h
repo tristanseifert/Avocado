@@ -13,6 +13,9 @@
 #include "libraw.h"
 
 /**
+ * Interpolates missing colour components in a Bayer image, using the LSMME
+ * algorithm, as demonstrated by Wu-Zhang.
+ *
  * @param imageData Pointer to the libraw structure
  * @param image Image pointer, input
  * @param gamma_apply Whether gamma should be applied

@@ -12,6 +12,7 @@
 #import "TSPixelFormatConverter.h"
 #import "TSRawPipeline.h"
 
+@class CIImage;
 @class TSLibraryImage;
 @class TSRawImage;
 @interface TSRawPipelineState : NSObject
@@ -46,10 +47,20 @@
 /// progress callback
 @property (nonatomic) TSRawPipelineProgressCallback progressCallback;
 
+/// Initial CIImage; passed to the first filter.
+@property (nonatomic) CIImage *coreImageInput;
+/// final image
+@property (nonatomic) NSImage *result;
+
 /**
  * Adds an operation to the list of operations associated with the op.
  */
 -(void) addOperation:(NSOperation *) op;
+
+/**
+ * Executes the success callback with the given image.
+ */
+- (void) completeWithImage:(NSImage *) image;
 
 /**
  * Terminates the RAW pipeline with an error message.

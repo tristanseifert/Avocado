@@ -58,6 +58,13 @@ void *TSStageKVOCtx = &TSStageKVOCtx;
 }
 
 /**
+ * Executes the success callback with the given image.
+ */
+- (void) completeWithImage:(NSImage *) image {
+	self.completionCallback(image, nil);
+}
+
+/**
  * Adds an operation to the list of operations associated with the op.
  */
 -(void) addOperation:(NSOperation *) op {

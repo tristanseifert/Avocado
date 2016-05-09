@@ -8,9 +8,6 @@ target 'Avocado' do
     pod 'CocoaLumberjack', '~> 2.2'
     pod 'MagicalRecord', '~> 2.3'
 
-    # UI: Status bars at bottom of window
-    pod 'GRStatusBar'
-
     # Networking
     # pod 'AFNetworking', '~> 3.0'
 end

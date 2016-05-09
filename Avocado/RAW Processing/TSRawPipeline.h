@@ -15,8 +15,8 @@
  *
  * Note that up until step 4, data will be in a 16 bit/component unsigned
  * integer (RGB; 48bpp) format; after applying lens corrections, the image
- * buffer is converted to planar 16b floating point RGB. After step 8 is
- * completed, it is converted to chunky 16b floating point RGBX (64bpp).
+ * buffer is converted to planar 32b floating point RGB. After step 8 is
+ * completed, it is converted to chunky 32b floating point RGBX (128bpp).
  *
  *	1. Debayering of RAW data
  *	2. Demosaicing Bayer data
@@ -41,11 +41,8 @@
  *		e. Geometry adjustments (crop, scaling, straightening, etc.)
  *		f. Vignetting and grain
  * 10. Generate final histogram (displayed in UI)
- * 11. Display transformations
- *		a. Convert to output (display/sRGB/Adobe RGB) colour space
- *		b. Convert to a different bitmap format
  *
- * The outputs of stage 4, and stage 7 can be cached.
+ * The outputs of stage 4, and stage 9 can be cached.
  *
  * Pipeline plugins can chose to process data at any major numbered
  * position in the pipeline. They are called _before_ the built-in pipeline
@@ -84,15 +81,8 @@ typedef NS_ENUM(NSUInteger, TSRawPipelineStage) {
 	TSRawPipelineStageConvertToInterleaved	= (9 << 16),
 	
 	TSRawPipelineStageCoreImageFilter		= (10 << 16),
-	TSRawPipelineStageCINoiseReduceBlur		= (10 << 16) | 1,
-	TSRawPipelineStageCISharpening			= (10 << 16) | 2,
-	TSRawPipelineStageCIColourAdjustments	= (10 << 16) | 3,
-	TSRawPipelineStageCIDistortionEffects	= (10 << 16) | 4,
-	TSRawPipelineStageCIGeometryAdjustments	= (10 << 16) | 5,
-	TSRawPipelineStageCIVignetteGrain		= (10 << 16) | 6,
 
 	TSRawPipelineStageGenerateHistogram		= (11 << 16),
-	TSRAWPipelineStageDisplayTransform		= (12 << 16)
 };
 
 /// mask for the major pipeline stage

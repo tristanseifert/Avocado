@@ -11,7 +11,7 @@
 #import <stdint.h>
 
 /// define the ICC profile of the ProPhoto colour space
-static const uint8_t ProPhoto_ICC[] = {
+const uint8_t TSColourSpace_ProPhotoICC[] = {
 	0x00, 0x00, 0x04, 0x74, 0x6c, 0x63, 0x6d, 0x73, 0x02, 0x30, 0x00, 0x00,
 	0x6d, 0x6e, 0x74, 0x72, 0x52, 0x47, 0x42, 0x20, 0x58, 0x59, 0x5a, 0x20,
 	0x07, 0xd8, 0x00, 0x01, 0x00, 0x0a, 0x00, 0x0f, 0x00, 0x1e, 0x00, 0x28,
@@ -108,7 +108,7 @@ static const uint8_t ProPhoto_ICC[] = {
 	0x00, 0x00, 0x00, 0x00, 0x58, 0x59, 0x5a, 0x20, 0x00, 0x00, 0x00, 0x00,
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
-static const NSUInteger ProPhoto_ICCSz = 1140;
+const NSUInteger TSColourSpace_ProPhotoICC_Length = 1140;
 
 @implementation NSColorSpace (ExtraColourSpaces)
 
@@ -118,8 +118,8 @@ static const NSUInteger ProPhoto_ICCSz = 1140;
  */
 + (instancetype) proPhotoRGBColorSpace {
 	// create data object
-	NSData *data = [NSData dataWithBytesNoCopy:(void *) ProPhoto_ICC
-										length:ProPhoto_ICCSz
+	NSData *data = [NSData dataWithBytesNoCopy:(void *) TSColourSpace_ProPhotoICC
+										length:TSColourSpace_ProPhotoICC_Length
 								  freeWhenDone:NO];
 	return [[NSColorSpace alloc] initWithICCProfileData:data];
 }

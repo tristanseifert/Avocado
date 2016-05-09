@@ -15,8 +15,13 @@
 #include <stdlib.h>
 #include <math.h>
 
-// define some shorthands
+/**
+ * Set to 1 to print out some additional debugging information, such as
+ * conversion matrices and other variables.
+ */
+#define PRINT_DEBUG_INFO	0
 
+// define some shorthands
 /// size struct
 #define S libRaw->sizes
 /// color struct
@@ -380,7 +385,9 @@ void TSRawPostInterpolationMedianFilter(libraw_data_t *libRaw, uint16_t (*image)
 		0,3, 5,8, 4,7, 3,6, 1,4, 2,5, 4,7, 4,2, 6,4, 4,2 };
 	
 	for (pass=1; pass <= med_passes; pass++) {
-//		printf("Began median filter pass %i\n", pass);
+#if PRINT_DEBUG_INFO
+		printf("Began median filter pass %i\n", pass);
+#endif
 		
 		for (c = 0; c < 3; c += 2) {
 			for (pix = image; pix < image+width*height; pix++)
@@ -397,7 +404,9 @@ void TSRawPostInterpolationMedianFilter(libraw_data_t *libRaw, uint16_t (*image)
 			}
 		}
 		
-//		printf("Completed median filter pass %i\n", pass);
+#if PRINT_DEBUG_INFO
+		printf("Completed median filter pass %i\n", pass);
+#endif
 	}
 }
 
@@ -434,6 +443,7 @@ void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*o
 	
 	TSBuildGammaCurve(gamm[0], gamm[1], 0, 0, gammaCurve, gamm);
 	
+#if PRINT_DEBUG_INFO
 	printf("gamm: \n");
 	for(int i = 0; i < 6; i++) {
 		printf("%5.5f ", gamm[i]);
@@ -445,6 +455,7 @@ void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*o
 		printf("%5.5f ", libRaw->params.gamm[i]);
 	}
 	printf("\n");
+#endif
 	
 	// get some data from the struct
 	ushort width = libRaw->sizes.width;
@@ -453,6 +464,7 @@ void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*o
 	// build the camera output profile
 	float out[3], out_cam[3][4];
 	
+#if PRINT_DEBUG_INFO
 	// print gamma curves
 	printf("cam_xyz: \n");
 	for(int y = 0; y < 4; y++) {
@@ -471,6 +483,7 @@ void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*o
 		
 		printf("\n");
 	}
+#endif
 	
 	// calculate the output camera matrix
 	memcpy(out_cam, libRaw->color.rgb_cam, sizeof out_cam);
@@ -521,8 +534,10 @@ void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*o
 			if (t_white < val) t_white = val;
 		}
 	}
-	
+
+#if PRINT_DEBUG_INFO
 	printf("t_white = 0x%08x\n", t_white);
+#endif
 	TSBuildGammaCurve(gamm[0], gamm[1], 2, (t_white << 3), gammaCurve, gamm);
 	
 	// do gamma correction
@@ -534,6 +549,7 @@ void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*o
 			for(c = 0; c < 3; c++) {
 				// apply curve
 				outPtr[c] = libRaw->color.curve[gammaCurve[img[c]]];
+				//				outPtr[c] = libRaw->color.curve[img[c]];
 			}
 		}
 	}
@@ -543,7 +559,9 @@ void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*o
  * Builds the gamma curve.
  */
 static void TSBuildGammaCurve(double pwr, double ts, int mode, int imax, uint16_t *curve, double *gamm) {
-//	printf("imax = %i\n", imax);
+#if PRINT_DEBUG_INFO
+	printf("imax = %i\n", imax);
+#endif
 	
 	int i;
 	double g[6], bnd[2] = {0,0}, r;
