@@ -26,6 +26,12 @@
 #include "libraw.h"
 
 /**
+ * Set to 1 to evaluate the time taken for various subcomponents of the LMMSE
+ * interpolation.
+ */
+#define DEBUG_TIME_PROFILE	1
+
+/**
  * Set to 0 to disable the median filter. It takes up a _massive_ amount of
  * processing time (more than thrice than every other part of the algorithm)
  * but has a very negligible impact on the final image.
@@ -47,7 +53,7 @@
  * @param image Image pointer, input
  * @param gamma_apply Whether gamma should be applied
  */
-void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4], int gamma_apply) {
+void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4]) {
 	ushort (*pix)[4];
 	int row, col, c, d, w1, w2, w3, w4, ii, ba, rr1, cc1, rr, cc, pass;
 	float h0, h1, h2, h3, h4, hs;
@@ -57,8 +63,12 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4], int gamma
 	float (*glut) = NULL;
 	char  *buffer;
 	
-	clock_t t1;
+#if DEBUG_TIME_PROFILE
+	clock_t t1, t2;
+	t2 = clock();
 	
+	printf("Begin lmmse_interpolate\n");
+#endif
 	
 	// read out a bunch of data
 	ushort width = imageData->sizes.width;
@@ -70,24 +80,10 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4], int gamma
 	rr1 = height + (2 * ba);
 	cc1 = width + (2 * ba);
 	
-	if(gamma_apply) {
-		buffer = (char *) calloc(rr1*cc1*6*sizeof(float) + (65536 * sizeof(float)), 1);
-	} else {
-		buffer = (char *) calloc(rr1*cc1*6*sizeof(float), 1);
-	}
-		
+	buffer = (char *) calloc(rr1*cc1*6*sizeof(float), 1);
+	
 	// merror(buffer,"lmmse_interpolate()");
 	qix = (float (*)[6])buffer;
-	
-	if(gamma_apply) {
-		glut = (float *)(buffer + rr1*cc1*24);
-		
-		for(ii=0; ii < 65536; ii++) {
-			v0 = (float) ii / 65535.0;
-			
-			glut[ii] = 1.055*pow((double)v0,1./1.8) - 0.055;
-		}
-	}
 	
 	// indices
 	w1 = cc1;
@@ -109,7 +105,9 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4], int gamma
 	h4 /= hs;
 	
 	// copy CFA values
+#if DEBUG_TIME_PROFILE
 	t1 = clock();
+#endif
 	
 	for(rr = 0; rr < rr1; rr++) {
 		for(cc = 0, row = (rr - ba); cc < cc1; cc++) {
@@ -117,22 +115,21 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4], int gamma
 			rix = qix + rr*cc1 + cc;
 			
 			if((row >= 0) & (row < height) & (col >= 0) & (col < width)) {
-				if (gamma_apply) {
-					rix[0][4] = glut[image[row*width+col][FC(row,col,filters)]];
-				} else {
-					rix[0][4] = (double)image[row*width+col][FC(row,col,filters)]/65535.0;
-				}
+				rix[0][4] = (double)image[row*width+col][FC(row,col,filters)]/65535.0;
 			} else {
 				rix[0][4] = 0;
 			}
 		}
 	}
 	
-	printf("copy CFA values: %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
-	
+#if DEBUG_TIME_PROFILE
+	printf("\tcopy CFA values: %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
+#endif
 	
 	// G-R(B)
+#if DEBUG_TIME_PROFILE
 	t1 = clock();
+#endif
 	
 	for(rr = 2; rr < (rr1 - 2); rr++) {
 		// G-R(B) at R(B) location
@@ -181,11 +178,14 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4], int gamma
 		}
 	}
 	
-	printf("G-R(B): %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
-
+#if DEBUG_TIME_PROFILE
+	printf("\tG-R(B): %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
+#endif
 	
 	// apply low pass filter on differential colors
+#if DEBUG_TIME_PROFILE
 	t1 = clock();
+#endif
 	
 	for(rr = 4; rr < (rr1 - 4); rr++) {
 		for (cc = 4; cc < (cc1 - 4); cc++) {
@@ -199,11 +199,14 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4], int gamma
 		}
 	}
 	
-	printf("Low pass filter on differential colors: %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
-	
+#if DEBUG_TIME_PROFILE
+	printf("\tLow pass filter on differential colors: %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
+#endif
 	
 	// interpolate G-R(B) at R(B)
+#if DEBUG_TIME_PROFILE
 	t1 = clock();
+#endif
 	
 	for (rr = 4; rr < (rr1 - 4); rr++) {
 		for (cc = 4+(FC(rr,4,filters)&1); cc < (cc1 - 4); cc += 2) {
@@ -264,11 +267,14 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4], int gamma
 		}
 	}
 	
-	printf("Interpolate G-R(B) at R(B): %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
-	
+#if DEBUG_TIME_PROFILE
+	printf("\tInterpolate G-R(B) at R(B): %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
+#endif
 	
 	// copy CFA values
+#if DEBUG_TIME_PROFILE
 	t1 = clock();
+#endif
 	
 	for(rr = 0; rr < rr1; rr++) {
 		for(cc = 0, row = (rr-ba); cc < cc1; cc++) {
@@ -277,11 +283,7 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4], int gamma
 			c = FC(rr,cc,filters);
 			
 			if ((row >= 0) & (row < height) & (col >= 0) & (col < width)) {
-				if (gamma_apply) {
-					rix[0][c] = glut[image[row*width+col][c]];
-				} else {
-					rix[0][c] = (double)image[row*width+col][c]/65535.0;
-				}
+				rix[0][c] = (double)image[row*width+col][c]/65535.0;
 			} else {
 				rix[0][c] = 0;
 			}
@@ -292,12 +294,15 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4], int gamma
 		}
 	}
 	
-	printf("Copy CFA values: %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
-	
+#if DEBUG_TIME_PROFILE
+	printf("\tCopy CFA values: %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
+#endif
 	
 	// bilinear interpolation for R/B
 	// interpolate R/B at G location
+#if DEBUG_TIME_PROFILE
 	t1 = clock();
+#endif
 	
 	for(rr = 1; rr < (rr1 - 1); rr++) {
 		for(cc=1+(FC(rr,2,filters)&1), c=FC(rr,cc+1,filters); cc < cc1-1; cc+=2) {
@@ -311,11 +316,14 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4], int gamma
 		}
 	}
 	
-	printf("Interpolate R/B at G location: %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
-	
+#if DEBUG_TIME_PROFILE
+	printf("\tInterpolate R/B at G location: %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
+#endif
 	
 	// interpolate R/B at B/R location
+#if DEBUG_TIME_PROFILE
 	t1 = clock();
+#endif
 	
 	for(rr = 1; rr < (rr1 -1 ); rr++) {
 		for(cc=1+(FC(rr,1,filters)&1), c=2-FC(rr,cc,filters); cc < cc1-1; cc+=2) {
@@ -326,12 +334,15 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4], int gamma
 		}
 	}
 	
-	printf("Interpolate R/B at B/R location: %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
-	
+#if DEBUG_TIME_PROFILE
+	printf("\tInterpolate R/B at B/R location: %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
+#endif
 	
 #if USE_MEDIAN_FILTER
+#if DEBUG_TIME_PROFILE
 	// median filter
 	t1 = clock();
+#endif
 	
 	for(pass = 1; pass <= 3; pass++) {
 		for(c = 0; c < 3; c += 2) {
@@ -386,11 +397,15 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4], int gamma
 		}
 	}
 	
-	printf("Median filter: %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
+#if DEBUG_TIME_PROFILE
+	printf("\tMedian filter: %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
+#endif
 #endif
 	
 	// copy result back to image matrix
+#if DEBUG_TIME_PROFILE
 	t1 = clock();
+#endif
 	
 	for(row = 0; row < height; row++) {
 		for(col = 0, rr= (row + ba); col < width; col++) {
@@ -399,26 +414,19 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4], int gamma
 			rix = qix + rr*cc1 + cc;
 			c = FC(row, col, filters);
 			
-			if(gamma_apply) {
-				for(ii=0; ii < 3; ii++)
-					if(ii != c) {
-						v0 = rix[0][ii];
-						
-					
-						v0 = pow((v0 + 0.055)/1.055, 1.8);
-						pix[0][ii] = CLIP((int) (65535.0 * v0 + 0.5));
-					}
-			} else {
-				for(ii = 0; ii < 3; ii++) {
-					if(ii != c) {
-						pix[0][ii] = CLIP((int) (65535.0 * rix[0][ii] + 0.5));
-					}
+			for(ii = 0; ii < 3; ii++) {
+				if(ii != c) {
+					pix[0][ii] = CLIP((int) (65535.0 * rix[0][ii] + 0.5));
 				}
 			}
 		}
 	}
 	
-	printf("Copy result to image matrix: %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
+#if DEBUG_TIME_PROFILE
+	printf("\tCopy result to image matrix: %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
+	
+	printf("Total time for lmmse_interpolate: %f s\n", ((double)(clock() - t2)) / CLOCKS_PER_SEC);
+#endif
 
 	// Done
 	free(buffer);

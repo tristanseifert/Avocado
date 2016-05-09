@@ -294,19 +294,14 @@
 - (NSBlockOperation *) opDemosaic:(TSRawPipelineState *) state {
 	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
 		state.stage = TSRawPipelineStageDemosaicing;
-		
-		// copy RAW data into buffer
 		libraw_data_t *libRaw = state.rawImage.libRaw;
 		
-		DDLogDebug(@"Copying data to raw buffer: %p", self.interpolatedColourBuf);
+		// copy RAW data into buffer
 		[state.rawImage copyRawDataToBuffer:self.interpolatedColourBuf];
-		DDLogDebug(@"Finished copying data to raw buffer");
 		
 		// adjust black level
-		DDLogVerbose(@"Beginning black level adjustment");
 		TSRawAdjustBlackLevel(libRaw, self.interpolatedColourBuf);
 		TSRawSubtractBlack(libRaw, self.interpolatedColourBuf);
-		DDLogVerbose(@"Completed black level adjustment");
 		
 		
 		// white balance (colour scaling) and pre-interpolation
@@ -320,8 +315,7 @@
 		state.stage = TSRawPipelineStageInterpolateColour;
 		
 		DDLogVerbose(@"Beginning colour interpolation (c = %i)", libRaw->idata.colors);
-//		ahd_interpolate_mod(libRaw, self.interpolatedColourBuf);
-		lmmse_interpolate(libRaw, self.interpolatedColourBuf, 0);
+		lmmse_interpolate(libRaw, self.interpolatedColourBuf);
 		DDLogVerbose(@"Completed colour interpolation");
 		
 		
@@ -413,9 +407,6 @@
 		
 		// create CIImage
 		state.coreImageInput = [self ciImageFromPixelConverter:state.converter andSize:state.outputSize];
-		
-		// dump CIImage
-		[self dumpImageBufferCoreImage:state];
 	}];
 	
 	op.name = @"Convert to Interleaved Floating Point";
