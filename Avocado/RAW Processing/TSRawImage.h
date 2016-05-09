@@ -23,6 +23,11 @@ extern NSString *const TSRawImageErrorIsFatalKey;
 - (instancetype) initWithContentsOfUrl:(NSURL *) url error:(NSError **) outErr;
 
 /**
+ * Clears the raw file for repeated processing.
+ */
+- (BOOL) recycle;
+
+/**
  * Unpacks Bayer data from the raw file
  */
 - (BOOL) unpackRawData:(NSError **) outErr;

@@ -72,6 +72,24 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 	self.fileData = nil;
 }
 
+/**
+ * Clears the raw file for repeated processing.
+ */
+- (BOOL) recycle {
+	NSError *err = nil;
+	
+	// recycle the struct
+	libraw_recycle(self.libRaw);
+	
+	// re-open the file
+	if([self loadFile:self.fileUrl withError:&err] == NO) {
+		DDLogError(@"Error recycling file %@: %@", self, err);
+		return NO;
+	}
+	
+	return YES;
+}
+
 #pragma mark File Handling
 /**
  * Loads the given RAW file.

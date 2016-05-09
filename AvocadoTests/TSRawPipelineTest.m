@@ -57,33 +57,24 @@
 - (void) testRawConversion {
 	XCTAssertNotNil(self.image, @"Couldn't find a RAW image");
 	DDLogVerbose(@"Using image: %@", self.image.fileUrl);
-
-	NSProgress *progress = nil;
 	
 	// set up expectation for the RAW conversion
 	XCTestExpectation *expectation = [self expectationWithDescription:@"RAW Conversion"];
 	
-	// do conversion
+	// queue RAW thing
+	NSProgress *progress = nil;
+	
 	[self.pipeline queueRawFile:self.image shouldCache:NO
 			 completionCallback:^(NSImage *img, NSError *err) {
 				 if(err) {
 					 DDLogError(@"Error processing RAW file: %@", err);
 				 } else {
 					 DDLogDebug(@"Processed image file: %@", img);
-					 
-					 
-					 NSFileManager *fm = [NSFileManager defaultManager];
-					 NSURL *appSupportURL = [[fm URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
-					 appSupportURL = [appSupportURL URLByAppendingPathComponent:@"me.tseifert.Avocado"];
-					 
-					 NSData *tiff = [img TIFFRepresentationUsingCompression:NSTIFFCompressionNone factor:1];
-					 
-					 [tiff writeToURL:[appSupportURL URLByAppendingPathComponent:@"testRawConversion_result.tiff"] atomically:YES];
 				 }
 				 
 				 // fulfill expectation
 				 [expectation fulfill];
-	}
+			 }
 			   progressCallback:^(TSRawPipelineStage stage) {
 				   DDLogDebug(@"At RAW Processing Stage: %lu", stage);
 			   }
@@ -96,6 +87,48 @@
 		} else {
 			DDLogDebug(@"RAW conversion expectation met");
 		}
+	}];
+}
+
+/**
+ * Performs a conversion of the first RAW file that can be found, ten times
+ * over to acquire some performance metrics.
+ */
+- (void) testRawConversionSpeed {
+	XCTAssertNotNil(self.image, @"Couldn't find a RAW image");
+	DDLogVerbose(@"Using image: %@", self.image.fileUrl);
+	
+	// do conversion
+	[self measureBlock:^{
+		// set up expectation for the RAW conversion
+		XCTestExpectation *expectation = [self expectationWithDescription:@"RAW Conversion"];
+		
+		// queue RAW thing
+		NSProgress *progress = nil;
+		
+		[self.pipeline queueRawFile:self.image shouldCache:NO
+				 completionCallback:^(NSImage *img, NSError *err) {
+					 if(err) {
+						 DDLogError(@"Error processing RAW file: %@", err);
+						 
+						 [expectation fulfill];
+					 } else {
+						 [expectation fulfill];
+					 }
+				 }
+				   progressCallback:^(TSRawPipelineStage stage) {
+					   DDLogDebug(@"At RAW Processing Stage: %lu", stage);
+				   }
+				 conversionProgress:&progress];
+		
+		// wait
+		[self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
+			if(error) {
+				DDLogError(@"Error meeting RAW conversion expectation: %@", error);
+			} else {
+				DDLogDebug(@"RAW conversion expectation met");
+			}
+		}];
 	}];
 }
 

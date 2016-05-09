@@ -12,18 +12,18 @@
  GPL Version 2 or later option could be applied, so this file
  is taken under this premise.
  */
-#include "lmmse_interpolate.h"
+#import "lmmse_interpolate.h"
 
-#include <time.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <memory.h>
-#include <string.h>
-#include <stdint.h>
-#include <math.h>
+#import <time.h>
+#import <stdlib.h>
+#import <stdio.h>
+#import <memory.h>
+#import <string.h>
+#import <stdint.h>
+#import <math.h>
 
-#include "interpolation_shared.h"
-#include "libraw.h"
+#import "interpolation_shared.h"
+#import "libraw.h"
 
 /**
  * Set to 1 to evaluate the time taken for various subcomponents of the LMMSE
@@ -45,15 +45,43 @@
 // Dec. 2005.
 #define PIX_SORT(a,b) { if ((a)>(b)) {temp=(a);(a)=(b);(b)=temp;} }
 
+@interface TSLMSSEInterpolator ()
+
+/// operation queue
+@property (nonatomic) NSOperationQueue *queue;
+
+@end
+
+@implementation TSLMSSEInterpolator
+
+/**
+ * Initializes the interpolator.
+ */
+- (instancetype) init {
+	if(self = [super init]) {
+		// set up queue
+		self.queue = [NSOperationQueue new];
+		
+		self.queue.qualityOfService = NSQualityOfServiceUserInitiated;
+		self.queue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount;
+		
+		self.queue.name = @"LMSSE Interpolator";
+	}
+	
+	return self;
+}
+
+#pragma mark Interpolation
 /**
  * Interpolates missing colour components in a Bayer image, using the LSMME
  * algorithm, as demonstrated by Wu-Zhang.
  *
- * @param imageData Pointer to the libraw structure
+ * @param data Pointer to the libraw structure
  * @param image Image pointer, input
- * @param gamma_apply Whether gamma should be applied
  */
-void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4]) {
+- (void) interpolateWithLibRaw:(void *) data andBuffer:(uint16_t (*)[4]) image {
+	libraw_data_t *imageData = (libraw_data_t *) data;
+	
 	ushort (*pix)[4];
 	int row, col, c, w1, w2, w3, w4, ii, ba, rr1, cc1, rr, cc;
 	float h0, h1, h2, h3, h4, hs;
@@ -435,3 +463,5 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4]) {
 	// Done
 	free(buffer);
 }
+
+@end

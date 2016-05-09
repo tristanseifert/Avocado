@@ -29,6 +29,12 @@
 	[state addOperation:operation]; \
 	[self.queue addOperation:operation]; \
 
+/**
+ * Set this define to 1 to write debug data from the various stages of the
+ * pipeline to disk.
+ */
+#define	WriteDebugData	0
+
 // TODO: figure out a way to more better expose this from a header?
 @interface TSLibraryImage ()
 @property (nonatomic, readonly) TSRawImage *libRawHandle;
@@ -48,6 +54,9 @@
 @property (nonatomic) void *interpolatedColourBuf;
 /// size (in bytes) of the interpolated colour buffer
 @property (nonatomic) size_t interpolatedColourBufSz;
+
+/// colour interpolator
+@property (nonatomic) TSLMSSEInterpolator *lmsseInterpolator;
 
 /// CoreImage pipeline
 @property (nonatomic) TSCoreImagePipeline *ciPipeline;
@@ -99,9 +108,23 @@
 		
 		// create CoreImage pipeline
 		self.ciPipeline = [TSCoreImagePipeline new];
+		
+		self.lmsseInterpolator = [TSLMSSEInterpolator new];
 	}
 	
 	return self;
+}
+
+/**
+ * Cleans up various buffers.
+ */
+- (void) dealloc {
+	// clear caches and interpolators
+	self.lmsseInterpolator = nil;
+	
+	// clear allocated memory
+	TSPixelConverterFree(self.pixelConverter);
+	free(self.interpolatedColourBuf);
 }
 
 /**
@@ -138,6 +161,11 @@
 	NSBlockOperation *opConvertInterleaved, *opCoreImage, *opOutputHistogram;
 	
 	TSRawPipelineState *state;
+	
+	// reset file
+	if([image.libRawHandle recycle] != YES) {
+		DDLogWarn(@"Couldn't recycle raw file: this might be bad.");
+	}
 	
 	// figure out whether we can use the existing converter
 	if(self.pixelConverter != nil) {
@@ -313,7 +341,8 @@
 		
 		// interpolate colour data
 		state.stage = TSRawPipelineStageInterpolateColour;
-		lmmse_interpolate(libRaw, self.interpolatedColourBuf);
+		
+		[self.lmsseInterpolator interpolateWithLibRaw:libRaw andBuffer:self.interpolatedColourBuf];
 		
 		
 		// convert to RGB
@@ -321,6 +350,7 @@
 		TSRawConvertToRGB(libRaw, self.interpolatedColourBuf, self.interpolatedColourBuf, state.histogramBuf, state.gammaCurveBuf);
 		
 		
+#if WriteDebugData
 		// save buffer to disk (debug testing)
 		NSFileManager *fm = [NSFileManager defaultManager];
 		NSURL *appSupportURL = [[fm URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
@@ -346,6 +376,7 @@
 		[rawData writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_tcurv.bin"] atomically:NO];
 		
 		DDLogVerbose(@"Finished writing debug data");
+#endif
 	}];
 	
 	op.name = @"Demosaicing and Interpolation";
@@ -397,7 +428,10 @@
 		
 		// do the conversion from planar to interleaved
 		TSPixelConverterPlanarFToRGBXFFFF(state.converter);
+		
+#if	WriteDebugData
 		[self dumpImageBufferInterleaved:state];
+#endif
 		
 		// create CIImage
 		state.coreImageInput = [self ciImageFromPixelConverter:state.converter andSize:state.outputSize];

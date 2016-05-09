@@ -520,8 +520,8 @@
 			children = (
 				6AE87C1F1CD3D5460053CD9D /* TSRawImage.h */,
 				6AE87C201CD3D5460053CD9D /* TSRawImage.m */,
-				6AC3E7CE1CDD6A880099B932 /* TSRawImageDataHelpers.m */,
 				6AC3E7CF1CDD6A880099B932 /* TSRawImageDataHelpers.h */,
+				6AC3E7CE1CDD6A880099B932 /* TSRawImageDataHelpers.m */,
 			);
 			name = "ObjC Wrapper";
 			sourceTree = "<group>";
