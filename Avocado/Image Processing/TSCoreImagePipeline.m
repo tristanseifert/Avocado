@@ -71,7 +71,7 @@
 		cs = colourSpace.CGColorSpace;
 	} else {
 		// TODO: figure out a better alternative
-		cs = CGColorSpaceCreateDeviceRGB();
+		cs = [NSColorSpace sRGBColorSpace].CGColorSpace;
 	}
 	
 	// determine pixel format
