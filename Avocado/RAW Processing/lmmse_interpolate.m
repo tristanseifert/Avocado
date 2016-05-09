@@ -36,7 +36,7 @@
  * processing time (more than thrice than every other part of the algorithm)
  * but has a very negligible impact on the final image.
  */
-#define USE_MEDIAN_FILTER 0
+#define USE_MEDIAN_FILTER	0
 
 // LSMME demosaicing algorithm
 // L. Zhang and X. Wu,
@@ -55,19 +55,23 @@
  */
 void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4]) {
 	ushort (*pix)[4];
-	int row, col, c, d, w1, w2, w3, w4, ii, ba, rr1, cc1, rr, cc, pass;
+	int row, col, c, w1, w2, w3, w4, ii, ba, rr1, cc1, rr, cc;
 	float h0, h1, h2, h3, h4, hs;
-	float p1, p2, p3, p4, p5, p6, p7, p8, p9, temp;
+	float p1, p2, p3, p4, p5, p6, p7, p8, p9;
 	float Y, v0, mu, vx, vn, xh, vh, xv, vv;
 	float (*rix)[6], (*qix)[6];
-	float (*glut) = NULL;
 	char  *buffer;
+	
+#if USE_MEDIAN_FILTER
+	int d, pass;
+	float temp;
+#endif
 	
 #if DEBUG_TIME_PROFILE
 	clock_t t1, t2;
 	t2 = clock();
 	
-	printf("Begin lmmse_interpolate\n");
+	DDLogDebug(@"Begin lmmse_interpolate");
 #endif
 	
 	// read out a bunch of data
@@ -123,7 +127,7 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4]) {
 	}
 	
 #if DEBUG_TIME_PROFILE
-	printf("\tcopy CFA values: %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
+	DDLogDebug(@"\tcopy CFA values: %f s", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
 #endif
 	
 	// G-R(B)
@@ -179,7 +183,7 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4]) {
 	}
 	
 #if DEBUG_TIME_PROFILE
-	printf("\tG-R(B): %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
+	DDLogDebug(@"\tG-R(B): %f s", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
 #endif
 	
 	// apply low pass filter on differential colors
@@ -200,7 +204,7 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4]) {
 	}
 	
 #if DEBUG_TIME_PROFILE
-	printf("\tLow pass filter on differential colors: %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
+	DDLogDebug(@"\tLow pass filter on differential colors: %f s", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
 #endif
 	
 	// interpolate G-R(B) at R(B)
@@ -268,7 +272,7 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4]) {
 	}
 	
 #if DEBUG_TIME_PROFILE
-	printf("\tInterpolate G-R(B) at R(B): %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
+	DDLogDebug(@"\tInterpolate G-R(B) at R(B): %f s", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
 #endif
 	
 	// copy CFA values
@@ -295,7 +299,7 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4]) {
 	}
 	
 #if DEBUG_TIME_PROFILE
-	printf("\tCopy CFA values: %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
+	DDLogDebug(@"\tCopy CFA values: %f s", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
 #endif
 	
 	// bilinear interpolation for R/B
@@ -317,7 +321,7 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4]) {
 	}
 	
 #if DEBUG_TIME_PROFILE
-	printf("\tInterpolate R/B at G location: %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
+	DDLogDebug(@"\tInterpolate R/B at G location: %f s", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
 #endif
 	
 	// interpolate R/B at B/R location
@@ -335,7 +339,7 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4]) {
 	}
 	
 #if DEBUG_TIME_PROFILE
-	printf("\tInterpolate R/B at B/R location: %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
+	DDLogDebug(@"\tInterpolate R/B at B/R location: %f s", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
 #endif
 	
 #if USE_MEDIAN_FILTER
@@ -398,7 +402,7 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4]) {
 	}
 	
 #if DEBUG_TIME_PROFILE
-	printf("\tMedian filter: %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
+	DDLogDebug(@"\tMedian filter: %f s", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
 #endif
 #endif
 	
@@ -423,9 +427,9 @@ void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4]) {
 	}
 	
 #if DEBUG_TIME_PROFILE
-	printf("\tCopy result to image matrix: %f s\n", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
+	DDLogDebug(@"\tCopy result to image matrix: %f s", ((double)(clock() - t1)) / CLOCKS_PER_SEC);
 	
-	printf("Total time for lmmse_interpolate: %f s\n", ((double)(clock() - t2)) / CLOCKS_PER_SEC);
+	DDLogDebug(@"Total time for lmmse_interpolate: %f s", ((double)(clock() - t2)) / CLOCKS_PER_SEC);
 #endif
 
 	// Done

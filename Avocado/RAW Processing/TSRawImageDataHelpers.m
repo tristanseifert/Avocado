@@ -386,7 +386,7 @@ void TSRawPostInterpolationMedianFilter(libraw_data_t *libRaw, uint16_t (*image)
 	
 	for (pass=1; pass <= med_passes; pass++) {
 #if PRINT_DEBUG_INFO
-		printf("Began median filter pass %i\n", pass);
+		DDLogDebug(@"Began median filter pass %i", pass);
 #endif
 		
 		for (c = 0; c < 3; c += 2) {
@@ -405,7 +405,7 @@ void TSRawPostInterpolationMedianFilter(libraw_data_t *libRaw, uint16_t (*image)
 		}
 		
 #if PRINT_DEBUG_INFO
-		printf("Completed median filter pass %i\n", pass);
+		DDLogDebug(@"Completed median filter pass %i", pass);
 #endif
 	}
 }
@@ -536,7 +536,7 @@ void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*o
 	}
 
 #if PRINT_DEBUG_INFO
-	printf("t_white = 0x%08x\n", t_white);
+	DDLogDebug(@"t_white = 0x%08x", t_white);
 #endif
 	TSBuildGammaCurve(gamm[0], gamm[1], 2, (t_white << 3), gammaCurve, gamm);
 	
@@ -560,7 +560,7 @@ void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*o
  */
 static void TSBuildGammaCurve(double pwr, double ts, int mode, int imax, uint16_t *curve, double *gamm) {
 #if PRINT_DEBUG_INFO
-	printf("imax = %i\n", imax);
+	DDLogDebug(@"imax = %i", imax);
 #endif
 	
 	int i;

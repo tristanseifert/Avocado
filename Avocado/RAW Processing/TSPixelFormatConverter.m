@@ -12,7 +12,10 @@
 
 #import "TSPixelFormatConverter.h"
 
-#define LogMemAlloc	1
+/**
+ * Set to output log statements for memory allocations.
+ */
+#define LogMemAlloc		0
 
 static void TSAllocateBuffers(TSPixelConverterRef info);
 static void TSFreeBuffers(TSPixelConverterRef converter);
@@ -102,7 +105,7 @@ static void TSAllocateBuffers(TSPixelConverterRef info) {
 	// calculate bytes/line and buffer size for output
 	info->outDataBytesPerLine = info->inWidth * sizeof(Pixel_FFFF);
 	
-	if(info->outDataBytesPerLine & 0x1F) {
+	if((info->outDataBytesPerLine & 0x1F) != 0) {
 		// align to a 32 byte boundary
 		info->outDataBytesPerLine += (0x20 - (info->outDataBytesPerLine & 0x1F));
 	}
@@ -112,7 +115,7 @@ static void TSAllocateBuffers(TSPixelConverterRef info) {
 	// calculate bytes/line for output, if rotated
 	info->outDataBytesPerLineRotated = info->inHeight * sizeof(Pixel_FFFF);
 	
-	if(info->outDataBytesPerLineRotated & 0x1F) {
+	if((info->outDataBytesPerLineRotated & 0x1F) != 0) {
 		// align to a 32 byte boundary
 		info->outDataBytesPerLineRotated += (0x20 - (info->outDataBytesPerLineRotated & 0x1F));
 	}
@@ -121,7 +124,9 @@ static void TSAllocateBuffers(TSPixelConverterRef info) {
 	rotatedSize = info->outDataBytesPerLineRotated * info->inWidth;
 	
 	if(info->planeSize < rotatedSize) {
-		printf("TSPixelConverter: OutBuf rotated size (%lu) is larger than regular size (%li)\n", rotatedSize, info->outDataSize);
+#if LogMemAlloc
+		DDLogDebug(@"TSPixelConverter: OutBuf rotated size (%lu) is larger than regular size (%li)", rotatedSize, info->outDataSize);
+#endif
 		
 		info->outDataSize = rotatedSize;
 	}
@@ -130,7 +135,7 @@ static void TSAllocateBuffers(TSPixelConverterRef info) {
 	// calculate bytes/line and buffer size for each of the planes
 	info->planeBytesPerLine = info->inWidth * sizeof(Pixel_F);
 	
-	if(info->planeBytesPerLine & 0x1F) {
+	if((info->planeBytesPerLine & 0x1F) != 0) {
 		// align to a 32 byte boundary
 		info->planeBytesPerLine += (0x20 - (info->planeBytesPerLine & 0x1F));
 	}
@@ -140,7 +145,7 @@ static void TSAllocateBuffers(TSPixelConverterRef info) {
 	// calculate swapped bytes/line of the plane
 	info->planeBytesPerLineRotated = info->inHeight * sizeof(Pixel_F);
 	
-	if(info->planeBytesPerLineRotated & 0x1F) {
+	if((info->planeBytesPerLineRotated & 0x1F) != 0) {
 		// align to a 32 byte boundary
 		info->planeBytesPerLineRotated += (0x20 - (info->planeBytesPerLineRotated & 0x1F));
 	}
@@ -149,7 +154,9 @@ static void TSAllocateBuffers(TSPixelConverterRef info) {
 	rotatedSize = info->planeBytesPerLineRotated * info->inWidth;
 	
 	if(info->planeSize < rotatedSize) {
-		printf("TSPixelConverter: Plane's rotated size (%lu) is larger than regular size (%li)\n", rotatedSize, info->planeSize);
+#if LogMemAlloc
+		DDLogDebug(@"TSPixelConverter: Plane's rotated size (%lu) is larger than regular size (%li)\n", rotatedSize, info->planeSize);
+#endif
 		
 		info->planeSize = rotatedSize;
 	}
@@ -159,21 +166,21 @@ static void TSAllocateBuffers(TSPixelConverterRef info) {
 	info->outData = (Pixel_FFFF *) valloc(info->outDataSize);
 	
 #if LogMemAlloc
-	printf("TSPixelConverter: Allocated %lu bytes for outData\n", info->outDataSize);
+	DDLogDebug(@"TSPixelConverter: Allocated %lu bytes for outData", info->outDataSize);
 #endif
 	
 	for(NSUInteger i = 0; i < 3; i++) {
 		info->plane[i] = (Pixel_F *) valloc(info->planeSize);
 		
 #if LogMemAlloc
-		printf("TSPixelConverter: Allocated %lu bytes for plane %i\n", info->planeSize, (int) i);
+		DDLogDebug(@"TSPixelConverter: Allocated %lu bytes for plane %i", info->planeSize, (int) i);
 #endif
 	}
 	
 	info->planeTempBuffer = (Pixel_F *) valloc(info->planeSize);
 	
 #if LogMemAlloc
-	printf("TSPixelConverter: Allocated %lu bytes for plane temp buffer\n", info->planeSize);
+	DDLogDebug(@"TSPixelConverter: Allocated %lu bytes for plane temp buffer", info->planeSize);
 #endif
 	
 	/*
@@ -299,11 +306,11 @@ size_t TSPixelConverterGetRGBXStride(TSPixelConverterRef converter) {
 void TSPixelConverterGetSize(TSPixelConverterRef converter, NSUInteger *outWidth, NSUInteger *outHeight) {
 	// width
 	if(outWidth != NULL)
-		*outWidth = converter->inWidth;
+		*outWidth = converter->planesAreRotated ? converter->inHeight : converter->inWidth;
 	
 	// height
 	if(outHeight != NULL)
-		*outHeight = converter->inHeight;
+		*outHeight = converter->planesAreRotated ? converter->inWidth : converter->inHeight;
 }
 
 /**
@@ -551,9 +558,9 @@ BOOL TSPixelConverterContrastStretch(TSPixelConverterRef converter, Pixel_F min,
 	error = vImageContrastStretch_PlanarF(&inBuf, &inBuf, NULL, 0x2000, min, max, kvImageGetTempBufferSize);
 	
 	if(error > 0) {
-		printf("TSPixelConverter: Temp buffer for contrast stretch size: %li\n", error);
+		DDLogDebug(@"TSPixelConverter: Temp buffer for contrast stretch size: %li", error);
 	} else {
-		printf("TSPixelConverter: Couldn't calculate temp buffer size: %li\n", error);
+		DDLogError(@"TSPixelConverter: Couldn't calculate temp buffer size: %li", error);
 	}
 	
 	// we need to run the contrast adjustment on each plane separately

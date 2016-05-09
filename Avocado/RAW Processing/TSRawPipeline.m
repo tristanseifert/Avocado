@@ -313,18 +313,12 @@
 		
 		// interpolate colour data
 		state.stage = TSRawPipelineStageInterpolateColour;
-		
-		DDLogVerbose(@"Beginning colour interpolation (c = %i)", libRaw->idata.colors);
 		lmmse_interpolate(libRaw, self.interpolatedColourBuf);
-		DDLogVerbose(@"Completed colour interpolation");
 		
 		
 		// convert to RGB
 		state.stage = TSRawPipelineStageConvertToRGB;
-		
-		DDLogVerbose(@"Beginning RGB conversion");
 		TSRawConvertToRGB(libRaw, self.interpolatedColourBuf, self.interpolatedColourBuf, state.histogramBuf, state.gammaCurveBuf);
-		DDLogVerbose(@"Completed RGB conversion");
 		
 		
 		// save buffer to disk (debug testing)
@@ -354,7 +348,7 @@
 		DDLogVerbose(@"Finished writing debug data");
 	}];
 	
-	op.name = @"Demosaicing";
+	op.name = @"Demosaicing and Interpolation";
 	return op;
 }
 
@@ -447,8 +441,6 @@
 	// create a CIImage
 	im = [[CIImage alloc] initWithBitmapImageRep:bm];
 	DDAssert(im != nil, @"Couldn't create CIImage from NSBitmapImageRep");
-	
-	DDLogDebug(@"CIImage metadata: %@", im.properties);
 	
 	// done
 	return im;
