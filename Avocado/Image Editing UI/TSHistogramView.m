@@ -12,8 +12,20 @@
 #import <Quartz/Quartz.h>
 #import <CoreImage/CoreImage.h>
 
+/// test data for the histogram
+static float testData[] = {
+	0.05, 0.01, 0.02, 0.12, 0.04, 0.05, 0.12, 0.22,
+	0.57, 0.12, 0.04, 0.03, 0.04, 0.10, 0.04, 0.14,
+	0.24, 0.04
+};
+
+/// Alpha component for a channel curve's fill
+static const CGFloat TSCurveFillAlpha = 0.45f;
+/// Alpha component for a channel curve's stroke
+static const CGFloat TSCurveStrokeAlpha = 0.75f;
+
 /// how many buckets are in the histogram
-static const NSUInteger histogramBuckets = 256;
+static const NSUInteger TSHistogramBuckets = 256;
 
 /// CoreImage context used to calculate histogram; shared
 static CIContext *context;
@@ -32,20 +44,28 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
 /// border
 @property (nonatomic) CALayer *border;
 
-/// when YES, an image has been analyzed
-/// histogram data buffer (sizeof(unsigned int) * 4 * 256)
+/// downscaled image to use for histogram
+@property (nonatomic) CIImage *downscaledImage;
+/// histogram data buffer; percentage of pixels in that bin
 @property (nonatomic) float *rawHistogramData;
 
 /// maximum value for the histomagram
 @property (nonatomic) CGFloat histogramMax;
 
+/// internal histogram
+
 - (void) setUpLayers;
+- (void) setUpCurveLayer:(CAShapeLayer *) curve withChannel:(NSInteger) c;
+
 - (void) allocateBuffers;
 - (void) layOutSublayers;
 
 - (void) reCalculateHistogram;
 - (void) calculateHistogramAndCreatePath;
 - (void) updateHistogramPaths;
+
+- (NSArray<NSValue *> *) pointsForChannel:(NSUInteger) c;
+- (NSBezierPath *) pathForCurvePts:(NSArray<NSValue *> *) points;
 
 @end
 
@@ -55,6 +75,8 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
 	if(self = [super initWithCoder:coder]) {
 		[self setUpLayers];
 		[self allocateBuffers];
+		
+		self.quality = 4;
 	}
 	
 	return self;
@@ -64,42 +86,41 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
 	if(self = [super initWithFrame:frameRect]) {
 		[self setUpLayers];
 		[self allocateBuffers];
+		
+		self.quality = 4;
 	}
 	
 	return self;
 }
 
+#pragma mark Layers
 /**
  * Sets up the view's layers.
  */
 - (void) setUpLayers {
 	self.wantsLayer = YES;
 	
-	// create layers
+	// create border (also, histogram container)
 	self.border = [CALayer layer];
 	
 	self.border.borderColor = [NSColor labelColor].CGColor;
 	self.border.borderWidth = 1.f;
 	
-	self.border.backgroundColor = [NSColor colorWithCalibratedWhite:0.f alpha:0.34].CGColor;
-	
-	self.rLayer = [CAShapeLayer layer];
-	self.rLayer.fillColor = [NSColor colorWithCalibratedRed:1 green:0 blue:0 alpha:0.35].CGColor;
-	self.rLayer.strokeColor = [NSColor colorWithCalibratedRed:1 green:0 blue:0 alpha:0.65].CGColor;
-	self.rLayer.lineWidth = 1.f;
-	
-	self.gLayer = [CAShapeLayer layer];
-	self.gLayer.fillColor = [NSColor colorWithCalibratedRed:0 green:1 blue:0 alpha:0.35].CGColor;
-	self.gLayer.strokeColor = [NSColor colorWithCalibratedRed:0 green:1 blue:0 alpha:0.65].CGColor;
-	self.gLayer.lineWidth = 1.f;
-	
-	self.bLayer = [CAShapeLayer layer];
-	self.bLayer.fillColor = [NSColor colorWithCalibratedRed:0 green:0 blue:1 alpha:0.35].CGColor;
-	self.bLayer.strokeColor = [NSColor colorWithCalibratedRed:0 green:0 blue:1 alpha:0.65].CGColor;
-	self.bLayer.lineWidth = 1.f;
+	self.border.backgroundColor = [NSColor colorWithCalibratedWhite:0.f alpha:0.3].CGColor;
+	self.border.cornerRadius = 2.f;
+	self.border.masksToBounds = YES;
 	
 	// flip the Y coordinate system of the curves
 	self.border.sublayerTransform = CATransform3DMakeScale(1.0f, -1.0f, 1.0f);
+	
+	// set up the curve layers
+	self.rLayer = [CAShapeLayer layer];
+	self.gLayer = [CAShapeLayer layer];
+	self.bLayer = [CAShapeLayer layer];
+	
+	[self setUpCurveLayer:self.rLayer withChannel:0];
+	[self setUpCurveLayer:self.gLayer withChannel:1];
+	[self setUpCurveLayer:self.bLayer withChannel:2];
 	
 	// add layers (stacked such that it's ordered B -> G -> R)
 	[self.border addSublayer:self.rLayer];
@@ -123,10 +144,31 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
 }
 
 /**
+ * Sets up a curve layer.
+ */
+- (void) setUpCurveLayer:(CAShapeLayer *) curve withChannel:(NSInteger) c {
+	// calculate colours
+	CGFloat r, g, b;
+	
+	r = (c == 0) ? 1.f : 0.f;
+	g = (c == 1) ? 1.f : 0.f;
+	b = (c == 2) ? 1.f : 0.f;
+	
+	// set the fills
+	curve.fillColor = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:TSCurveFillAlpha].CGColor;
+	curve.strokeColor = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:TSCurveStrokeAlpha].CGColor;
+	
+	curve.lineWidth = 1.f;
+	curve.masksToBounds = YES;
+	
+}
+
+#pragma mark Buffers
+/**
  * Allocates buffers of raw histogram data.
  */
 - (void) allocateBuffers {
-	self.rawHistogramData = calloc((histogramBuckets * 4), sizeof(float));
+	self.rawHistogramData = calloc((TSHistogramBuckets * 4), sizeof(float));
 }
 
 /**
@@ -155,6 +197,14 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
  */
 - (void) viewDidChangeBackingProperties {
 	[super viewDidChangeBackingProperties];
+	
+	self.layer.contentsScale = self.window.backingScaleFactor;
+	
+	self.border.contentsScale = self.window.backingScaleFactor;
+	
+	self.rLayer.contentsScale = self.window.backingScaleFactor;
+	self.gLayer.contentsScale = self.window.backingScaleFactor;
+	self.bLayer.contentsScale = self.window.backingScaleFactor;
 }
 
 /**
@@ -187,13 +237,13 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
 	self.gLayer.frame = curvesFrame;
 	self.bLayer.frame = curvesFrame;
 	
+	// commit transaction
+	[CATransaction commit];
+	
 	// update the histogram paths
 	if(self.image != nil) {
 		[self updateHistogramPaths];
 	}
-	
-	// commit transaction
-	[CATransaction commit];
 }
 
 /**
@@ -211,18 +261,20 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
 - (void) reCalculateHistogram {
 	// if the image became nil, hide the histograms
 	if(self.image == nil) {
-		// set up an animation transaction
-		[CATransaction begin];
-		[CATransaction setAnimationDuration:0.5];
-		[CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-		
-		// set the paths to nil
-		self.rLayer.path = nil;
-		self.gLayer.path = nil;
-		self.bLayer.path = nil;
-		
-		// commit transaction
-		[CATransaction commit];
+		dispatch_async(dispatch_get_main_queue(), ^{
+			// set up an animation transaction
+			[CATransaction begin];
+			[CATransaction setAnimationDuration:0.5];
+			[CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+			
+			// set the paths to nil
+			self.rLayer.path = nil;
+			self.gLayer.path = nil;
+			self.bLayer.path = nil;
+			
+			// commit transaction
+			[CATransaction commit];
+		});
 		
 		return;
 	}
@@ -250,7 +302,7 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
 	[histFilter setValue:self.image forKey:kCIInputImageKey];
 	[histFilter setValue:[CIVector vectorWithCGRect:self.image.extent]
 			forKey:kCIInputExtentKey];
-	[histFilter setValue:@(histogramBuckets) forKey:@"inputCount"];
+	[histFilter setValue:@(TSHistogramBuckets) forKey:@"inputCount"];
 	[histFilter setValue:@1 forKey:kCIInputScaleKey];
 	
 	CIImage *histogramData = [histFilter valueForKey:kCIOutputImageKey];
@@ -259,14 +311,14 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
 	// render the histogram and maximum data into a buffer, pls
 	[context render:histogramData
 		   toBitmap:self.rawHistogramData
-		   rowBytes:(histogramBuckets * 4 * sizeof(float))
+		   rowBytes:(TSHistogramBuckets * 4 * sizeof(float))
 			 bounds:histogramData.extent
 			 format:kCIFormatRGBAf colorSpace:nil];
 	
 	// find which component has the maximum, then multiply all of them
 	self.histogramMax = 0.f;
 	
-	for(i = 0; i < histogramBuckets; i++) {
+	for(i = 0; i < TSHistogramBuckets; i++) {
 		for(c = 0; c < 3; c++) {
 			// check if it's higher than the max value
 			if(self.histogramMax < self.rawHistogramData[(i * 4) + c]) {
@@ -285,70 +337,21 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
  * Takes the scaled histogram data and turns it into paths.
  */
 - (void) updateHistogramPaths {
-	NSUInteger i;
+	// get points for each channel
+	NSArray *rPoints = [self pointsForChannel:0];
+	NSArray *gPoints = [self pointsForChannel:1];
+	NSArray *bPoints = [self pointsForChannel:2];
 	
-	// calculate widths, heights and so forth
-	NSRect curvesFrame = NSInsetRect(self.bounds, 1, 1);
-	CGFloat height = curvesFrame.size.height;
-	
-	// these arrays will have the points in them
-	NSMutableArray<NSValue *> *rPoints = [NSMutableArray new];
-	NSMutableArray<NSValue *> *gPoints = [NSMutableArray new];
-	NSMutableArray<NSValue *> *bPoints = [NSMutableArray new];
-	
-	// create points for each of the points
-	for(i = 0; i < histogramBuckets; i++) {
-		// calculate X
-		CGFloat x = ((CGFloat) i) / ((CGFloat) histogramBuckets) * curvesFrame.size.width;
-
-		// do the red component
-		CGFloat r = height - (self.rawHistogramData[(i * 4) + 0] / self.histogramMax * height);
-		[bPoints addObject:[NSValue valueWithPoint:NSMakePoint(x, r)]];
-		
-		// do the green component
-		CGFloat g = height - (self.rawHistogramData[(i * 4) + 1] / self.histogramMax * height);
-		[bPoints addObject:[NSValue valueWithPoint:NSMakePoint(x, g)]];
-		
-		// do the blue component
-		CGFloat b = height - (self.rawHistogramData[(i * 4) + 2] / self.histogramMax * height);
-		[bPoints addObject:[NSValue valueWithPoint:NSMakePoint(x, b)]];
-	}
-	
-	// make red path
-	NSBezierPath *redPath = [NSBezierPath new];
-	[redPath moveToPoint:NSMakePoint(0, curvesFrame.size.height)];
-	
-	NSBezierPath *redPathPts = [NSBezierPath new];
-	[redPathPts interpolatePointsWithHermite:rPoints];
-	[redPath appendBezierPath:redPathPts];
-	[redPath lineToPoint:NSMakePoint(curvesFrame.size.width, curvesFrame.size.height)];
-	[redPath lineToPoint:NSMakePoint(0, curvesFrame.size.height)];
-	
-	// make green path
-	NSBezierPath *greenPath = [NSBezierPath new];
-	[greenPath moveToPoint:NSMakePoint(0, curvesFrame.size.height)];
-	
-	NSBezierPath *greenPathPts = [NSBezierPath new];
-	[greenPathPts interpolatePointsWithHermite:gPoints];
-	[greenPath appendBezierPath:greenPathPts];
-	[greenPath lineToPoint:NSMakePoint(curvesFrame.size.width, curvesFrame.size.height)];
-	[greenPath lineToPoint:NSMakePoint(0, curvesFrame.size.height)];
-	
-	// make blue path
-	NSBezierPath *bluePath = [NSBezierPath new];
-	[bluePath moveToPoint:NSMakePoint(0, curvesFrame.size.height)];
-	
-	NSBezierPath *bluePathPts = [NSBezierPath new];
-	[bluePathPts interpolatePointsWithHermite:bPoints];
-	[bluePath appendBezierPath:bluePathPts];
-	[bluePath lineToPoint:NSMakePoint(curvesFrame.size.width, curvesFrame.size.height)];
-	[bluePath lineToPoint:NSMakePoint(0, curvesFrame.size.height)];
+	// make the paths
+	NSBezierPath *redPath = [self pathForCurvePts:rPoints];
+	NSBezierPath *greenPath = [self pathForCurvePts:gPoints];
+	NSBezierPath *bluePath = [self pathForCurvePts:bPoints];
 	
 	// set the paths on the main thread, with animation
 	dispatch_async(dispatch_get_main_queue(), ^{
 		// set up an animation transaction
 		[CATransaction begin];
-		[CATransaction setAnimationDuration:0.5];
+		[CATransaction setAnimationDuration:0.66];
 		[CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
 		
 		self.rLayer.path = redPath.CGPath;
@@ -358,10 +361,50 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
 		// commit transaction
 		[CATransaction commit];
 	});
+}
+
+/**
+ * Creates an array of points, given a channel of the histogram.
+ */
+- (NSArray<NSValue *> *) pointsForChannel:(NSUInteger) c {
+	NSMutableArray<NSValue *> *points = [NSMutableArray new];
+	NSSize curveSz = NSInsetRect(self.bounds, 0, 0).size;
 	
-//	DDLogVerbose(@"R: %@", rPoints);
-//	DDLogVerbose(@"G: %@", gPoints);
-//	DDLogVerbose(@"B: %@ (%li)", bPoints, bPoints.count);
+	// create points for each of the points
+	for(NSUInteger i = 0; i < TSHistogramBuckets; i++) {
+		// calculate X
+		CGFloat x = (((CGFloat) i) / ((CGFloat) TSHistogramBuckets - 1) * curveSz.width) - 1.f;
+		
+		// calculate y
+		CGFloat y = curveSz.height - (self.rawHistogramData[(i * 4) + c] / self.histogramMax * curveSz.height);
+		[points addObject:[NSValue valueWithPoint:NSMakePoint(x, y)]];
+	}
+	
+	// done
+	return [points copy];
+}
+
+/**
+ * Makes a path for a curve, given a set of points.
+ */
+- (NSBezierPath *) pathForCurvePts:(NSArray<NSValue *> *) points {
+	NSSize curveSz = NSInsetRect(self.bounds, 0, 0).size;
+	
+	// start the main path
+	NSBezierPath *path = [NSBezierPath new];
+	[path moveToPoint:NSMakePoint(0, curveSz.height)];
+	
+	// append the interpolated points
+	NSBezierPath *curvePath = [NSBezierPath new];
+	[curvePath interpolatePointsWithHermite:points];
+	[path appendBezierPath:curvePath];
+	
+	// close the path
+	[path lineToPoint:NSMakePoint(curveSz.width, curveSz.height)];
+	[path lineToPoint:NSMakePoint(0, curveSz.height)];
+	
+	// done
+	return path;
 }
 
 @end

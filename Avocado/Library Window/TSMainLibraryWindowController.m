@@ -216,7 +216,7 @@
 }
 
 - (IBAction) loadHistoImage:(id) sender {
-	CIImage *im = [CIImage imageWithContentsOfURL:[NSURL fileURLWithPath:@"/Users/tristan/Library/Application Support/me.tseifert.Avocado/Photos/2016-03-20/IMG_7663.JPG"]];
+	CIImage *im = [CIImage imageWithContentsOfURL:[NSURL fileURLWithPath:@"/Users/tristan/Library/Application Support/me.tseifert.Avocado/Photos/2016-03-20/WHS_0119.JPG"]];
 	self.histo.image = im;
 }
 

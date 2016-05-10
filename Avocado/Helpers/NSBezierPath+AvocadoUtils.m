@@ -17,54 +17,59 @@
  * @param points Array of NSPoint values, wrapped in NSValue.
  */
 - (void) interpolatePointsWithHermite:(NSArray<NSValue *> *) points {
+	CGFloat alpha = 1.f / 3.f;
+	
+	if(points.count == 0) {
+		return;
+	}
+	
+	// move to the first point in the path
+	[self moveToPoint:points.firstObject.pointValue];
+	
 	NSInteger n = points.count - 1;
 	
-	for(NSInteger ii = 0; ii < n; ++ii) {
-		NSPoint currentPoint = points[ii].pointValue;
+	for(NSInteger index = 0; index < n; index++) {
+		// calculate first control point
+		NSPoint currentPoint = points[index].pointValue;
+		NSInteger nextIndex = (index + 1) % points.count;
+		NSInteger prevIndex = index == 0 ? points.count - 1 : index - 1;
+	
+		NSPoint previousPoint = points[prevIndex].pointValue;
+		NSPoint nextPoint = points[nextIndex].pointValue;
 		
-		if(ii == 0) {
-			[self moveToPoint:points[0].pointValue];
-		}
-		
-		// calculate the first control point
-		NSInteger nextii = (ii + 1) % points.count;
-		NSInteger previi = ((ii - 1 < 0) ? points.count - 1 : ii-1);
-		
-		NSPoint previousPoint = points[previi].pointValue;
-		NSPoint nextPoint = points[nextii].pointValue;
 		NSPoint endPoint = nextPoint;
-		
 		CGFloat mx = 0.f;
 		CGFloat my = 0.f;
 		
-		if(ii > 0) {
-			mx = (nextPoint.x - currentPoint.x) * 0.5 + (currentPoint.x - previousPoint.x) * 0.5;
-			my = (nextPoint.y - currentPoint.y) * 0.5 + (currentPoint.y - previousPoint.y) * 0.5;
+		if(index > 0) {
+			mx = (nextPoint.x - previousPoint.x) / 2.f;
+			my = (nextPoint.y - previousPoint.y) / 2.f;
 		} else {
-			mx = (nextPoint.x - currentPoint.x) * 0.5;
-			my = (nextPoint.y - currentPoint.y) * 0.5;
+			mx = (nextPoint.x - currentPoint.x) / 2.f;
+			my = (nextPoint.y - currentPoint.y) / 2.f;
 		}
 		
-		NSPoint controlPoint1 = NSMakePoint(currentPoint.x + mx / 3.0,  currentPoint.y + my / 3.0);
+		NSPoint controlPoint1 = NSMakePoint(currentPoint.x + mx * alpha, currentPoint.y + my * alpha);
 		
-		// calculate the second control point
-		currentPoint = points[nextii].pointValue;
-		nextii = (nextii + 1) % points.count;
-		previi = ii;
-		previousPoint = points[previi].pointValue;
-		nextPoint = points[nextii].pointValue;
+		// calculate second control point
+		currentPoint = points[nextIndex].pointValue;
+		nextIndex = (nextIndex + 1) % points.count;
+		prevIndex = index;
 		
-		if(ii < n - 1) {
-			mx = (nextPoint.x - currentPoint.x) * 0.5 + (currentPoint.x - previousPoint.x) * 0.5;
-			my = (nextPoint.y - currentPoint.y) * 0.5 + (currentPoint.y - previousPoint.y) * 0.5;
+		previousPoint = points[prevIndex].pointValue;
+		nextPoint = points[nextIndex].pointValue;
+		
+		if(index < (n - 1)) {
+			mx = (nextPoint.x - previousPoint.x) / 2.f;
+			my = (nextPoint.y - previousPoint.y) / 2.f;
 		} else {
-			mx = (currentPoint.x - previousPoint.x) * 0.5;
-			my = (currentPoint.y - previousPoint.y) * 0.5;
+			mx = (currentPoint.x - previousPoint.x) / 2.f;
+			my = (currentPoint.y - previousPoint.y) / 2.f;
 		}
 		
-		NSPoint controlPoint2 = NSMakePoint(currentPoint.x - mx / 3.0, currentPoint.y - my / 3.0);
+		NSPoint controlPoint2 = NSMakePoint(currentPoint.x - mx * alpha, currentPoint.y - my * alpha);
 		
-		// add a curve to that point, with the two given control points
+		// add the curve
 		[self curveToPoint:endPoint controlPoint1:controlPoint1 controlPoint2:controlPoint2];
 	}
 }
