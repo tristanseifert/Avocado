@@ -32,6 +32,7 @@
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="139" y="81" width="360" height="212"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
+            <value key="minSize" type="size" width="360" height="212"/>
             <view key="contentView" id="q0T-Hu-qGn">
                 <rect key="frame" x="0.0" y="0.0" width="360" height="212"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -43,21 +44,45 @@
                                 <rect key="frame" x="20" y="57" width="320" height="135"/>
                             </customView>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2Ra-KC-B5k">
-                                <rect key="frame" x="235" y="13" width="111" height="32"/>
-                                <buttonCell key="cell" type="push" title="Load Image" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="iA2-XJ-WmC">
+                                <rect key="frame" x="259" y="13" width="87" height="32"/>
+                                <buttonCell key="cell" type="push" title="Image 1" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="iA2-XJ-WmC">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
-                                    <action selector="loadHistoImage:" target="-2" id="CVD-us-rMI"/>
+                                    <action selector="loadHistoImage:" target="-2" id="TxE-qb-A1f"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="7wa-8M-YXV">
+                                <rect key="frame" x="170" y="13" width="89" height="32"/>
+                                <buttonCell key="cell" type="push" title="Image 2" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="eA1-Wn-4vi">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="loadHistoImage:" target="-2" id="eof-De-dEk"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="Fwq-3X-pa4">
+                                <rect key="frame" x="81" y="13" width="89" height="32"/>
+                                <buttonCell key="cell" type="push" title="Image 3" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="YRF-IO-gUK">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="loadHistoImage:" target="-2" id="3CU-0v-evR"/>
                                 </connections>
                             </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="2Ra-KC-B5k" firstAttribute="trailing" secondItem="Cu4-mA-60v" secondAttribute="trailing" id="07m-U1-55z"/>
                             <constraint firstItem="Cu4-mA-60v" firstAttribute="leading" secondItem="gRH-OR-KxL" secondAttribute="leading" constant="20" id="5OL-yc-Xud"/>
+                            <constraint firstItem="7wa-8M-YXV" firstAttribute="leading" secondItem="Fwq-3X-pa4" secondAttribute="trailing" constant="12" id="65P-7E-WKF"/>
                             <constraint firstAttribute="trailing" secondItem="Cu4-mA-60v" secondAttribute="trailing" constant="20" id="PzN-Gz-rku"/>
                             <constraint firstItem="Cu4-mA-60v" firstAttribute="top" secondItem="gRH-OR-KxL" secondAttribute="top" constant="20" id="Yc0-gI-CjQ"/>
+                            <constraint firstItem="7wa-8M-YXV" firstAttribute="top" secondItem="2Ra-KC-B5k" secondAttribute="top" id="cSX-i6-8S7"/>
+                            <constraint firstItem="2Ra-KC-B5k" firstAttribute="leading" secondItem="7wa-8M-YXV" secondAttribute="trailing" constant="12" id="fKg-nw-TJ3"/>
+                            <constraint firstItem="Fwq-3X-pa4" firstAttribute="top" secondItem="7wa-8M-YXV" secondAttribute="top" id="gOn-jj-5vP"/>
                             <constraint firstAttribute="bottom" secondItem="2Ra-KC-B5k" secondAttribute="bottom" constant="20" id="riq-tR-MKP"/>
                             <constraint firstItem="2Ra-KC-B5k" firstAttribute="top" secondItem="Cu4-mA-60v" secondAttribute="bottom" constant="16" id="yhd-en-iiM"/>
                         </constraints>

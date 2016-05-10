@@ -13,7 +13,7 @@
 @interface TSHistogramView : NSView
 
 /// this is the image of which we calculate the histogram
-@property (nonatomic) CIImage *image;
+@property (nonatomic) NSImage *image;
 
 /// quality of the histogram, between 1 and 4; Each step causes a downscaling of 1/2.
 @property (nonatomic) NSUInteger quality;

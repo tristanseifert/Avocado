@@ -11,58 +11,59 @@
 
 #import <Quartz/Quartz.h>
 #import <CoreImage/CoreImage.h>
+#import <Accelerate/Accelerate.h>
 
-/// test data for the histogram
-static float testData[] = {
-	0.05, 0.01, 0.02, 0.12, 0.04, 0.05, 0.12, 0.22,
-	0.57, 0.12, 0.04, 0.03, 0.04, 0.10, 0.04, 0.14,
-	0.24, 0.04
-};
+/// background colour to use for buffers
+static const CGFloat TSImageBufBGColour[] = {0, 0, 0, 0};
 
 /// Alpha component for a channel curve's fill
 static const CGFloat TSCurveFillAlpha = 0.45f;
 /// Alpha component for a channel curve's stroke
 static const CGFloat TSCurveStrokeAlpha = 0.75f;
 
-/// how many buckets are in the histogram
+/// Histogram buckets per channel; fixed to 256 since we use 8-bit data.
 static const NSUInteger TSHistogramBuckets = 256;
 
-/// CoreImage context used to calculate histogram; shared
-static CIContext *context;
 /// KVO context for the image key
-void *TSImageKVOCtx = &TSImageKVOCtx;
+static void *TSImageKVOCtx = &TSImageKVOCtx;
+/// KVO context for the quality
+static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 
 @interface TSHistogramView ()
 
-/// red histogram
-@property (nonatomic) CAShapeLayer *rLayer;
-/// green histogram
-@property (nonatomic) CAShapeLayer *gLayer;
-/// blue histogram
-@property (nonatomic) CAShapeLayer *bLayer;
-
 /// border
 @property (nonatomic) CALayer *border;
+/// red channel histogram
+@property (nonatomic) CAShapeLayer *rLayer;
+/// green channel histogram
+@property (nonatomic) CAShapeLayer *gLayer;
+/// blue channel histogram
+@property (nonatomic) CAShapeLayer *bLayer;
 
-/// downscaled image to use for histogram
-@property (nonatomic) CIImage *downscaledImage;
-/// histogram data buffer; percentage of pixels in that bin
-@property (nonatomic) float *rawHistogramData;
+/// temporary histogram buffer; straight from vImage
+@property (nonatomic) vImagePixelCount *histogram;
+/// maximum value for the histomagram in any channel
+@property (nonatomic) vImagePixelCount histogramMax;
 
-/// maximum value for the histomagram
-@property (nonatomic) CGFloat histogramMax;
-
-/// internal histogram
+/// buffer to use for images
+@property (nonatomic) vImage_Buffer imgBuf;
+/// whether the image buffer is valid
+@property (nonatomic) BOOL isImgBufValid;
 
 - (void) setUpLayers;
 - (void) setUpCurveLayer:(CAShapeLayer *) curve withChannel:(NSInteger) c;
 
 - (void) allocateBuffers;
+- (void) updateImageBuffer;
+- (void) updateImageBufferLoadScaled:(BOOL) shouldAllocate;
+
 - (void) layOutSublayers;
 
-- (void) reCalculateHistogram;
-- (void) calculateHistogramAndCreatePath;
+- (void) updateDisplay;
+- (void) calculateHistogram;
 - (void) updateHistogramPaths;
+
+- (CGImageRef) produceScaledVersionForHistogram;
 
 - (NSArray<NSValue *> *) pointsForChannel:(NSUInteger) c;
 - (NSBezierPath *) pathForCurvePts:(NSArray<NSValue *> *) points;
@@ -77,6 +78,12 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
 		[self allocateBuffers];
 		
 		self.quality = 4;
+		
+		// add KVO for properties that cause recomputation of the histogram
+		[self addObserver:self forKeyPath:@"image" options:0
+				  context:TSImageKVOCtx];
+		[self addObserver:self forKeyPath:@"quality" options:0
+				  context:TSQualityKVOCtx];
 	}
 	
 	return self;
@@ -88,6 +95,12 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
 		[self allocateBuffers];
 		
 		self.quality = 4;
+		
+		// add KVO for properties that cause recomputation of the histogram
+		[self addObserver:self forKeyPath:@"image" options:0
+				  context:TSImageKVOCtx];
+		[self addObserver:self forKeyPath:@"quality" options:0
+				  context:TSQualityKVOCtx];
 	}
 	
 	return self;
@@ -106,7 +119,7 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
 	self.border.borderColor = [NSColor labelColor].CGColor;
 	self.border.borderWidth = 1.f;
 	
-	self.border.backgroundColor = [NSColor colorWithCalibratedWhite:0.f alpha:0.3].CGColor;
+	self.border.backgroundColor = [NSColor colorWithCalibratedWhite:0.f alpha:0.25].CGColor;
 	self.border.cornerRadius = 2.f;
 	self.border.masksToBounds = YES;
 	
@@ -128,19 +141,6 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
 	[self.border insertSublayer:self.bLayer above:self.gLayer];
 	
 	[self.layer addSublayer:self.border];
-	
-	// set up the shared CoreImage context
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-		context = [CIContext contextWithOptions:@{
-			// use the software renderer
-			kCIContextUseSoftwareRenderer: @YES
-		}];
-	});
-	
-	// add KVO for the image key
-	[self addObserver:self forKeyPath:@"image" options:0
-			  context:TSImageKVOCtx];
 }
 
 /**
@@ -168,14 +168,99 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
  * Allocates buffers of raw histogram data.
  */
 - (void) allocateBuffers {
-	self.rawHistogramData = calloc((TSHistogramBuckets * 4), sizeof(float));
+	self.histogram = calloc((TSHistogramBuckets * 4), sizeof(vImagePixelCount));
+}
+
+/**
+ * Invalidates the image buffer.
+ */
+- (void) invalidateImageBuffer {
+	// set buffer state to invalid
+	self.isImgBufValid = NO;
+	
+	// free its memory
+	if(self.imgBuf.data != nil) {
+		free(self.imgBuf.data);
+	}
+}
+
+/**
+ * Updates the cached vImage buffer for the image.
+ */
+- (void) updateImageBuffer {
+	vImage_Buffer tmpBuf;
+	
+	// is the buffer valid?
+	if(self.isImgBufValid == NO) {
+		// if not, allocate a new one.
+		[self updateImageBufferLoadScaled:YES];
+		return;
+	}
+	
+	
+	// check if we need to allocate a new buffer, given this one is valid
+	CGFloat factor = 1.f / ((CGFloat) self.quality);
+	CGSize newSize = CGSizeApplyAffineTransform(self.image.size, CGAffineTransformMakeScale(factor, factor));
+	
+	vImageBuffer_Init(&tmpBuf, newSize.height, newSize.width, 32, kvImageNoAllocate);
+	
+	size_t neededBufSize = tmpBuf.rowBytes * tmpBuf.height;
+	size_t oldBufSize = self.imgBuf.rowBytes * self.imgBuf.height;
+	
+	if(oldBufSize >= neededBufSize) {
+		// if not, load the image into the existing buffer
+		[self updateImageBufferLoadScaled:NO];
+		
+		DDLogVerbose(@"Re-used existing image buffer, sz %lu (need %lu)", oldBufSize, neededBufSize);
+	} else {
+		// otherwise, create a new buffer
+		[self invalidateImageBuffer];
+		[self updateImageBufferLoadScaled:YES];
+		
+		DDLogVerbose(@"Allocated new image buffer, sz %lu", neededBufSize);
+	}
+}
+
+/**
+ * Loads the image into the allocated image buffer.
+ */
+- (void) updateImageBufferLoadScaled:(BOOL) shouldAllocate {
+	// create a downscaled version of the image, then a vImage buffer
+	CGImageRef img = [self produceScaledVersionForHistogram];
+	
+	vImage_CGImageFormat format = {
+		.version = 0,
+		
+		.bitsPerComponent = 8,
+		.bitsPerPixel = 32,
+		.bitmapInfo = (CGBitmapInfo) kCGImageAlphaNoneSkipLast,
+		
+		.renderingIntent = kCGRenderingIntentDefault,
+		.colorSpace = nil,
+		
+		.decode = NULL
+	};
+	
+	vImageBuffer_InitWithCGImage(&_imgBuf, &format, TSImageBufBGColour,
+								 img,
+								 shouldAllocate ? kvImageNoFlags : kvImageNoAllocate);
+	
+	// free image; this frees up memory
+	CGImageRelease(img);
+	
+	// mark buffer as valid
+	self.isImgBufValid = YES;
 }
 
 /**
  * Frees buffers that were previously manually allocated.
  */
 - (void) dealloc {
-	free(self.rawHistogramData);
+	// free histogram buffer
+	free(self.histogram);
+	
+	// free image buffer
+	[self invalidateImageBuffer];
 }
 
 /**
@@ -185,8 +270,27 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
 					   ofObject:(id) object
 						 change:(NSDictionary<NSString *,id> *) change
 						context:(void *) context {
+	// image changed; update buffer and histogram.
 	if(context == TSImageKVOCtx) {
-		[self reCalculateHistogram];
+		// update the image buffer with new data
+		if(self.image != nil) {
+			[self updateImageBuffer];
+		}
+		
+		// update the display
+		[self updateDisplay];
+	}
+	// the quality has changed; update the buffer.
+	else if(context == TSQualityKVOCtx) {
+		self.isImgBufValid = NO;
+		
+		// update the image buffer and histogram, if an image is loaded
+		if(self.image != nil) {
+			[self updateImageBuffer];
+			[self updateDisplay];
+		} else {
+			[self invalidateImageBuffer];
+		}
 	}
 }
 
@@ -258,7 +362,7 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
  * Re-calculates the histogram for the image that was assigned to the
  * control.
  */
-- (void) reCalculateHistogram {
+- (void) updateDisplay {
 	// if the image became nil, hide the histograms
 	if(self.image == nil) {
 		dispatch_async(dispatch_get_main_queue(), ^{
@@ -283,7 +387,7 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
 	dispatch_queue_t q = dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0);
 	
 	dispatch_async(q, ^{
-		[self calculateHistogramAndCreatePath];
+		[self calculateHistogram];
 	});
 }
 
@@ -293,46 +397,36 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
  *
  * @note This _must_ be called on a background thread. It is slow.
  */
-- (void) calculateHistogramAndCreatePath {
+- (void) calculateHistogram {	
 	NSUInteger i, c;
 	
-	// calculate the histogram on the image
-	CIFilter *histFilter = [CIFilter filterWithName:@"CIAreaHistogram"];
+	// calculate the histogram, from already loaded image data
+	vImagePixelCount *histogramPtr[] = {
+		self.histogram,
+		self.histogram + (TSHistogramBuckets * 1),
+		self.histogram + (TSHistogramBuckets * 2),
+		self.histogram + (TSHistogramBuckets * 3),
+	};
 	
-	[histFilter setValue:self.image forKey:kCIInputImageKey];
-	[histFilter setValue:[CIVector vectorWithCGRect:self.image.extent]
-			forKey:kCIInputExtentKey];
-	[histFilter setValue:@(TSHistogramBuckets) forKey:@"inputCount"];
-	[histFilter setValue:@1 forKey:kCIInputScaleKey];
+	vImageHistogramCalculation_ARGB8888(&_imgBuf, histogramPtr, kvImageNoFlags);
 	
-	CIImage *histogramData = [histFilter valueForKey:kCIOutputImageKey];
-	
-	
-	// render the histogram and maximum data into a buffer, pls
-	[context render:histogramData
-		   toBitmap:self.rawHistogramData
-		   rowBytes:(TSHistogramBuckets * 4 * sizeof(float))
-			 bounds:histogramData.extent
-			 format:kCIFormatRGBAf colorSpace:nil];
-	
-	// find which component has the maximum, then multiply all of them
-	self.histogramMax = 0.f;
+	// find the maximum value in the buffer
+	self.histogramMax = 0;
 	
 	for(i = 0; i < TSHistogramBuckets; i++) {
 		for(c = 0; c < 3; c++) {
 			// check if it's higher than the max value
-			if(self.histogramMax < self.rawHistogramData[(i * 4) + c]) {
-				self.histogramMax = self.rawHistogramData[(i * 4) + c];
+			if(self.histogramMax < histogramPtr[c][i]) {
+				self.histogramMax = histogramPtr[c][i];
 			}
 		}
 	}
-	
-	DDLogVerbose(@"Scaling all components such that max = %f", self.histogramMax);
 	
 	// draw the histogram paths
 	[self updateHistogramPaths];
 }
 
+#pragma mark Histogram Display
 /**
  * Takes the scaled histogram data and turns it into paths.
  */
@@ -370,13 +464,18 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
 	NSMutableArray<NSValue *> *points = [NSMutableArray new];
 	NSSize curveSz = NSInsetRect(self.bounds, 0, 0).size;
 	
+	// get the buffer for the histogram
+	vImagePixelCount *buffer = self.histogram;
+	buffer += (c * TSHistogramBuckets);
+	
 	// create points for each of the points
 	for(NSUInteger i = 0; i < TSHistogramBuckets; i++) {
-		// calculate X
+		// calculate X and Y positions
 		CGFloat x = (((CGFloat) i) / ((CGFloat) TSHistogramBuckets - 1) * curveSz.width) - 1.f;
 		
-		// calculate y
-		CGFloat y = curveSz.height - (self.rawHistogramData[(i * 4) + c] / self.histogramMax * curveSz.height);
+		CGFloat y = curveSz.height - (((CGFloat) buffer[i]) / ((CGFloat) self.histogramMax) * curveSz.height);
+		
+		// make point and store it
 		[points addObject:[NSValue valueWithPoint:NSMakePoint(x, y)]];
 	}
 	
@@ -405,6 +504,60 @@ void *TSImageKVOCtx = &TSImageKVOCtx;
 	
 	// done
 	return path;
+}
+
+#pragma mark Helpers
+/**
+ * Scales the input image by the "quality" factor, such that it can be
+ * used to calculate a histogram. If no scaling is to be done (quality = 1)
+ * the original image is returned.
+ */
+- (CGImageRef) produceScaledVersionForHistogram {
+	CGContextRef ctx;
+	
+	// short-circuit if quality == 1
+	if(self.quality <= 1) {
+		return [self.image CGImageForProposedRect:nil context:nil
+											hints:nil];
+	}
+	
+	// calculate scale factor
+	CGFloat factor = 1.f / ((CGFloat) self.quality);
+	
+	CGSize newSize = CGSizeApplyAffineTransform(self.image.size, CGAffineTransformMakeScale(factor, factor));
+	
+	// get information from the image
+	CGImageRef cgImage = [self.image CGImageForProposedRect:nil context:nil
+													  hints:nil];
+	
+	size_t bitsPerComponent = CGImageGetBitsPerComponent(cgImage);
+	size_t bytesPerRow = CGImageGetBytesPerRow(cgImage);
+	CGColorSpaceRef colorSpace = CGImageGetColorSpace(cgImage);
+	CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(cgImage);
+	
+	// set up bitmap context
+	ctx = CGBitmapContextCreate(nil, newSize.width, newSize.height,
+								bitsPerComponent, bytesPerRow, colorSpace,
+								bitmapInfo);
+	CGContextSetInterpolationQuality(ctx, kCGInterpolationMedium);
+	
+	CGColorSpaceRelease(colorSpace);
+	
+	// draw the image pls
+	CGRect destRect = {
+		.size = newSize,
+		.origin = CGPointZero
+	};
+	
+	CGContextDrawImage(ctx, destRect, cgImage);
+	
+	// create a CGImage from the context, then clean up
+	CGImageRef scaledImage = CGBitmapContextCreateImage(ctx);
+	
+	CGContextRelease(ctx);
+	
+	// done.
+	return scaledImage;
 }
 
 @end

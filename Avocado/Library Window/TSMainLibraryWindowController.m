@@ -216,7 +216,19 @@
 }
 
 - (IBAction) loadHistoImage:(id) sender {
-	CIImage *im = [CIImage imageWithContentsOfURL:[NSURL fileURLWithPath:@"/Users/tristan/Library/Application Support/me.tseifert.Avocado/Photos/2016-03-20/WHS_0119.JPG"]];
+	// figure out image
+	NSImage *im = nil;
+	NSView *view = (NSView *) sender;
+	
+	if(view.tag == 0) {
+		im = [[NSImage alloc] initWithContentsOfURL:[NSURL fileURLWithPath:@"/Users/tristan/Library/Application Support/me.tseifert.Avocado/Photos/2016-03-20/WHS_0119.JPG"]];
+	} else if(view.tag == 1) {
+		im = [[NSImage alloc] initWithContentsOfURL:[NSURL fileURLWithPath:@"/Users/tristan/Library/Application Support/me.tseifert.Avocado/Photos/2016-03-20/IMG_7663.JPG"]];
+	} else if(view.tag == 2) {
+		im = [[NSImage alloc] initWithContentsOfURL:[NSURL fileURLWithPath:@"/Users/tristan/Library/Application Support/me.tseifert.Avocado/Photos/2016-03-20/IMG_7089.JPG"]];
+	}
+	
+	// set it
 	self.histo.image = im;
 }
 
