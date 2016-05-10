@@ -7,6 +7,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="TSMainLibraryWindowController">
             <connections>
+                <outlet property="histo" destination="Cu4-mA-60v" id="1ME-9a-miQ"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
             </connections>
         </customObject>
@@ -25,6 +26,51 @@
                 <outlet property="delegate" destination="-2" id="0bl-1N-AYu"/>
             </connections>
             <point key="canvasLocation" x="366" y="458"/>
+        </window>
+        <window title="Histogram" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" frameAutosaveName="" animationBehavior="default" id="9fA-So-SMI" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="139" y="81" width="360" height="212"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
+            <view key="contentView" id="q0T-Hu-qGn">
+                <rect key="frame" x="0.0" y="0.0" width="360" height="212"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <visualEffectView appearanceType="vibrantDark" blendingMode="behindWindow" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="gRH-OR-KxL">
+                        <rect key="frame" x="0.0" y="0.0" width="360" height="212"/>
+                        <subviews>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="Cu4-mA-60v" customClass="TSHistogramView">
+                                <rect key="frame" x="20" y="57" width="320" height="135"/>
+                            </customView>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2Ra-KC-B5k">
+                                <rect key="frame" x="235" y="13" width="111" height="32"/>
+                                <buttonCell key="cell" type="push" title="Load Image" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="iA2-XJ-WmC">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="loadHistoImage:" target="-2" id="CVD-us-rMI"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="2Ra-KC-B5k" firstAttribute="trailing" secondItem="Cu4-mA-60v" secondAttribute="trailing" id="07m-U1-55z"/>
+                            <constraint firstItem="Cu4-mA-60v" firstAttribute="leading" secondItem="gRH-OR-KxL" secondAttribute="leading" constant="20" id="5OL-yc-Xud"/>
+                            <constraint firstAttribute="trailing" secondItem="Cu4-mA-60v" secondAttribute="trailing" constant="20" id="PzN-Gz-rku"/>
+                            <constraint firstItem="Cu4-mA-60v" firstAttribute="top" secondItem="gRH-OR-KxL" secondAttribute="top" constant="20" id="Yc0-gI-CjQ"/>
+                            <constraint firstAttribute="bottom" secondItem="2Ra-KC-B5k" secondAttribute="bottom" constant="20" id="riq-tR-MKP"/>
+                            <constraint firstItem="2Ra-KC-B5k" firstAttribute="top" secondItem="Cu4-mA-60v" secondAttribute="bottom" constant="16" id="yhd-en-iiM"/>
+                        </constraints>
+                    </visualEffectView>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="gRH-OR-KxL" secondAttribute="bottom" id="1sz-0J-Y0e"/>
+                    <constraint firstItem="gRH-OR-KxL" firstAttribute="leading" secondItem="q0T-Hu-qGn" secondAttribute="leading" id="GoD-KP-r9T"/>
+                    <constraint firstAttribute="trailing" secondItem="gRH-OR-KxL" secondAttribute="trailing" id="IGg-14-UGe"/>
+                    <constraint firstItem="gRH-OR-KxL" firstAttribute="top" secondItem="q0T-Hu-qGn" secondAttribute="top" id="l48-qb-M7A"/>
+                </constraints>
+            </view>
+            <point key="canvasLocation" x="965" y="960"/>
         </window>
     </objects>
 </document>

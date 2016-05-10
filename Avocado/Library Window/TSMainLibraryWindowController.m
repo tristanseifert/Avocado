@@ -11,6 +11,8 @@
 #import "TSLibraryOverviewController.h"
 #import "TSLibraryDetailController.h"
 
+#import "TSHistogramView.h"
+
 #import <QuartzCore/QuartzCore.h>
 
 @interface TSMainLibraryWindowController ()
@@ -211,6 +213,11 @@
 	appSupportURL = [appSupportURL URLByAppendingPathComponent:@"me.tseifert.Avocado"];
 	
 	return [appSupportURL URLByAppendingPathComponent:@"ViewState.plist" isDirectory:NO];
+}
+
+- (IBAction) loadHistoImage:(id) sender {
+	CIImage *im = [CIImage imageWithContentsOfURL:[NSURL fileURLWithPath:@"/Users/tristan/Library/Application Support/me.tseifert.Avocado/Photos/2016-03-20/IMG_7663.JPG"]];
+	self.histo.image = im;
 }
 
 @end
