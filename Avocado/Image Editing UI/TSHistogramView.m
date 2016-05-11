@@ -16,10 +16,16 @@
 /// background colour to use for buffers
 static const CGFloat TSImageBufBGColour[] = {0, 0, 0, 0};
 
+/// padding at the top of the curves
+static const CGFloat TSCurveTopPadding = 2.f;
+
 /// Alpha component for a channel curve's fill
 static const CGFloat TSCurveFillAlpha = 0.45f;
 /// Alpha component for a channel curve's stroke
 static const CGFloat TSCurveStrokeAlpha = 0.75f;
+
+/// Duration of the animation between histogram paths
+static const CGFloat TSPathAnimationDuration = 0.33;
 
 /// Histogram buckets per channel; fixed to 256 since we use 8-bit data.
 static const NSUInteger TSHistogramBuckets = 256;
@@ -49,6 +55,8 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 @property (nonatomic) vImage_Buffer imgBuf;
 /// whether the image buffer is valid
 @property (nonatomic) BOOL isImgBufValid;
+/// image currently stored in the buffer
+@property (nonatomic) CGImageRef imgBufImageRef;
 
 - (void) setUpLayers;
 - (void) setUpCurveLayer:(CAShapeLayer *) curve withChannel:(NSInteger) c;
@@ -61,12 +69,14 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 
 - (void) updateDisplay;
 - (void) calculateHistogram;
-- (void) updateHistogramPaths;
+- (void) updateHistogramPathsWithAnimation:(BOOL) shouldAnimate;
 
-- (CGImageRef) produceScaledVersionForHistogram;
+- (void) produceScaledVersionForHistogram;
 
 - (NSArray<NSValue *> *) pointsForChannel:(NSUInteger) c;
 - (NSBezierPath *) pathForCurvePts:(NSArray<NSValue *> *) points;
+
+- (void) animatePathChange:(NSBezierPath *) path andLayer:(CAShapeLayer *) layer;
 
 @end
 
@@ -225,9 +235,14 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
  * Loads the image into the allocated image buffer.
  */
 - (void) updateImageBufferLoadScaled:(BOOL) shouldAllocate {
-	// create a downscaled version of the image, then a vImage buffer
-	CGImageRef img = [self produceScaledVersionForHistogram];
+	DDAssert(self.image != nil, @"Image may not be nill for buffer allocation");
 	
+	// deallocate any previous image
+	if(self.imgBufImageRef != nil) {
+		CGImageRelease(self.imgBufImageRef);
+	}
+	
+	// create a vImage buffer and load the image into it
 	vImage_CGImageFormat format = {
 		.version = 0,
 		
@@ -242,11 +257,8 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	};
 	
 	vImageBuffer_InitWithCGImage(&_imgBuf, &format, TSImageBufBGColour,
-								 img,
+								 self.imgBufImageRef,
 								 shouldAllocate ? kvImageNoFlags : kvImageNoAllocate);
-	
-	// free image; this frees up memory
-	CGImageRelease(img);
 	
 	// mark buffer as valid
 	self.isImgBufValid = YES;
@@ -270,15 +282,30 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 					   ofObject:(id) object
 						 change:(NSDictionary<NSString *,id> *) change
 						context:(void *) context {
+	dispatch_queue_t q = dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0);
+	
 	// image changed; update buffer and histogram.
 	if(context == TSImageKVOCtx) {
-		// update the image buffer with new data
-		if(self.image != nil) {
-			[self updateImageBuffer];
+		// deallocate any previously loaded image
+		if(self.imgBufImageRef != nil) {
+			CGImageRelease(self.imgBufImageRef);
+			self.imgBufImageRef = nil;
 		}
 		
-		// update the display
-		[self updateDisplay];
+		// update the image buffer with new data, on a background queue
+		if(self.image != nil) {
+			dispatch_async(q, ^{
+				// scale image, and update buffer
+				[self produceScaledVersionForHistogram];
+				[self updateImageBuffer];
+				
+				// now, update display
+				[self updateDisplay];
+			});
+		} else {
+			// update display to make paths nil
+			[self updateDisplay];
+		}
 	}
 	// the quality has changed; update the buffer.
 	else if(context == TSQualityKVOCtx) {
@@ -286,9 +313,21 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 		
 		// update the image buffer and histogram, if an image is loaded
 		if(self.image != nil) {
-			[self updateImageBuffer];
-			[self updateDisplay];
+			dispatch_async(q, ^{
+				// deallocate any previously loaded image
+				if(self.imgBufImageRef != nil) {
+					CGImageRelease(self.imgBufImageRef);
+					self.imgBufImageRef = nil;
+				}
+				
+				// create a new image, update the buffer and display
+				[self produceScaledVersionForHistogram];
+				[self updateImageBuffer];
+				
+				[self updateDisplay];
+			});
 		} else {
+			// invalidate image buffer and do nothing else.
 			[self invalidateImageBuffer];
 		}
 	}
@@ -334,7 +373,7 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	// lay out the border
 	self.border.frame = frame;
 	
-	// lay out the things inside
+	// lay out the curves' shape layers
 	NSRect curvesFrame = NSInsetRect(frame, 1, 1);
 	
 	self.rLayer.frame = curvesFrame;
@@ -346,7 +385,7 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	
 	// update the histogram paths
 	if(self.image != nil) {
-		[self updateHistogramPaths];
+		[self updateHistogramPathsWithAnimation:NO];
 	}
 }
 
@@ -383,12 +422,8 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 		return;
 	}
 	
-	// queue the calculation on a background thread
-	dispatch_queue_t q = dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0);
-	
-	dispatch_async(q, ^{
-		[self calculateHistogram];
-	});
+	// re-calculate histogram; if image ≠ nil, this should be on bg thread
+	[self calculateHistogram];
 }
 
 /**
@@ -397,7 +432,7 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
  *
  * @note This _must_ be called on a background thread. It is slow.
  */
-- (void) calculateHistogram {	
+- (void) calculateHistogram {
 	NSUInteger i, c;
 	
 	// calculate the histogram, from already loaded image data
@@ -423,14 +458,14 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	}
 	
 	// draw the histogram paths
-	[self updateHistogramPaths];
+	[self updateHistogramPathsWithAnimation:YES];
 }
 
 #pragma mark Histogram Display
 /**
  * Takes the scaled histogram data and turns it into paths.
  */
-- (void) updateHistogramPaths {
+- (void) updateHistogramPathsWithAnimation:(BOOL) shouldAnimate {
 	// get points for each channel
 	NSArray *rPoints = [self pointsForChannel:0];
 	NSArray *gPoints = [self pointsForChannel:1];
@@ -443,17 +478,15 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	
 	// set the paths on the main thread, with animation
 	dispatch_async(dispatch_get_main_queue(), ^{
-		// set up an animation transaction
-		[CATransaction begin];
-		[CATransaction setAnimationDuration:0.66];
-		[CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-		
-		self.rLayer.path = redPath.CGPath;
-		self.gLayer.path = greenPath.CGPath;
-		self.bLayer.path = bluePath.CGPath;
-		
-		// commit transaction
-		[CATransaction commit];
+		if(shouldAnimate) {
+			[self animatePathChange:redPath andLayer:self.rLayer];
+			[self animatePathChange:greenPath andLayer:self.gLayer];
+			[self animatePathChange:bluePath andLayer:self.bLayer];
+		} else {
+			self.rLayer.path = redPath.CGPath;
+			self.gLayer.path = greenPath.CGPath;
+			self.bLayer.path = bluePath.CGPath;
+		}
 	});
 }
 
@@ -462,7 +495,10 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
  */
 - (NSArray<NSValue *> *) pointsForChannel:(NSUInteger) c {
 	NSMutableArray<NSValue *> *points = [NSMutableArray new];
+	
+	// calculate size of the area curves occupy
 	NSSize curveSz = NSInsetRect(self.bounds, 0, 0).size;
+	curveSz.height -= TSCurveTopPadding;
 	
 	// get the buffer for the histogram
 	vImagePixelCount *buffer = self.histogram;
@@ -506,19 +542,58 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	return path;
 }
 
+/**
+ * Animates the change of the path value on the given layer. Once the
+ * animation has completed, it is removed, and the path value updated.
+ */
+- (void) animatePathChange:(NSBezierPath *) path andLayer:(CAShapeLayer *) layer {
+	// is the path nil? if so, just set it.
+	if(layer.path == nil) {
+		layer.path = path.CGPath;
+		return;
+	}
+	
+	// remove any existing animations and start transaction
+	[layer removeAllAnimations];
+	[CATransaction begin];
+	
+	// set up the completion block; this sets the path
+	[CATransaction setCompletionBlock:^{
+		layer.path = path.CGPath;
+		
+		// now remove the animation
+		[layer removeAnimationForKey:@"path"];
+	}];
+	
+	// set up an animation
+	CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"path"];
+	anim.toValue = (__bridge id _Nullable) path.CGPath;
+	
+	anim.duration = TSPathAnimationDuration;
+	anim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+	
+	anim.fillMode = kCAFillModeBoth;
+	anim.removedOnCompletion = NO;
+	
+	// add animation and commit transaction
+	[layer addAnimation:anim forKey:anim.keyPath];
+	[CATransaction commit];
+}
+
 #pragma mark Helpers
 /**
  * Scales the input image by the "quality" factor, such that it can be
  * used to calculate a histogram. If no scaling is to be done (quality = 1)
  * the original image is returned.
  */
-- (CGImageRef) produceScaledVersionForHistogram {
+- (void) produceScaledVersionForHistogram {
 	CGContextRef ctx;
 	
 	// short-circuit if quality == 1
 	if(self.quality <= 1) {
-		return [self.image CGImageForProposedRect:nil context:nil
-											hints:nil];
+		self.imgBufImageRef = [self.image CGImageForProposedRect:nil
+														 context:nil
+														   hints:nil];
 	}
 	
 	// calculate scale factor
@@ -557,7 +632,7 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	CGContextRelease(ctx);
 	
 	// done.
-	return scaledImage;
+	self.imgBufImageRef = CGImageRetain(scaledImage);
 }
 
 @end

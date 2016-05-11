@@ -27,24 +27,24 @@
             </connections>
             <point key="canvasLocation" x="366" y="458"/>
         </window>
-        <window title="Histogram" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" frameAutosaveName="" animationBehavior="default" id="9fA-So-SMI" customClass="NSPanel">
+        <window title="Mr. Histogram" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" frameAutosaveName="" animationBehavior="default" id="9fA-So-SMI" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="139" y="81" width="360" height="212"/>
+            <rect key="contentRect" x="139" y="81" width="420" height="212"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
-            <value key="minSize" type="size" width="360" height="212"/>
+            <value key="minSize" type="size" width="420" height="212"/>
             <view key="contentView" id="q0T-Hu-qGn">
-                <rect key="frame" x="0.0" y="0.0" width="360" height="212"/>
+                <rect key="frame" x="0.0" y="0.0" width="420" height="212"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <visualEffectView appearanceType="vibrantDark" blendingMode="behindWindow" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="gRH-OR-KxL">
-                        <rect key="frame" x="0.0" y="0.0" width="360" height="212"/>
+                        <rect key="frame" x="0.0" y="0.0" width="420" height="212"/>
                         <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="Cu4-mA-60v" customClass="TSHistogramView">
-                                <rect key="frame" x="20" y="57" width="320" height="135"/>
+                                <rect key="frame" x="20" y="57" width="380" height="135"/>
                             </customView>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2Ra-KC-B5k">
-                                <rect key="frame" x="259" y="13" width="87" height="32"/>
+                                <rect key="frame" x="319" y="13" width="87" height="32"/>
                                 <buttonCell key="cell" type="push" title="Image 1" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="iA2-XJ-WmC">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -54,7 +54,7 @@
                                 </connections>
                             </button>
                             <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="7wa-8M-YXV">
-                                <rect key="frame" x="170" y="13" width="89" height="32"/>
+                                <rect key="frame" x="230" y="13" width="89" height="32"/>
                                 <buttonCell key="cell" type="push" title="Image 2" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="eA1-Wn-4vi">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -64,7 +64,7 @@
                                 </connections>
                             </button>
                             <button verticalHuggingPriority="750" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="Fwq-3X-pa4">
-                                <rect key="frame" x="81" y="13" width="89" height="32"/>
+                                <rect key="frame" x="141" y="13" width="89" height="32"/>
                                 <buttonCell key="cell" type="push" title="Image 3" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="YRF-IO-gUK">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -73,17 +73,61 @@
                                     <action selector="loadHistoImage:" target="-2" id="3CU-0v-evR"/>
                                 </connections>
                             </button>
+                            <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="h8l-Dr-RIu">
+                                <rect key="frame" x="17" y="17" width="91" height="26"/>
+                                <popUpButtonCell key="cell" type="push" title="Quality…" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" id="MZL-e7-C1I">
+                                    <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="menu"/>
+                                    <menu key="menu" id="S7E-oy-Nq5">
+                                        <items>
+                                            <menuItem title="Quality…" state="on" hidden="YES" id="oQb-oQ-5XX"/>
+                                            <menuItem title="1" tag="1" id="mqt-sg-34q">
+                                                <connections>
+                                                    <action selector="histoQualityUpdate:" target="-2" id="aDy-uB-dDJ"/>
+                                                </connections>
+                                            </menuItem>
+                                            <menuItem title="2" tag="2" id="aWQ-ce-mNI">
+                                                <connections>
+                                                    <action selector="histoQualityUpdate:" target="-2" id="VM0-20-xrE"/>
+                                                </connections>
+                                            </menuItem>
+                                            <menuItem title="3" tag="3" id="H0j-Fi-oL9">
+                                                <connections>
+                                                    <action selector="histoQualityUpdate:" target="-2" id="jUt-WX-lvq"/>
+                                                </connections>
+                                            </menuItem>
+                                            <menuItem title="4" tag="4" id="p3l-ej-4wh">
+                                                <connections>
+                                                    <action selector="histoQualityUpdate:" target="-2" id="60o-nX-g5n"/>
+                                                </connections>
+                                            </menuItem>
+                                            <menuItem title="5" tag="5" id="1cg-4p-GbN">
+                                                <connections>
+                                                    <action selector="histoQualityUpdate:" target="-2" id="sfP-sP-5Na"/>
+                                                </connections>
+                                            </menuItem>
+                                            <menuItem title="6" tag="6" id="wIG-eu-wq4">
+                                                <connections>
+                                                    <action selector="histoQualityUpdate:" target="-2" id="SCD-RF-0Vu"/>
+                                                </connections>
+                                            </menuItem>
+                                        </items>
+                                    </menu>
+                                </popUpButtonCell>
+                            </popUpButton>
                         </subviews>
                         <constraints>
                             <constraint firstItem="2Ra-KC-B5k" firstAttribute="trailing" secondItem="Cu4-mA-60v" secondAttribute="trailing" id="07m-U1-55z"/>
                             <constraint firstItem="Cu4-mA-60v" firstAttribute="leading" secondItem="gRH-OR-KxL" secondAttribute="leading" constant="20" id="5OL-yc-Xud"/>
                             <constraint firstItem="7wa-8M-YXV" firstAttribute="leading" secondItem="Fwq-3X-pa4" secondAttribute="trailing" constant="12" id="65P-7E-WKF"/>
+                            <constraint firstItem="h8l-Dr-RIu" firstAttribute="top" secondItem="2Ra-KC-B5k" secondAttribute="top" id="PbJ-Y2-Pca"/>
                             <constraint firstAttribute="trailing" secondItem="Cu4-mA-60v" secondAttribute="trailing" constant="20" id="PzN-Gz-rku"/>
                             <constraint firstItem="Cu4-mA-60v" firstAttribute="top" secondItem="gRH-OR-KxL" secondAttribute="top" constant="20" id="Yc0-gI-CjQ"/>
                             <constraint firstItem="7wa-8M-YXV" firstAttribute="top" secondItem="2Ra-KC-B5k" secondAttribute="top" id="cSX-i6-8S7"/>
                             <constraint firstItem="2Ra-KC-B5k" firstAttribute="leading" secondItem="7wa-8M-YXV" secondAttribute="trailing" constant="12" id="fKg-nw-TJ3"/>
-                            <constraint firstItem="Fwq-3X-pa4" firstAttribute="top" secondItem="7wa-8M-YXV" secondAttribute="top" id="gOn-jj-5vP"/>
+                            <constraint firstItem="Fwq-3X-pa4" firstAttribute="top" secondItem="2Ra-KC-B5k" secondAttribute="top" id="k4h-3R-iUe"/>
                             <constraint firstAttribute="bottom" secondItem="2Ra-KC-B5k" secondAttribute="bottom" constant="20" id="riq-tR-MKP"/>
+                            <constraint firstItem="h8l-Dr-RIu" firstAttribute="leading" secondItem="Cu4-mA-60v" secondAttribute="leading" id="wIv-lJ-Dna"/>
                             <constraint firstItem="2Ra-KC-B5k" firstAttribute="top" secondItem="Cu4-mA-60v" secondAttribute="bottom" constant="16" id="yhd-en-iiM"/>
                         </constraints>
                     </visualEffectView>

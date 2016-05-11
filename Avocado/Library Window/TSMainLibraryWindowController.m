@@ -232,4 +232,9 @@
 	self.histo.image = im;
 }
 
+- (IBAction) histoQualityUpdate:(id) sender {
+	NSView *view = (NSView *) sender;
+	self.histo.quality = view.tag;
+}
+
 @end

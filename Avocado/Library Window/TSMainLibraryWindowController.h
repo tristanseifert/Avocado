@@ -25,5 +25,6 @@
 @property (nonatomic) IBOutlet TSHistogramView *histo;
 
 - (IBAction) loadHistoImage:(id) sender;
+- (IBAction) histoQualityUpdate:(id) sender;
 
 @end
