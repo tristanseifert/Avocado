@@ -13,6 +13,15 @@
 #import <CoreImage/CoreImage.h>
 #import <Accelerate/Accelerate.h>
 
+/// enum for channels
+typedef NS_ENUM(NSUInteger, TSHistogramChannel) {
+	kTSChannelRed		= 0,
+	kTSChannelGreen		= 1,
+	kTSChannelBlue		= 2,
+	
+	kTSChannelLuminance	= 3
+};
+
 /// background colour to use for buffers
 static const CGFloat TSImageBufBGColour[] = {0, 0, 0, 0};
 
@@ -45,6 +54,8 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 @property (nonatomic) CAShapeLayer *gLayer;
 /// blue channel curve
 @property (nonatomic) CAShapeLayer *bLayer;
+/// luminance (calculated) curve
+@property (nonatomic) CAShapeLayer *yLayer;
 
 /// temporary histogram buffer; straight from vImage
 @property (nonatomic) vImagePixelCount *histogram;
@@ -59,7 +70,7 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 @property (nonatomic) CGImageRef imgBufImageRef;
 
 - (void) setUpLayers;
-- (void) setUpCurveLayer:(CAShapeLayer *) curve withChannel:(NSInteger) c;
+- (void) setUpCurveLayer:(CAShapeLayer *) curve withChannel:(TSHistogramChannel) c;
 - (void) resetCurveLayer:(CAShapeLayer *) layer withAnimation:(BOOL) animate;
 
 - (void) allocateBuffers;
@@ -74,7 +85,7 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 
 - (void) produceScaledVersionForHistogram;
 
-- (NSArray<NSValue *> *) pointsForChannel:(NSUInteger) c;
+- (NSArray<NSValue *> *) pointsForChannel:(TSHistogramChannel) c;
 - (NSBezierPath *) pathForCurvePts:(NSArray<NSValue *> *) points;
 
 - (void) animatePathChange:(NSBezierPath *) path inLayer:(CAShapeLayer *) layer;
@@ -135,16 +146,19 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	self.border.masksToBounds = YES;
 	
 	// set up the curve layers
+	self.yLayer = [CAShapeLayer layer];
 	self.rLayer = [CAShapeLayer layer];
 	self.gLayer = [CAShapeLayer layer];
 	self.bLayer = [CAShapeLayer layer];
 	
-	[self setUpCurveLayer:self.rLayer withChannel:0];
-	[self setUpCurveLayer:self.gLayer withChannel:1];
-	[self setUpCurveLayer:self.bLayer withChannel:2];
+	[self setUpCurveLayer:self.yLayer withChannel:kTSChannelLuminance];
+	[self setUpCurveLayer:self.rLayer withChannel:kTSChannelRed];
+	[self setUpCurveLayer:self.gLayer withChannel:kTSChannelGreen];
+	[self setUpCurveLayer:self.bLayer withChannel:kTSChannelBlue];
 	
-	// add layers (stacked such that it's ordered B -> G -> R)
-	[self.border addSublayer:self.rLayer];
+	// add layers (stacked such that it's ordered B -> G -> R -> Y)
+	[self.border addSublayer:self.yLayer];
+	[self.border insertSublayer:self.rLayer above:self.yLayer];
 	[self.border insertSublayer:self.gLayer above:self.rLayer];
 	[self.border insertSublayer:self.bLayer above:self.gLayer];
 	
@@ -154,13 +168,17 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 /**
  * Sets up a curve layer.
  */
-- (void) setUpCurveLayer:(CAShapeLayer *) curve withChannel:(NSInteger) c {
+- (void) setUpCurveLayer:(CAShapeLayer *) curve withChannel:(TSHistogramChannel) c {
 	// calculate colours
 	CGFloat r, g, b;
 	
-	r = (c == 0) ? 1.f : 0.f;
-	g = (c == 1) ? 1.f : 0.f;
-	b = (c == 2) ? 1.f : 0.f;
+	if(c <= kTSChannelBlue) {
+		r = (c == 0) ? 1.f : 0.f;
+		g = (c == 1) ? 1.f : 0.f;
+		b = (c == 2) ? 1.f : 0.f;
+	} else {
+		r = g = b = 1.f;
+	}
 	
 	// set the fills
 	curve.fillColor = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:TSCurveFillAlpha].CGColor;
@@ -375,6 +393,7 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	
 	self.border.contentsScale = self.window.backingScaleFactor;
 	
+	self.yLayer.contentsScale = self.window.backingScaleFactor;
 	self.rLayer.contentsScale = self.window.backingScaleFactor;
 	self.gLayer.contentsScale = self.window.backingScaleFactor;
 	self.bLayer.contentsScale = self.window.backingScaleFactor;
@@ -406,12 +425,14 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	// lay out the curves' shape layers
 	NSRect curvesFrame = NSInsetRect(frame, 1, 1);
 	
+	self.yLayer.frame = curvesFrame;
 	self.rLayer.frame = curvesFrame;
 	self.gLayer.frame = curvesFrame;
 	self.bLayer.frame = curvesFrame;
 	
 	// if no image is loaded, set up the placeholder frame
 	if(self.image == nil) {
+		[self resetCurveLayer:self.yLayer withAnimation:NO];
 		[self resetCurveLayer:self.rLayer withAnimation:NO];
 		[self resetCurveLayer:self.gLayer withAnimation:NO];
 		[self resetCurveLayer:self.bLayer withAnimation:NO];
@@ -442,18 +463,11 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	// if the image became nil, hide the histograms
 	if(self.image == nil) {
 		dispatch_async(dispatch_get_main_queue(), ^{
-			// set up an animation transaction
-			[CATransaction begin];
-			[CATransaction setAnimationDuration:0.5];
-			[CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-			
 			// set the paths to nil
+			[self resetCurveLayer:self.yLayer withAnimation:YES];
 			[self resetCurveLayer:self.rLayer withAnimation:YES];
 			[self resetCurveLayer:self.gLayer withAnimation:YES];
 			[self resetCurveLayer:self.bLayer withAnimation:YES];
-			
-			// commit transaction
-			[CATransaction commit];
 		});
 		
 		return;
@@ -470,7 +484,45 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
  * @note This _must_ be called on a background thread. It is slow.
  */
 - (void) calculateHistogram {
-	NSUInteger i, c;
+	NSUInteger i, c, y, x, o;
+	
+	/**
+	 * Calculates luminance over the entire image. This works pixel by
+	 * pixel, and stores luminance in the alpha component.
+	 *
+	 * The luminance formula used uses ITU BT.709 constants.
+	 */	
+	CGFloat luma;
+	
+	uint8_t *ptrR = self.imgBuf->data;
+	uint8_t *ptrG = ptrR + 1;
+	uint8_t *ptrB = ptrR + 2;
+	uint8_t *ptrA = ptrR + 3;
+	
+	size_t height = CGImageGetHeight(self.imgBufImageRef);
+	size_t width = CGImageGetWidth(self.imgBufImageRef);
+	
+	for(y = 0; y < height; y++) {
+		// calculate luminance for each pixel and shove it in the alpha
+		for(x = 0; x < width; x++) {
+			o = (x * 4);
+			
+			// read RGB, then apply luminance formula
+			CGFloat r = ptrR[o], g = ptrG[o], b = ptrB[0];
+			
+			luma = (0.2126 * r) + (0.7152 * g) + (0.0722 * b);
+			
+			// store it
+			ptrA[o] = (uint8_t) luma;
+		}
+		
+		// go to the next row
+		ptrR += self.imgBuf->rowBytes;
+		ptrG += self.imgBuf->rowBytes;
+		ptrB += self.imgBuf->rowBytes;
+		ptrA += self.imgBuf->rowBytes;
+	}
+	
 	
 	// calculate the histogram, from already loaded image data
 	vImagePixelCount *histogramPtr[] = {
@@ -483,7 +535,7 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	vImageHistogramCalculation_ARGB8888(self.imgBuf, histogramPtr,
 										kvImageNoFlags);
 	
-	// find the maximum value in the buffer
+	// find the maximum value in the buffer, but only on RGB data
 	self.histogramMax = 0;
 	
 	for(i = 0; i < TSHistogramBuckets; i++) {
@@ -505,11 +557,13 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
  */
 - (void) updateHistogramPathsWithAnimation:(BOOL) shouldAnimate {
 	// get points for each channel
-	NSArray *rPoints = [self pointsForChannel:0];
-	NSArray *gPoints = [self pointsForChannel:1];
-	NSArray *bPoints = [self pointsForChannel:2];
+	NSArray *yPoints = [self pointsForChannel:kTSChannelLuminance];
+	NSArray *rPoints = [self pointsForChannel:kTSChannelRed];
+	NSArray *gPoints = [self pointsForChannel:kTSChannelGreen];
+	NSArray *bPoints = [self pointsForChannel:kTSChannelBlue];
 	
 	// make the paths
+	NSBezierPath *lumaPath = [self pathForCurvePts:yPoints];
 	NSBezierPath *redPath = [self pathForCurvePts:rPoints];
 	NSBezierPath *greenPath = [self pathForCurvePts:gPoints];
 	NSBezierPath *bluePath = [self pathForCurvePts:bPoints];
@@ -517,10 +571,12 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	// set the paths on the main thread, with animation
 	dispatch_async(dispatch_get_main_queue(), ^{
 		if(shouldAnimate) {
+			[self animatePathChange:lumaPath inLayer:self.yLayer];
 			[self animatePathChange:redPath inLayer:self.rLayer];
 			[self animatePathChange:greenPath inLayer:self.gLayer];
 			[self animatePathChange:bluePath inLayer:self.bLayer];
 		} else {
+			self.yLayer.path = lumaPath.CGPath;
 			self.rLayer.path = redPath.CGPath;
 			self.gLayer.path = greenPath.CGPath;
 			self.bLayer.path = bluePath.CGPath;
@@ -531,7 +587,7 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 /**
  * Creates an array of points, given a channel of the histogram.
  */
-- (NSArray<NSValue *> *) pointsForChannel:(NSUInteger) c {
+- (NSArray<NSValue *> *) pointsForChannel:(TSHistogramChannel) c {
 	NSMutableArray<NSValue *> *points = [NSMutableArray new];
 	
 	// calculate size of the area curves occupy

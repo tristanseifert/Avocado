@@ -2,7 +2,9 @@
 //  TSHistogramView.h
 //  Avocado
 //
-//	Renders an RGB histogram using CALayers.
+//	Mr. Histogram renders an YRGB (luma + RGB) histogram using the magic of
+//	CALayers, with some slick animations to boot. Set the image, quality,
+//	and a lovely histogram results. That's it. Mr. Histogram is great.
 //
 //  Created by Tristan Seifert on 20160510.
 //  Copyright © 2016 Tristan Seifert. All rights reserved.
