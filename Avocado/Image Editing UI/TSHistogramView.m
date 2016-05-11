@@ -52,7 +52,7 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 @property (nonatomic) vImagePixelCount histogramMax;
 
 /// buffer to use for images
-@property (nonatomic) vImage_Buffer imgBuf;
+@property (nonatomic) vImage_Buffer *imgBuf;
 /// whether the image buffer is valid
 @property (nonatomic) BOOL isImgBufValid;
 /// image currently stored in the buffer
@@ -179,19 +179,8 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
  */
 - (void) allocateBuffers {
 	self.histogram = calloc((TSHistogramBuckets * 4), sizeof(vImagePixelCount));
-}
-
-/**
- * Invalidates the image buffer.
- */
-- (void) invalidateImageBuffer {
-	// set buffer state to invalid
-	self.isImgBufValid = NO;
 	
-	// free its memory
-	if(self.imgBuf.data != nil) {
-		free(self.imgBuf.data);
-	}
+	self.imgBuf = calloc(1, sizeof(vImage_Buffer));
 }
 
 /**
@@ -215,7 +204,7 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	vImageBuffer_Init(&tmpBuf, newSize.height, newSize.width, 32, kvImageNoAllocate);
 	
 	size_t neededBufSize = tmpBuf.rowBytes * tmpBuf.height;
-	size_t oldBufSize = self.imgBuf.rowBytes * self.imgBuf.height;
+	size_t oldBufSize = self.imgBuf->rowBytes * self.imgBuf->height;
 	
 	if(oldBufSize >= neededBufSize) {
 		// if not, load the image into the existing buffer
@@ -237,9 +226,9 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 - (void) updateImageBufferLoadScaled:(BOOL) shouldAllocate {
 	DDAssert(self.image != nil, @"Image may not be nill for buffer allocation");
 	
-	// deallocate any previous image
-	if(self.imgBufImageRef != nil) {
-		CGImageRelease(self.imgBufImageRef);
+	// free the memory assigned to the buffer, if we're re-allocating
+	if(shouldAllocate) {
+		[self invalidateImageBuffer];
 	}
 	
 	// create a vImage buffer and load the image into it
@@ -253,15 +242,29 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 		.renderingIntent = kCGRenderingIntentDefault,
 		.colorSpace = nil,
 		
-		.decode = NULL
+		.decode = nil
 	};
 	
-	vImageBuffer_InitWithCGImage(&_imgBuf, &format, TSImageBufBGColour,
+	vImageBuffer_InitWithCGImage(self.imgBuf, &format, TSImageBufBGColour,
 								 self.imgBufImageRef,
 								 shouldAllocate ? kvImageNoFlags : kvImageNoAllocate);
 	
 	// mark buffer as valid
 	self.isImgBufValid = YES;
+}
+
+/**
+ * Invalidates the image buffer.
+ */
+- (void) invalidateImageBuffer {
+	// set buffer state to invalid
+	self.isImgBufValid = NO;
+	
+	// free its memory
+	if(self.imgBuf->data != nil) {
+		free(self.imgBuf->data);
+		self.imgBuf->data = nil;
+	}
 }
 
 /**
@@ -271,8 +274,9 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	// free histogram buffer
 	free(self.histogram);
 	
-	// free image buffer
+	// free image buffer and its struct
 	[self invalidateImageBuffer];
+	free(self.imgBuf);
 }
 
 /**
@@ -443,7 +447,8 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 		self.histogram + (TSHistogramBuckets * 3),
 	};
 	
-	vImageHistogramCalculation_ARGB8888(&_imgBuf, histogramPtr, kvImageNoFlags);
+	vImageHistogramCalculation_ARGB8888(self.imgBuf, histogramPtr,
+										kvImageNoFlags);
 	
 	// find the maximum value in the buffer
 	self.histogramMax = 0;
@@ -567,7 +572,7 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	
 	// set up an animation
 	CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"path"];
-	anim.toValue = (__bridge id _Nullable) path.CGPath;
+	anim.toValue = (__bridge id) path.CGPath;
 	
 	anim.duration = TSPathAnimationDuration;
 	anim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
