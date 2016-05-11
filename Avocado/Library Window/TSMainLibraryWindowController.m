@@ -226,6 +226,8 @@
 		im = [[NSImage alloc] initWithContentsOfURL:[NSURL fileURLWithPath:@"/Users/tristan/Library/Application Support/me.tseifert.Avocado/Photos/2016-03-20/IMG_7663.JPG"]];
 	} else if(view.tag == 2) {
 		im = [[NSImage alloc] initWithContentsOfURL:[NSURL fileURLWithPath:@"/Users/tristan/Library/Application Support/me.tseifert.Avocado/Photos/2016-03-20/IMG_7089.JPG"]];
+	} else {
+		im = nil;
 	}
 	
 	// set it

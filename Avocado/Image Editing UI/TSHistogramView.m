@@ -19,9 +19,9 @@ static const CGFloat TSImageBufBGColour[] = {0, 0, 0, 0};
 /// padding at the top of the curves
 static const CGFloat TSCurveTopPadding = 2.f;
 
-/// Alpha component for a channel curve's fill
-static const CGFloat TSCurveFillAlpha = 0.45f;
-/// Alpha component for a channel curve's stroke
+/// Alpha component for a channel curve fill
+static const CGFloat TSCurveFillAlpha = 0.5f;
+/// Alpha component for a channel curve stroke
 static const CGFloat TSCurveStrokeAlpha = 0.75f;
 
 /// Duration of the animation between histogram paths
@@ -32,18 +32,18 @@ static const NSUInteger TSHistogramBuckets = 256;
 
 /// KVO context for the image key
 static void *TSImageKVOCtx = &TSImageKVOCtx;
-/// KVO context for the quality
+/// KVO context for the quality key
 static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 
 @interface TSHistogramView ()
 
-/// border
+/// border/curve container
 @property (nonatomic) CALayer *border;
-/// red channel histogram
+/// red channel curve
 @property (nonatomic) CAShapeLayer *rLayer;
-/// green channel histogram
+/// green channel curve
 @property (nonatomic) CAShapeLayer *gLayer;
-/// blue channel histogram
+/// blue channel curve
 @property (nonatomic) CAShapeLayer *bLayer;
 
 /// temporary histogram buffer; straight from vImage
@@ -60,6 +60,7 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 
 - (void) setUpLayers;
 - (void) setUpCurveLayer:(CAShapeLayer *) curve withChannel:(NSInteger) c;
+- (void) resetCurveLayer:(CAShapeLayer *) layer withAnimation:(BOOL) animate;
 
 - (void) allocateBuffers;
 - (void) updateImageBuffer;
@@ -76,7 +77,7 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 - (NSArray<NSValue *> *) pointsForChannel:(NSUInteger) c;
 - (NSBezierPath *) pathForCurvePts:(NSArray<NSValue *> *) points;
 
-- (void) animatePathChange:(NSBezierPath *) path andLayer:(CAShapeLayer *) layer;
+- (void) animatePathChange:(NSBezierPath *) path inLayer:(CAShapeLayer *) layer;
 
 @end
 
@@ -133,9 +134,6 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	self.border.cornerRadius = 2.f;
 	self.border.masksToBounds = YES;
 	
-	// flip the Y coordinate system of the curves
-	self.border.sublayerTransform = CATransform3DMakeScale(1.0f, -1.0f, 1.0f);
-	
 	// set up the curve layers
 	self.rLayer = [CAShapeLayer layer];
 	self.gLayer = [CAShapeLayer layer];
@@ -170,7 +168,35 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	
 	curve.lineWidth = 1.f;
 	curve.masksToBounds = YES;
+}
+
+/**
+ * Resets a curve layer to show nothing. This generates a default path,
+ * which consists of a single, 1pt line, just underneath the visible
+ * viewport.
+ */
+- (void) resetCurveLayer:(CAShapeLayer *) layer withAnimation:(BOOL) animate {
+	NSSize curveSz = NSInsetRect(self.bounds, 0, 0).size;
 	
+	// create the path
+	NSBezierPath *path = [NSBezierPath new];
+	
+	[path moveToPoint:NSMakePoint(0, curveSz.height)];
+	
+	for(NSUInteger i = 0; i < TSHistogramBuckets; i++) {
+		CGFloat x = (((CGFloat) i) / ((CGFloat) TSHistogramBuckets - 1) * curveSz.width) - 1.f;
+		
+		[path lineToPoint:NSMakePoint(x, curveSz.height)];
+	}
+	
+	[path lineToPoint:NSMakePoint(0, curveSz.height)];
+	
+	// set it pls
+	if(animate) {
+		[self animatePathChange:path inLayer:layer];
+	} else {
+		layer.path = path.CGPath;
+	}
 }
 
 #pragma mark Buffers
@@ -384,6 +410,13 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	self.gLayer.frame = curvesFrame;
 	self.bLayer.frame = curvesFrame;
 	
+	// if no image is loaded, set up the placeholder frame
+	if(self.image == nil) {
+		[self resetCurveLayer:self.rLayer withAnimation:NO];
+		[self resetCurveLayer:self.gLayer withAnimation:NO];
+		[self resetCurveLayer:self.bLayer withAnimation:NO];
+	}
+	
 	// commit transaction
 	[CATransaction commit];
 	
@@ -397,7 +430,7 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
  * Use a flipped coordinate system.
  */
 - (BOOL) isFlipped {
-	return NO;
+	return YES;
 }
 
 #pragma mark Histogram Calculation
@@ -415,9 +448,9 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 			[CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
 			
 			// set the paths to nil
-			self.rLayer.path = nil;
-			self.gLayer.path = nil;
-			self.bLayer.path = nil;
+			[self resetCurveLayer:self.rLayer withAnimation:YES];
+			[self resetCurveLayer:self.gLayer withAnimation:YES];
+			[self resetCurveLayer:self.bLayer withAnimation:YES];
 			
 			// commit transaction
 			[CATransaction commit];
@@ -484,9 +517,9 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	// set the paths on the main thread, with animation
 	dispatch_async(dispatch_get_main_queue(), ^{
 		if(shouldAnimate) {
-			[self animatePathChange:redPath andLayer:self.rLayer];
-			[self animatePathChange:greenPath andLayer:self.gLayer];
-			[self animatePathChange:bluePath andLayer:self.bLayer];
+			[self animatePathChange:redPath inLayer:self.rLayer];
+			[self animatePathChange:greenPath inLayer:self.gLayer];
+			[self animatePathChange:bluePath inLayer:self.bLayer];
 		} else {
 			self.rLayer.path = redPath.CGPath;
 			self.gLayer.path = greenPath.CGPath;
@@ -551,7 +584,7 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
  * Animates the change of the path value on the given layer. Once the
  * animation has completed, it is removed, and the path value updated.
  */
-- (void) animatePathChange:(NSBezierPath *) path andLayer:(CAShapeLayer *) layer {
+- (void) animatePathChange:(NSBezierPath *) path inLayer:(CAShapeLayer *) layer {
 	// is the path nil? if so, just set it.
 	if(layer.path == nil) {
 		layer.path = path.CGPath;

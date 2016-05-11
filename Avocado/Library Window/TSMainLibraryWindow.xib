@@ -115,6 +115,16 @@
                                     </menu>
                                 </popUpButtonCell>
                             </popUpButton>
+                            <button verticalHuggingPriority="750" tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="aaG-1O-UWG">
+                                <rect key="frame" x="69" y="13" width="72" height="32"/>
+                                <buttonCell key="cell" type="push" title="Clear" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="SLp-Jw-RKY">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="loadHistoImage:" target="-2" id="f4L-eb-hPX"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="2Ra-KC-B5k" firstAttribute="trailing" secondItem="Cu4-mA-60v" secondAttribute="trailing" id="07m-U1-55z"/>
@@ -122,7 +132,9 @@
                             <constraint firstItem="7wa-8M-YXV" firstAttribute="leading" secondItem="Fwq-3X-pa4" secondAttribute="trailing" constant="12" id="65P-7E-WKF"/>
                             <constraint firstItem="h8l-Dr-RIu" firstAttribute="top" secondItem="2Ra-KC-B5k" secondAttribute="top" id="PbJ-Y2-Pca"/>
                             <constraint firstAttribute="trailing" secondItem="Cu4-mA-60v" secondAttribute="trailing" constant="20" id="PzN-Gz-rku"/>
+                            <constraint firstItem="aaG-1O-UWG" firstAttribute="top" secondItem="2Ra-KC-B5k" secondAttribute="top" id="Ux9-Mk-YKu"/>
                             <constraint firstItem="Cu4-mA-60v" firstAttribute="top" secondItem="gRH-OR-KxL" secondAttribute="top" constant="20" id="Yc0-gI-CjQ"/>
+                            <constraint firstItem="Fwq-3X-pa4" firstAttribute="leading" secondItem="aaG-1O-UWG" secondAttribute="trailing" constant="12" id="Ycl-7B-fR3"/>
                             <constraint firstItem="7wa-8M-YXV" firstAttribute="top" secondItem="2Ra-KC-B5k" secondAttribute="top" id="cSX-i6-8S7"/>
                             <constraint firstItem="2Ra-KC-B5k" firstAttribute="leading" secondItem="7wa-8M-YXV" secondAttribute="trailing" constant="12" id="fKg-nw-TJ3"/>
                             <constraint firstItem="Fwq-3X-pa4" firstAttribute="top" secondItem="2Ra-KC-B5k" secondAttribute="top" id="k4h-3R-iUe"/>
