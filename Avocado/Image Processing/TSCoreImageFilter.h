@@ -25,12 +25,6 @@ typedef NS_ENUM(NSUInteger, TSCoreImageFilterCategory) {
 @class CIImage;
 @interface TSCoreImageFilter : NSObject
 
-/**
- * Initializes this superclass, and sets the internal filter property to
- * whatever filter has been provided.
- */
-- (instancetype) initWithFilter:(CIFilter *) filter;
-
 /// Filter input image
 @property (nonatomic) CIImage *filterInput;
 /// Filter output image

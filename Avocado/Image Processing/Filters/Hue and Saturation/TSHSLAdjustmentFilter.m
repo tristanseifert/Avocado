@@ -30,8 +30,6 @@
 @property (nonatomic) NSString *kernelString;
 @property (nonatomic) CIColorKernel *kernel;
 
-@property (nonatomic) CIFilter *filter;
-
 @end
 
 @implementation TSHSLAdjustmentFilter
@@ -42,30 +40,65 @@
 - (instancetype) init {
 	NSError *err = nil;
 	
-	// load the kernel from the bundle
-	NSBundle *b = [NSBundle mainBundle];
-	NSURL *url = [b URLForResource:@"TSHSLAdjustmentFilter"
-					 withExtension:@"cikernel"];
-	
-	self.kernelString = [NSString stringWithContentsOfURL:url
-												 encoding:NSUTF8StringEncoding
-													error:&err];
-
-	if(self.kernelString == nil || err != nil) {
-		DDLogError(@"Couldn't load kernel string from %@: %@", url, err);
-		return nil;
-	}
-	
-	self.kernel = [CIColorKernel kernelWithString:self.kernelString];
-	
-	// set up filter
-	
 	// init superclass
-	if(self = [super initWithFilter:self.filter]) {
+	if(self = [super init]) {
+		// load the kernel from the bundle
+		NSBundle *b = [NSBundle mainBundle];
+		NSURL *url = [b URLForResource:@"TSHSLAdjustmentFilter"
+						 withExtension:@"cikernel"];
 		
+		self.kernelString = [NSString stringWithContentsOfURL:url
+													 encoding:NSUTF8StringEncoding
+														error:&err];
+		
+		if(self.kernelString == nil || err != nil) {
+			DDLogError(@"Couldn't load kernel string from %@: %@", url, err);
+			return nil;
+		}
+		
+		self.kernel = [CIColorKernel kernelWithString:self.kernelString];
+		
+		// specify default value for vectors
+		self.inputRedShift = [CIVector vectorWithX:0.f Y:1.f Z:1.f];
+		self.inputOrangeShift = [CIVector vectorWithX:0.f Y:1.f Z:1.f];
+		self.inputYellowShift = [CIVector vectorWithX:0.f Y:1.f Z:1.f];
+		self.inputGreenShift = [CIVector vectorWithX:0.f Y:1.f Z:1.f];
+		self.inputAquaShift = [CIVector vectorWithX:0.f Y:1.f Z:1.f];
+		self.inputBlueShift = [CIVector vectorWithX:0.f Y:1.f Z:1.f];
+		self.inputPurpleShift = [CIVector vectorWithX:0.f Y:1.f Z:1.f];
+		self.inputMagentaShift = [CIVector vectorWithX:0.f Y:1.f Z:1.f];
 	}
 	
 	return self;
+}
+
+/// Category for this filter
+- (TSCoreImageFilterCategory) category {
+	return TSFilterCategoryColourAdjustment;
+}
+
+/**
+ * Applies the filter on the specified input image.
+ */
+- (CIImage *) filterOutput {
+	NSArray *args = @[
+		// input image
+		self.filterInput,
+		
+		// shift values
+		self.inputRedShift,
+		self.inputOrangeShift,
+		self.inputYellowShift,
+		self.inputGreenShift,
+		self.inputAquaShift,
+		self.inputBlueShift,
+		self.inputPurpleShift,
+		self.inputMagentaShift
+	];
+	
+	// apply the extent
+	return [self.kernel applyWithExtent:self.filterInput.extent
+							  arguments:args];
 }
 
 @end
