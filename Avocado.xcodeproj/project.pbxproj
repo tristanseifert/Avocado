@@ -29,6 +29,9 @@
 		6A5C615F1CD67C5B00E3C3C9 /* TSImageIOHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A5C615E1CD67C5B00E3C3C9 /* TSImageIOHelper.m */; };
 		6A6ED4101CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A6ED40F1CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.m */; };
 		6A6ED4141CE205B6001EFA21 /* TSHistogramView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A6ED4131CE205B6001EFA21 /* TSHistogramView.m */; };
+		6A6ED4171CE4D0EE001EFA21 /* NSColor+AvocadoUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A6ED4161CE4D0EE001EFA21 /* NSColor+AvocadoUtils.m */; };
+		6A6ED41B1CE4D239001EFA21 /* TSHSLAdjustmentFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A6ED41A1CE4D239001EFA21 /* TSHSLAdjustmentFilter.m */; };
+		6A6ED41D1CE4D30A001EFA21 /* TSHSLAdjustmentFilter.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = 6A6ED41C1CE4D30A001EFA21 /* TSHSLAdjustmentFilter.cikernel */; };
 		6A7987691CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7987681CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m */; };
 		6A79876B1CDD5CA200FB3A8E /* ahd_interpolate_mod.c in Sources */ = {isa = PBXBuildFile; fileRef = 6A79876A1CDD5CA200FB3A8E /* ahd_interpolate_mod.c */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive"; }; };
 		6A79876E1CDD60EB00FB3A8E /* TSRawPipelineTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A79876D1CDD60EB00FB3A8E /* TSRawPipelineTest.m */; };
@@ -132,6 +135,11 @@
 		6A6ED40F1CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSBezierPath+AvocadoUtils.m"; path = "Avocado/Helpers/NSBezierPath+AvocadoUtils.m"; sourceTree = "<group>"; };
 		6A6ED4121CE205B6001EFA21 /* TSHistogramView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSHistogramView.h; path = "Avocado/Image Editing UI/TSHistogramView.h"; sourceTree = "<group>"; };
 		6A6ED4131CE205B6001EFA21 /* TSHistogramView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSHistogramView.m; path = "Avocado/Image Editing UI/TSHistogramView.m"; sourceTree = "<group>"; };
+		6A6ED4151CE4D0EE001EFA21 /* NSColor+AvocadoUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSColor+AvocadoUtils.h"; path = "Avocado/Helpers/NSColor+AvocadoUtils.h"; sourceTree = "<group>"; };
+		6A6ED4161CE4D0EE001EFA21 /* NSColor+AvocadoUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSColor+AvocadoUtils.m"; path = "Avocado/Helpers/NSColor+AvocadoUtils.m"; sourceTree = "<group>"; };
+		6A6ED4191CE4D239001EFA21 /* TSHSLAdjustmentFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSHSLAdjustmentFilter.h; path = "Avocado/Image Processing/Filters/Hue and Saturation/TSHSLAdjustmentFilter.h"; sourceTree = "<group>"; };
+		6A6ED41A1CE4D239001EFA21 /* TSHSLAdjustmentFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSHSLAdjustmentFilter.m; path = "Avocado/Image Processing/Filters/Hue and Saturation/TSHSLAdjustmentFilter.m"; sourceTree = "<group>"; };
+		6A6ED41C1CE4D30A001EFA21 /* TSHSLAdjustmentFilter.cikernel */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; name = TSHSLAdjustmentFilter.cikernel; path = "Avocado/Image Processing/Filters/Hue and Saturation/TSHSLAdjustmentFilter.cikernel"; sourceTree = "<group>"; };
 		6A7987671CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSBlockOperation+AvocadoUtils.h"; path = "Avocado/Helpers/NSBlockOperation+AvocadoUtils.h"; sourceTree = "<group>"; };
 		6A7987681CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSBlockOperation+AvocadoUtils.m"; path = "Avocado/Helpers/NSBlockOperation+AvocadoUtils.m"; sourceTree = "<group>"; };
 		6A79876A1CDD5CA200FB3A8E /* ahd_interpolate_mod.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ahd_interpolate_mod.c; path = "Avocado/RAW Processing/ahd_interpolate_mod.c"; sourceTree = "<group>"; };
@@ -269,6 +277,7 @@
 			children = (
 				6A06F44A1CE0205D001DFC4C /* TSCoreImageFilter.h */,
 				6A06F44B1CE0205D001DFC4C /* TSCoreImageFilter.m */,
+				6A6ED4181CE4D195001EFA21 /* Hue/Saturation */,
 			);
 			name = Filters;
 			sourceTree = "<group>";
@@ -370,6 +379,16 @@
 				6A6ED4131CE205B6001EFA21 /* TSHistogramView.m */,
 			);
 			name = "Image Editing UI";
+			sourceTree = "<group>";
+		};
+		6A6ED4181CE4D195001EFA21 /* Hue/Saturation */ = {
+			isa = PBXGroup;
+			children = (
+				6A6ED4191CE4D239001EFA21 /* TSHSLAdjustmentFilter.h */,
+				6A6ED41A1CE4D239001EFA21 /* TSHSLAdjustmentFilter.m */,
+				6A6ED41C1CE4D30A001EFA21 /* TSHSLAdjustmentFilter.cikernel */,
+			);
+			name = Hue/Saturation;
 			sourceTree = "<group>";
 		};
 		6A7EC3C81CD68595007E91E8 /* Thumb Handling */ = {
@@ -626,6 +645,8 @@
 				6AB32EA01CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m */,
 				6A6ED40E1CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.h */,
 				6A6ED40F1CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.m */,
+				6A6ED4151CE4D0EE001EFA21 /* NSColor+AvocadoUtils.h */,
+				6A6ED4161CE4D0EE001EFA21 /* NSColor+AvocadoUtils.m */,
 			);
 			name = "Categories and Helpers";
 			sourceTree = "<group>";
@@ -760,6 +781,7 @@
 				6AE87BD11CD275C90053CD9D /* Assets.xcassets in Resources */,
 				6AEC35481CD443B90033DE0A /* TSLibraryDetail.xib in Resources */,
 				6AE87BD41CD275C90053CD9D /* MainMenu.xib in Resources */,
+				6A6ED41D1CE4D30A001EFA21 /* TSHSLAdjustmentFilter.cikernel in Resources */,
 				6AEC76781CD50E6E00870FAE /* TSImportPanelAccessory.xib in Resources */,
 				6AEC35131CD43E070033DE0A /* TSMainLibraryWindow.xib in Resources */,
 				6AEC35421CD443460033DE0A /* TSLibraryOverview.xib in Resources */,
@@ -888,9 +910,11 @@
 				6AEC35411CD443460033DE0A /* TSLibraryOverviewController.m in Sources */,
 				6AEC767B1CD516EF00870FAE /* TSLibraryOverviewLightTableController.m in Sources */,
 				6AEC766C1CD4FF2A00870FAE /* TSImportController.m in Sources */,
+				6A6ED4171CE4D0EE001EFA21 /* NSColor+AvocadoUtils.m in Sources */,
 				6AEC35191CD43F000033DE0A /* TSCoreDataStoreIB.m in Sources */,
 				6AEC76701CD5098F00870FAE /* NSDate+AvocadoUtils.m in Sources */,
 				6ABC2DAD1CD4357E006B959F /* TSLibraryAlbumCollection.m in Sources */,
+				6A6ED41B1CE4D239001EFA21 /* TSHSLAdjustmentFilter.m in Sources */,
 				6A06F4371CE0169E001DFC4C /* TSCoreImagePipeline.m in Sources */,
 				6ABC2DAE1CD4357E006B959F /* TSLibraryExportService.m in Sources */,
 				6ABC2DC01CD43586006B959F /* _TSLibraryExportService.m in Sources */,
