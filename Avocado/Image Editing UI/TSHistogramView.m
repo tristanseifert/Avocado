@@ -13,6 +13,9 @@
 #import <CoreImage/CoreImage.h>
 #import <Accelerate/Accelerate.h>
 
+/// when set, uses the ITU BT.709 colour constant; HSP is used otherwise.
+#define	USE_ITU_LUMA	0
+
 /// enum for channels
 typedef NS_ENUM(NSUInteger, TSHistogramChannel) {
 	kTSChannelRed		= 0,
@@ -490,7 +493,9 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	 * Calculates luminance over the entire image. This works pixel by
 	 * pixel, and stores luminance in the alpha component.
 	 *
-	 * The luminance formula used uses ITU BT.709 constants.
+	 * The luminance formula used uses ITU BT.709 constants, or the HSP
+	 * colour model's "perceived brightness" value, depending on the
+	 * value of USE_ITU_LUMA.
 	 */	
 	CGFloat luma;
 	
@@ -510,7 +515,11 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 			// read RGB, then apply luminance formula
 			CGFloat r = ptrR[o], g = ptrG[o], b = ptrB[0];
 			
+#if USE_ITU_LUMA
 			luma = (0.2126 * r) + (0.7152 * g) + (0.0722 * b);
+#else
+			luma = sqrt((0.299 * pow(r, 2)) + (0.587 * pow(g, 2)) + (0.114 * pow(b, 2)));
+#endif
 			
 			// store it
 			ptrA[o] = (uint8_t) luma;
@@ -535,11 +544,11 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	vImageHistogramCalculation_ARGB8888(self.imgBuf, histogramPtr,
 										kvImageNoFlags);
 	
-	// find the maximum value in the buffer, but only on RGB data
+	// find the maximum value in the buffer, even for the luma component
 	self.histogramMax = 0;
 	
 	for(i = 0; i < TSHistogramBuckets; i++) {
-		for(c = 0; c < 3; c++) {
+		for(c = 0; c < 4; c++) {
 			// check if it's higher than the max value
 			if(self.histogramMax < histogramPtr[c][i]) {
 				self.histogramMax = histogramPtr[c][i];
