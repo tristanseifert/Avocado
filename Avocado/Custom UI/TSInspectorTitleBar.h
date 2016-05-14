@@ -10,4 +10,9 @@
 
 @interface TSInspectorTitleBar : TSVibrantView
 
+/// target for the click action
+@property (nonatomic) id target;
+/// selector to invoke when clicked
+@property (nonatomic) SEL action;
+
 @end

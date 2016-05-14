@@ -13,10 +13,8 @@
 #import "TSVibrantStackView.h"
 #import "TSVibrantView.h"
 
-/// title bar inset, in points
-static const CGFloat TSInspectorTitleBarHInset = 5.f;
-/// space between the disclosure button and the title label, in points
-static const CGFloat TSInspectorTitleBarLabelXPadding = 4.f;
+/// space between the side of the view and the title label
+static const CGFloat TSInspectorTitleLabelSpacing = 10.f;
 
 /// duration of the accordion animation, in seconds
 static const CGFloat TSInspectorAccordionAnimationDuration = 0.33f;
@@ -27,16 +25,14 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 
 @property (nonatomic, strong) NSViewController *content;
 
-// title bar for the inspector pane
-@property (nonatomic) TSInspectorTitleBar *titleBar;
 // override the view property as a stack view
 @property (nonatomic) NSStackView *view;
 
 // layout constraint for the height of the content
 @property (nonatomic) NSLayoutConstraint *contentHeightConstraint;
 
-// disclosure button
-@property (nonatomic) NSButton *disclosureTriangle;
+// title bar for the inspector pane
+@property (nonatomic) TSInspectorTitleBar *titleBar;
 // title label; title is taken from the content view controller
 @property (nonatomic) NSTextField *titleLabel;
 
@@ -44,7 +40,7 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 @property (nonatomic, readwrite) BOOL isExpanded;
 
 - (void) setUpTitleBar;
-- (void) disclosureTriangleClicked:(id) sender;
+- (void) toggleAccordionState:(id) sender;
 
 @end
 
@@ -196,6 +192,9 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 	self.titleBar.wantsLayer = YES;
 	self.titleBar.translatesAutoresizingMaskIntoConstraints = NO;
 	
+	self.titleBar.target = self;
+	self.titleBar.action = @selector(toggleAccordionState:);
+	
 	[self.view addView:self.titleBar
 			 inGravity:NSStackViewGravityTop];
 	
@@ -206,41 +205,6 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 										toItem:nil
 									 attribute:NSLayoutAttributeNotAnAttribute
 									multiplier:0.f constant:TSInspectorTitleBarHeight];
-	c.priority = NSLayoutPriorityRequired;
-	[self.titleBar addConstraint:c];
-	
-	
-	// set up the collapsible button
-	self.disclosureTriangle = [[NSButton alloc] initWithFrame:NSZeroRect];
-	self.disclosureTriangle.translatesAutoresizingMaskIntoConstraints = NO;
-	
-	self.disclosureTriangle.buttonType = NSOnOffButton;
-	self.disclosureTriangle.bezelStyle = NSDisclosureBezelStyle;
-	self.disclosureTriangle.title = @"";
-	
-	self.disclosureTriangle.target = self;
-	self.disclosureTriangle.action = @selector(disclosureTriangleClicked:);
-	
-	self.disclosureTriangle.state = self.isExpanded ? NSOnState : NSOffState;
-	
-	[self.titleBar addSubview:self.disclosureTriangle];
-	
-	// add constraints for collapsible button
-	c = [NSLayoutConstraint constraintWithItem:self.disclosureTriangle
-									 attribute:NSLayoutAttributeLeading
-									 relatedBy:NSLayoutRelationEqual
-										toItem:self.titleBar
-									 attribute:NSLayoutAttributeLeading
-									multiplier:1.f constant:TSInspectorTitleBarHInset];
-	c.priority = NSLayoutPriorityRequired;
-	[self.titleBar addConstraint:c];
-	
-	c = [NSLayoutConstraint constraintWithItem:self.disclosureTriangle
-									 attribute:NSLayoutAttributeCenterY
-									 relatedBy:NSLayoutRelationEqual
-										toItem:self.titleBar
-									 attribute:NSLayoutAttributeCenterY
-									multiplier:1.f constant:0.f];
 	c.priority = NSLayoutPriorityRequired;
 	[self.titleBar addConstraint:c];
 	
@@ -268,9 +232,9 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 	c = [NSLayoutConstraint constraintWithItem:self.titleLabel
 									 attribute:NSLayoutAttributeLeading
 									 relatedBy:NSLayoutRelationEqual
-										toItem:self.disclosureTriangle
-									 attribute:NSLayoutAttributeTrailing
-									multiplier:1.f constant:TSInspectorTitleBarLabelXPadding];
+										toItem:self.titleBar
+									 attribute:NSLayoutAttributeLeading
+									multiplier:1.f constant:TSInspectorTitleLabelSpacing];
 	c.priority = NSLayoutPriorityRequired;
 	[self.titleBar addConstraint:c];
 	
@@ -287,7 +251,7 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 /**
  * Handles toggling of the disclosure triangle.
  */
-- (void) disclosureTriangleClicked:(id) sender {
+- (void) toggleAccordionState:(id) sender {
 	// collapse the view
 	if(self.isExpanded) {
 		[NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
