@@ -31,7 +31,7 @@
 
 - (void) appWillTerminate:(NSNotification *) notification;
 
-- (void) activateViewController:(TSMainLibraryContentViewController *) vc animated:(BOOL) isAnimated;
+- (void) activateViewController:(NSViewController <TSMainLibraryContentViewController> *) vc animated:(BOOL) isAnimated;
 
 - (void) readWindowState:(NSKeyedUnarchiver *) archiver;
 - (void) saveWindowState:(NSKeyedArchiver *) archiver;
@@ -122,7 +122,7 @@
 /**
  * Activates the given view controller.
  */
-- (void) activateViewController:(TSMainLibraryContentViewController *) vc animated:(BOOL) isAnimated {
+- (void) activateViewController:(NSViewController <TSMainLibraryContentViewController> *) vc animated:(BOOL) isAnimated {
 	// save the current rect
 	NSRect oldFrame = self.window.frame;
 	

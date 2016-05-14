@@ -36,6 +36,11 @@
 		6A79876B1CDD5CA200FB3A8E /* ahd_interpolate_mod.c in Sources */ = {isa = PBXBuildFile; fileRef = 6A79876A1CDD5CA200FB3A8E /* ahd_interpolate_mod.c */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive"; }; };
 		6A79876E1CDD60EB00FB3A8E /* TSRawPipelineTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A79876D1CDD60EB00FB3A8E /* TSRawPipelineTest.m */; };
 		6A7EC3CB1CD685AF007E91E8 /* TSThumbCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7EC3CA1CD685AF007E91E8 /* TSThumbCache.m */; };
+		6AA9358C1CE787D9004E9F9C /* TSDevelopImageViewerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA935871CE787D9004E9F9C /* TSDevelopImageViewerController.m */; };
+		6AA9358D1CE787D9004E9F9C /* TSDevelopImageViewerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AA935881CE787D9004E9F9C /* TSDevelopImageViewerController.xib */; };
+		6AA9358E1CE787D9004E9F9C /* TSDevelopSidebarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA9358A1CE787D9004E9F9C /* TSDevelopSidebarController.m */; };
+		6AA9358F1CE787D9004E9F9C /* TSDevelopSidebarController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AA9358B1CE787D9004E9F9C /* TSDevelopSidebarController.xib */; };
+		6AA935921CE792E2004E9F9C /* TSVibrantView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA935911CE792E2004E9F9C /* TSVibrantView.m */; };
 		6AAEFC961CE6C0DE0003DF4B /* TSDefaultAppState.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6AAEFC951CE6C0DE0003DF4B /* TSDefaultAppState.plist */; };
 		6AB32E9C1CDE4574004FF7A3 /* lmmse_interpolate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AB32E9B1CDE4574004FF7A3 /* lmmse_interpolate.m */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive"; }; };
 		6AB32EA11CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AB32EA01CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m */; };
@@ -66,7 +71,6 @@
 		6AEC35421CD443460033DE0A /* TSLibraryOverview.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC35401CD443460033DE0A /* TSLibraryOverview.xib */; };
 		6AEC35471CD443B90033DE0A /* TSLibraryDetailController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC35451CD443B90033DE0A /* TSLibraryDetailController.m */; };
 		6AEC35481CD443B90033DE0A /* TSLibraryDetail.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC35461CD443B90033DE0A /* TSLibraryDetail.xib */; };
-		6AEC765D1CD4679700870FAE /* TSMainLibraryContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC765C1CD4679700870FAE /* TSMainLibraryContentViewController.m */; };
 		6AEC766C1CD4FF2A00870FAE /* TSImportController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC766B1CD4FF2A00870FAE /* TSImportController.m */; };
 		6AEC76701CD5098F00870FAE /* NSDate+AvocadoUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC766F1CD5098F00870FAE /* NSDate+AvocadoUtils.m */; };
 		6AEC76731CD50DDD00870FAE /* TSImportUIController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC76721CD50DDD00870FAE /* TSImportUIController.m */; };
@@ -147,6 +151,14 @@
 		6A79876D1CDD60EB00FB3A8E /* TSRawPipelineTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSRawPipelineTest.m; sourceTree = "<group>"; };
 		6A7EC3C91CD685AF007E91E8 /* TSThumbCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSThumbCache.h; path = "Avocado/Thumb Handling/TSThumbCache.h"; sourceTree = "<group>"; };
 		6A7EC3CA1CD685AF007E91E8 /* TSThumbCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSThumbCache.m; path = "Avocado/Thumb Handling/TSThumbCache.m"; sourceTree = "<group>"; };
+		6AA935861CE787D9004E9F9C /* TSDevelopImageViewerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSDevelopImageViewerController.h; path = "Library Window/Single Image/TSDevelopImageViewerController.h"; sourceTree = "<group>"; };
+		6AA935871CE787D9004E9F9C /* TSDevelopImageViewerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSDevelopImageViewerController.m; path = "Library Window/Single Image/TSDevelopImageViewerController.m"; sourceTree = "<group>"; };
+		6AA935881CE787D9004E9F9C /* TSDevelopImageViewerController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSDevelopImageViewerController.xib; path = "Library Window/Single Image/TSDevelopImageViewerController.xib"; sourceTree = "<group>"; };
+		6AA935891CE787D9004E9F9C /* TSDevelopSidebarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSDevelopSidebarController.h; path = "Library Window/Single Image/TSDevelopSidebarController.h"; sourceTree = "<group>"; };
+		6AA9358A1CE787D9004E9F9C /* TSDevelopSidebarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSDevelopSidebarController.m; path = "Library Window/Single Image/TSDevelopSidebarController.m"; sourceTree = "<group>"; };
+		6AA9358B1CE787D9004E9F9C /* TSDevelopSidebarController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSDevelopSidebarController.xib; path = "Library Window/Single Image/TSDevelopSidebarController.xib"; sourceTree = "<group>"; };
+		6AA935901CE792E2004E9F9C /* TSVibrantView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSVibrantView.h; path = Avocado/Helpers/TSVibrantView.h; sourceTree = "<group>"; };
+		6AA935911CE792E2004E9F9C /* TSVibrantView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSVibrantView.m; path = Avocado/Helpers/TSVibrantView.m; sourceTree = "<group>"; };
 		6AAEFC951CE6C0DE0003DF4B /* TSDefaultAppState.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TSDefaultAppState.plist; sourceTree = "<group>"; };
 		6AB32E9A1CDDBAC9004FF7A3 /* ahd_interpolate_mod.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ahd_interpolate_mod.h; path = "Avocado/RAW Processing/ahd_interpolate_mod.h"; sourceTree = "<group>"; };
 		6AB32E9B1CDE4574004FF7A3 /* lmmse_interpolate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = lmmse_interpolate.m; path = "Avocado/RAW Processing/lmmse_interpolate.m"; sourceTree = "<group>"; };
@@ -211,7 +223,6 @@
 		6AEC35451CD443B90033DE0A /* TSLibraryDetailController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryDetailController.m; path = "Library Window/Single Image/TSLibraryDetailController.m"; sourceTree = "<group>"; };
 		6AEC35461CD443B90033DE0A /* TSLibraryDetail.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSLibraryDetail.xib; path = "Library Window/Single Image/TSLibraryDetail.xib"; sourceTree = "<group>"; };
 		6AEC765B1CD4679700870FAE /* TSMainLibraryContentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSMainLibraryContentViewController.h; path = "Library Window/TSMainLibraryContentViewController.h"; sourceTree = "<group>"; };
-		6AEC765C1CD4679700870FAE /* TSMainLibraryContentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSMainLibraryContentViewController.m; path = "Library Window/TSMainLibraryContentViewController.m"; sourceTree = "<group>"; };
 		6AEC765E1CD475E500870FAE /* libraw_alloc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = libraw_alloc.h; path = Dependencies/LibRaw/libraw/libraw_alloc.h; sourceTree = SOURCE_ROOT; };
 		6AEC765F1CD475E500870FAE /* libraw_const.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = libraw_const.h; path = Dependencies/LibRaw/libraw/libraw_const.h; sourceTree = SOURCE_ROOT; };
 		6AEC76601CD475E500870FAE /* libraw_datastream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = libraw_datastream.h; path = Dependencies/LibRaw/libraw/libraw_datastream.h; sourceTree = SOURCE_ROOT; };
@@ -336,8 +347,8 @@
 		6A28F0601CD8186900228067 /* Main UI Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				6AEC35431CD443A50033DE0A /* Library Detail Controller */,
-				6AEC353D1CD4431B0033DE0A /* Library Overview Controller */,
+				6AEC35431CD443A50033DE0A /* Develop UI */,
+				6AEC353D1CD4431B0033DE0A /* Light Table UI */,
 			);
 			name = "Main UI Controllers";
 			sourceTree = "<group>";
@@ -374,13 +385,14 @@
 			name = "RAW Processing";
 			sourceTree = "<group>";
 		};
-		6A6ED4111CE20595001EFA21 /* Image Editing UI */ = {
+		6A6ED4111CE20595001EFA21 /* UI Components */ = {
 			isa = PBXGroup;
 			children = (
 				6A6ED4121CE205B6001EFA21 /* TSHistogramView.h */,
 				6A6ED4131CE205B6001EFA21 /* TSHistogramView.m */,
 			);
-			name = "Image Editing UI";
+			name = "UI Components";
+			path = ..;
 			sourceTree = "<group>";
 		};
 		6A6ED4181CE4D195001EFA21 /* Hue/Saturation */ = {
@@ -570,7 +582,6 @@
 				6AEC35101CD43E070033DE0A /* TSMainLibraryWindowController.m */,
 				6AEC35111CD43E070033DE0A /* TSMainLibraryWindow.xib */,
 				6AEC765B1CD4679700870FAE /* TSMainLibraryContentViewController.h */,
-				6AEC765C1CD4679700870FAE /* TSMainLibraryContentViewController.m */,
 			);
 			name = "Library Window";
 			path = Avocado;
@@ -584,7 +595,6 @@
 				6A06F4341CE01541001DFC4C /* General Image Processing */,
 				6A28F05F1CD8185400228067 /* RAW Processing */,
 				6AE87BDC1CD276070053CD9D /* CoreData */,
-				6A6ED4111CE20595001EFA21 /* Image Editing UI */,
 				6A28F0601CD8186900228067 /* Main UI Controllers */,
 				6AEC76691CD4FECD00870FAE /* Importing */,
 				6AEC350D1CD43DBD0033DE0A /* Library Window */,
@@ -595,7 +605,7 @@
 			name = "Avocado Main App";
 			sourceTree = "<group>";
 		};
-		6AEC353D1CD4431B0033DE0A /* Library Overview Controller */ = {
+		6AEC353D1CD4431B0033DE0A /* Light Table UI */ = {
 			isa = PBXGroup;
 			children = (
 				6AEC353E1CD443460033DE0A /* TSLibraryOverviewController.h */,
@@ -605,18 +615,25 @@
 				6AEC767A1CD516EF00870FAE /* TSLibraryOverviewLightTableController.m */,
 				6AEC767F1CD548E300870FAE /* Image View */,
 			);
-			name = "Library Overview Controller";
+			name = "Light Table UI";
 			path = Avocado;
 			sourceTree = "<group>";
 		};
-		6AEC35431CD443A50033DE0A /* Library Detail Controller */ = {
+		6AEC35431CD443A50033DE0A /* Develop UI */ = {
 			isa = PBXGroup;
 			children = (
 				6AEC35441CD443B90033DE0A /* TSLibraryDetailController.h */,
 				6AEC35451CD443B90033DE0A /* TSLibraryDetailController.m */,
 				6AEC35461CD443B90033DE0A /* TSLibraryDetail.xib */,
+				6AA935861CE787D9004E9F9C /* TSDevelopImageViewerController.h */,
+				6AA935871CE787D9004E9F9C /* TSDevelopImageViewerController.m */,
+				6AA935881CE787D9004E9F9C /* TSDevelopImageViewerController.xib */,
+				6AA935891CE787D9004E9F9C /* TSDevelopSidebarController.h */,
+				6AA9358A1CE787D9004E9F9C /* TSDevelopSidebarController.m */,
+				6AA9358B1CE787D9004E9F9C /* TSDevelopSidebarController.xib */,
+				6A6ED4111CE20595001EFA21 /* UI Components */,
 			);
-			name = "Library Detail Controller";
+			name = "Develop UI";
 			path = Avocado;
 			sourceTree = "<group>";
 		};
@@ -650,6 +667,8 @@
 				6A6ED40F1CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.m */,
 				6A6ED4151CE4D0EE001EFA21 /* NSColor+AvocadoUtils.h */,
 				6A6ED4161CE4D0EE001EFA21 /* NSColor+AvocadoUtils.m */,
+				6AA935901CE792E2004E9F9C /* TSVibrantView.h */,
+				6AA935911CE792E2004E9F9C /* TSVibrantView.m */,
 			);
 			name = "Categories and Helpers";
 			sourceTree = "<group>";
@@ -781,6 +800,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A5C615C1CD64B7100E3C3C9 /* TSLibraryLightTableCell.xib in Resources */,
+				6AA9358F1CE787D9004E9F9C /* TSDevelopSidebarController.xib in Resources */,
 				6AAEFC961CE6C0DE0003DF4B /* TSDefaultAppState.plist in Resources */,
 				6AE87BD11CD275C90053CD9D /* Assets.xcassets in Resources */,
 				6AEC35481CD443B90033DE0A /* TSLibraryDetail.xib in Resources */,
@@ -788,6 +808,7 @@
 				6A6ED41D1CE4D30A001EFA21 /* TSHSLAdjustmentFilter.cikernel in Resources */,
 				6AEC76781CD50E6E00870FAE /* TSImportPanelAccessory.xib in Resources */,
 				6AEC35131CD43E070033DE0A /* TSMainLibraryWindow.xib in Resources */,
+				6AA9358D1CE787D9004E9F9C /* TSDevelopImageViewerController.xib in Resources */,
 				6AEC35421CD443460033DE0A /* TSLibraryOverview.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -886,7 +907,7 @@
 			files = (
 				6AE87BCC1CD275C90053CD9D /* main.m in Sources */,
 				6AEC35121CD43E070033DE0A /* TSMainLibraryWindowController.m in Sources */,
-				6AEC765D1CD4679700870FAE /* TSMainLibraryContentViewController.m in Sources */,
+				6AA9358C1CE787D9004E9F9C /* TSDevelopImageViewerController.m in Sources */,
 				6AEC350C1CD437170033DE0A /* TSCoreDataStore.m in Sources */,
 				6A7EC3CB1CD685AF007E91E8 /* TSThumbCache.m in Sources */,
 				6ABC2DB11CD4357E006B959F /* TSLibraryTag.m in Sources */,
@@ -898,6 +919,7 @@
 				6AE87BEC1CD276E70053CD9D /* Avocado.xcdatamodeld in Sources */,
 				6A34B12A1CD5936200252288 /* TSLibraryImage.m in Sources */,
 				6ABC2DC31CD43586006B959F /* _TSLibraryTag.m in Sources */,
+				6AA9358E1CE787D9004E9F9C /* TSDevelopSidebarController.m in Sources */,
 				6ABC2DAC1CD4357E006B959F /* TSLibraryAlbum.m in Sources */,
 				6AEC76771CD50E6E00870FAE /* TSImportOpenPanelAccessory.m in Sources */,
 				6AEC35471CD443B90033DE0A /* TSLibraryDetailController.m in Sources */,
@@ -917,6 +939,7 @@
 				6A6ED4171CE4D0EE001EFA21 /* NSColor+AvocadoUtils.m in Sources */,
 				6AEC35191CD43F000033DE0A /* TSCoreDataStoreIB.m in Sources */,
 				6AEC76701CD5098F00870FAE /* NSDate+AvocadoUtils.m in Sources */,
+				6AA935921CE792E2004E9F9C /* TSVibrantView.m in Sources */,
 				6ABC2DAD1CD4357E006B959F /* TSLibraryAlbumCollection.m in Sources */,
 				6A6ED41B1CE4D239001EFA21 /* TSHSLAdjustmentFilter.m in Sources */,
 				6A06F4371CE0169E001DFC4C /* TSCoreImagePipeline.m in Sources */,

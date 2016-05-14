@@ -2,6 +2,9 @@
 //  TSMainLibraryContentViewController.h
 //  Avocado
 //
+//	An abstract protocol that view controllers for the main window
+//	implement.
+//
 //  Created by Tristan Seifert on 20160429.
 //  Copyright © 2016 Tristan Seifert. All rights reserved.
 //
@@ -9,7 +12,7 @@
 #import <Cocoa/Cocoa.h>
 
 @class TSMainLibraryWindowController;
-@interface TSMainLibraryContentViewController : NSViewController
+@protocol TSMainLibraryContentViewController <NSObject>
 
 /**
  * Prepares the given window to host this view controller.

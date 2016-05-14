@@ -8,24 +8,28 @@
 
 #import "TSLibraryDetailController.h"
 
-#import "TSHistogramView.h"
+#import "TSDevelopImageViewerController.h"
+#import "TSDevelopSidebarController.h"
 
 #import "TSHumanModels.h"
 #import "TSMainLibraryWindowController.h"
+
+/// minimum width of the sidebar
+static const CGFloat TSEditSidebarMinWidth = 225.f;
+/// maximum width of the sidebar
+static const CGFloat TSEditSidebarMaxWidth = 420.f;
 
 static void *TSImageKVO = &TSImageKVO;
 
 @interface TSLibraryDetailController ()
 
-@property (nonatomic) NSImage *displayedImage;
-
-@property (nonatomic) NSView *imageDisplayView;
-
-- (void) updateImageView;
+@property (nonatomic) TSDevelopImageViewerController *imageController;
+@property (nonatomic) TSDevelopSidebarController *sidebarController;
 
 @end
 
 @implementation TSLibraryDetailController
+@synthesize windowToolbar, windowController;
 
 /**
  * Adds a few KVO
@@ -34,6 +38,13 @@ static void *TSImageKVO = &TSImageKVO;
 	if(self = [super initWithNibName:@"TSLibraryDetail" bundle:nil]) {
 		// add KVO for the image
 		[self addObserver:self forKeyPath:@"image" options:0 context:TSImageKVO];
+		
+		// set up the sidebar controller
+		self.imageController = [[TSDevelopImageViewerController alloc] init];
+		self.sidebarController = [[TSDevelopSidebarController alloc] init];
+		
+		self.imageController.sidebar = self.sidebarController;
+		self.sidebarController.imageViewer = self.imageController;
 	}
 	
 	return self;
@@ -42,11 +53,22 @@ static void *TSImageKVO = &TSImageKVO;
 - (void) viewDidLoad {
     [super viewDidLoad];
 	
-	// set up image view
-	self.imageDisplayView = [[NSView alloc] initWithFrame:NSZeroRect];
-	self.imageDisplayView.wantsLayer = YES;
+	NSSplitViewItem *sidebar, *image;
 	
-	self.scrollView.documentView = self.imageDisplayView;
+	// add the image view
+	image = [NSSplitViewItem splitViewItemWithViewController:self.imageController];
+	image.collapseBehavior = NSSplitViewItemCollapseBehaviorPreferResizingSiblingsWithFixedSplitView;
+	
+	[self addSplitViewItem:image];
+	
+	// add the sidebar
+	sidebar = [NSSplitViewItem sidebarWithViewController:self.sidebarController];
+	sidebar.collapseBehavior = NSSplitViewItemCollapseBehaviorPreferResizingSiblingsWithFixedSplitView;
+	
+	sidebar.minimumThickness = TSEditSidebarMinWidth;
+	sidebar.maximumThickness = TSEditSidebarMaxWidth;
+	
+	[self addSplitViewItem:sidebar];
 }
 
 /**
@@ -54,8 +76,6 @@ static void *TSImageKVO = &TSImageKVO;
  * span the entire size of the window.
  */
 - (void) prepareWindowForAppearance:(NSWindow *) window {
-	[super prepareWindowForAppearance:window];
-	
 	// set up the custom window appearance
 	window.toolbar.visible = YES;
 	window.titlebarAppearsTransparent = YES;
@@ -67,6 +87,21 @@ static void *TSImageKVO = &TSImageKVO;
 	window.styleMask = styleMask | NSFullSizeContentViewWindowMask;
 }
 
+#pragma mark State Restoration
+/**
+ * Saves any view options. Keys should be prefixed by some unique value.
+ */
+- (void) saveViewOptions:(NSKeyedArchiver *) archiver {
+	
+}
+
+/**
+ * Restores view options. Keys should be prefixed by some unique value.
+ */
+- (void) restoreViewOptions:(NSKeyedUnarchiver *) unArchiver {
+	
+}
+
 #pragma mark KVO
 /**
  * Handles KVO, including that for the image changing.
@@ -76,104 +111,12 @@ static void *TSImageKVO = &TSImageKVO;
 						 change:(NSDictionary<NSString *,id> *) change
 						context:(void *) context {
 	// the image property changed
-	if(context == TSImageKVO) {
-		DDLogVerbose(@"Changed image: %@", self.image.fileUrl);
+	if(context == TSImageKVO) {		
+		self.imageController.image = self.image;
+		self.sidebarController.image = self.image;
 	} else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}
-}
-
-#pragma mark Image Handling
-/**
- * Handles the image.
- */
-- (void) updateImageView {
-	// set image, pls.
-	self.imageDisplayView.layer.contents = self.displayedImage;
-	
-	// update size of the image view and content view of the scroll view
-	NSSize imageSize = self.displayedImage.size;
-	
-	self.imageDisplayView.frame = (NSRect) {
-		.size = imageSize,
-		.origin = NSZeroPoint
-	};
-	self.imageDisplayView.layer.frame = self.imageDisplayView.frame;
-
-	((NSView *) self.scrollView.documentView).frame = self.imageDisplayView.frame;
-	
-	// zoom out to fit the image
-}
-
-#pragma mark Split View Delegate
-/**
- * Constrains the right sidebar to be at least 150px, but no larger than 400px.
- */
-- (CGFloat) splitView:(NSSplitView *) splitView constrainSplitPosition:(CGFloat) proposedPosition ofSubviewAt:(NSInteger) dividerIndex {
-	CGFloat width = splitView.bounds.size.width;
-	
-	if(dividerIndex == 0) {
-		if(proposedPosition <= (width - 48.f)) {
-			return (width - 48.f);
-		} else if(proposedPosition > (width - 48.f)) {
-			return 0.f;
-		}
-	}
-	
-	// we should not get down here
-	return proposedPosition;
-}
-
-/**
- * Constrains the minimum coordinate of the divider.
- */
-- (CGFloat) splitView:(NSSplitView *) splitView constrainMinCoordinate:(CGFloat) proposedMinimumPosition ofSubviewAt:(NSInteger) dividerIndex {
-	CGFloat width = splitView.bounds.size.width;
-	
-	if(dividerIndex == 0) {
-		return (width - 48.f);
-	}
-	
-	// we should not get down here
-	return proposedMinimumPosition;
-}
-
-/**
- * Constrains the maximum coordinate of the divider.
- */
-- (CGFloat) splitView:(NSSplitView *) splitView constrainMaxCoordinate:(CGFloat) proposedMaximumPosition ofSubviewAt:(NSInteger) dividerIndex {
-	CGFloat width = splitView.bounds.size.width;
-	
-	if(dividerIndex == 0) {
-		return width;
-	}
-	
-	// we should not get down here
-	return proposedMaximumPosition;
-	
-}
-
-/**
- * Allow the right sidebar to be completely collapsed.
- */
-- (BOOL) splitView:(NSSplitView *) splitView canCollapseSubview:(NSView *) subview {
-	if([subview isEqualTo:self.sidebarView]) {
-		return YES;
-	}
-	
-	return NO;
-}
-
-/**
- * When double-clicking on the first divider, allow hiding of the right  sidebar
- * with the palettes.
- */
-- (BOOL) splitView:(NSSplitView *) splitView shouldCollapseSubview:(NSView *) subview forDoubleClickOnDividerAtIndex:(NSInteger) dividerIndex {
-	if(dividerIndex == 0 && [subview isEqualTo:self.sidebarView]) {
-		return YES;
-	}
-	
-	return NO;
 }
 
 #pragma mark UI Actions

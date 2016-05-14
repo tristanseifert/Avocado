@@ -14,7 +14,7 @@
 
 #import "TSMainLibraryContentViewController.h"
 
-@interface TSLibraryOverviewController : TSMainLibraryContentViewController <NSSplitViewDelegate>
+@interface TSLibraryOverviewController : NSViewController <TSMainLibraryContentViewController, NSSplitViewDelegate>
 
 @property (nonatomic) IBOutlet NSSplitView *splitView;
 

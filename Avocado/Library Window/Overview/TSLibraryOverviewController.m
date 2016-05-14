@@ -27,6 +27,7 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
 @end
 
 @implementation TSLibraryOverviewController
+@synthesize windowToolbar, windowController;
 
 /**
  * Initializes some defaults and KVO.
@@ -118,9 +119,7 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
  * Tells our containing window to show the title bar, and make the content view
  * exclude the title bar, and show the title bar again.
  */
-- (void) prepareWindowForAppearance:(NSWindow *) window {
-	[super prepareWindowForAppearance:window];
-	
+- (void) prepareWindowForAppearance:(NSWindow *) window {	
 	// set up the custom window appearance
 	window.toolbar.visible = YES;
 	window.titlebarAppearsTransparent = NO;
