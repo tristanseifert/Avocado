@@ -613,3 +613,47 @@ static void TSBuildGammaCurve(double pwr, double ts, int mode, int imax, uint16_
 								  : (r < g[2] ? r/g[1] : (g[0] ? pow((r+g[4])/(1+g[4]),1/g[0]) : exp((r-1)/g[2]))));
 	}
 }
+
+#pragma mark - Lens Correction Helpers
+/**
+ * Uses bilinear interpolation to interpolate the value of a single component at
+ * a fractional coordinate. The component is assumed to be at position 0 of the
+ * input pointer.
+ *
+ * @param buffer Input buffer on which to interpolate.
+ * @param stride Number of elements (for example, width * 3) per row.
+ * @param x Floating point X coordinate
+ * @param y Floating point Y coordinate
+ *
+ * @return The value of the component, as interpolated.
+ */
+uint16_t TSInterpolatePixelBilinear(uint16_t *buffer, size_t stride, float x, float y) {
+	DDCAssert(buffer != nil, @"input buffer may not be nil");
+	DDCAssert(stride != 0, @"stride may not be 0");
+	
+	// calculate floors of the input coordinates, and the first pointer
+	unsigned int px = (unsigned int) x;
+	unsigned int py = (unsigned int) y;
+	
+	const uint16_t* p0 = buffer + px + (py * stride);
+	
+	// read pixels; note that we assume three components per pixel.
+	const uint16_t p1 = p0[0 + (0 * stride)];
+	const uint16_t p2 = p0[3 + 1 + (0 * stride)];
+	const uint16_t p3 = p0[0 + (1 * stride)];
+	const uint16_t p4 = p0[3 + 1 + (1 * stride)];
+	
+	// calculate weights for each pixel
+	float fx = x - px;
+	float fy = y - py;
+	float fx1 = 1.0f - fx;
+	float fy1 = 1.0f - fy;
+	
+	int w1 = fx1 * fy1 * 65536.0f;
+	int w2 = fx  * fy1 * 65536.0f;
+	int w3 = fx1 * fy  * 65536.0f;
+	int w4 = fx  * fy  * 65536.0f;
+	
+	// calculate the output pixel value
+	return ((p1 * w1) + (p2 * w2) + (p3 * w3) + (p4 * w4));
+}

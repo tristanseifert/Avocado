@@ -13,6 +13,10 @@
 
 #include "libraw.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * Copies single component Bayer data from the given LibRaw instance into the
  * given output buffer.
@@ -87,4 +91,22 @@ void TSRawPostInterpolationMedianFilter(libraw_data_t *libRaw, uint16_t (*image)
  */
 void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*outBuf)[3], int *histogram, uint16_t *gammaCurve);
 
+/**
+ * Uses bilinear interpolation to interpolate the value of a single component at
+ * a fractional coordinate. The component is assumed to be at position 0 of the
+ * input pointer.
+ *
+ * @param buffer Input buffer on which to interpolate.
+ * @param stride Number of elements (for example, width * 3) per row.
+ * @param x Floating point X coordinate
+ * @param y Floating point Y coordinate
+ *
+ * @return The value of the component, as interpolated.
+ */
+uint16_t TSInterpolatePixelBilinear(uint16_t *buffer, size_t stride, float x, float y);
+
+#ifdef __cplusplus
+}
+#endif
+	
 #endif /* TSRawImageDataHelpers_h */

@@ -64,6 +64,8 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 @property (nonatomic) vImagePixelCount *histogram;
 /// maximum value for the histomagram in any channel
 @property (nonatomic) vImagePixelCount histogramMax;
+/// when set, the histogram is considered valid
+@property (nonatomic) BOOL isHistogramValid;
 
 /// buffer to use for images
 @property (nonatomic) vImage_Buffer *imgBuf;
@@ -131,6 +133,37 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	return self;
 }
 
+#pragma mark Drawing
+/**
+ * Draws the border, and fills the view with a semi-transparent grey.
+ */
+- (void) drawRect:(NSRect) dirtyRect {
+	// clear dirty rect
+	[[NSColor clearColor] setFill];
+	NSRectFill(dirtyRect);
+	
+	// stroke the border
+	[[NSColor labelColor] setStroke];
+	
+	NSBezierPath *p = [NSBezierPath bezierPathWithRoundedRect:self.bounds
+													  xRadius:1
+													  yRadius:1];
+	[p stroke];
+	
+	// fill the content
+	NSRect content = NSInsetRect(self.bounds, 1, 1);
+	
+	[[NSColor colorWithCalibratedWhite:0.f alpha:0.25] setFill];
+	NSRectFill(content);
+}
+
+/**
+ * Allow vibrancy.
+ */
+- (BOOL) allowsVibrancy {
+	return YES;
+}
+
 #pragma mark Layers
 /**
  * Sets up the view's layers.
@@ -138,14 +171,8 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 - (void) setUpLayers {
 	self.wantsLayer = YES;
 	
-	// create border (also, histogram container)
+	// create the container for the histograms
 	self.border = [CALayer layer];
-	
-	self.border.borderColor = [NSColor labelColor].CGColor;
-	self.border.borderWidth = 1.f;
-	
-	self.border.backgroundColor = [NSColor colorWithCalibratedWhite:0.f alpha:0.25].CGColor;
-	self.border.cornerRadius = 2.f;
 	self.border.masksToBounds = YES;
 	
 	// set up the curve layers
@@ -337,6 +364,8 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	
 	// image changed; update buffer and histogram.
 	if(context == TSImageKVOCtx) {
+		self.isHistogramValid = NO;
+		
 		// deallocate any previously loaded image
 		if(self.imgBufImageRef != nil) {
 			CGImageRelease(self.imgBufImageRef);
@@ -457,6 +486,13 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	return YES;
 }
 
+/**
+ * Forces the view's histogram to be redrawn.
+ */
+- (void) redrawHistogram {
+	[self layOutSublayers];
+}
+
 #pragma mark Histogram Calculation
 /**
  * Re-calculates the histogram for the image that was assigned to the
@@ -556,7 +592,9 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 		}
 	}
 	
-	// draw the histogram paths
+	// mark the histogram as valid again, then draw
+	self.isHistogramValid = YES;
+	
 	[self updateHistogramPathsWithAnimation:YES];
 }
 
@@ -565,6 +603,10 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
  * Takes the scaled histogram data and turns it into paths.
  */
 - (void) updateHistogramPathsWithAnimation:(BOOL) shouldAnimate {
+	// return if the histogram is not valid
+	if(self.isHistogramValid == NO)
+		return;
+	
 	// get points for each channel
 	NSArray *yPoints = [self pointsForChannel:kTSChannelLuminance];
 	NSArray *rPoints = [self pointsForChannel:kTSChannelRed];

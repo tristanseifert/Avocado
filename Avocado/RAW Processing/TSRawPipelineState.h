@@ -12,6 +12,8 @@
 #import "TSPixelFormatConverter.h"
 #import "TSRawPipeline.h"
 
+#import "lensfun.h"
+
 @class CIImage;
 @class TSLibraryImage;
 @class TSRawImage;
@@ -46,6 +48,13 @@
 @property (nonatomic) TSRawPipelineCompletionCallback completionCallback;
 /// progress callback
 @property (nonatomic) TSRawPipelineProgressCallback progressCallback;
+
+/// when yes, lens corrections will be applied
+@property (nonatomic) BOOL applyLensCorrections;
+/// lens for which correction is applied
+@property (nonatomic) lfLens *lcLens;
+/// image modifier for lens corrections, based on the above lens
+@property (nonatomic) lfModifier *lcModifier;
 
 /// Initial CIImage; passed to the first filter.
 @property (nonatomic) CIImage *coreImageInput;

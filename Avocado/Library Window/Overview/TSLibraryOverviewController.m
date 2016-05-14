@@ -22,10 +22,37 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
 
 @property (nonatomic) TSLibraryOverviewLightTableController *lightTableController;
 
+- (void) updateSorting;
+
 @end
 
 @implementation TSLibraryOverviewController
 
+/**
+ * Initializes some defaults and KVO.
+ */
+- (instancetype) init {
+	if(self = [super initWithNibName:@"TSLibraryOverview" bundle:nil]) {
+		// set up a few defaults
+		self.voThumbSize = 2.f;
+		self.voSortKey = 1;
+		self.voShowFavoriting = YES;
+		
+		self.voExtractThumbs = YES;
+		
+		// add a few KVO observers for the view options
+		[self addObserver:self forKeyPath:@"voThumbSize" options:0
+				  context:TSThumbSizeKVO];
+		[self addObserver:self forKeyPath:@"voSortKey" options:0
+				  context:TSSortKeyKVO];
+	}
+	
+	return self;
+}
+
+/**
+ * Initializes the view, as well as the library overview controller.
+ */
 - (void) viewDidLoad {
     [super viewDidLoad];
 	
@@ -35,18 +62,11 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
 	
 	self.lightTableController.fetchRequest = [TSLibraryImage MR_createFetchRequest];
 	
-	// set up defaults
-	self.voThumbSize = 2.f;
-	self.voSortKey = 1;
-	self.voShowFavoriting = YES;
+	// resize cells and update sort key
+	self.lightTableController.cellsPerRow = (NSUInteger) self.voThumbSize;
+	[self.lightTableController resizeCells];
 	
-	self.voExtractThumbs = YES;
-	
-	// add a few KVO observers for the view options
-	[self addObserver:self forKeyPath:@"voThumbSize" options:0
-			  context:TSThumbSizeKVO];
-	[self addObserver:self forKeyPath:@"voSortKey" options:0
-			  context:TSSortKeyKVO];
+	[self updateSorting];
 }
 
 /**
@@ -72,17 +92,24 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
 	}
 	// sort key changed
 	else if(context == TSSortKeyKVO) {
-		if(self.voSortKey == 1) {
-			self.lightTableController.sortKey = TSLibraryOverviewSortByDateShot;
-		} else if(self.voSortKey == 2) {
-			self.lightTableController.sortKey = TSLibraryOverviewSortByDateImported;
-		} else if(self.voSortKey == 3) {
-			self.lightTableController.sortKey = TSLibraryOverviewSortByFilename;
-		}
+		[self updateSorting];
 	}
 	// any other KVO change
 	else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+	}
+}
+
+/**
+ * Updates how the view is sorted.
+ */
+- (void) updateSorting {
+	if(self.voSortKey == 1) {
+		self.lightTableController.sortKey = TSLibraryOverviewSortByDateShot;
+	} else if(self.voSortKey == 2) {
+		self.lightTableController.sortKey = TSLibraryOverviewSortByDateImported;
+	} else if(self.voSortKey == 3) {
+		self.lightTableController.sortKey = TSLibraryOverviewSortByFilename;
 	}
 }
 

@@ -15,7 +15,7 @@ typedef NS_ENUM(int16_t, TSLibraryImageType) {
 /**
  * Various rotation possibilities for the image.
  */
-typedef NS_ENUM(NSUInteger, TSLibraryImageRotation) {
+typedef NS_ENUM(short, TSLibraryImageRotation) {
 	TSLibraryImageRotationUnknown = -1,
 	
 	TSLibraryImageNoRotation = 0,

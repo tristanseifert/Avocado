@@ -3,20 +3,12 @@
 
 #import "_TSLibraryTag.h"
 
-const struct TSLibraryTagAttributes TSLibraryTagAttributes = {
-	.title = @"title",
-};
-
-const struct TSLibraryTagRelationships TSLibraryTagRelationships = {
-	.images = @"images",
-};
-
 @implementation TSLibraryTagID
 @end
 
 @implementation _TSLibraryTag
 
-+ (id)insertInManagedObjectContext:(NSManagedObjectContext*)moc_ {
++ (instancetype)insertInManagedObjectContext:(NSManagedObjectContext *)moc_ {
 	NSParameterAssert(moc_);
 	return [NSEntityDescription insertNewObjectForEntityForName:@"Tag" inManagedObjectContext:moc_];
 }
@@ -44,14 +36,26 @@ const struct TSLibraryTagRelationships TSLibraryTagRelationships = {
 
 @dynamic images;
 
-- (NSMutableSet*)imagesSet {
+- (NSMutableSet<TSLibraryImage*>*)imagesSet {
 	[self willAccessValueForKey:@"images"];
 
-	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"images"];
+	NSMutableSet<TSLibraryImage*> *result = (NSMutableSet<TSLibraryImage*>*)[self mutableSetValueForKey:@"images"];
 
 	[self didAccessValueForKey:@"images"];
 	return result;
 }
 
+@end
+
+@implementation TSLibraryTagAttributes 
++ (NSString *)title {
+	return @"title";
+}
+@end
+
+@implementation TSLibraryTagRelationships 
++ (NSString *)images {
+	return @"images";
+}
 @end
 

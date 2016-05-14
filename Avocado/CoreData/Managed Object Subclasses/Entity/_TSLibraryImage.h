@@ -1,25 +1,15 @@
 // DO NOT EDIT. This file is machine-generated and constantly overwritten.
 // Make changes to TSLibraryImage.h instead.
 
-@import CoreData;
+#if __has_feature(modules)
+    @import Foundation;
+    @import CoreData;
+#else
+    #import <Foundation/Foundation.h>
+    #import <CoreData/CoreData.h>
+#endif
 
-extern const struct TSLibraryImageAttributes {
-	__unsafe_unretained NSString *dateImported;
-	__unsafe_unretained NSString *dateModified;
-	__unsafe_unretained NSString *dateShot;
-	__unsafe_unretained NSString *dayShot;
-	__unsafe_unretained NSString *fileType;
-	__unsafe_unretained NSString *fileUrl;
-	__unsafe_unretained NSString *metadata;
-	__unsafe_unretained NSString *pvtImageSize;
-	__unsafe_unretained NSString *thumbUUID;
-} TSLibraryImageAttributes;
-
-extern const struct TSLibraryImageRelationships {
-	__unsafe_unretained NSString *adjustments;
-	__unsafe_unretained NSString *parentAlbums;
-	__unsafe_unretained NSString *tags;
-} TSLibraryImageRelationships;
+NS_ASSUME_NONNULL_BEGIN
 
 @class TSLibraryImageAdjustment;
 @class TSLibraryAlbum;
@@ -32,73 +22,52 @@ extern const struct TSLibraryImageRelationships {
 @interface TSLibraryImageID : NSManagedObjectID {}
 @end
 
-@interface _TSLibraryImage : NSManagedObject {}
-+ (id)insertInManagedObjectContext:(NSManagedObjectContext*)moc_;
+@interface _TSLibraryImage : NSManagedObject
++ (instancetype)insertInManagedObjectContext:(NSManagedObjectContext *)moc_;
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
-@property (nonatomic, readonly, strong) TSLibraryImageID* objectID;
+@property (nonatomic, readonly, strong) TSLibraryImageID *objectID;
 
-@property (nonatomic, strong) NSDate* dateImported;
+@property (nonatomic, strong, nullable) NSDate* dateImported;
 
-//- (BOOL)validateDateImported:(id*)value_ error:(NSError**)error_;
+@property (nonatomic, strong, nullable) NSDate* dateModified;
 
-@property (nonatomic, strong) NSDate* dateModified;
+@property (nonatomic, strong, nullable) NSDate* dateShot;
 
-//- (BOOL)validateDateModified:(id*)value_ error:(NSError**)error_;
-
-@property (nonatomic, strong) NSDate* dateShot;
-
-//- (BOOL)validateDateShot:(id*)value_ error:(NSError**)error_;
-
-@property (nonatomic, strong) NSNumber* dayShot;
+@property (nonatomic, strong, nullable) NSNumber* dayShot;
 
 @property (atomic) double dayShotValue;
 - (double)dayShotValue;
 - (void)setDayShotValue:(double)value_;
 
-//- (BOOL)validateDayShot:(id*)value_ error:(NSError**)error_;
-
-@property (nonatomic, strong) NSNumber* fileType;
+@property (nonatomic, strong, nullable) NSNumber* fileType;
 
 @property (atomic) int16_t fileTypeValue;
 - (int16_t)fileTypeValue;
 - (void)setFileTypeValue:(int16_t)value_;
 
-//- (BOOL)validateFileType:(id*)value_ error:(NSError**)error_;
+@property (nonatomic, strong, nullable) id fileUrl;
 
-@property (nonatomic, strong) id fileUrl;
+@property (nonatomic, strong, nullable) id metadata;
 
-//- (BOOL)validateFileUrl:(id*)value_ error:(NSError**)error_;
+@property (nonatomic, strong, nullable) NSString* pvtImageSize;
 
-@property (nonatomic, strong) id metadata;
+@property (nonatomic, strong, nullable) NSString* thumbUUID;
 
-//- (BOOL)validateMetadata:(id*)value_ error:(NSError**)error_;
+@property (nonatomic, strong, nullable) NSOrderedSet<TSLibraryImageAdjustment*> *adjustments;
+- (nullable NSMutableOrderedSet<TSLibraryImageAdjustment*>*)adjustmentsSet;
 
-@property (nonatomic, strong) NSString* pvtImageSize;
+@property (nonatomic, strong, nullable) NSSet<TSLibraryAlbum*> *parentAlbums;
+- (nullable NSMutableSet<TSLibraryAlbum*>*)parentAlbumsSet;
 
-//- (BOOL)validatePvtImageSize:(id*)value_ error:(NSError**)error_;
-
-@property (nonatomic, strong) NSString* thumbUUID;
-
-//- (BOOL)validateThumbUUID:(id*)value_ error:(NSError**)error_;
-
-@property (nonatomic, strong) NSOrderedSet *adjustments;
-
-- (NSMutableOrderedSet*)adjustmentsSet;
-
-@property (nonatomic, strong) NSSet *parentAlbums;
-
-- (NSMutableSet*)parentAlbumsSet;
-
-@property (nonatomic, strong) NSSet *tags;
-
-- (NSMutableSet*)tagsSet;
+@property (nonatomic, strong, nullable) NSSet<TSLibraryTag*> *tags;
+- (nullable NSMutableSet<TSLibraryTag*>*)tagsSet;
 
 @end
 
 @interface _TSLibraryImage (AdjustmentsCoreDataGeneratedAccessors)
-- (void)addAdjustments:(NSOrderedSet*)value_;
-- (void)removeAdjustments:(NSOrderedSet*)value_;
+- (void)addAdjustments:(NSOrderedSet<TSLibraryImageAdjustment*>*)value_;
+- (void)removeAdjustments:(NSOrderedSet<TSLibraryImageAdjustment*>*)value_;
 - (void)addAdjustmentsObject:(TSLibraryImageAdjustment*)value_;
 - (void)removeAdjustmentsObject:(TSLibraryImageAdjustment*)value_;
 
@@ -112,16 +81,16 @@ extern const struct TSLibraryImageRelationships {
 @end
 
 @interface _TSLibraryImage (ParentAlbumsCoreDataGeneratedAccessors)
-- (void)addParentAlbums:(NSSet*)value_;
-- (void)removeParentAlbums:(NSSet*)value_;
+- (void)addParentAlbums:(NSSet<TSLibraryAlbum*>*)value_;
+- (void)removeParentAlbums:(NSSet<TSLibraryAlbum*>*)value_;
 - (void)addParentAlbumsObject:(TSLibraryAlbum*)value_;
 - (void)removeParentAlbumsObject:(TSLibraryAlbum*)value_;
 
 @end
 
 @interface _TSLibraryImage (TagsCoreDataGeneratedAccessors)
-- (void)addTags:(NSSet*)value_;
-- (void)removeTags:(NSSet*)value_;
+- (void)addTags:(NSSet<TSLibraryTag*>*)value_;
+- (void)removeTags:(NSSet<TSLibraryTag*>*)value_;
 - (void)addTagsObject:(TSLibraryTag*)value_;
 - (void)removeTagsObject:(TSLibraryTag*)value_;
 
@@ -162,13 +131,33 @@ extern const struct TSLibraryImageRelationships {
 - (NSString*)primitiveThumbUUID;
 - (void)setPrimitiveThumbUUID:(NSString*)value;
 
-- (NSMutableOrderedSet*)primitiveAdjustments;
-- (void)setPrimitiveAdjustments:(NSMutableOrderedSet*)value;
+- (NSMutableOrderedSet<TSLibraryImageAdjustment*>*)primitiveAdjustments;
+- (void)setPrimitiveAdjustments:(NSMutableOrderedSet<TSLibraryImageAdjustment*>*)value;
 
-- (NSMutableSet*)primitiveParentAlbums;
-- (void)setPrimitiveParentAlbums:(NSMutableSet*)value;
+- (NSMutableSet<TSLibraryAlbum*>*)primitiveParentAlbums;
+- (void)setPrimitiveParentAlbums:(NSMutableSet<TSLibraryAlbum*>*)value;
 
-- (NSMutableSet*)primitiveTags;
-- (void)setPrimitiveTags:(NSMutableSet*)value;
+- (NSMutableSet<TSLibraryTag*>*)primitiveTags;
+- (void)setPrimitiveTags:(NSMutableSet<TSLibraryTag*>*)value;
 
 @end
+
+@interface TSLibraryImageAttributes: NSObject 
++ (NSString *)dateImported;
++ (NSString *)dateModified;
++ (NSString *)dateShot;
++ (NSString *)dayShot;
++ (NSString *)fileType;
++ (NSString *)fileUrl;
++ (NSString *)metadata;
++ (NSString *)pvtImageSize;
++ (NSString *)thumbUUID;
+@end
+
+@interface TSLibraryImageRelationships: NSObject
++ (NSString *)adjustments;
++ (NSString *)parentAlbums;
++ (NSString *)tags;
+@end
+
+NS_ASSUME_NONNULL_END

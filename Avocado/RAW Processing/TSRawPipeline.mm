@@ -64,7 +64,9 @@
 // helpers
 - (NSBlockOperation *) opDebayer:(TSRawPipelineState *) state;
 - (NSBlockOperation *) opDemosaic:(TSRawPipelineState *) state;
+
 - (NSBlockOperation *) opLensCorrect:(TSRawPipelineState *) state;
+- (NSBlockOperation *) opGammaColourSpaceCorrect:(TSRawPipelineState *) state;
 
 - (NSBlockOperation *) opConvertToPlanar:(TSRawPipelineState *) state;
 
@@ -159,6 +161,7 @@
 	NSBlockOperation *opDebayer, *opDemosaic, *opLensCorrect, *opConvertPlanar;
 	NSBlockOperation *opRotate, *opConvolute, *opMorphological, *opHisto;
 	NSBlockOperation *opConvertInterleaved, *opCoreImage, *opOutputHistogram;
+	NSBlockOperation *opConvertRGBGamma;
 	
 	TSRawPipelineState *state;
 	
@@ -226,8 +229,8 @@
 	state.rawImage = image.libRawHandle;
 	state.interpolatedColourBuf = self.interpolatedColourBuf;
 	
-	state.histogramBuf = valloc(sizeof(int) * 4 * 0x2000);
-	state.gammaCurveBuf = valloc(sizeof(uint16_t) * 0x10000);
+	state.histogramBuf = (int *) valloc(sizeof(int) * 4 * 0x2000);
+	state.gammaCurveBuf = (uint16_t *) valloc(sizeof(uint16_t) * 0x10000);
 	
 	state.outputSize = state.rawImage.size;
 	
@@ -235,6 +238,7 @@
 	opDebayer = [self opDebayer:state];
 	opDemosaic = [self opDemosaic:state];
 	opLensCorrect = [self opLensCorrect:state];
+	opConvertRGBGamma = [self opGammaColourSpaceCorrect:state];
 	
 	opConvertPlanar = [self opConvertToPlanar:state];
 	
@@ -252,8 +256,9 @@
 	// set up interdependencies between the operations
 	[opDemosaic addDependency:opDebayer];
 	[opLensCorrect addDependency:opDemosaic];
+	[opConvertRGBGamma addDependency:opLensCorrect];
 	
-	[opConvertPlanar addDependency:opLensCorrect];
+	[opConvertPlanar addDependency:opConvertRGBGamma];
 	
 	[opRotate addDependency:opConvertPlanar];
 	[opConvolute addDependency:opRotate];
@@ -270,6 +275,7 @@
 	TSAddOperation(opDebayer, state);
 	TSAddOperation(opDemosaic, state);
 	TSAddOperation(opLensCorrect, state);
+	TSAddOperation(opConvertRGBGamma, state);
 	
 	TSAddOperation(opConvertPlanar, state);
 	
@@ -328,26 +334,43 @@
 		[state.rawImage copyRawDataToBuffer:self.interpolatedColourBuf];
 		
 		// adjust black level
-		TSRawAdjustBlackLevel(libRaw, self.interpolatedColourBuf);
-		TSRawSubtractBlack(libRaw, self.interpolatedColourBuf);
+		TSRawAdjustBlackLevel(libRaw, (uint16_t (*)[4]) self.interpolatedColourBuf);
+		TSRawSubtractBlack(libRaw, (uint16_t (*)[4]) self.interpolatedColourBuf);
 		
 		
 		// white balance (colour scaling) and pre-interpolation
 		state.stage = TSRawPipelineStageWhiteBalance;
 		
-		TSRawPreInterpolationApplyWB(libRaw, self.interpolatedColourBuf);
-		TSRawPreInterpolation(libRaw, self.interpolatedColourBuf);
+		TSRawPreInterpolationApplyWB(libRaw, (uint16_t (*)[4]) self.interpolatedColourBuf);
+		TSRawPreInterpolation(libRaw, (uint16_t (*)[4]) self.interpolatedColourBuf);
 		
 		
 		// interpolate colour data
 		state.stage = TSRawPipelineStageInterpolateColour;
 		
-		[self.lmsseInterpolator interpolateWithLibRaw:libRaw andBuffer:self.interpolatedColourBuf];
-		
+		[self.lmsseInterpolator interpolateWithLibRaw:libRaw
+											andBuffer:(uint16_t (*)[4]) self.interpolatedColourBuf];
+	}];
+	
+	op.name = @"Demosaicing and Interpolation";
+	return op;
+}
+
+/**
+ * Converts from the (potentially lens corrected) camera colour space to the
+ * internal working colour space, and corrects the gamma curve of the image.
+ */
+- (NSBlockOperation *) opGammaColourSpaceCorrect:(TSRawPipelineState *) state {
+	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		state.stage = TSRawPipelineStageConvertToRGB;
+		libraw_data_t *libRaw = state.rawImage.libRaw;
 		
 		// convert to RGB
 		state.stage = TSRawPipelineStageConvertToRGB;
-		TSRawConvertToRGB(libRaw, self.interpolatedColourBuf, self.interpolatedColourBuf, state.histogramBuf, state.gammaCurveBuf);
+		TSRawConvertToRGB(libRaw,
+						  (uint16_t (*)[4]) self.interpolatedColourBuf, // input -> RGBX
+						  (uint16_t (*)[3]) self.interpolatedColourBuf, // output -> RGB
+						  state.histogramBuf, state.gammaCurveBuf);
 		
 		
 #if WriteDebugData
@@ -379,7 +402,7 @@
 #endif
 	}];
 	
-	op.name = @"Demosaicing and Interpolation";
+	op.name = @"Colour Profile Conversion and Gamma Adjustment";
 	return op;
 }
 
@@ -389,7 +412,79 @@
  */
 - (NSBlockOperation *) opLensCorrect:(TSRawPipelineState *) state {
 	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
-		state.stage = TSRawPipelineStageLensCorrection;
+		// only perform lens corrections if, well… they're desired
+		if(state.applyLensCorrections) {
+			state.stage = TSRawPipelineStageLensCorrection;
+			
+			NSUInteger x, y, step;
+			
+			lfModifier *m = state.lcModifier;
+			
+			/**
+			 * Lens corrections consist of two steps: First, vignetting removal,
+			 * then geometry/distortion and TCA correction. Each step operates
+			 * on a single scanline in the image at a time. After all scanlines
+			 * for a particular step have been operated on, the next step will
+			 * be operated on.
+			 */
+			for(step = 0; step < 2; step++) {
+				// set up some variables
+				BOOL ok = YES;
+				
+				// dst will be filled by 48bpp RGB data
+				uint16_t *dst = (uint16_t *) TSPixelConverterGetRGBXPointer(state.converter);
+				// imgData is the original 48bpp RGB data
+				uint16_t *imgData = (uint16_t *) self.interpolatedColourBuf;
+				int imgDataStride = state.outputSize.width * 3 * sizeof(uint16_t);
+				
+				// allocate the coordinate buffer for subpixel coordinates
+				size_t subPixelCoordsSz = sizeof(float) * 3 * 2 * state.outputSize.width;
+
+				float *subPixelCoords = (float *) valloc(subPixelCoordsSz);
+				memset(subPixelCoords, 0, subPixelCoordsSz);
+				
+				
+				// perform the step for each scanline separately
+				for(y = 0; (ok && (y < state.outputSize.height)); y++) {
+					// remove vignetting
+					if(step == 0) {
+						ok = m->ApplyColorModification(imgData, 0, y,
+													   state.outputSize.width, 1,
+													   LF_CR_3(RED,BLUE,GREEN), imgDataStride);
+					}
+					
+					// correct geometry and TCA
+					else if(step == 1) {
+						ok = m->ApplySubpixelGeometryDistortion(0, y,
+																state.outputSize.width,
+																1, subPixelCoords);
+						// interpolate the pixels into output buffer
+						if(ok) {
+							float *src = subPixelCoords;
+							
+							for(x = 0; x < state.outputSize.width; x++) {
+								// copy the RGB pixels individually
+								*dst++ = TSInterpolatePixelBilinear(imgData, imgDataStride, src[0], src[1]);
+								*dst++ = TSInterpolatePixelBilinear(imgData, imgDataStride, src[2], src[3]);
+								*dst++ = TSInterpolatePixelBilinear(imgData, imgDataStride, src[4], src[5]);
+								
+								// increment the src pointer
+								src += (2 * 3);
+							}
+						}
+					}
+					
+					// unknown step
+					else {
+						DDLogWarn(@"Invalid lens correction step: %lu", (unsigned long) step);
+					}
+					
+					// increment the input and output pointers
+					imgData += ((size_t) (3 * state.outputSize.width));
+					dst += ((size_t) (3 * state.outputSize.width));
+				}
+			}
+		}
 	}];
 	
 	op.name = @"Lens Corrections";
@@ -404,6 +499,15 @@
 - (NSBlockOperation *) opConvertToPlanar:(TSRawPipelineState *) state {
 	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
 		state.stage = TSRawPipelineStageConvertToPlanar;
+		
+		// if lens corrections were applied, the data is in the converter output
+		if(state.applyLensCorrections) {
+			size_t num_bytes = (state.outputSize.width * 3 * sizeof(uint16_t)) * state.outputSize.height;
+			void *correctedData = TSPixelConverterGetRGBXPointer(state.converter);
+			
+			// we must copy the data; otherwise, it'll explode!
+			memcpy(self.interpolatedColourBuf, correctedData, num_bytes);
+		}
 		
 		// set the input buffer and begin converting
 		TSPixelConverterSetInData(state.converter, self.interpolatedColourBuf);
@@ -454,7 +558,7 @@
 	void *buf = TSPixelConverterGetRGBXPointer(converter);
 	
 	// create bitmap representation, and re-tag with colour space
-	unsigned char *ptrs = { buf };
+	unsigned char *ptrs = { ((unsigned char *) buf) };
 	
 	bm = [[NSBitmapImageRep alloc]
 		  initWithBitmapDataPlanes:&ptrs
@@ -608,7 +712,7 @@
 	
 	// create a bitmap rep
 	NSBitmapImageRep *bm;
-	unsigned char *ptrs = { buffer };
+	unsigned char *ptrs = { ((unsigned char*) buffer) };
 	
 	bm = [[NSBitmapImageRep alloc]
 		  initWithBitmapDataPlanes:&ptrs

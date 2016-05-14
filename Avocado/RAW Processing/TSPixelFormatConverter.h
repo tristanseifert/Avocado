@@ -21,6 +21,10 @@
 
 #import <Accelerate/Accelerate.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #pragma mark Types
 /**
  * Opaque type defining all data that the pixel conversion routines need to
@@ -161,5 +165,9 @@ BOOL TSPixelConverterRotate90(TSPixelConverterRef converter, ssize_t rotation);
  * @param max Maximum bound for the contrast stretch.
  */
 BOOL TSPixelConverterContrastStretch(TSPixelConverterRef converter, Pixel_F min, Pixel_F max);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* TSRawPipeline_PixelFormat_h */

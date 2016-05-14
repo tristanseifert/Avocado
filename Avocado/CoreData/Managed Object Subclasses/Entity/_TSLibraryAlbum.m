@@ -3,23 +3,12 @@
 
 #import "_TSLibraryAlbum.h"
 
-const struct TSLibraryAlbumAttributes TSLibraryAlbumAttributes = {
-	.created = @"created",
-	.summary = @"summary",
-	.title = @"title",
-};
-
-const struct TSLibraryAlbumRelationships TSLibraryAlbumRelationships = {
-	.images = @"images",
-	.parentCollection = @"parentCollection",
-};
-
 @implementation TSLibraryAlbumID
 @end
 
 @implementation _TSLibraryAlbum
 
-+ (id)insertInManagedObjectContext:(NSManagedObjectContext*)moc_ {
++ (instancetype)insertInManagedObjectContext:(NSManagedObjectContext *)moc_ {
 	NSParameterAssert(moc_);
 	return [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext:moc_];
 }
@@ -51,10 +40,10 @@ const struct TSLibraryAlbumRelationships TSLibraryAlbumRelationships = {
 
 @dynamic images;
 
-- (NSMutableOrderedSet*)imagesSet {
+- (NSMutableOrderedSet<TSLibraryImage*>*)imagesSet {
 	[self willAccessValueForKey:@"images"];
 
-	NSMutableOrderedSet *result = (NSMutableOrderedSet*)[self mutableOrderedSetValueForKey:@"images"];
+	NSMutableOrderedSet<TSLibraryImage*> *result = (NSMutableOrderedSet<TSLibraryImage*>*)[self mutableOrderedSetValueForKey:@"images"];
 
 	[self didAccessValueForKey:@"images"];
 	return result;
@@ -65,10 +54,10 @@ const struct TSLibraryAlbumRelationships TSLibraryAlbumRelationships = {
 @end
 
 @implementation _TSLibraryAlbum (ImagesCoreDataGeneratedAccessors)
-- (void)addImages:(NSOrderedSet*)value_ {
+- (void)addImages:(NSOrderedSet<TSLibraryImage*>*)value_ {
 	[self.imagesSet unionOrderedSet:value_];
 }
-- (void)removeImages:(NSOrderedSet*)value_ {
+- (void)removeImages:(NSOrderedSet<TSLibraryImage*>*)value_ {
 	[self.imagesSet minusOrderedSet:value_];
 }
 - (void)addImagesObject:(TSLibraryImage*)value_ {
@@ -121,6 +110,27 @@ const struct TSLibraryAlbumRelationships TSLibraryAlbumRelationships = {
     [tmpOrderedSet replaceObjectsAtIndexes:indexes withObjects:value];
     [self setPrimitiveValue:tmpOrderedSet forKey:@"images"];
     [self didChange:NSKeyValueChangeReplacement valuesAtIndexes:indexes forKey:@"images"];
+}
+@end
+
+@implementation TSLibraryAlbumAttributes 
++ (NSString *)created {
+	return @"created";
+}
++ (NSString *)summary {
+	return @"summary";
+}
++ (NSString *)title {
+	return @"title";
+}
+@end
+
+@implementation TSLibraryAlbumRelationships 
++ (NSString *)images {
+	return @"images";
+}
++ (NSString *)parentCollection {
+	return @"parentCollection";
 }
 @end
 

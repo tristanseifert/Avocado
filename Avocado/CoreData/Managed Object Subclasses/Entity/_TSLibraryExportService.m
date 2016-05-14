@@ -3,19 +3,12 @@
 
 #import "_TSLibraryExportService.h"
 
-const struct TSLibraryExportServiceAttributes TSLibraryExportServiceAttributes = {
-	.instanceUuid = @"instanceUuid",
-	.plugin = @"plugin",
-	.settings = @"settings",
-	.title = @"title",
-};
-
 @implementation TSLibraryExportServiceID
 @end
 
 @implementation _TSLibraryExportService
 
-+ (id)insertInManagedObjectContext:(NSManagedObjectContext*)moc_ {
++ (instancetype)insertInManagedObjectContext:(NSManagedObjectContext *)moc_ {
 	NSParameterAssert(moc_);
 	return [NSEntityDescription insertNewObjectForEntityForName:@"ExportService" inManagedObjectContext:moc_];
 }
@@ -47,5 +40,20 @@ const struct TSLibraryExportServiceAttributes TSLibraryExportServiceAttributes =
 
 @dynamic title;
 
+@end
+
+@implementation TSLibraryExportServiceAttributes 
++ (NSString *)instanceUuid {
+	return @"instanceUuid";
+}
++ (NSString *)plugin {
+	return @"plugin";
+}
++ (NSString *)settings {
+	return @"settings";
+}
++ (NSString *)title {
+	return @"title";
+}
 @end
 

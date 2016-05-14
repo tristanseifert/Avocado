@@ -3,22 +3,12 @@
 
 #import "_TSLibraryAlbumCollection.h"
 
-const struct TSLibraryAlbumCollectionAttributes TSLibraryAlbumCollectionAttributes = {
-	.title = @"title",
-};
-
-const struct TSLibraryAlbumCollectionRelationships TSLibraryAlbumCollectionRelationships = {
-	.albums = @"albums",
-	.collections = @"collections",
-	.parentCollection = @"parentCollection",
-};
-
 @implementation TSLibraryAlbumCollectionID
 @end
 
 @implementation _TSLibraryAlbumCollection
 
-+ (id)insertInManagedObjectContext:(NSManagedObjectContext*)moc_ {
++ (instancetype)insertInManagedObjectContext:(NSManagedObjectContext *)moc_ {
 	NSParameterAssert(moc_);
 	return [NSEntityDescription insertNewObjectForEntityForName:@"AlbumCollection" inManagedObjectContext:moc_];
 }
@@ -46,10 +36,10 @@ const struct TSLibraryAlbumCollectionRelationships TSLibraryAlbumCollectionRelat
 
 @dynamic albums;
 
-- (NSMutableOrderedSet*)albumsSet {
+- (NSMutableOrderedSet<TSLibraryAlbum*>*)albumsSet {
 	[self willAccessValueForKey:@"albums"];
 
-	NSMutableOrderedSet *result = (NSMutableOrderedSet*)[self mutableOrderedSetValueForKey:@"albums"];
+	NSMutableOrderedSet<TSLibraryAlbum*> *result = (NSMutableOrderedSet<TSLibraryAlbum*>*)[self mutableOrderedSetValueForKey:@"albums"];
 
 	[self didAccessValueForKey:@"albums"];
 	return result;
@@ -57,10 +47,10 @@ const struct TSLibraryAlbumCollectionRelationships TSLibraryAlbumCollectionRelat
 
 @dynamic collections;
 
-- (NSMutableOrderedSet*)collectionsSet {
+- (NSMutableOrderedSet<TSLibraryAlbumCollection*>*)collectionsSet {
 	[self willAccessValueForKey:@"collections"];
 
-	NSMutableOrderedSet *result = (NSMutableOrderedSet*)[self mutableOrderedSetValueForKey:@"collections"];
+	NSMutableOrderedSet<TSLibraryAlbumCollection*> *result = (NSMutableOrderedSet<TSLibraryAlbumCollection*>*)[self mutableOrderedSetValueForKey:@"collections"];
 
 	[self didAccessValueForKey:@"collections"];
 	return result;
@@ -71,10 +61,10 @@ const struct TSLibraryAlbumCollectionRelationships TSLibraryAlbumCollectionRelat
 @end
 
 @implementation _TSLibraryAlbumCollection (AlbumsCoreDataGeneratedAccessors)
-- (void)addAlbums:(NSOrderedSet*)value_ {
+- (void)addAlbums:(NSOrderedSet<TSLibraryAlbum*>*)value_ {
 	[self.albumsSet unionOrderedSet:value_];
 }
-- (void)removeAlbums:(NSOrderedSet*)value_ {
+- (void)removeAlbums:(NSOrderedSet<TSLibraryAlbum*>*)value_ {
 	[self.albumsSet minusOrderedSet:value_];
 }
 - (void)addAlbumsObject:(TSLibraryAlbum*)value_ {
@@ -131,10 +121,10 @@ const struct TSLibraryAlbumCollectionRelationships TSLibraryAlbumCollectionRelat
 @end
 
 @implementation _TSLibraryAlbumCollection (CollectionsCoreDataGeneratedAccessors)
-- (void)addCollections:(NSOrderedSet*)value_ {
+- (void)addCollections:(NSOrderedSet<TSLibraryAlbumCollection*>*)value_ {
 	[self.collectionsSet unionOrderedSet:value_];
 }
-- (void)removeCollections:(NSOrderedSet*)value_ {
+- (void)removeCollections:(NSOrderedSet<TSLibraryAlbumCollection*>*)value_ {
 	[self.collectionsSet minusOrderedSet:value_];
 }
 - (void)addCollectionsObject:(TSLibraryAlbumCollection*)value_ {
@@ -187,6 +177,24 @@ const struct TSLibraryAlbumCollectionRelationships TSLibraryAlbumCollectionRelat
     [tmpOrderedSet replaceObjectsAtIndexes:indexes withObjects:value];
     [self setPrimitiveValue:tmpOrderedSet forKey:@"collections"];
     [self didChange:NSKeyValueChangeReplacement valuesAtIndexes:indexes forKey:@"collections"];
+}
+@end
+
+@implementation TSLibraryAlbumCollectionAttributes 
++ (NSString *)title {
+	return @"title";
+}
+@end
+
+@implementation TSLibraryAlbumCollectionRelationships 
++ (NSString *)albums {
+	return @"albums";
+}
++ (NSString *)collections {
+	return @"collections";
+}
++ (NSString *)parentCollection {
+	return @"parentCollection";
 }
 @end
 

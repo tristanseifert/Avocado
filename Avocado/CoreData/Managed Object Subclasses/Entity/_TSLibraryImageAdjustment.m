@@ -3,21 +3,12 @@
 
 #import "_TSLibraryImageAdjustment.h"
 
-const struct TSLibraryImageAdjustmentAttributes TSLibraryImageAdjustmentAttributes = {
-	.delta = @"delta",
-	.key = @"key",
-};
-
-const struct TSLibraryImageAdjustmentRelationships TSLibraryImageAdjustmentRelationships = {
-	.image = @"image",
-};
-
 @implementation TSLibraryImageAdjustmentID
 @end
 
 @implementation _TSLibraryImageAdjustment
 
-+ (id)insertInManagedObjectContext:(NSManagedObjectContext*)moc_ {
++ (instancetype)insertInManagedObjectContext:(NSManagedObjectContext *)moc_ {
 	NSParameterAssert(moc_);
 	return [NSEntityDescription insertNewObjectForEntityForName:@"ImageAdjustment" inManagedObjectContext:moc_];
 }
@@ -71,5 +62,20 @@ const struct TSLibraryImageAdjustmentRelationships TSLibraryImageAdjustmentRelat
 
 @dynamic image;
 
+@end
+
+@implementation TSLibraryImageAdjustmentAttributes 
++ (NSString *)delta {
+	return @"delta";
+}
++ (NSString *)key {
+	return @"key";
+}
+@end
+
+@implementation TSLibraryImageAdjustmentRelationships 
++ (NSString *)image {
+	return @"image";
+}
 @end
 

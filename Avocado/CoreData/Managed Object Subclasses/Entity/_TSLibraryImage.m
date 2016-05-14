@@ -3,30 +3,12 @@
 
 #import "_TSLibraryImage.h"
 
-const struct TSLibraryImageAttributes TSLibraryImageAttributes = {
-	.dateImported = @"dateImported",
-	.dateModified = @"dateModified",
-	.dateShot = @"dateShot",
-	.dayShot = @"dayShot",
-	.fileType = @"fileType",
-	.fileUrl = @"fileUrl",
-	.metadata = @"metadata",
-	.pvtImageSize = @"pvtImageSize",
-	.thumbUUID = @"thumbUUID",
-};
-
-const struct TSLibraryImageRelationships TSLibraryImageRelationships = {
-	.adjustments = @"adjustments",
-	.parentAlbums = @"parentAlbums",
-	.tags = @"tags",
-};
-
 @implementation TSLibraryImageID
 @end
 
 @implementation _TSLibraryImage
 
-+ (id)insertInManagedObjectContext:(NSManagedObjectContext*)moc_ {
++ (instancetype)insertInManagedObjectContext:(NSManagedObjectContext *)moc_ {
 	NSParameterAssert(moc_);
 	return [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:moc_];
 }
@@ -117,10 +99,10 @@ const struct TSLibraryImageRelationships TSLibraryImageRelationships = {
 
 @dynamic adjustments;
 
-- (NSMutableOrderedSet*)adjustmentsSet {
+- (NSMutableOrderedSet<TSLibraryImageAdjustment*>*)adjustmentsSet {
 	[self willAccessValueForKey:@"adjustments"];
 
-	NSMutableOrderedSet *result = (NSMutableOrderedSet*)[self mutableOrderedSetValueForKey:@"adjustments"];
+	NSMutableOrderedSet<TSLibraryImageAdjustment*> *result = (NSMutableOrderedSet<TSLibraryImageAdjustment*>*)[self mutableOrderedSetValueForKey:@"adjustments"];
 
 	[self didAccessValueForKey:@"adjustments"];
 	return result;
@@ -128,10 +110,10 @@ const struct TSLibraryImageRelationships TSLibraryImageRelationships = {
 
 @dynamic parentAlbums;
 
-- (NSMutableSet*)parentAlbumsSet {
+- (NSMutableSet<TSLibraryAlbum*>*)parentAlbumsSet {
 	[self willAccessValueForKey:@"parentAlbums"];
 
-	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"parentAlbums"];
+	NSMutableSet<TSLibraryAlbum*> *result = (NSMutableSet<TSLibraryAlbum*>*)[self mutableSetValueForKey:@"parentAlbums"];
 
 	[self didAccessValueForKey:@"parentAlbums"];
 	return result;
@@ -139,10 +121,10 @@ const struct TSLibraryImageRelationships TSLibraryImageRelationships = {
 
 @dynamic tags;
 
-- (NSMutableSet*)tagsSet {
+- (NSMutableSet<TSLibraryTag*>*)tagsSet {
 	[self willAccessValueForKey:@"tags"];
 
-	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"tags"];
+	NSMutableSet<TSLibraryTag*> *result = (NSMutableSet<TSLibraryTag*>*)[self mutableSetValueForKey:@"tags"];
 
 	[self didAccessValueForKey:@"tags"];
 	return result;
@@ -151,10 +133,10 @@ const struct TSLibraryImageRelationships TSLibraryImageRelationships = {
 @end
 
 @implementation _TSLibraryImage (AdjustmentsCoreDataGeneratedAccessors)
-- (void)addAdjustments:(NSOrderedSet*)value_ {
+- (void)addAdjustments:(NSOrderedSet<TSLibraryImageAdjustment*>*)value_ {
 	[self.adjustmentsSet unionOrderedSet:value_];
 }
-- (void)removeAdjustments:(NSOrderedSet*)value_ {
+- (void)removeAdjustments:(NSOrderedSet<TSLibraryImageAdjustment*>*)value_ {
 	[self.adjustmentsSet minusOrderedSet:value_];
 }
 - (void)addAdjustmentsObject:(TSLibraryImageAdjustment*)value_ {
@@ -207,6 +189,48 @@ const struct TSLibraryImageRelationships TSLibraryImageRelationships = {
     [tmpOrderedSet replaceObjectsAtIndexes:indexes withObjects:value];
     [self setPrimitiveValue:tmpOrderedSet forKey:@"adjustments"];
     [self didChange:NSKeyValueChangeReplacement valuesAtIndexes:indexes forKey:@"adjustments"];
+}
+@end
+
+@implementation TSLibraryImageAttributes 
++ (NSString *)dateImported {
+	return @"dateImported";
+}
++ (NSString *)dateModified {
+	return @"dateModified";
+}
++ (NSString *)dateShot {
+	return @"dateShot";
+}
++ (NSString *)dayShot {
+	return @"dayShot";
+}
++ (NSString *)fileType {
+	return @"fileType";
+}
++ (NSString *)fileUrl {
+	return @"fileUrl";
+}
++ (NSString *)metadata {
+	return @"metadata";
+}
++ (NSString *)pvtImageSize {
+	return @"pvtImageSize";
+}
++ (NSString *)thumbUUID {
+	return @"thumbUUID";
+}
+@end
+
+@implementation TSLibraryImageRelationships 
++ (NSString *)adjustments {
+	return @"adjustments";
+}
++ (NSString *)parentAlbums {
+	return @"parentAlbums";
+}
++ (NSString *)tags {
+	return @"tags";
 }
 @end
 

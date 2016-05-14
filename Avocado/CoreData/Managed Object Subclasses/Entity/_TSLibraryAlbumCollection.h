@@ -1,17 +1,15 @@
 // DO NOT EDIT. This file is machine-generated and constantly overwritten.
 // Make changes to TSLibraryAlbumCollection.h instead.
 
-@import CoreData;
+#if __has_feature(modules)
+    @import Foundation;
+    @import CoreData;
+#else
+    #import <Foundation/Foundation.h>
+    #import <CoreData/CoreData.h>
+#endif
 
-extern const struct TSLibraryAlbumCollectionAttributes {
-	__unsafe_unretained NSString *title;
-} TSLibraryAlbumCollectionAttributes;
-
-extern const struct TSLibraryAlbumCollectionRelationships {
-	__unsafe_unretained NSString *albums;
-	__unsafe_unretained NSString *collections;
-	__unsafe_unretained NSString *parentCollection;
-} TSLibraryAlbumCollectionRelationships;
+NS_ASSUME_NONNULL_BEGIN
 
 @class TSLibraryAlbum;
 @class TSLibraryAlbumCollection;
@@ -20,33 +18,27 @@ extern const struct TSLibraryAlbumCollectionRelationships {
 @interface TSLibraryAlbumCollectionID : NSManagedObjectID {}
 @end
 
-@interface _TSLibraryAlbumCollection : NSManagedObject {}
-+ (id)insertInManagedObjectContext:(NSManagedObjectContext*)moc_;
+@interface _TSLibraryAlbumCollection : NSManagedObject
++ (instancetype)insertInManagedObjectContext:(NSManagedObjectContext *)moc_;
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
-@property (nonatomic, readonly, strong) TSLibraryAlbumCollectionID* objectID;
+@property (nonatomic, readonly, strong) TSLibraryAlbumCollectionID *objectID;
 
-@property (nonatomic, strong) NSString* title;
+@property (nonatomic, strong, nullable) NSString* title;
 
-//- (BOOL)validateTitle:(id*)value_ error:(NSError**)error_;
+@property (nonatomic, strong, nullable) NSOrderedSet<TSLibraryAlbum*> *albums;
+- (nullable NSMutableOrderedSet<TSLibraryAlbum*>*)albumsSet;
 
-@property (nonatomic, strong) NSOrderedSet *albums;
+@property (nonatomic, strong, nullable) NSOrderedSet<TSLibraryAlbumCollection*> *collections;
+- (nullable NSMutableOrderedSet<TSLibraryAlbumCollection*>*)collectionsSet;
 
-- (NSMutableOrderedSet*)albumsSet;
-
-@property (nonatomic, strong) NSOrderedSet *collections;
-
-- (NSMutableOrderedSet*)collectionsSet;
-
-@property (nonatomic, strong) TSLibraryAlbumCollection *parentCollection;
-
-//- (BOOL)validateParentCollection:(id*)value_ error:(NSError**)error_;
+@property (nonatomic, strong, nullable) TSLibraryAlbumCollection *parentCollection;
 
 @end
 
 @interface _TSLibraryAlbumCollection (AlbumsCoreDataGeneratedAccessors)
-- (void)addAlbums:(NSOrderedSet*)value_;
-- (void)removeAlbums:(NSOrderedSet*)value_;
+- (void)addAlbums:(NSOrderedSet<TSLibraryAlbum*>*)value_;
+- (void)removeAlbums:(NSOrderedSet<TSLibraryAlbum*>*)value_;
 - (void)addAlbumsObject:(TSLibraryAlbum*)value_;
 - (void)removeAlbumsObject:(TSLibraryAlbum*)value_;
 
@@ -60,8 +52,8 @@ extern const struct TSLibraryAlbumCollectionRelationships {
 @end
 
 @interface _TSLibraryAlbumCollection (CollectionsCoreDataGeneratedAccessors)
-- (void)addCollections:(NSOrderedSet*)value_;
-- (void)removeCollections:(NSOrderedSet*)value_;
+- (void)addCollections:(NSOrderedSet<TSLibraryAlbumCollection*>*)value_;
+- (void)removeCollections:(NSOrderedSet<TSLibraryAlbumCollection*>*)value_;
 - (void)addCollectionsObject:(TSLibraryAlbumCollection*)value_;
 - (void)removeCollectionsObject:(TSLibraryAlbumCollection*)value_;
 
@@ -79,13 +71,25 @@ extern const struct TSLibraryAlbumCollectionRelationships {
 - (NSString*)primitiveTitle;
 - (void)setPrimitiveTitle:(NSString*)value;
 
-- (NSMutableOrderedSet*)primitiveAlbums;
-- (void)setPrimitiveAlbums:(NSMutableOrderedSet*)value;
+- (NSMutableOrderedSet<TSLibraryAlbum*>*)primitiveAlbums;
+- (void)setPrimitiveAlbums:(NSMutableOrderedSet<TSLibraryAlbum*>*)value;
 
-- (NSMutableOrderedSet*)primitiveCollections;
-- (void)setPrimitiveCollections:(NSMutableOrderedSet*)value;
+- (NSMutableOrderedSet<TSLibraryAlbumCollection*>*)primitiveCollections;
+- (void)setPrimitiveCollections:(NSMutableOrderedSet<TSLibraryAlbumCollection*>*)value;
 
 - (TSLibraryAlbumCollection*)primitiveParentCollection;
 - (void)setPrimitiveParentCollection:(TSLibraryAlbumCollection*)value;
 
 @end
+
+@interface TSLibraryAlbumCollectionAttributes: NSObject 
++ (NSString *)title;
+@end
+
+@interface TSLibraryAlbumCollectionRelationships: NSObject
++ (NSString *)albums;
++ (NSString *)collections;
++ (NSString *)parentCollection;
+@end
+
+NS_ASSUME_NONNULL_END

@@ -10,9 +10,11 @@
 
 #import "TSLibraryOverviewController.h"
 #import "TSLibraryDetailController.h"
+#import "TSHumanModels.h"
 
 #import "TSHistogramView.h"
 
+#import <MagicalRecord/MagicalRecord.h>
 #import <QuartzCore/QuartzCore.h>
 
 @interface TSMainLibraryWindowController ()
@@ -22,7 +24,17 @@
 
 @property (nonatomic, readonly) NSURL *savedStateFileUrl;
 
+/// index of the currently active view controller
+@property (nonatomic) NSUInteger activeVC;
+/// URL of the image that was last open in the develop view
+@property (nonatomic) NSURL *lastDevelopImage;
+
+- (void) appWillTerminate:(NSNotification *) notification;
+
 - (void) activateViewController:(TSMainLibraryContentViewController *) vc animated:(BOOL) isAnimated;
+
+- (void) readWindowState:(NSKeyedUnarchiver *) archiver;
+- (void) saveWindowState:(NSKeyedArchiver *) archiver;
 
 - (void) readStateFromDisk;
 - (void) saveStateToDisk;
@@ -38,21 +50,72 @@
     [super windowDidLoad];
 	
 	// create the various controllers
-	self.vcOverview = [[TSLibraryOverviewController alloc] initWithNibName:@"TSLibraryOverview" bundle:nil];
+	self.vcOverview = [[TSLibraryOverviewController alloc] init];
 	self.vcOverview.windowController = self;
-	self.vcOverview.view;
 	
-	self.vcEdit = [[TSLibraryDetailController alloc] initWithNibName:@"TSLibraryDetail" bundle:nil];
+	self.vcEdit = [[TSLibraryDetailController alloc] init];
 	self.vcEdit.windowController = self;
-	self.vcEdit.view;
+	
 	
 	self.window.backgroundColor = [NSColor blackColor];
 	
-	// set the initial view controller
-	[self activateViewController:self.vcOverview animated:NO];
-	
 	// load restorable state
 	[self readStateFromDisk];
+	
+	// figure out what view controller to show
+	switch(self.activeVC) {
+		// light table
+		case 0:
+			[self activateViewController:self.vcOverview animated:NO];
+			break;
+			
+		// develop/edit view
+		case 1:
+			if(self.lastDevelopImage != nil) {
+				dispatch_async(dispatch_get_main_queue(), ^{
+					NSError *err = nil;
+					NSPersistentStoreCoordinator *psc;
+					NSManagedObjectContext *ctx;
+					NSManagedObjectID *oid;
+					
+					// get an object from the url
+					ctx = [NSManagedObjectContext MR_defaultContext];
+					psc = ctx.persistentStoreCoordinator;
+					
+					oid = [psc managedObjectIDForURIRepresentation:self.lastDevelopImage];
+					
+					TSLibraryImage *im = [ctx existingObjectWithID:oid error:&err];
+					
+					// set the image
+					if(im && err == nil) {
+						[self activateViewController:self.vcEdit animated:NO];
+						
+						self.vcEdit.image = im;
+					} else {
+						DDLogError(@"Couldn't unarchive image with URI %@: %@", self.lastDevelopImage, err);
+						
+						[self activateViewController:self.vcOverview animated:NO];
+					}
+				});
+			} else {
+				DDLogWarn(@"Tried to switch to develop view, but have no last develop image…");
+				[self activateViewController:self.vcOverview animated:NO];
+			}
+			break;
+	}
+	
+	// add notifications
+	NSNotificationCenter *c = [NSNotificationCenter defaultCenter];
+	
+	[c addObserver:self selector:@selector(appWillTerminate:)
+			  name:NSApplicationWillTerminateNotification object:nil];
+}
+
+/**
+ * Cleans up some state when deallocating.
+ */
+- (void) dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark Helpers
@@ -74,16 +137,16 @@
 			
 			// animate
 			self.window.contentViewController.view.animator.alphaValue = 0.f;
-			
-			// prepare window for appearance
-			[vc prepareWindowForAppearance:self.window];
-			self.window.toolbar = vc.windowToolbar;
 		} completionHandler:^{
 			DDLogVerbose(@"Began fade in");
 			
 			// set the new VC
 			vc.view.alphaValue = 0.f;
 			self.window.contentViewController = vc;
+			
+			// prepare window for appearance
+			[vc prepareWindowForAppearance:self.window];
+			self.window.toolbar = vc.windowToolbar;
 			
 			// update window frame
 			[self.window setFrame:oldFrame display:YES];
@@ -100,15 +163,21 @@
 			}];
 		}];
 	} else {
-		[vc prepareWindowForAppearance:self.window];
-		self.window.toolbar = vc.windowToolbar;
-		
 		vc.view.alphaValue = 1.f;
 		self.window.contentViewController = vc;
+		
+		[vc prepareWindowForAppearance:self.window];
+		self.window.toolbar = vc.windowToolbar;
 		
 		// update window's frame
 		[self.window setFrame:oldFrame display:YES];
 	}
+	
+	// update the value for the current view controller
+	if(vc == self.vcOverview)
+		self.activeVC = 0;
+	else if(vc == self.vcEdit)
+		self.activeVC = 1;
 }
 
 /**
@@ -144,7 +213,36 @@
 	[self saveStateToDisk];
 }
 
+/**
+ * The application is about to terminate, so save restorable state.
+ */
+- (void) appWillTerminate:(NSNotification *) notification {
+	[self saveStateToDisk];
+}
+
 #pragma mark State Handling
+/**
+ * Restores the window's state.
+ */
+- (void) readWindowState:(NSKeyedUnarchiver *) archiver {
+	// restore selected view controller
+	self.activeVC = [archiver decodeIntegerForKey:@"MainWindow.ActiveVC"];
+	
+	self.lastDevelopImage = [archiver decodeObjectOfClass:[NSURL class]
+												   forKey:@"MainWindow.LastDevelopImage"];
+}
+
+/**
+ * Saves the window's state.
+ */
+- (void) saveWindowState:(NSKeyedArchiver *) archiver {
+	[archiver encodeInteger:self.activeVC forKey:@"MainWindow.ActiveVC"];
+	
+	// save the CoreData id of the image that was last being edited
+	NSURL *lastEditedImg = self.vcEdit.image.objectID.URIRepresentation;
+	[archiver encodeObject:lastEditedImg forKey:@"MainWindow.LastDevelopImage"];
+}
+
 /**
  * State restoration: opens the ControllerState file, and allows each view
  * controller to decode its state.
@@ -156,8 +254,12 @@
 	NSData *data = [NSData dataWithContentsOfURL:self.savedStateFileUrl options:0 error:&err];
 	
 	if(data == nil || err) {
-		DDLogWarn(@"Error reading restorable state: %@", err);
-		return;
+		DDLogWarn(@"Error reading restorable state: %@; resetting to defaults", err);
+		
+		// load defaults
+		NSURL *url = [[NSBundle mainBundle] URLForResource:@"TSDefaultAppState"
+											 withExtension:@"plist"];
+		data = [NSData dataWithContentsOfURL:url];
 	}
 	
 	// construct archiver
@@ -168,6 +270,9 @@
 	// load each controller's state
 	[self.vcOverview restoreViewOptions:archiver];
 	[self.vcEdit restoreViewOptions:archiver];
+	
+	// restore window state
+	[self readWindowState:archiver];
 	
 	// finish
 	[archiver finishDecoding];
@@ -189,6 +294,9 @@
 	// save each controller's state
 	[self.vcOverview saveViewOptions:archiver];
 	[self.vcEdit saveViewOptions:archiver];
+	
+	// save window state
+	[self saveWindowState:archiver];
 	
 	// save the data
 	[archiver finishEncoding];
@@ -213,30 +321,6 @@
 	appSupportURL = [appSupportURL URLByAppendingPathComponent:@"me.tseifert.Avocado"];
 	
 	return [appSupportURL URLByAppendingPathComponent:@"ViewState.plist" isDirectory:NO];
-}
-
-- (IBAction) loadHistoImage:(id) sender {
-	// figure out image
-	NSImage *im = nil;
-	NSView *view = (NSView *) sender;
-	
-	if(view.tag == 0) {
-		im = [[NSImage alloc] initWithContentsOfURL:[NSURL fileURLWithPath:@"/Users/tristan/Library/Application Support/me.tseifert.Avocado/Photos/2016-03-20/WHS_0119.JPG"]];
-	} else if(view.tag == 1) {
-		im = [[NSImage alloc] initWithContentsOfURL:[NSURL fileURLWithPath:@"/Users/tristan/Library/Application Support/me.tseifert.Avocado/Photos/2016-03-20/IMG_7663.JPG"]];
-	} else if(view.tag == 2) {
-		im = [[NSImage alloc] initWithContentsOfURL:[NSURL fileURLWithPath:@"/Users/tristan/Library/Application Support/me.tseifert.Avocado/Photos/2016-03-20/IMG_7089.JPG"]];
-	} else {
-		im = nil;
-	}
-	
-	// set it
-	self.histo.image = im;
-}
-
-- (IBAction) histoQualityUpdate:(id) sender {
-	NSView *view = (NSView *) sender;
-	self.histo.quality = view.tag;
 }
 
 @end

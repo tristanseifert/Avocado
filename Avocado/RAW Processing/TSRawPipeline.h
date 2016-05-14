@@ -22,27 +22,27 @@
  *	2. Demosaicing Bayer data
  *		a. Apply white balance
  *		b. Interpolate colour values for missing pixels
- *		c. Convert to RGB
  *	3. Apply lens corrections (using LensFun library)
  *		a. Devignetting
  *		b. Geometry corrections (scaling, projection, distortion, chromatic
  *		abberations)
- *	4. Convert to planar floating point
- *	5. vImage rotation/flip (to account for flipped status of image)
- *	6. vImage (de)convolution operations
- *	7. vImage 'morphological' operations
- *	8. vImage histogram operations (exposure, contrast, etc.)
- *	9. Convert to interleaved RGBA floating-point
- * 10. CoreImage filter pass
+ *	4. Gamma correction and colour space conversion
+ *	5. Convert to planar floating point
+ *	6. vImage rotation/flip (to account for flipped status of image)
+ *	7. vImage (de)convolution operations
+ *	8. vImage 'morphological' operations
+ *	9. vImage histogram operations (exposure, contrast, etc.)
+ * 10. Convert to interleaved RGBA floating-point
+ * 11. CoreImage filter pass
  *		a. Noise reduction, blurs
  *		b. Sharpening (luminance, unsharp mask)
  *		c. Colour adjustments and effects
  *		d. Distortion effects
  *		e. Geometry adjustments (crop, scaling, straightening, etc.)
  *		f. Vignetting and grain
- * 10. Generate final histogram (displayed in UI)
+ * 12. Generate final histogram (displayed in UI)
  *
- * The outputs of stage 4, and stage 9 can be cached.
+ * The outputs of stage 5, and stage 10 can be cached.
  *
  * Pipeline plugins can chose to process data at any major numbered
  * position in the pipeline. They are called _before_ the built-in pipeline
@@ -65,24 +65,25 @@ typedef NS_ENUM(NSUInteger, TSRawPipelineStage) {
 	TSRawPipelineStageDemosaicing			= (2 << 16),
 	TSRawPipelineStageWhiteBalance			= (2 << 16) | 1,
 	TSRawPipelineStageInterpolateColour		= (2 << 16) | 2,
-	TSRawPipelineStageConvertToRGB			= (2 << 16) | 3,
 	
 	TSRawPipelineStageLensCorrection		= (3 << 16),
 	TSRawPipelineStageLensVignetting		= (3 << 16) | 1,
 	TSRawPipelineStageLensDistortions		= (3 << 16) | 2,
 	
-	TSRawPipelineStageConvertToPlanar		= (4 << 16),
+	TSRawPipelineStageConvertToRGB			= (4 << 16),
 	
-	TSRawPipelineStageRotationFlip			= (5 << 16),
-	TSRawPipelineStageConvolution			= (6 << 16),
-	TSRawPipelineStageMorphological			= (7 << 16),
-	TSRawPipelineStageHistogramModification	= (8 << 16),
+	TSRawPipelineStageConvertToPlanar		= (5 << 16),
 	
-	TSRawPipelineStageConvertToInterleaved	= (9 << 16),
+	TSRawPipelineStageRotationFlip			= (6 << 16),
+	TSRawPipelineStageConvolution			= (7 << 16),
+	TSRawPipelineStageMorphological			= (8 << 16),
+	TSRawPipelineStageHistogramModification	= (9 << 16),
 	
-	TSRawPipelineStageCoreImageFilter		= (10 << 16),
+	TSRawPipelineStageConvertToInterleaved	= (10 << 16),
+	
+	TSRawPipelineStageCoreImageFilter		= (11 << 16),
 
-	TSRawPipelineStageGenerateHistogram		= (11 << 16),
+	TSRawPipelineStageGenerateHistogram		= (12 << 16),
 };
 
 /// mask for the major pipeline stage

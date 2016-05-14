@@ -14,9 +14,10 @@
 #import "TSMainLibraryContentViewController.h"
 
 @class TSLibraryImage;
-@interface TSLibraryDetailController : TSMainLibraryContentViewController
+@interface TSLibraryDetailController : TSMainLibraryContentViewController <NSSplitViewDelegate>
 
 @property (nonatomic) IBOutlet NSScrollView *scrollView;
+@property (nonatomic) IBOutlet NSView *sidebarView;
 
 @property (nonatomic) TSLibraryImage *image;
 

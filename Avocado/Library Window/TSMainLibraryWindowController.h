@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class TSLibraryImage, TSHistogramView;
+@class TSLibraryImage;
 @interface TSMainLibraryWindowController : NSWindowController <NSWindowDelegate>
 
 /**
@@ -21,10 +21,5 @@
  * Switches to the light table view.
  */
 - (void) openLightTable;
-
-@property (nonatomic) IBOutlet TSHistogramView *histo;
-
-- (IBAction) loadHistoImage:(id) sender;
-- (IBAction) histoQualityUpdate:(id) sender;
 
 @end
