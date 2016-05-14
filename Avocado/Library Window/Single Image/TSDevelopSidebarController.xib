@@ -26,23 +26,23 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kac-yq-523">
-                    <rect key="frame" x="20" y="20" width="320" height="460"/>
+                <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kac-yq-523">
+                    <rect key="frame" x="0.0" y="20" width="360" height="460"/>
                     <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="jwH-Yl-PeQ">
-                        <rect key="frame" x="1" y="1" width="318" height="458"/>
+                        <rect key="frame" x="0.0" y="0.0" width="360" height="460"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView distribution="equalSpacing" orientation="vertical" alignment="leading" spacing="0.0" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" fixedFrame="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3MS-IS-8Ka" customClass="TSInspectorView">
-                                <rect key="frame" x="-5" y="-141" width="0.0" height="0.0"/>
+                            <stackView distribution="equalSpacing" orientation="vertical" alignment="leading" spacing="0.0" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" fixedFrame="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3MS-IS-8Ka" customClass="TSVibrantStackView">
+                                <rect key="frame" x="-5" y="-139" width="0.0" height="0.0"/>
                             </stackView>
                         </subviews>
                     </clipView>
                     <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="iVP-wU-2P5">
-                        <rect key="frame" x="1" y="443" width="318" height="16"/>
+                        <rect key="frame" x="0.0" y="444" width="360" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                     <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="5Sx-Ki-dPV">
-                        <rect key="frame" x="304" y="1" width="15" height="458"/>
+                        <rect key="frame" x="344" y="0.0" width="16" height="460"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                 </scrollView>
@@ -50,8 +50,8 @@
             <constraints>
                 <constraint firstItem="kac-yq-523" firstAttribute="top" secondItem="svh-KT-mYr" secondAttribute="bottom" constant="8" id="5GP-Sh-HGh"/>
                 <constraint firstItem="svh-KT-mYr" firstAttribute="leading" secondItem="gej-Fx-Ghd" secondAttribute="leading" constant="15" id="78e-cr-S78"/>
-                <constraint firstAttribute="trailing" secondItem="kac-yq-523" secondAttribute="trailing" constant="20" id="7PH-cP-Wa6"/>
-                <constraint firstItem="kac-yq-523" firstAttribute="leading" secondItem="gej-Fx-Ghd" secondAttribute="leading" constant="20" id="Qna-5e-ff0"/>
+                <constraint firstAttribute="trailing" secondItem="kac-yq-523" secondAttribute="trailing" id="7PH-cP-Wa6"/>
+                <constraint firstItem="kac-yq-523" firstAttribute="leading" secondItem="gej-Fx-Ghd" secondAttribute="leading" id="Qna-5e-ff0"/>
                 <constraint firstAttribute="bottom" secondItem="kac-yq-523" secondAttribute="bottom" constant="20" id="S9c-Yf-RB3"/>
                 <constraint firstAttribute="trailing" secondItem="svh-KT-mYr" secondAttribute="trailing" constant="15" id="UxD-FA-uPT"/>
                 <constraint firstItem="svh-KT-mYr" firstAttribute="top" secondItem="gej-Fx-Ghd" secondAttribute="top" constant="15" id="lNb-PO-8dI"/>

@@ -19,6 +19,7 @@
 @property (nonatomic) IBOutlet TSInspectorViewController *inspector;
 
 @property (nonatomic) TSInspectorViewItem *inspectorExposure;
+@property (nonatomic) TSInspectorViewItem *inspectorWhiteBal;
 
 @end
 
@@ -29,10 +30,16 @@
  */
 - (instancetype) init {
 	if(self = [super initWithNibName:@"TSDevelopSidebarController" bundle:nil]) {
-		// set up the inspectors
+		// set up exposure inspector
 		TSDevelopExposureInspector *exp = [[TSDevelopExposureInspector alloc] init];
+		self.inspectorExposure = [TSInspectorViewItem itemWithContentController:exp
+																	   expanded:YES];
 		
-		self.inspectorExposure = [TSInspectorViewItem itemWithContentController:exp];
+		// set up white balance inspector
+		TSDevelopExposureInspector *wb = [[TSDevelopExposureInspector alloc] init];
+		wb.title = @"White Balance";
+		self.inspectorWhiteBal = [TSInspectorViewItem itemWithContentController:wb
+																	   expanded:YES];
 	}
 	
 	return self;
@@ -44,9 +51,9 @@
 - (void) viewDidLoad {
     [super viewDidLoad];
 	
-	// adds the previously created views to the inspector
-//	[self.stackView addView:self.inspectorExposure.view inGravity:NSStackViewGravityCenter];
+	// add the previously created views to the inspector
 	[self.inspector addInspectorView:self.inspectorExposure];
+	[self.inspector addInspectorView:self.inspectorWhiteBal];
 }
 
 @end

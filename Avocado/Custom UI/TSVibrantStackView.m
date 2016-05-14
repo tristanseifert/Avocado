@@ -6,9 +6,9 @@
 //  Copyright © 2016 Tristan Seifert. All rights reserved.
 //
 
-#import "TSInspectorView.h"
+#import "TSVibrantStackView.h"
 
-@implementation TSInspectorView
+@implementation TSVibrantStackView
 
 /**
  * Flips the coordinate system.

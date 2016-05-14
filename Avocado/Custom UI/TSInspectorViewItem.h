@@ -14,6 +14,9 @@
  * Sets up an inspector view item, using the given view controller as the
  * content.
  */
-+ (instancetype) itemWithContentController:(NSViewController *) content;
++ (instancetype) itemWithContentController:(NSViewController *) content expanded:(BOOL) expanded;
+
+/// whether the item is expanded or not
+@property (nonatomic, readonly) BOOL isExpanded;
 
 @end

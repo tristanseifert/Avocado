@@ -45,7 +45,8 @@
 		6AA935991CE7AA75004E9F9C /* TSInspectorViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA935981CE7AA75004E9F9C /* TSInspectorViewItem.m */; };
 		6AA9359E1CE7AF43004E9F9C /* TSDevelopExposureInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA9359C1CE7AF43004E9F9C /* TSDevelopExposureInspector.m */; };
 		6AA9359F1CE7AF43004E9F9C /* TSDevelopExposureInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AA9359D1CE7AF43004E9F9C /* TSDevelopExposureInspector.xib */; };
-		6AA935A21CE7C354004E9F9C /* TSInspectorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA935A11CE7C354004E9F9C /* TSInspectorView.m */; };
+		6AA935A21CE7C354004E9F9C /* TSVibrantStackView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA935A11CE7C354004E9F9C /* TSVibrantStackView.m */; };
+		6AA935A51CE7CDE1004E9F9C /* TSInspectorTitleBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA935A41CE7CDE1004E9F9C /* TSInspectorTitleBar.m */; };
 		6AAEFC961CE6C0DE0003DF4B /* TSDefaultAppState.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6AAEFC951CE6C0DE0003DF4B /* TSDefaultAppState.plist */; };
 		6AB32E9C1CDE4574004FF7A3 /* lmmse_interpolate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AB32E9B1CDE4574004FF7A3 /* lmmse_interpolate.m */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive"; }; };
 		6AB32EA11CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AB32EA01CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m */; };
@@ -171,8 +172,10 @@
 		6AA9359B1CE7AF43004E9F9C /* TSDevelopExposureInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSDevelopExposureInspector.h; path = "Library Window/Single Image/Inspectors/TSDevelopExposureInspector.h"; sourceTree = "<group>"; };
 		6AA9359C1CE7AF43004E9F9C /* TSDevelopExposureInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSDevelopExposureInspector.m; path = "Library Window/Single Image/Inspectors/TSDevelopExposureInspector.m"; sourceTree = "<group>"; };
 		6AA9359D1CE7AF43004E9F9C /* TSDevelopExposureInspector.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSDevelopExposureInspector.xib; path = "Library Window/Single Image/Inspectors/TSDevelopExposureInspector.xib"; sourceTree = "<group>"; };
-		6AA935A01CE7C354004E9F9C /* TSInspectorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSInspectorView.h; path = "Avocado/Custom UI/TSInspectorView.h"; sourceTree = "<group>"; };
-		6AA935A11CE7C354004E9F9C /* TSInspectorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSInspectorView.m; path = "Avocado/Custom UI/TSInspectorView.m"; sourceTree = "<group>"; };
+		6AA935A01CE7C354004E9F9C /* TSVibrantStackView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSVibrantStackView.h; path = "Avocado/Custom UI/TSVibrantStackView.h"; sourceTree = "<group>"; };
+		6AA935A11CE7C354004E9F9C /* TSVibrantStackView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSVibrantStackView.m; path = "Avocado/Custom UI/TSVibrantStackView.m"; sourceTree = "<group>"; };
+		6AA935A31CE7CDE1004E9F9C /* TSInspectorTitleBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSInspectorTitleBar.h; path = "Avocado/Custom UI/TSInspectorTitleBar.h"; sourceTree = "<group>"; };
+		6AA935A41CE7CDE1004E9F9C /* TSInspectorTitleBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSInspectorTitleBar.m; path = "Avocado/Custom UI/TSInspectorTitleBar.m"; sourceTree = "<group>"; };
 		6AAEFC951CE6C0DE0003DF4B /* TSDefaultAppState.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TSDefaultAppState.plist; sourceTree = "<group>"; };
 		6AB32E9A1CDDBAC9004FF7A3 /* ahd_interpolate_mod.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ahd_interpolate_mod.h; path = "Avocado/RAW Processing/ahd_interpolate_mod.h"; sourceTree = "<group>"; };
 		6AB32E9B1CDE4574004FF7A3 /* lmmse_interpolate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = lmmse_interpolate.m; path = "Avocado/RAW Processing/lmmse_interpolate.m"; sourceTree = "<group>"; };
@@ -427,8 +430,10 @@
 				6AA935941CE7A6A4004E9F9C /* TSInspectorViewController.m */,
 				6AA935971CE7AA75004E9F9C /* TSInspectorViewItem.h */,
 				6AA935981CE7AA75004E9F9C /* TSInspectorViewItem.m */,
-				6AA935A01CE7C354004E9F9C /* TSInspectorView.h */,
-				6AA935A11CE7C354004E9F9C /* TSInspectorView.m */,
+				6AA935A01CE7C354004E9F9C /* TSVibrantStackView.h */,
+				6AA935A11CE7C354004E9F9C /* TSVibrantStackView.m */,
+				6AA935A31CE7CDE1004E9F9C /* TSInspectorTitleBar.h */,
+				6AA935A41CE7CDE1004E9F9C /* TSInspectorTitleBar.m */,
 			);
 			name = Inspector;
 			sourceTree = "<group>";
@@ -978,8 +983,9 @@
 				6A6ED41B1CE4D239001EFA21 /* TSHSLAdjustmentFilter.m in Sources */,
 				6A06F4371CE0169E001DFC4C /* TSCoreImagePipeline.m in Sources */,
 				6ABC2DAE1CD4357E006B959F /* TSLibraryExportService.m in Sources */,
+				6AA935A51CE7CDE1004E9F9C /* TSInspectorTitleBar.m in Sources */,
 				6ABC2DC01CD43586006B959F /* _TSLibraryExportService.m in Sources */,
-				6AA935A21CE7C354004E9F9C /* TSInspectorView.m in Sources */,
+				6AA935A21CE7C354004E9F9C /* TSVibrantStackView.m in Sources */,
 				6AEC767E1CD5187D00870FAE /* TSLibraryLightTableCell.m in Sources */,
 				6ABC2DBF1CD43586006B959F /* _TSLibraryAlbumCollection.m in Sources */,
 				6A28F0631CD8190600228067 /* TSRawPipeline.mm in Sources */,

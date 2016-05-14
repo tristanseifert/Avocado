@@ -43,8 +43,6 @@
 	self.stackView.wantsLayer = YES;
 	self.stackView.layerContentsRedrawPolicy = NSViewLayerContentsRedrawOnSetNeedsDisplay;
 
-	self.stackView.layer.backgroundColor = [NSColor blueColor].CGColor;
-
 	// set up stack view properties
 	self.stackView.orientation = NSUserInterfaceLayoutOrientationVertical;
 	

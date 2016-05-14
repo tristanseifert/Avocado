@@ -6,10 +6,20 @@
 //  Copyright © 2016 Tristan Seifert. All rights reserved.
 //
 
-#import "TSInspectorViewItem.h"
+#import <QuartzCore/QuartzCore.h>
 
+#import "TSInspectorViewItem.h"
+#import "TSInspectorTitleBar.h"
+#import "TSVibrantStackView.h"
 #import "TSVibrantView.h"
 
+/// title bar inset, in points
+static const CGFloat TSInspectorTitleBarHInset = 5.f;
+/// space between the disclosure button and the title label, in points
+static const CGFloat TSInspectorTitleBarLabelXPadding = 4.f;
+
+/// duration of the accordion animation, in seconds
+static const CGFloat TSInspectorAccordionAnimationDuration = 0.33f;
 /// height of the title bar of the inspector, in points
 static const CGFloat TSInspectorTitleBarHeight = 25.f;
 
@@ -18,9 +28,23 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 @property (nonatomic, strong) NSViewController *content;
 
 // title bar for the inspector pane
-@property (nonatomic) NSView *titleBar;
+@property (nonatomic) TSInspectorTitleBar *titleBar;
 // override the view property as a stack view
 @property (nonatomic) NSStackView *view;
+
+// layout constraint for the height of the content
+@property (nonatomic) NSLayoutConstraint *contentHeightConstraint;
+
+// disclosure button
+@property (nonatomic) NSButton *disclosureTriangle;
+// title label; title is taken from the content view controller
+@property (nonatomic) NSTextField *titleLabel;
+
+// whether the content view is expanded or not.
+@property (nonatomic, readwrite) BOOL isExpanded;
+
+- (void) setUpTitleBar;
+- (void) disclosureTriangleClicked:(id) sender;
 
 @end
 
@@ -31,10 +55,11 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
  * Sets up an inspector view item, using the given view controller as the
  * content.
  */
-+ (instancetype) itemWithContentController:(NSViewController *) content {
++ (instancetype) itemWithContentController:(NSViewController *) content expanded:(BOOL) expanded {
 	TSInspectorViewItem *i = [[TSInspectorViewItem alloc] init];
 	
 	i.content = content;
+	i.isExpanded = expanded;
 	
 	// done
 	return i;
@@ -45,12 +70,10 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
  * Sets up a custom view.
  */
 - (void) loadView {
-	self.view = [[NSStackView alloc] initWithFrame:NSZeroRect];
+	self.view = [[TSVibrantStackView alloc] initWithFrame:NSZeroRect];
 	
 	self.view.wantsLayer = YES;
 	self.view.layerContentsRedrawPolicy = NSViewLayerContentsRedrawOnSetNeedsDisplay;
-	
-	self.view.layer.backgroundColor = [NSColor greenColor].CGColor;
 	
 	self.view.spacing = 0.f;
 	self.view.orientation = NSUserInterfaceLayoutOrientationVertical;
@@ -67,24 +90,8 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 	
 	[super viewDidLoad];
 	
-	// add the title view
-	self.titleBar = [[TSVibrantView alloc] initWithFrame:NSZeroRect];
-	self.titleBar.wantsLayer = YES;
-	
-	self.titleBar.layer.backgroundColor = [NSColor redColor].CGColor;
-	
-	[self.view addView:self.titleBar
-			 inGravity:NSStackViewGravityTop];
-	
-	// set up size constraints for the title bar
-	c = [NSLayoutConstraint constraintWithItem:self.titleBar
-									 attribute:NSLayoutAttributeHeight
-									 relatedBy:NSLayoutRelationEqual
-										toItem:nil
-									 attribute:NSLayoutAttributeNotAnAttribute
-									multiplier:0.f constant:TSInspectorTitleBarHeight];
-	c.priority = NSLayoutPriorityRequired;
-	[self.titleBar addConstraint:c];
+	// set up title bar
+	[self setUpTitleBar];
 	
 	// align the title bar to the top, leading and trailing of the parent
 	c = [NSLayoutConstraint constraintWithItem:self.titleBar
@@ -130,6 +137,12 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 									multiplier:0.f
 									  constant:self.content.preferredContentSize.height];
 	c.priority = NSLayoutPriorityRequired;
+	
+	if(self.isExpanded == NO) {
+		c.constant = 0.f;
+	}
+
+	self.contentHeightConstraint = c;
 	[self.content.view addConstraint:c];
 	
 	// now, align it to the leading and trailing edge of the superview, and the bottom
@@ -138,7 +151,7 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 									 relatedBy:NSLayoutRelationEqual
 										toItem:self.view
 									 attribute:NSLayoutAttributeLeading
-									multiplier:1.f constant:0];
+									multiplier:1.f constant:10.f];
 	c.priority = NSLayoutPriorityDefaultHigh;
 	[self.view addConstraint:c];
 	
@@ -147,7 +160,7 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 									 relatedBy:NSLayoutRelationEqual
 										toItem:self.view
 									 attribute:NSLayoutAttributeTrailing
-									multiplier:1.f constant:0];
+									multiplier:1.f constant:-10.f];
 	c.priority = NSLayoutPriorityDefaultHigh;
 	[self.view addConstraint:c];
 	
@@ -169,6 +182,140 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 									multiplier:1.f constant:0];
 	c.priority = NSLayoutPriorityRequired;
 	[self.view addConstraint:c];
+}
+
+#pragma mark Title Bar
+/**
+ * Sets up the title bar, and its subviews.
+ */
+- (void) setUpTitleBar {
+	NSLayoutConstraint *c;
+	
+	// add the title view
+	self.titleBar = [[TSInspectorTitleBar alloc] initWithFrame:NSZeroRect];
+	self.titleBar.wantsLayer = YES;
+	self.titleBar.translatesAutoresizingMaskIntoConstraints = NO;
+	
+	[self.view addView:self.titleBar
+			 inGravity:NSStackViewGravityTop];
+	
+	// set up size constraints for the title bar
+	c = [NSLayoutConstraint constraintWithItem:self.titleBar
+									 attribute:NSLayoutAttributeHeight
+									 relatedBy:NSLayoutRelationEqual
+										toItem:nil
+									 attribute:NSLayoutAttributeNotAnAttribute
+									multiplier:0.f constant:TSInspectorTitleBarHeight];
+	c.priority = NSLayoutPriorityRequired;
+	[self.titleBar addConstraint:c];
+	
+	
+	// set up the collapsible button
+	self.disclosureTriangle = [[NSButton alloc] initWithFrame:NSZeroRect];
+	self.disclosureTriangle.translatesAutoresizingMaskIntoConstraints = NO;
+	
+	self.disclosureTriangle.buttonType = NSOnOffButton;
+	self.disclosureTriangle.bezelStyle = NSDisclosureBezelStyle;
+	self.disclosureTriangle.title = @"";
+	
+	self.disclosureTriangle.target = self;
+	self.disclosureTriangle.action = @selector(disclosureTriangleClicked:);
+	
+	self.disclosureTriangle.state = self.isExpanded ? NSOnState : NSOffState;
+	
+	[self.titleBar addSubview:self.disclosureTriangle];
+	
+	// add constraints for collapsible button
+	c = [NSLayoutConstraint constraintWithItem:self.disclosureTriangle
+									 attribute:NSLayoutAttributeLeading
+									 relatedBy:NSLayoutRelationEqual
+										toItem:self.titleBar
+									 attribute:NSLayoutAttributeLeading
+									multiplier:1.f constant:TSInspectorTitleBarHInset];
+	c.priority = NSLayoutPriorityRequired;
+	[self.titleBar addConstraint:c];
+	
+	c = [NSLayoutConstraint constraintWithItem:self.disclosureTriangle
+									 attribute:NSLayoutAttributeCenterY
+									 relatedBy:NSLayoutRelationEqual
+										toItem:self.titleBar
+									 attribute:NSLayoutAttributeCenterY
+									multiplier:1.f constant:0.f];
+	c.priority = NSLayoutPriorityRequired;
+	[self.titleBar addConstraint:c];
+	
+	
+	// set up title label
+	self.titleLabel = [[NSTextField alloc] initWithFrame:NSZeroRect];
+	self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+	
+	self.titleLabel.bezeled = NO;
+	self.titleLabel.drawsBackground = NO;
+	self.titleLabel.editable = NO;
+	self.titleLabel.selectable = NO;
+	
+	self.titleLabel.font = [NSFont systemFontOfSize:13 weight:NSFontWeightSemibold];
+	self.titleLabel.textColor = [NSColor labelColor];
+	
+	// bind its string value to the content controller's title
+	self.titleLabel.stringValue = @"Inspector Title";
+	[self.titleLabel bind:@"stringValue" toObject:self.content
+			  withKeyPath:@"title" options:nil];
+	
+	[self.titleBar addSubview:self.titleLabel];
+	
+	// set up constraints for title label
+	c = [NSLayoutConstraint constraintWithItem:self.titleLabel
+									 attribute:NSLayoutAttributeLeading
+									 relatedBy:NSLayoutRelationEqual
+										toItem:self.disclosureTriangle
+									 attribute:NSLayoutAttributeTrailing
+									multiplier:1.f constant:TSInspectorTitleBarLabelXPadding];
+	c.priority = NSLayoutPriorityRequired;
+	[self.titleBar addConstraint:c];
+	
+	c = [NSLayoutConstraint constraintWithItem:self.titleLabel
+									 attribute:NSLayoutAttributeCenterY
+									 relatedBy:NSLayoutRelationEqual
+										toItem:self.titleBar
+									 attribute:NSLayoutAttributeCenterY
+									multiplier:1.f constant:-1.f];
+	c.priority = NSLayoutPriorityRequired;
+	[self.titleBar addConstraint:c];
+}
+
+/**
+ * Handles toggling of the disclosure triangle.
+ */
+- (void) disclosureTriangleClicked:(id) sender {
+	// collapse the view
+	if(self.isExpanded) {
+		[NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
+			context.duration = TSInspectorAccordionAnimationDuration;
+			context.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+			
+			if(NSApp.currentEvent.modifierFlags & NSShiftKeyMask)
+				context.duration = context.duration * 5.f;
+			
+			self.contentHeightConstraint.animator.constant = 0.f;
+			self.content.view.animator.alphaValue = 0.f;
+		} completionHandler:nil];
+	}
+	// expand the view
+	else {
+		[NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
+			context.duration = TSInspectorAccordionAnimationDuration;
+			context.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+			
+			if(NSApp.currentEvent.modifierFlags & NSShiftKeyMask)
+				context.duration = context.duration * 5.f;
+			
+			self.contentHeightConstraint.animator.constant = self.content.preferredContentSize.height;
+			self.content.view.animator.alphaValue = 1.f;
+		} completionHandler:nil];
+	}
+	
+	self.isExpanded = !self.isExpanded;
 }
 
 @end
