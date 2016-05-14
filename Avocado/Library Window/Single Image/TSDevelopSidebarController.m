@@ -10,14 +10,13 @@
 
 #import "TSHumanModels.h"
 #import "TSHistogramView.h"
-#import "TSInspectorView.h"
+#import "TSInspectorViewController.h"
 
 #import "TSDevelopExposureInspector.h"
 
 @interface TSDevelopSidebarController ()
 
-@property (nonatomic) IBOutlet TSHistogramView *mrHistogram;
-@property (nonatomic) IBOutlet TSInspectorView *inspectorContainer;
+@property (nonatomic) IBOutlet TSInspectorViewController *inspector;
 
 @property (nonatomic) TSInspectorViewItem *inspectorExposure;
 
@@ -46,10 +45,8 @@
     [super viewDidLoad];
 	
 	// adds the previously created views to the inspector
-	self.inspectorExposure.view.frame = NSMakeRect(20, 300, 320, 300);
-	[self.view addSubview:self.inspectorExposure.view];
-	
-//	[self.inspectorContainer addInspectorView:self.inspectorExposure];
+//	[self.stackView addView:self.inspectorExposure.view inGravity:NSStackViewGravityCenter];
+	[self.inspector addInspectorView:self.inspectorExposure];
 }
 
 @end

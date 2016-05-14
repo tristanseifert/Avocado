@@ -38,30 +38,5 @@
                 <constraint firstItem="yeg-Hb-rAD" firstAttribute="leading" secondItem="Hz6-mo-xeY" secondAttribute="leading" constant="20" id="rO3-c1-iTB"/>
             </constraints>
         </customView>
-        <customView id="3bS-vZ-1AD">
-            <rect key="frame" x="0.0" y="0.0" width="429" height="285"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-            <subviews>
-                <customView translatesAutoresizingMaskIntoConstraints="NO" id="ue1-dg-Rhf" userLabel="Content">
-                    <rect key="frame" x="0.0" y="0.0" width="429" height="243"/>
-                </customView>
-                <customView translatesAutoresizingMaskIntoConstraints="NO" id="e3B-V8-g2w" userLabel="Title Bar">
-                    <rect key="frame" x="0.0" y="243" width="429" height="42"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="42" id="hcS-Li-90q"/>
-                    </constraints>
-                </customView>
-            </subviews>
-            <constraints>
-                <constraint firstItem="e3B-V8-g2w" firstAttribute="leading" secondItem="3bS-vZ-1AD" secondAttribute="leading" id="Bie-Ue-9QZ"/>
-                <constraint firstItem="ue1-dg-Rhf" firstAttribute="top" secondItem="e3B-V8-g2w" secondAttribute="bottom" id="DKU-Kw-Zkk"/>
-                <constraint firstItem="ue1-dg-Rhf" firstAttribute="leading" secondItem="3bS-vZ-1AD" secondAttribute="leading" id="EXO-f2-yJN"/>
-                <constraint firstAttribute="bottom" secondItem="ue1-dg-Rhf" secondAttribute="bottom" id="Fr0-dl-jsI"/>
-                <constraint firstItem="e3B-V8-g2w" firstAttribute="top" secondItem="3bS-vZ-1AD" secondAttribute="top" id="Rct-CS-Cmz"/>
-                <constraint firstAttribute="trailing" secondItem="e3B-V8-g2w" secondAttribute="trailing" id="Tu6-uC-JA7"/>
-                <constraint firstAttribute="trailing" secondItem="ue1-dg-Rhf" secondAttribute="trailing" id="WbF-El-kf3"/>
-            </constraints>
-            <point key="canvasLocation" x="408.5" y="670.5"/>
-        </customView>
     </objects>
 </document>
