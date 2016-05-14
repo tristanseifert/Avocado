@@ -15,9 +15,9 @@
 #import "TSMainLibraryWindowController.h"
 
 /// minimum width of the sidebar
-static const CGFloat TSEditSidebarMinWidth = 225.f;
+static const CGFloat TSEditSidebarMinWidth = 250.f;
 /// maximum width of the sidebar
-static const CGFloat TSEditSidebarMaxWidth = 420.f;
+static const CGFloat TSEditSidebarMaxWidth = 450.f;
 
 static void *TSImageKVO = &TSImageKVO;
 
@@ -111,7 +111,7 @@ static void *TSImageKVO = &TSImageKVO;
 						 change:(NSDictionary<NSString *,id> *) change
 						context:(void *) context {
 	// the image property changed
-	if(context == TSImageKVO) {		
+	if(context == TSImageKVO) {
 		self.imageController.image = self.image;
 		self.sidebarController.image = self.image;
 	} else {

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="TSDevelopExposureInspector">
+            <connections>
+                <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="Hz6-mo-xeY">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="275"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yeg-Hb-rAD">
+                    <rect key="frame" x="14" y="227" width="90" height="32"/>
+                    <buttonCell key="cell" type="push" title="Top Left" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="kWl-Bn-FK9">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                </button>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="oq5-G6-RyH">
+                    <rect key="frame" x="186" y="13" width="120" height="32"/>
+                    <buttonCell key="cell" type="push" title="Bottom Right" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="9W8-BC-pHr">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                </button>
+            </subviews>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="oq5-G6-RyH" secondAttribute="trailing" constant="20" id="5ma-Nt-L6f"/>
+                <constraint firstItem="yeg-Hb-rAD" firstAttribute="top" secondItem="Hz6-mo-xeY" secondAttribute="top" constant="20" id="VKS-CP-M9H"/>
+                <constraint firstAttribute="bottom" secondItem="oq5-G6-RyH" secondAttribute="bottom" constant="20" id="khN-QE-S9S"/>
+                <constraint firstItem="yeg-Hb-rAD" firstAttribute="leading" secondItem="Hz6-mo-xeY" secondAttribute="leading" constant="20" id="rO3-c1-iTB"/>
+            </constraints>
+        </customView>
+        <customView id="3bS-vZ-1AD">
+            <rect key="frame" x="0.0" y="0.0" width="429" height="285"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <customView translatesAutoresizingMaskIntoConstraints="NO" id="ue1-dg-Rhf" userLabel="Content">
+                    <rect key="frame" x="0.0" y="0.0" width="429" height="243"/>
+                </customView>
+                <customView translatesAutoresizingMaskIntoConstraints="NO" id="e3B-V8-g2w" userLabel="Title Bar">
+                    <rect key="frame" x="0.0" y="243" width="429" height="42"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="42" id="hcS-Li-90q"/>
+                    </constraints>
+                </customView>
+            </subviews>
+            <constraints>
+                <constraint firstItem="e3B-V8-g2w" firstAttribute="leading" secondItem="3bS-vZ-1AD" secondAttribute="leading" id="Bie-Ue-9QZ"/>
+                <constraint firstItem="ue1-dg-Rhf" firstAttribute="top" secondItem="e3B-V8-g2w" secondAttribute="bottom" id="DKU-Kw-Zkk"/>
+                <constraint firstItem="ue1-dg-Rhf" firstAttribute="leading" secondItem="3bS-vZ-1AD" secondAttribute="leading" id="EXO-f2-yJN"/>
+                <constraint firstAttribute="bottom" secondItem="ue1-dg-Rhf" secondAttribute="bottom" id="Fr0-dl-jsI"/>
+                <constraint firstItem="e3B-V8-g2w" firstAttribute="top" secondItem="3bS-vZ-1AD" secondAttribute="top" id="Rct-CS-Cmz"/>
+                <constraint firstAttribute="trailing" secondItem="e3B-V8-g2w" secondAttribute="trailing" id="Tu6-uC-JA7"/>
+                <constraint firstAttribute="trailing" secondItem="ue1-dg-Rhf" secondAttribute="trailing" id="WbF-El-kf3"/>
+            </constraints>
+            <point key="canvasLocation" x="408.5" y="670.5"/>
+        </customView>
+    </objects>
+</document>

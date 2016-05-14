@@ -41,6 +41,10 @@
 		6AA9358E1CE787D9004E9F9C /* TSDevelopSidebarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA9358A1CE787D9004E9F9C /* TSDevelopSidebarController.m */; };
 		6AA9358F1CE787D9004E9F9C /* TSDevelopSidebarController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AA9358B1CE787D9004E9F9C /* TSDevelopSidebarController.xib */; };
 		6AA935921CE792E2004E9F9C /* TSVibrantView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA935911CE792E2004E9F9C /* TSVibrantView.m */; };
+		6AA935951CE7A6A4004E9F9C /* TSInspectorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA935941CE7A6A4004E9F9C /* TSInspectorView.m */; };
+		6AA935991CE7AA75004E9F9C /* TSInspectorViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA935981CE7AA75004E9F9C /* TSInspectorViewItem.m */; };
+		6AA9359E1CE7AF43004E9F9C /* TSDevelopExposureInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA9359C1CE7AF43004E9F9C /* TSDevelopExposureInspector.m */; };
+		6AA9359F1CE7AF43004E9F9C /* TSDevelopExposureInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AA9359D1CE7AF43004E9F9C /* TSDevelopExposureInspector.xib */; };
 		6AAEFC961CE6C0DE0003DF4B /* TSDefaultAppState.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6AAEFC951CE6C0DE0003DF4B /* TSDefaultAppState.plist */; };
 		6AB32E9C1CDE4574004FF7A3 /* lmmse_interpolate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AB32E9B1CDE4574004FF7A3 /* lmmse_interpolate.m */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive"; }; };
 		6AB32EA11CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AB32EA01CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m */; };
@@ -159,6 +163,13 @@
 		6AA9358B1CE787D9004E9F9C /* TSDevelopSidebarController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSDevelopSidebarController.xib; path = "Library Window/Single Image/TSDevelopSidebarController.xib"; sourceTree = "<group>"; };
 		6AA935901CE792E2004E9F9C /* TSVibrantView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSVibrantView.h; path = Avocado/Helpers/TSVibrantView.h; sourceTree = "<group>"; };
 		6AA935911CE792E2004E9F9C /* TSVibrantView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSVibrantView.m; path = Avocado/Helpers/TSVibrantView.m; sourceTree = "<group>"; };
+		6AA935931CE7A6A4004E9F9C /* TSInspectorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSInspectorView.h; path = "Avocado/Custom UI/TSInspectorView.h"; sourceTree = "<group>"; };
+		6AA935941CE7A6A4004E9F9C /* TSInspectorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSInspectorView.m; path = "Avocado/Custom UI/TSInspectorView.m"; sourceTree = "<group>"; };
+		6AA935971CE7AA75004E9F9C /* TSInspectorViewItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSInspectorViewItem.h; path = "Avocado/Custom UI/TSInspectorViewItem.h"; sourceTree = "<group>"; };
+		6AA935981CE7AA75004E9F9C /* TSInspectorViewItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSInspectorViewItem.m; path = "Avocado/Custom UI/TSInspectorViewItem.m"; sourceTree = "<group>"; };
+		6AA9359B1CE7AF43004E9F9C /* TSDevelopExposureInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSDevelopExposureInspector.h; path = "Library Window/Single Image/Inspectors/TSDevelopExposureInspector.h"; sourceTree = "<group>"; };
+		6AA9359C1CE7AF43004E9F9C /* TSDevelopExposureInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSDevelopExposureInspector.m; path = "Library Window/Single Image/Inspectors/TSDevelopExposureInspector.m"; sourceTree = "<group>"; };
+		6AA9359D1CE7AF43004E9F9C /* TSDevelopExposureInspector.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSDevelopExposureInspector.xib; path = "Library Window/Single Image/Inspectors/TSDevelopExposureInspector.xib"; sourceTree = "<group>"; };
 		6AAEFC951CE6C0DE0003DF4B /* TSDefaultAppState.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TSDefaultAppState.plist; sourceTree = "<group>"; };
 		6AB32E9A1CDDBAC9004FF7A3 /* ahd_interpolate_mod.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ahd_interpolate_mod.h; path = "Avocado/RAW Processing/ahd_interpolate_mod.h"; sourceTree = "<group>"; };
 		6AB32E9B1CDE4574004FF7A3 /* lmmse_interpolate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = lmmse_interpolate.m; path = "Avocado/RAW Processing/lmmse_interpolate.m"; sourceTree = "<group>"; };
@@ -344,15 +355,6 @@
 			name = "RAW Processing";
 			sourceTree = "<group>";
 		};
-		6A28F0601CD8186900228067 /* Main UI Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				6AEC35431CD443A50033DE0A /* Develop UI */,
-				6AEC353D1CD4431B0033DE0A /* Light Table UI */,
-			);
-			name = "Main UI Controllers";
-			sourceTree = "<group>";
-		};
 		6A28F0651CD940C400228067 /* Conversion Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -390,6 +392,7 @@
 			children = (
 				6A6ED4121CE205B6001EFA21 /* TSHistogramView.h */,
 				6A6ED4131CE205B6001EFA21 /* TSHistogramView.m */,
+				6AA935961CE7AA44004E9F9C /* Inspector */,
 			);
 			name = "UI Components";
 			path = ..;
@@ -412,6 +415,27 @@
 				6A7EC3CA1CD685AF007E91E8 /* TSThumbCache.m */,
 			);
 			name = "Thumb Handling";
+			sourceTree = "<group>";
+		};
+		6AA935961CE7AA44004E9F9C /* Inspector */ = {
+			isa = PBXGroup;
+			children = (
+				6AA935931CE7A6A4004E9F9C /* TSInspectorView.h */,
+				6AA935941CE7A6A4004E9F9C /* TSInspectorView.m */,
+				6AA935971CE7AA75004E9F9C /* TSInspectorViewItem.h */,
+				6AA935981CE7AA75004E9F9C /* TSInspectorViewItem.m */,
+			);
+			name = Inspector;
+			sourceTree = "<group>";
+		};
+		6AA9359A1CE7AF25004E9F9C /* Inspectors */ = {
+			isa = PBXGroup;
+			children = (
+				6AA9359B1CE7AF43004E9F9C /* TSDevelopExposureInspector.h */,
+				6AA9359C1CE7AF43004E9F9C /* TSDevelopExposureInspector.m */,
+				6AA9359D1CE7AF43004E9F9C /* TSDevelopExposureInspector.xib */,
+			);
+			name = Inspectors;
 			sourceTree = "<group>";
 		};
 		6AE87BBB1CD275C90053CD9D = {
@@ -595,7 +619,8 @@
 				6A06F4341CE01541001DFC4C /* General Image Processing */,
 				6A28F05F1CD8185400228067 /* RAW Processing */,
 				6AE87BDC1CD276070053CD9D /* CoreData */,
-				6A28F0601CD8186900228067 /* Main UI Controllers */,
+				6AEC35431CD443A50033DE0A /* Develop UI */,
+				6AEC353D1CD4431B0033DE0A /* Light Table UI */,
 				6AEC76691CD4FECD00870FAE /* Importing */,
 				6AEC350D1CD43DBD0033DE0A /* Library Window */,
 				6AE87BC61CD275C90053CD9D /* App Delegate */,
@@ -631,6 +656,7 @@
 				6AA935891CE787D9004E9F9C /* TSDevelopSidebarController.h */,
 				6AA9358A1CE787D9004E9F9C /* TSDevelopSidebarController.m */,
 				6AA9358B1CE787D9004E9F9C /* TSDevelopSidebarController.xib */,
+				6AA9359A1CE7AF25004E9F9C /* Inspectors */,
 				6A6ED4111CE20595001EFA21 /* UI Components */,
 			);
 			name = "Develop UI";
@@ -806,6 +832,7 @@
 				6AEC35481CD443B90033DE0A /* TSLibraryDetail.xib in Resources */,
 				6AE87BD41CD275C90053CD9D /* MainMenu.xib in Resources */,
 				6A6ED41D1CE4D30A001EFA21 /* TSHSLAdjustmentFilter.cikernel in Resources */,
+				6AA9359F1CE7AF43004E9F9C /* TSDevelopExposureInspector.xib in Resources */,
 				6AEC76781CD50E6E00870FAE /* TSImportPanelAccessory.xib in Resources */,
 				6AEC35131CD43E070033DE0A /* TSMainLibraryWindow.xib in Resources */,
 				6AA9358D1CE787D9004E9F9C /* TSDevelopImageViewerController.xib in Resources */,
@@ -914,6 +941,7 @@
 				6ABC2DBE1CD43586006B959F /* _TSLibraryAlbum.m in Sources */,
 				6AEC76731CD50DDD00870FAE /* TSImportUIController.m in Sources */,
 				6AE87C211CD3D5460053CD9D /* TSRawImage.m in Sources */,
+				6AA935991CE7AA75004E9F9C /* TSInspectorViewItem.m in Sources */,
 				6AC3E7D01CDD6A880099B932 /* TSRawImageDataHelpers.m in Sources */,
 				6AB32EA11CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m in Sources */,
 				6AE87BEC1CD276E70053CD9D /* Avocado.xcdatamodeld in Sources */,
@@ -926,6 +954,7 @@
 				6A06F44C1CE0205D001DFC4C /* TSCoreImageFilter.m in Sources */,
 				6ABC2D9C1CD42C4A006B959F /* _TSLibraryImage.m in Sources */,
 				6A1307CC1CDA4A6E00FFC99A /* TSRawPipelineState.mm in Sources */,
+				6AA935951CE7A6A4004E9F9C /* TSInspectorView.m in Sources */,
 				6AB32E9C1CDE4574004FF7A3 /* lmmse_interpolate.m in Sources */,
 				6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */,
 				6A7987691CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m in Sources */,
@@ -952,6 +981,7 @@
 				6ABC2DC21CD43586006B959F /* _TSLibraryImageAdjustment.m in Sources */,
 				6ABC2DB01CD4357E006B959F /* TSLibraryImageAdjustment.m in Sources */,
 				6A06F4481CE01C3C001DFC4C /* TSCoreImagePipelineJob.m in Sources */,
+				6AA9359E1CE7AF43004E9F9C /* TSDevelopExposureInspector.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
