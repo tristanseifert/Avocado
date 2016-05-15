@@ -127,7 +127,7 @@
 	NSRect oldFrame = self.window.frame;
 	
 	if(isAnimated) {
-		DDLogVerbose(@"Began fade out");
+//		DDLogVerbose(@"Began fade out");
 		
 		// animate all the things
 		[NSAnimationContext runAnimationGroup:^(NSAnimationContext *ctx) {
@@ -138,7 +138,7 @@
 			// animate
 			self.window.contentViewController.view.animator.alphaValue = 0.f;
 		} completionHandler:^{
-			DDLogVerbose(@"Began fade in");
+//			DDLogVerbose(@"Began fade in");
 			
 			// set the new VC
 			vc.view.alphaValue = 0.f;
@@ -159,7 +159,7 @@
 				
 				vc.view.animator.alphaValue = 1.f;
 			} completionHandler:^{
-				DDLogVerbose(@"Complete fade in");
+//				DDLogVerbose(@"Complete fade in");
 			}];
 		}];
 	} else {

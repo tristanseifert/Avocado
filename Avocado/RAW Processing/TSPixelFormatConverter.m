@@ -227,10 +227,14 @@ static void TSFreeBuffers(TSPixelConverterRef converter) {
  */
 void TSPixelConverterResize(TSPixelConverterRef converter, NSUInteger newWidth, NSUInteger newHeight) {
 	// free old buffers
+	TSFreeBuffers(converter);
 	
 	// set new height
 	converter->inWidth = newWidth;
 	converter->inHeight = newHeight;
+	
+	// clear some flags
+	converter->planesAreRotated = NO;
 	
 	// allocate new buffers
 	TSAllocateBuffers(converter);
@@ -422,7 +426,7 @@ BOOL TSPixelConverterRGBFFFToPlanarF(TSPixelConverterRef converter) {
 	error = vImageConvert_RGBFFFtoPlanarF(&vImageBufIn, &vImageBufR, &vImageBufG, &vImageBufB, kvImageNoFlags);
 	
 	if(error != kvImageNoError) {
-		DDLogError(@"Error converting RGBFFF -> PlanarF: %li", error);
+		DDLogError(@"Error converting RGBFFF -> PlanarF: %li (w = %li, h = %li) (w = %li, h = %li)", error, vImageBufIn.width, vImageBufIn.height, vImageBufR.width, vImageBufR.height);
 		return NO;
 	}
 	

@@ -13,6 +13,8 @@
 
 #import "TSPixelFormatConverter.h"
 #import "TSRawImageDataHelpers.h"
+
+#import "ahd_interpolate_mod.h"
 #import "lmmse_interpolate.h"
 
 #import "TSHumanModels.h"
@@ -54,9 +56,6 @@
 @property (nonatomic) void *interpolatedColourBuf;
 /// size (in bytes) of the interpolated colour buffer
 @property (nonatomic) size_t interpolatedColourBufSz;
-
-/// colour interpolator
-@property (nonatomic) TSLMSSEInterpolator *lmsseInterpolator;
 
 /// CoreImage pipeline
 @property (nonatomic) TSCoreImagePipeline *ciPipeline;
@@ -108,8 +107,6 @@
 		
 		// create CoreImage pipeline
 		self.ciPipeline = [TSCoreImagePipeline new];
-		
-		self.lmsseInterpolator = [TSLMSSEInterpolator new];
 	}
 	
 	return self;
@@ -119,9 +116,6 @@
  * Cleans up various buffers.
  */
 - (void) dealloc {
-	// clear caches and interpolators
-	self.lmsseInterpolator = nil;
-	
 	// clear allocated memory
 	TSPixelConverterFree(self.pixelConverter);
 	free(self.interpolatedColourBuf);
@@ -172,8 +166,8 @@
 		NSUInteger w, h;
 		TSPixelConverterGetSize(self.pixelConverter, &w, &h);
 		
-		// if size of existing converter is too small, create a new one
-		if(w < image.imageSize.width || h < image.imageSize.height) {
+		// resize if the size isn't identical
+		if(w != image.imageSize.width || h != image.imageSize.height) {
 			TSPixelConverterResize(self.pixelConverter, image.imageSize.width, image.imageSize.height);
 		}
 	} else {
@@ -230,6 +224,10 @@
 	state.gammaCurveBuf = (uint16_t *) valloc(sizeof(uint16_t) * 0x10000);
 	
 	state.outputSize = state.rawImage.size;
+	
+	state.applyLensCorrections = NO;
+	state.lcLens = nil;
+	state.lcModifier = nil;
 	
 	// set up the various operations
 	opDebayer = [self opDebayer:state];
@@ -308,13 +306,13 @@
 }
 
 /**
- * Decodes the raw Bayer data from the raw file.
+ * Decodes the raw Bayer data from the raw file into RGB data that can be
+ * operated on.
  *
  * This involves:
  * 1. Subtracting a dark frame (hot pixel removal)
  * 2. Adjusting the black level
  * 3. Performing interpolation
- * 4. Converting to actual RGB data
  */
 - (NSBlockOperation *) opDemosaic:(TSRawPipelineState *) state {
 	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
@@ -339,8 +337,8 @@
 		// interpolate colour data
 		state.stage = TSRawPipelineStageInterpolateColour;
 		
-		[self.lmsseInterpolator interpolateWithLibRaw:libRaw
-											andBuffer:(uint16_t (*)[4]) self.interpolatedColourBuf];
+		ahd_interpolate_mod(libRaw, (uint16_t (*)[4]) self.interpolatedColourBuf);
+//		lmmse_interpolate(libRaw, (uint16_t (*)[4]) self.interpolatedColourBuf);
 	}];
 	
 	op.name = @"Demosaicing and Interpolation";
@@ -492,7 +490,7 @@
 		state.stage = TSRawPipelineStageConvertToPlanar;
 		
 		// if lens corrections were applied, the data is in the converter output
-		if(state.applyLensCorrections) {
+		if(state.applyLensCorrections == YES) {
 			size_t num_bytes = (state.outputSize.width * 3 * sizeof(uint16_t)) * state.outputSize.height;
 			void *correctedData = TSPixelConverterGetRGBXPointer(state.converter);
 			
@@ -564,6 +562,8 @@
 		  bitmapFormat:NSFloatingPointSamplesBitmapFormat
 		  bytesPerRow:bytesPerRow
 		  bitsPerPixel:128];
+	
+	// DDLogVerbose(@"Output size = %@, bytes/row = %lu", NSStringFromSize(outputSize), bytesPerRow);
 	
 	NSColorSpace *proPhoto = [NSColorSpace proPhotoRGBColorSpace];
 	bm = [bm bitmapImageRepByRetaggingWithColorSpace:proPhoto];

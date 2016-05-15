@@ -74,6 +74,8 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 	if(context == TSImageKVO) {
 		if(self.image != nil) {
 			[self processCurrentImage];
+		} else {
+			self.displayedImage = nil;
 		}
 	}
 	// the display image was changed
@@ -122,9 +124,13 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 - (void) processCurrentImage {
 	DDAssert(self.image != nil, @"Image cannot be nil");
 	
+	// read out a thumbnail
+	self.displayedImage = nil;
+	
+	// actually process the image
 	if(self.image.fileTypeValue == TSLibraryImageRaw) {
 		// submit the RAW image to the rendering pipeline
-		[self.pipelineRaw queueRawFile:self.image shouldCache:YES completionCallback:^(NSImage *img, NSError *err) {
+		[self.pipelineRaw queueRawFile:self.image shouldCache:NO completionCallback:^(NSImage *img, NSError *err) {
 			if(img) {
 				self.displayedImage = img;
 			} else {

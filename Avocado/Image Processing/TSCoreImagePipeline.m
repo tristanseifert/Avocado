@@ -59,12 +59,14 @@
 - (NSImage *) produceImageFromJob:(TSCoreImagePipelineJob *) job
 					inPixelFormat:(TSCoreImagePixelFormat) format
 				   andColourSpace:(NSColorSpace *) colourSpace {
-	// prepare job
+	// prepare job (connects the filters)
 	[job prepareForRendering];
 	
 	// convert to CIImage (this causes rendering)
+//	CGImageRef im = [self.context createCGImage:job.result fromRect:job.result.extent];
+//	return [[NSImage alloc] initWithCGImage:im size:NSZeroSize];
+
 	NSCIImageRep *rep = [NSCIImageRep imageRepWithCIImage:job.result];
-	
 	NSImage *nsImage = [[NSImage alloc] initWithSize:rep.size];
 	[nsImage addRepresentation:rep];
 	

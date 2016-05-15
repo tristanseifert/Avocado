@@ -145,6 +145,10 @@ static const CGFloat kThumbHMargin = 5.f;
 - (void) dealloc {
 	// remove as a notification observer
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	
+	@try {
+		[self removeObserver:self forKeyPath:@"selected"];
+	} @catch (NSException __unused *exception) { }
 }
 
 /**
@@ -526,7 +530,7 @@ shouldInheritContentsScale:(CGFloat) newScale
 	
 	// ensure no component is negative
 	if(thumbSz.width < 0 || thumbSz.height < 0) {
-		DDLogVerbose(@"Ignoring invalid size for %@", self.representedObject.fileUrl);
+//		DDLogVerbose(@"Ignoring invalid size for %@", self.representedObject.fileUrl);
 		return;
 	}
 	

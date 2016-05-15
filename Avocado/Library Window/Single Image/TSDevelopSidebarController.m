@@ -16,6 +16,8 @@
 
 // KVO context for the displayedImage property
 static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
+// KVO context for the image property
+static void *TSImageKVO = &TSImageKVO;
 
 @interface TSDevelopSidebarController ()
 
@@ -49,6 +51,8 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 		// add KVO
 		[self addObserver:self forKeyPath:@"displayedImage"
 				  options:0 context:TSDisplayedImageKVO];
+		[self addObserver:self forKeyPath:@"image"
+				  options:0 context:TSImageKVO];
 	}
 	
 	return self;
@@ -79,6 +83,10 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 	// the displayed image property changed
 	if(context == TSDisplayedImageKVO) {
 		self.mrHistogram.image = self.displayedImage;
+	}
+	// input image changed
+	else if(context == TSImageKVO) {
+	
 	} else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}

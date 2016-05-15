@@ -9,10 +9,15 @@
 #ifndef interpolation_shared_h
 #define interpolation_shared_h
 
-/// undefine the ObjC macros
-#undef ABS
+// undefine any previous definitions of these macros
 #undef MIN
 #undef MAX
+#undef SQR
+#undef ABS
+#undef LIM
+#undef ULIM
+#undef CLIP
+#undef SWAP
 
 /// define a bunch of shit
 #define FORC(cnt) for (c=0; c < cnt; c++)

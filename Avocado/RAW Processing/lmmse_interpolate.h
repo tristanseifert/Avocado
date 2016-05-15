@@ -9,25 +9,25 @@
 #ifndef lmmse_interpolate_h
 #define lmmse_interpolate_h
 
-#import <Foundation/Foundation.h>
+#include <stdint.h>
+#include "libraw.h"
 
-/**
- * This class implements an LMSSE Bayer data interpolator. It's internally
- * parallelized to take advantage of multiprocessing in NSOperation. It is not,
- * however, safe to use this class from multiple threads at once; internal state
- * is static.
- */
-@interface TSLMSSEInterpolator : NSObject
-
+#ifdef __cplusplus
+extern "C" {
+#endif
+	
 /**
  * Interpolates missing colour components in a Bayer image, using the LSMME
  * algorithm, as demonstrated by Wu-Zhang.
  *
- * @param data Pointer to the libraw structure
+ * @param imageData Pointer to the libraw structure
  * @param image Image pointer, input
  */
-- (void) interpolateWithLibRaw:(void *) data andBuffer:(uint16_t (*)[4]) image;
+void lmmse_interpolate(libraw_data_t *imageData, uint16_t (*image)[4]);
 
-@end
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* lmmse_interpolate_h */

@@ -80,7 +80,6 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 
 - (void) allocateBuffers;
 - (void) updateImageBuffer;
-- (void) updateImageBufferLoadScaled:(BOOL) shouldAllocate;
 
 - (void) frameDidChangeNotification:(NSNotification *) n;
 - (void) layOutSublayers;
@@ -276,49 +275,10 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
  * Updates the cached vImage buffer for the image.
  */
 - (void) updateImageBuffer {
-	vImage_Buffer tmpBuf;
-	
-	// is the buffer valid?
-	if(self.isImgBufValid == NO) {
-		// if not, allocate a new one.
-		[self updateImageBufferLoadScaled:YES];
-		return;
-	}
-	
-	
-	// check if we need to allocate a new buffer, given this one is valid
-	CGFloat factor = 1.f / ((CGFloat) self.quality);
-	CGSize newSize = CGSizeApplyAffineTransform(self.image.size, CGAffineTransformMakeScale(factor, factor));
-	
-	vImageBuffer_Init(&tmpBuf, newSize.height, newSize.width, 32, kvImageNoAllocate);
-	
-	size_t neededBufSize = tmpBuf.rowBytes * tmpBuf.height;
-	size_t oldBufSize = self.imgBuf->rowBytes * self.imgBuf->height;
-	
-	if(oldBufSize >= neededBufSize) {
-		// if not, load the image into the existing buffer
-		[self updateImageBufferLoadScaled:NO];
-		
-		DDLogVerbose(@"Re-used existing image buffer, sz %lu (need %lu)", oldBufSize, neededBufSize);
-	} else {
-		// otherwise, create a new buffer
-		[self invalidateImageBuffer];
-		[self updateImageBufferLoadScaled:YES];
-		
-		DDLogVerbose(@"Allocated new image buffer, sz %lu", neededBufSize);
-	}
-}
-
-/**
- * Loads the image into the allocated image buffer.
- */
-- (void) updateImageBufferLoadScaled:(BOOL) shouldAllocate {
 	DDAssert(self.image != nil, @"Image may not be nill for buffer allocation");
 	
-	// free the memory assigned to the buffer, if we're re-allocating
-	if(shouldAllocate) {
-		[self invalidateImageBuffer];
-	}
+	// free the memory of the original buffer
+	[self invalidateImageBuffer];
 	
 	// create a vImage buffer and load the image into it
 	vImage_CGImageFormat format = {
@@ -334,9 +294,7 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 		.decode = nil
 	};
 	
-	vImageBuffer_InitWithCGImage(self.imgBuf, &format, TSImageBufBGColour,
-								 self.imgBufImageRef,
-								 shouldAllocate ? kvImageNoFlags : kvImageNoAllocate);
+	vImageBuffer_InitWithCGImage(self.imgBuf, &format, TSImageBufBGColour, self.imgBufImageRef, kvImageNoFlags);
 	
 	// mark buffer as valid
 	self.isImgBufValid = YES;
@@ -609,7 +567,9 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	}
 	
 	// mark the histogram as valid again, then draw
-	self.isHistogramValid = YES;
+	if(self.histogramMax > 0) {
+		self.isHistogramValid = YES;
+	}
 	
 	[self updateHistogramPathsWithAnimation:YES];
 }
@@ -764,16 +724,22 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	CGFloat factor = 1.f / ((CGFloat) self.quality);
 	
 	CGSize newSize = CGSizeApplyAffineTransform(self.image.size, CGAffineTransformMakeScale(factor, factor));
+	newSize.width = floor(newSize.width);
+	newSize.height = floor(newSize.height);
 	
 	// get information from the image
 	CGImageRef cgImage = [self.image CGImageForProposedRect:nil context:nil
 													  hints:nil];
+	
+	//	DDLogVerbose(@"input image representation: %@", self.image.representations.firstObject);
 	
 	size_t bitsPerComponent = CGImageGetBitsPerComponent(cgImage);
 	size_t bitsPerPixel = CGImageGetBitsPerPixel(cgImage);
 	size_t bytesPerRow = (bitsPerPixel / 8) * newSize.width;
 	CGColorSpaceRef colorSpace = CGImageGetColorSpace(cgImage);
 	CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(cgImage);
+	
+	//	DDLogVerbose(@"scaled size = %@, bits/component = %zu, bits/pixel = %zu, bytes/row = %zu", NSStringFromSize(newSize), bitsPerComponent, bitsPerPixel, bytesPerRow);
 	
 	// set up bitmap context
 	ctx = CGBitmapContextCreate(nil, newSize.width, newSize.height,

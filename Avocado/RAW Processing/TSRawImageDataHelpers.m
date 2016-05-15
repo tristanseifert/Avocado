@@ -230,7 +230,7 @@ void TSRawPreInterpolation(libraw_data_t *libRaw, uint16_t (*image)[4]) {
 	
 	unsigned int filters = libRaw->idata.filters;
 	
-	// if there's filters and three colours…
+	// if there's filters AND three colours, make the first G the same as the second G
 	if(libRaw->idata.filters && libRaw->idata.colors == 3) {
 		for (row = FC(1, 0, filters) >> 1; row < height; row+=2)
 			for (col = FC(row, 1, filters) & 1; col < width; col+=2)
@@ -498,7 +498,7 @@ void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*o
 	
 	// set up for conversion to RGB
 	img = image[0];
-	
+
 	memset(histogram, 0, sizeof(int) * 0x2000 * 4);
 	
 	for(row = 0; row < height; row++) {

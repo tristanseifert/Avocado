@@ -19,8 +19,8 @@
 		6A28F0591CD7FEA400228067 /* liblensfun.0.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A28F0581CD7FEA400228067 /* liblensfun.0.3.2.dylib */; };
 		6A28F05A1CD7FEB000228067 /* liblensfun.0.3.2.dylib in Embed dylibs and frameworks */ = {isa = PBXBuildFile; fileRef = 6A28F0581CD7FEA400228067 /* liblensfun.0.3.2.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		6A28F05E1CD810E200228067 /* libglib-2.0.0.dylib in Embed dylibs and frameworks */ = {isa = PBXBuildFile; fileRef = 6A28F05C1CD810D300228067 /* libglib-2.0.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		6A28F0631CD8190600228067 /* TSRawPipeline.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6A28F0621CD8190600228067 /* TSRawPipeline.mm */; };
-		6A28F0681CD940E500228067 /* TSPixelFormatConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A28F0661CD940E500228067 /* TSPixelFormatConverter.m */; };
+		6A28F0631CD8190600228067 /* TSRawPipeline.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6A28F0621CD8190600228067 /* TSRawPipeline.mm */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive"; }; };
+		6A28F0681CD940E500228067 /* TSPixelFormatConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A28F0661CD940E500228067 /* TSPixelFormatConverter.m */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive"; }; };
 		6A28F0701CD94A6400228067 /* TSRawPipelinePixelFormatTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A28F06F1CD94A6400228067 /* TSRawPipelinePixelFormatTests.m */; };
 		6A28F0771CD94CCD00228067 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEC351C1CD43FF00033DE0A /* CoreImage.framework */; };
 		6A28F0781CD94CD000228067 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEC351A1CD43FED0033DE0A /* Accelerate.framework */; };
@@ -48,6 +48,7 @@
 		6AA935A21CE7C354004E9F9C /* TSVibrantStackView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA935A11CE7C354004E9F9C /* TSVibrantStackView.m */; };
 		6AA935A51CE7CDE1004E9F9C /* TSInspectorTitleBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA935A41CE7CDE1004E9F9C /* TSInspectorTitleBar.m */; };
 		6AA935A81CE7DD68004E9F9C /* TSFlippedClipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA935A71CE7DD68004E9F9C /* TSFlippedClipView.m */; };
+		6AA935AB1CE81A35004E9F9C /* TSRawImageDataHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA935AA1CE81A35004E9F9C /* TSRawImageDataHelpers.m */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive"; }; };
 		6AAEFC961CE6C0DE0003DF4B /* TSDefaultAppState.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6AAEFC951CE6C0DE0003DF4B /* TSDefaultAppState.plist */; };
 		6AB32E9C1CDE4574004FF7A3 /* lmmse_interpolate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AB32E9B1CDE4574004FF7A3 /* lmmse_interpolate.m */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive"; }; };
 		6AB32EA11CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AB32EA01CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m */; };
@@ -62,7 +63,6 @@
 		6ABC2DC01CD43586006B959F /* _TSLibraryExportService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DB71CD43586006B959F /* _TSLibraryExportService.m */; };
 		6ABC2DC21CD43586006B959F /* _TSLibraryImageAdjustment.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DBB1CD43586006B959F /* _TSLibraryImageAdjustment.m */; };
 		6ABC2DC31CD43586006B959F /* _TSLibraryTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DBD1CD43586006B959F /* _TSLibraryTag.m */; };
-		6AC3E7D01CDD6A880099B932 /* TSRawImageDataHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC3E7CE1CDD6A880099B932 /* TSRawImageDataHelpers.m */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive"; }; };
 		6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */; };
 		6AE87BCC1CD275C90053CD9D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BCB1CD275C90053CD9D /* main.m */; };
 		6AE87BD11CD275C90053CD9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AE87BD01CD275C90053CD9D /* Assets.xcassets */; };
@@ -179,6 +179,7 @@
 		6AA935A41CE7CDE1004E9F9C /* TSInspectorTitleBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSInspectorTitleBar.m; path = "Avocado/Custom UI/TSInspectorTitleBar.m"; sourceTree = "<group>"; };
 		6AA935A61CE7DD68004E9F9C /* TSFlippedClipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSFlippedClipView.h; path = Avocado/Helpers/TSFlippedClipView.h; sourceTree = "<group>"; };
 		6AA935A71CE7DD68004E9F9C /* TSFlippedClipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSFlippedClipView.m; path = Avocado/Helpers/TSFlippedClipView.m; sourceTree = "<group>"; };
+		6AA935AA1CE81A35004E9F9C /* TSRawImageDataHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSRawImageDataHelpers.m; path = "Avocado/RAW Processing/TSRawImageDataHelpers.m"; sourceTree = "<group>"; };
 		6AAEFC951CE6C0DE0003DF4B /* TSDefaultAppState.plist */ = {isa = PBXFileReference; explicitFileType = file.bplist; fileEncoding = 4; path = TSDefaultAppState.plist; sourceTree = "<group>"; };
 		6AB32E9A1CDDBAC9004FF7A3 /* ahd_interpolate_mod.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ahd_interpolate_mod.h; path = "Avocado/RAW Processing/ahd_interpolate_mod.h"; sourceTree = "<group>"; };
 		6AB32E9B1CDE4574004FF7A3 /* lmmse_interpolate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = lmmse_interpolate.m; path = "Avocado/RAW Processing/lmmse_interpolate.m"; sourceTree = "<group>"; };
@@ -213,7 +214,6 @@
 		6ABC2DBB1CD43586006B959F /* _TSLibraryImageAdjustment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryImageAdjustment.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImageAdjustment.m"; sourceTree = "<group>"; };
 		6ABC2DBC1CD43586006B959F /* _TSLibraryTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _TSLibraryTag.h; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryTag.h"; sourceTree = "<group>"; };
 		6ABC2DBD1CD43586006B959F /* _TSLibraryTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryTag.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryTag.m"; sourceTree = "<group>"; };
-		6AC3E7CE1CDD6A880099B932 /* TSRawImageDataHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSRawImageDataHelpers.m; path = "Avocado/RAW Processing/TSRawImageDataHelpers.m"; sourceTree = "<group>"; };
 		6AC3E7CF1CDD6A880099B932 /* TSRawImageDataHelpers.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = TSRawImageDataHelpers.h; path = "Avocado/RAW Processing/TSRawImageDataHelpers.h"; sourceTree = "<group>"; };
 		6AE87BC41CD275C90053CD9D /* Avocado.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Avocado.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AE87BC71CD275C90053CD9D /* TSAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TSAppDelegate.h; sourceTree = "<group>"; };
@@ -368,12 +368,14 @@
 			isa = PBXGroup;
 			children = (
 				6AB32E9E1CDE47C4004FF7A3 /* interpolation_shared.h */,
+				6AC3E7CF1CDD6A880099B932 /* TSRawImageDataHelpers.h */,
+				6AA935AA1CE81A35004E9F9C /* TSRawImageDataHelpers.m */,
 				6AB32E9D1CDE4586004FF7A3 /* lmmse_interpolate.h */,
 				6AB32E9B1CDE4574004FF7A3 /* lmmse_interpolate.m */,
-				6AB32E9A1CDDBAC9004FF7A3 /* ahd_interpolate_mod.h */,
 				6A79876A1CDD5CA200FB3A8E /* ahd_interpolate_mod.c */,
-				6A28F0661CD940E500228067 /* TSPixelFormatConverter.m */,
+				6AB32E9A1CDDBAC9004FF7A3 /* ahd_interpolate_mod.h */,
 				6A28F0671CD940E500228067 /* TSPixelFormatConverter.h */,
+				6A28F0661CD940E500228067 /* TSPixelFormatConverter.m */,
 			);
 			name = "Conversion Helpers";
 			sourceTree = "<group>";
@@ -606,8 +608,6 @@
 			children = (
 				6AE87C1F1CD3D5460053CD9D /* TSRawImage.h */,
 				6AE87C201CD3D5460053CD9D /* TSRawImage.m */,
-				6AC3E7CF1CDD6A880099B932 /* TSRawImageDataHelpers.h */,
-				6AC3E7CE1CDD6A880099B932 /* TSRawImageDataHelpers.m */,
 			);
 			name = "ObjC Wrapper";
 			sourceTree = "<group>";
@@ -957,7 +957,6 @@
 				6AEC76731CD50DDD00870FAE /* TSImportUIController.m in Sources */,
 				6AE87C211CD3D5460053CD9D /* TSRawImage.m in Sources */,
 				6AA935991CE7AA75004E9F9C /* TSInspectorViewItem.m in Sources */,
-				6AC3E7D01CDD6A880099B932 /* TSRawImageDataHelpers.m in Sources */,
 				6AB32EA11CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m in Sources */,
 				6AE87BEC1CD276E70053CD9D /* Avocado.xcdatamodeld in Sources */,
 				6A34B12A1CD5936200252288 /* TSLibraryImage.m in Sources */,
@@ -971,6 +970,7 @@
 				6A1307CC1CDA4A6E00FFC99A /* TSRawPipelineState.mm in Sources */,
 				6AA935A81CE7DD68004E9F9C /* TSFlippedClipView.m in Sources */,
 				6AA935951CE7A6A4004E9F9C /* TSInspectorViewController.m in Sources */,
+				6AA935AB1CE81A35004E9F9C /* TSRawImageDataHelpers.m in Sources */,
 				6AB32E9C1CDE4574004FF7A3 /* lmmse_interpolate.m in Sources */,
 				6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */,
 				6A7987691CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m in Sources */,
