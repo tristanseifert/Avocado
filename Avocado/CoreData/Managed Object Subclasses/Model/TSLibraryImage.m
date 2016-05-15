@@ -72,6 +72,11 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 	
 	// clear caches
 	_imageRotationFromMetadata = TSLibraryImageRotationUnknown;
+	
+	// set UUID, if applicable
+	if(self.uuid == nil) {
+		self.uuid = [NSUUID new].UUIDString;
+	}
 }
 
 #pragma mark KVO

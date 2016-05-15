@@ -97,6 +97,8 @@
 
 @dynamic thumbUUID;
 
+@dynamic uuid;
+
 @dynamic adjustments;
 
 - (NSMutableOrderedSet<TSLibraryImageAdjustment*>*)adjustmentsSet {
@@ -219,6 +221,9 @@
 }
 + (NSString *)thumbUUID {
 	return @"thumbUUID";
+}
++ (NSString *)uuid {
+	return @"uuid";
 }
 @end
 

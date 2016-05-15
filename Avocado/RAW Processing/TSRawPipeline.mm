@@ -67,8 +67,10 @@
 /// operation queue for RAW processing; a TSRawPipelineJob is queued on it.
 @property (nonatomic) NSOperationQueue *queue;
 
-/// raw stage cache; each image's URL + stage is the key
-@property (nonatomic) NSCache *rawStageCache;
+/// raw stage cache; this holds a data object that contains each plane
+@property (nonatomic) NSMutableData *rawStageCache;
+/// UUID of the image for which the cache is valid
+@property (nonatomic) NSString *rawCacheImageUuid;
 /// pixel format converter
 @property (nonatomic) TSPixelConverterRef pixelConverter;
 
@@ -98,10 +100,18 @@
 
 - (NSBlockOperation *) opCoreImageFilters:(TSRawPipelineState *) state;
 
-- (NSBlockOperation *) opStorePlanarInCache:(TSRawPipelineState *) state;
-
 // conversion
 - (CIImage *) ciImageFromPixelConverter:(TSPixelConverterRef) converter andSize:(NSSize) outputSize;
+
+// caching
+- (void) beginFullPipelineRunWithState:(TSRawPipelineState *) state shouldCacheResults:(BOOL) cache;
+- (void) resumePipelineRunWithCachedData:(TSRawPipelineState *) state shouldCacheResults:(BOOL) cache;
+
+- (void) storeFloatDataCached:(TSRawPipelineState *) state;
+- (void) restoreFloatDataCached:(TSRawPipelineState *) state;
+
+- (NSBlockOperation *) opStorePlanarInCache:(TSRawPipelineState *) state;
+- (NSBlockOperation *) opRestorePlanarFromCache:(TSRawPipelineState *) state;
 
 // debugging
 - (void) dumpImageBufferInterleaved:(TSRawPipelineState *) state;
@@ -123,9 +133,6 @@
 		self.queue.maxConcurrentOperationCount = 1;
 		
 		self.queue.name = @"TSRawPipeline";
-		
-		// set up cache
-		self.rawStageCache = [NSCache new];
 		
 		// create CoreImage pipeline
 		self.ciPipeline = [TSCoreImagePipeline new];
@@ -170,18 +177,11 @@
 	DDLogDebug(@"Image size: %@", NSStringFromSize(image.imageSize));
 	
 	// initialize some variables
-	NSProgress *convertProgress = nil;
-	
-	NSBlockOperation *opDebayer, *opDemosaic, *opLensCorrect, *opConvertPlanar;
-	NSBlockOperation *opRotate, *opConvolute, *opMorphological, *opHisto;
-	NSBlockOperation *opConvertInterleaved, *opCoreImage, *opConvertRGBGamma;
-	NSBlockOperation *opUpdateCache;
-	
 	TSRawPipelineState *state;
 	
 	// reset file
 	if([image.libRawHandle recycle] != YES) {
-		DDLogWarn(@"Couldn't recycle raw file: this might be bad.");
+		DDLogWarn(@"Couldn't recycle raw file: this might be bad, continuing anyways.");
 	}
 	
 	// figure out whether we can use the existing converter
@@ -220,16 +220,19 @@
 		DDLogDebug(@"Allocated %lu bytes for interpolated colour buffer", self.interpolatedColourBufSz);
 	}
 	
-	// set up a progress object to track the progress
-	convertProgress = [NSProgress progressWithTotalUnitCount:11];
-	
-	if(outProgress)
-		*outProgress = convertProgress;
+	// clear the caches, if the image is different
+	if(cache && [self.rawCacheImageUuid isEqualToString:image.uuid] == NO) {
+		DDLogDebug(@"Clearing raw caches, since current image (%@) is different than cache image (%@)", image.uuid, self.rawCacheImageUuid);
+		
+		[self clearImageCaches];
+		self.rawCacheImageUuid = image.uuid;
+	}
 	
 	// create the pipeline state
 	state = [TSRawPipelineState new];
 	
 	state.image = image;
+	state.imageUuid = image.uuid;
 	state.stage = TSRawPipelineStageInitializing;
 	state.shouldCache = cache;
 	
@@ -237,8 +240,6 @@
 	
 	state.completionCallback = complete;
 	state.progressCallback = progress;
-	
-	state.progress = convertProgress;
 	
 	state.rawImage = image.libRawHandle;
 	state.interpolatedColourBuf = self.interpolatedColourBuf;
@@ -252,69 +253,21 @@
 	state.lcLens = nil;
 	state.lcModifier = nil;
 	
-	// set up the various operations
-	opDebayer = [self opDebayer:state];
-	opDemosaic = [self opDemosaic:state];
-	opLensCorrect = [self opLensCorrect:state];
-	opConvertRGBGamma = [self opGammaColourSpaceCorrect:state];
 	
-	opConvertPlanar = [self opConvertToPlanar:state];
-	
-	opRotate = [self opRotateFlip:state];
-	opConvolute = [self opConvolve:state];
-	opMorphological = [self opMorphological:state];
-	opHisto = [self opHistogramAdjust:state];
-	
-	opConvertInterleaved = [self opConvertToInterleaved:state];
-	
-	opCoreImage = [self opCoreImageFilters:state];
-	
-	// if we cache stuff, create the "update cache" operation
-	if(cache) {
-		opUpdateCache = [self opStorePlanarInCache:state];
-	}
-	
-	// set up interdependencies between the operations
-	[opDemosaic addDependency:opDebayer];
-	[opLensCorrect addDependency:opDemosaic];
-	[opConvertRGBGamma addDependency:opLensCorrect];
-	
-	[opConvertPlanar addDependency:opConvertRGBGamma];
-	
-	if(cache) {
-		[opUpdateCache addDependency:opConvertPlanar];
-		[opRotate addDependency:opUpdateCache];
+	// check if we can resume the processing operation
+	if(cache && self.rawStageCache != nil && self.rawCacheImageUuid == image.uuid) {
+		DDLogVerbose(@"Resuming RAW processing for %@ from stage 5", image.uuid);
+		
+		state.progress = [NSProgress progressWithTotalUnitCount:6];
+		if(outProgress) *outProgress = state.progress;
+		
+		[self resumePipelineRunWithCachedData:state shouldCacheResults:cache];
 	} else {
-		[opRotate addDependency:opConvertPlanar];
+		state.progress = [NSProgress progressWithTotalUnitCount:11];
+		if(outProgress) *outProgress = state.progress;
+		
+		[self beginFullPipelineRunWithState:state shouldCacheResults:cache];
 	}
-	
-	[opConvolute addDependency:opRotate];
-	[opMorphological addDependency:opConvolute];
-	[opHisto addDependency:opMorphological];
-	
-	[opConvertInterleaved addDependency:opHisto];
-	
-	[opCoreImage addDependency:opConvertInterleaved];
-	
-	// add them to the queue to vamenos the operations
-	TSAddOperation(opDebayer, state);
-	TSAddOperation(opDemosaic, state);
-	TSAddOperation(opLensCorrect, state);
-	TSAddOperation(opConvertRGBGamma, state);
-	TSAddOperation(opConvertPlanar, state);
-	
-	if(cache) {
-		TSAddOperation(opUpdateCache, state);
-	}
-	
-	TSAddOperation(opRotate, state);
-	TSAddOperation(opConvolute, state);
-	TSAddOperation(opMorphological, state);
-	TSAddOperation(opHisto, state);
-	
-	TSAddOperation(opConvertInterleaved, state);
-	
-	TSAddOperation(opCoreImage, state);
 }
 
 #pragma mark - RAW Processing Steps
@@ -759,29 +712,180 @@
 	return op;
 }
 
-#pragma mark - Caching
+#pragma mark - Caching Support
 /**
- * Invalidates the internal caches of an image. This is automatically called
- * when the cached image is different than the image for which a RAW processing
- * is requested.
+ * Performs a full run of the RAW pipeline, without taking into account any
+ * previously cached data.
  */
-- (void) clearImageCaches {
-	[self.rawStageCache removeAllObjects];
+- (void) beginFullPipelineRunWithState:(TSRawPipelineState *) state shouldCacheResults:(BOOL) cache {
+	NSBlockOperation *opDebayer, *opDemosaic, *opLensCorrect, *opConvertPlanar;
+	NSBlockOperation *opRotate, *opConvolute, *opMorphological, *opHisto;
+	NSBlockOperation *opConvertInterleaved, *opCoreImage, *opConvertRGBGamma;
+	NSBlockOperation *opUpdateCache;
+	
+	// set up the various operations
+	opDebayer = [self opDebayer:state];
+	opDemosaic = [self opDemosaic:state];
+	opLensCorrect = [self opLensCorrect:state];
+	opConvertRGBGamma = [self opGammaColourSpaceCorrect:state];
+	
+	opConvertPlanar = [self opConvertToPlanar:state];
+	
+	opRotate = [self opRotateFlip:state];
+	opConvolute = [self opConvolve:state];
+	opMorphological = [self opMorphological:state];
+	opHisto = [self opHistogramAdjust:state];
+	
+	opConvertInterleaved = [self opConvertToInterleaved:state];
+	
+	opCoreImage = [self opCoreImageFilters:state];
+	
+	// if we cache stuff, create the "update cache" operation
+	if(cache) {
+		opUpdateCache = [self opStorePlanarInCache:state];
+	}
+	
+	// set up interdependencies between the operations
+	[opDemosaic addDependency:opDebayer];
+	[opLensCorrect addDependency:opDemosaic];
+	[opConvertRGBGamma addDependency:opLensCorrect];
+	
+	[opConvertPlanar addDependency:opConvertRGBGamma];
+	
+	if(cache) {
+		[opUpdateCache addDependency:opConvertPlanar];
+		[opRotate addDependency:opUpdateCache];
+	} else {
+		[opRotate addDependency:opConvertPlanar];
+	}
+	
+	[opConvolute addDependency:opRotate];
+	[opMorphological addDependency:opConvolute];
+	[opHisto addDependency:opMorphological];
+	
+	[opConvertInterleaved addDependency:opHisto];
+	
+	[opCoreImage addDependency:opConvertInterleaved];
+	
+	// add them to the queue to vamenos the operations
+	TSAddOperation(opDebayer, state);
+	TSAddOperation(opDemosaic, state);
+	TSAddOperation(opLensCorrect, state);
+	TSAddOperation(opConvertRGBGamma, state);
+	TSAddOperation(opConvertPlanar, state);
+	
+	if(cache) {
+		TSAddOperation(opUpdateCache, state);
+	}
+	
+	TSAddOperation(opRotate, state);
+	TSAddOperation(opConvolute, state);
+	TSAddOperation(opMorphological, state);
+	TSAddOperation(opHisto, state);
+	
+	TSAddOperation(opConvertInterleaved, state);
+	
+	TSAddOperation(opCoreImage, state);
 }
 
 /**
  * Resumes RAW processing with the cached output of stage 5; this will run
  * all vImage and CoreImage operations.
  */
-- (void) resumeCachedRaw {
+- (void) resumePipelineRunWithCachedData:(TSRawPipelineState *) state shouldCacheResults:(BOOL) cache {
+	NSBlockOperation *opRotate, *opConvolute, *opMorphological, *opHisto;
+	NSBlockOperation *opConvertInterleaved, *opCoreImage,  *opRestoreCache;
 	
+	// set up the various operations
+	opRestoreCache = [self opRestorePlanarFromCache:state];
+	
+	opRotate = [self opRotateFlip:state];
+	opConvolute = [self opConvolve:state];
+	opMorphological = [self opMorphological:state];
+	opHisto = [self opHistogramAdjust:state];
+	
+	opConvertInterleaved = [self opConvertToInterleaved:state];
+	
+	opCoreImage = [self opCoreImageFilters:state];
+	
+	// set up interdependencies between the operations
+	[opRotate addDependency:opRestoreCache];
+	
+	[opConvolute addDependency:opRotate];
+	[opMorphological addDependency:opConvolute];
+	[opHisto addDependency:opMorphological];
+	
+	[opConvertInterleaved addDependency:opHisto];
+	
+	[opCoreImage addDependency:opConvertInterleaved];
+	
+	// add them to the queue to vamenos the operations
+	TSAddOperation(opRestoreCache, state);
+	
+	TSAddOperation(opRotate, state);
+	TSAddOperation(opConvolute, state);
+	TSAddOperation(opMorphological, state);
+	TSAddOperation(opHisto, state);
+	
+	TSAddOperation(opConvertInterleaved, state);
+	
+	TSAddOperation(opCoreImage, state);
+}
+
+#pragma mark Cache Handling
+/**
+ * Invalidates the internal caches of an image. This is automatically called
+ * when the cached image is different than the image for which a RAW processing
+ * is requested.
+ */
+- (void) clearImageCaches {
+	self.rawStageCache = nil;
 }
 
 /**
  * Stores a copy of the image buffer into the cache.
  */
-- (void) storeFloatDataCached {
+- (void) storeFloatDataCached:(TSRawPipelineState *) state {
+	// get how many kerjiggers each plane is
+	vImage_Buffer plane = TSPixelConverterGetPlanevImageBufferBuffer(state.converter, 0);
+	size_t planeBytes = plane.rowBytes * plane.height;
 	
+	NSMutableData *buffer = [NSMutableData dataWithCapacity:planeBytes * 3];
+	
+	DDLogDebug(@"Allocated %lu bytes for raw cache", planeBytes * 3);
+	
+	// make a copy of each of the planes
+	for(NSUInteger idx = 0; idx < 3; idx++) {
+		plane = TSPixelConverterGetPlanevImageBufferBuffer(state.converter, idx);
+		[buffer appendBytes:plane.data length:planeBytes];
+	}
+	
+	// store in the cache
+	self.rawStageCache = buffer;
+}
+
+/**
+ * Reads the planar buffer cache, dissects it back into the three original
+ * planes, and copies that data back into the planes.
+ */
+- (void) restoreFloatDataCached:(TSRawPipelineState *) state {
+	size_t offset, planeBytes;
+	
+	// calculate plane size and get buffer
+	vImage_Buffer plane = TSPixelConverterGetPlanevImageBufferBuffer(state.converter, 0);
+	planeBytes = plane.rowBytes * plane.height;
+	
+	if(self.rawStageCache == nil) {
+		DDLogError(@"Cache was freed from cache since operation started… this is bad.");
+	}
+	
+	// make a copy of each of the planes
+	for(NSUInteger idx = 0; idx < 3; idx++) {
+		plane = TSPixelConverterGetPlanevImageBufferBuffer(state.converter, idx);
+		offset = idx * planeBytes;
+		
+		[self.rawStageCache getBytes:plane.data range:NSMakeRange(offset, planeBytes)];
+	}
 }
 
 /**
@@ -798,12 +902,35 @@
 			return;
 		}
 		
-		// otherwise, make a copy of the three planes
+		[self storeFloatDataCached:state];
 		
 		TSEndOperation();
 	}];
 	
 	op.name = @"Update Cache";
+	return op;
+}
+
+/**
+ * Returns an operation that pulls the cached floating-point data out of the
+ * cache, and copies it back into the data planes.
+ */
+- (NSBlockOperation *) opRestorePlanarFromCache:(TSRawPipelineState *) state {
+	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		TSBeginOperation(@"Restore Cached State");
+		
+		// if not caching, exit
+		if(state.shouldCache == NO) {
+			TSEndOperation();
+			return;
+		}
+		
+		[self restoreFloatDataCached:state];
+		
+		TSEndOperation();
+	}];
+	
+	op.name = @"Restore Cached State";
 	return op;
 }
 

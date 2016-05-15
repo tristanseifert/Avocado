@@ -565,6 +565,18 @@
                         </items>
                     </menu>
                 </menuItem>
+                <menuItem title="Develop" id="ot8-WD-rzO">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Develop" id="FEh-9k-vcd">
+                        <items>
+                            <menuItem title="Refresh Image" keyEquivalent="r" id="Bml-hZ-bM3">
+                                <connections>
+                                    <action selector="developRefreshImage:" target="-1" id="TuW-3I-gwC"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
                 <menuItem title="View" id="H8h-7b-M4v">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="View" id="HyV-fh-RgO">

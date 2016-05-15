@@ -162,4 +162,13 @@ static void *TSImageKVO = &TSImageKVO;
 	sb.collapsed = !sb.collapsed;
 }
 
+/**
+ * Forces a re-processing of the image.
+ */
+- (IBAction) developRefreshImage:(id) sender {
+	DDLogVerbose(@"Refreshing image view");
+	
+	[self.imageController processCurrentImage];
+}
+
 @end

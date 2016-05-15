@@ -26,6 +26,9 @@
 
 /// library image that is being processed
 @property (nonatomic, strong) TSLibraryImage *image;
+/// UUID of the image
+@property (nonatomic, strong) NSString *imageUuid;
+
 /// raw image to be used
 @property (nonatomic) TSRawImage *rawImage;
 /// whether results of this processing step should be cached or naw

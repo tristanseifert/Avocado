@@ -54,6 +54,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, nullable) NSString* thumbUUID;
 
+@property (nonatomic, strong, nullable) NSString* uuid;
+
 @property (nonatomic, strong, nullable) NSOrderedSet<TSLibraryImageAdjustment*> *adjustments;
 - (nullable NSMutableOrderedSet<TSLibraryImageAdjustment*>*)adjustmentsSet;
 
@@ -131,6 +133,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString*)primitiveThumbUUID;
 - (void)setPrimitiveThumbUUID:(NSString*)value;
 
+- (NSString*)primitiveUuid;
+- (void)setPrimitiveUuid:(NSString*)value;
+
 - (NSMutableOrderedSet<TSLibraryImageAdjustment*>*)primitiveAdjustments;
 - (void)setPrimitiveAdjustments:(NSMutableOrderedSet<TSLibraryImageAdjustment*>*)value;
 
@@ -152,6 +157,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)metadata;
 + (NSString *)pvtImageSize;
 + (NSString *)thumbUUID;
++ (NSString *)uuid;
 @end
 
 @interface TSLibraryImageRelationships: NSObject

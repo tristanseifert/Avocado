@@ -72,10 +72,12 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 						context:(void *) context {
 	// the image property changed
 	if(context == TSImageKVO) {
+		// clear the image for now
+		self.displayedImage = nil;
+		
+		// if there is a new image, process it
 		if(self.image != nil) {
 			[self processCurrentImage];
-		} else {
-			self.displayedImage = nil;
 		}
 	}
 	// the display image was changed
@@ -123,9 +125,6 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
  */
 - (void) processCurrentImage {
 	DDAssert(self.image != nil, @"Image cannot be nil");
-	
-	// read out a thumbnail
-	self.displayedImage = nil;
 	
 	// actually process the image
 	if(self.image.fileTypeValue == TSLibraryImageRaw) {
