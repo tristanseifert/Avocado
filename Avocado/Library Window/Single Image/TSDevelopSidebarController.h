@@ -15,8 +15,14 @@
 @class TSLibraryImage;
 @interface TSDevelopSidebarController : NSViewController
 
+/// current library image
 @property (nonatomic) TSLibraryImage *image;
+/// a pointer to the image being displayed at this time
+@property (nonatomic, weak) NSImage *displayedImage;
 
 @property (nonatomic, weak) TSDevelopImageViewerController *imageViewer;
+
+- (void) saveViewOptions:(NSKeyedArchiver *) archiver;
+- (void) restoreViewOptions:(NSKeyedUnarchiver *) unArchiver;
 
 @end

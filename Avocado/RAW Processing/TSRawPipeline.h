@@ -40,7 +40,6 @@
  *		d. Distortion effects
  *		e. Geometry adjustments (crop, scaling, straightening, etc.)
  *		f. Vignetting and grain
- * 12. Generate final histogram (displayed in UI)
  *
  * The outputs of stage 5, and stage 10 can be cached.
  *
@@ -82,8 +81,6 @@ typedef NS_ENUM(NSUInteger, TSRawPipelineStage) {
 	TSRawPipelineStageConvertToInterleaved	= (10 << 16),
 	
 	TSRawPipelineStageCoreImageFilter		= (11 << 16),
-
-	TSRawPipelineStageGenerateHistogram		= (12 << 16),
 };
 
 /// mask for the major pipeline stage
@@ -134,6 +131,6 @@ typedef void (^TSRawPipelineProgressCallback)(TSRawPipelineStage);
 		  shouldCache:(BOOL) cache
    completionCallback:(nonnull TSRawPipelineCompletionCallback) complete
 	 progressCallback:(nullable TSRawPipelineProgressCallback) progress
-   conversionProgress:(NSProgress * _Nullable * _Nonnull) outProgress;
+   conversionProgress:(NSProgress * _Nonnull * _Nullable) outProgress;
 
 @end

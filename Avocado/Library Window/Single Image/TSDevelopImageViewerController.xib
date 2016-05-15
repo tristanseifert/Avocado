@@ -16,7 +16,7 @@
         <scrollView wantsLayer="YES" placeholderIntrinsicWidth="640" placeholderIntrinsicHeight="480" borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" allowsMagnification="YES" minMagnification="0.10000000000000001" usesPredominantAxisScrolling="NO" id="S97-jP-tRo">
             <rect key="frame" x="0.0" y="0.0" width="640" height="480"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-            <clipView key="contentView" id="d9w-Uo-vHS">
+            <clipView key="contentView" id="d9w-Uo-vHS" customClass="TSFlippedClipView">
                 <rect key="frame" x="0.0" y="0.0" width="640" height="480"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>

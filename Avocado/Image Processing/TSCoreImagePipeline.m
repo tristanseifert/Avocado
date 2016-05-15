@@ -31,7 +31,7 @@
 		// set up CoreImage context
 		NSDictionary *ciOptions = @{
 			// request GPU rendering if possible
-			kCIContextUseSoftwareRenderer: @NO,
+			kCIContextUseSoftwareRenderer: @YES,
 			// use 128bpp floating point RGBA format
 			kCIContextWorkingFormat: @(kCIFormatRGBAf),
 		};
@@ -59,46 +59,16 @@
 - (NSImage *) produceImageFromJob:(TSCoreImagePipelineJob *) job
 					inPixelFormat:(TSCoreImagePixelFormat) format
 				   andColourSpace:(NSColorSpace *) colourSpace {
-	CGImageRef image;
-	
 	// prepare job
 	[job prepareForRendering];
 	
-	// determine the colour space to use
-	CGColorSpaceRef cs;
+	// convert to CIImage (this causes rendering)
+	NSCIImageRep *rep = [NSCIImageRep imageRepWithCIImage:job.result];
 	
-	if(colourSpace) {
-		cs = colourSpace.CGColorSpace;
-	} else {
-		// TODO: figure out a better alternative
-		cs = [NSColorSpace sRGBColorSpace].CGColorSpace;
-	}
+	NSImage *nsImage = [[NSImage alloc] initWithSize:rep.size];
+	[nsImage addRepresentation:rep];
 	
-	// determine pixel format
-	CIFormat pixFmt;
-	
-	switch(format) {
-		case TSCIPixelFormatRGBA8:
-			pixFmt = kCIFormatRGBA8;
-			break;
-			
-		case TSCIPixelFormatRGBA16:
-			pixFmt = kCIFormatRGBA16;
-			break;
-			
-		case TSCIPixelFormatRGBAf:
-			pixFmt = kCIFormatRGBAf;
-			break;
-	}
-	
-	// render in context
-	image = [self.context createCGImage:job.result
-							   fromRect:job.result.extent
-								 format:pixFmt
-							 colorSpace:cs];
-	
-	// convert to NSImage and return
-	return [[NSImage alloc] initWithCGImage:image size:NSZeroSize];
+	return nsImage;
 }
 
 @end

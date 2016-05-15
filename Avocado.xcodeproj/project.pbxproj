@@ -47,6 +47,7 @@
 		6AA9359F1CE7AF43004E9F9C /* TSDevelopExposureInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AA9359D1CE7AF43004E9F9C /* TSDevelopExposureInspector.xib */; };
 		6AA935A21CE7C354004E9F9C /* TSVibrantStackView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA935A11CE7C354004E9F9C /* TSVibrantStackView.m */; };
 		6AA935A51CE7CDE1004E9F9C /* TSInspectorTitleBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA935A41CE7CDE1004E9F9C /* TSInspectorTitleBar.m */; };
+		6AA935A81CE7DD68004E9F9C /* TSFlippedClipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA935A71CE7DD68004E9F9C /* TSFlippedClipView.m */; };
 		6AAEFC961CE6C0DE0003DF4B /* TSDefaultAppState.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6AAEFC951CE6C0DE0003DF4B /* TSDefaultAppState.plist */; };
 		6AB32E9C1CDE4574004FF7A3 /* lmmse_interpolate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AB32E9B1CDE4574004FF7A3 /* lmmse_interpolate.m */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive"; }; };
 		6AB32EA11CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AB32EA01CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m */; };
@@ -176,7 +177,9 @@
 		6AA935A11CE7C354004E9F9C /* TSVibrantStackView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSVibrantStackView.m; path = "Avocado/Custom UI/TSVibrantStackView.m"; sourceTree = "<group>"; };
 		6AA935A31CE7CDE1004E9F9C /* TSInspectorTitleBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSInspectorTitleBar.h; path = "Avocado/Custom UI/TSInspectorTitleBar.h"; sourceTree = "<group>"; };
 		6AA935A41CE7CDE1004E9F9C /* TSInspectorTitleBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSInspectorTitleBar.m; path = "Avocado/Custom UI/TSInspectorTitleBar.m"; sourceTree = "<group>"; };
-		6AAEFC951CE6C0DE0003DF4B /* TSDefaultAppState.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TSDefaultAppState.plist; sourceTree = "<group>"; };
+		6AA935A61CE7DD68004E9F9C /* TSFlippedClipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSFlippedClipView.h; path = Avocado/Helpers/TSFlippedClipView.h; sourceTree = "<group>"; };
+		6AA935A71CE7DD68004E9F9C /* TSFlippedClipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSFlippedClipView.m; path = Avocado/Helpers/TSFlippedClipView.m; sourceTree = "<group>"; };
+		6AAEFC951CE6C0DE0003DF4B /* TSDefaultAppState.plist */ = {isa = PBXFileReference; explicitFileType = file.bplist; fileEncoding = 4; path = TSDefaultAppState.plist; sourceTree = "<group>"; };
 		6AB32E9A1CDDBAC9004FF7A3 /* ahd_interpolate_mod.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ahd_interpolate_mod.h; path = "Avocado/RAW Processing/ahd_interpolate_mod.h"; sourceTree = "<group>"; };
 		6AB32E9B1CDE4574004FF7A3 /* lmmse_interpolate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = lmmse_interpolate.m; path = "Avocado/RAW Processing/lmmse_interpolate.m"; sourceTree = "<group>"; };
 		6AB32E9D1CDE4586004FF7A3 /* lmmse_interpolate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = lmmse_interpolate.h; path = "Avocado/RAW Processing/lmmse_interpolate.h"; sourceTree = "<group>"; };
@@ -705,6 +708,8 @@
 				6A6ED4161CE4D0EE001EFA21 /* NSColor+AvocadoUtils.m */,
 				6AA935901CE792E2004E9F9C /* TSVibrantView.h */,
 				6AA935911CE792E2004E9F9C /* TSVibrantView.m */,
+				6AA935A61CE7DD68004E9F9C /* TSFlippedClipView.h */,
+				6AA935A71CE7DD68004E9F9C /* TSFlippedClipView.m */,
 			);
 			name = "Categories and Helpers";
 			sourceTree = "<group>";
@@ -964,6 +969,7 @@
 				6A06F44C1CE0205D001DFC4C /* TSCoreImageFilter.m in Sources */,
 				6ABC2D9C1CD42C4A006B959F /* _TSLibraryImage.m in Sources */,
 				6A1307CC1CDA4A6E00FFC99A /* TSRawPipelineState.mm in Sources */,
+				6AA935A81CE7DD68004E9F9C /* TSFlippedClipView.m in Sources */,
 				6AA935951CE7A6A4004E9F9C /* TSInspectorViewController.m in Sources */,
 				6AB32E9C1CDE4574004FF7A3 /* lmmse_interpolate.m in Sources */,
 				6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */,

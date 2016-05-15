@@ -14,7 +14,12 @@
 
 #import "TSDevelopExposureInspector.h"
 
+// KVO context for the displayedImage property
+static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
+
 @interface TSDevelopSidebarController ()
+
+@property (nonatomic) IBOutlet TSHistogramView *mrHistogram;
 
 @property (nonatomic) IBOutlet TSInspectorViewController *inspector;
 
@@ -40,6 +45,10 @@
 		wb.title = @"White Balance";
 		self.inspectorWhiteBal = [TSInspectorViewItem itemWithContentController:wb
 																	   expanded:YES];
+		
+		// add KVO
+		[self addObserver:self forKeyPath:@"displayedImage"
+				  options:0 context:TSDisplayedImageKVO];
 	}
 	
 	return self;
@@ -51,9 +60,43 @@
 - (void) viewDidLoad {
     [super viewDidLoad];
 	
+	// prepare Mr. Histogram
+	self.mrHistogram.quality = 4;
+	
 	// add the previously created views to the inspector
 	[self.inspector addInspectorView:self.inspectorExposure];
 	[self.inspector addInspectorView:self.inspectorWhiteBal];
+}
+
+#pragma mark KVO
+/**
+ * Handles KVO, including that for the image changing.
+ */
+- (void) observeValueForKeyPath:(NSString *) keyPath
+					   ofObject:(id) object
+						 change:(NSDictionary<NSString *,id> *) change
+						context:(void *) context {
+	// the displayed image property changed
+	if(context == TSDisplayedImageKVO) {
+		self.mrHistogram.image = self.displayedImage;
+	} else {
+		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+	}
+}
+
+#pragma mark State Restoration
+/**
+ * Saves view state.
+ */
+- (void) saveViewOptions:(NSKeyedArchiver *) archiver {
+	
+}
+
+/**
+ * Restores previously saved view state.
+ */
+- (void) restoreViewOptions:(NSKeyedUnarchiver *) unArchiver {
+	
 }
 
 @end

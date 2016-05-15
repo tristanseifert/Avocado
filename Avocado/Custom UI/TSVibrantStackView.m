@@ -11,13 +11,6 @@
 @implementation TSVibrantStackView
 
 /**
- * Flips the coordinate system.
- */
-- (BOOL) isFlipped {
-	return YES;
-}
-
-/**
  * Allow for vibrant drawing.
  */
 - (BOOL) allowsVibrancy {

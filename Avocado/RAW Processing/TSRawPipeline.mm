@@ -79,8 +79,6 @@
 
 - (NSBlockOperation *) opCoreImageFilters:(TSRawPipelineState *) state;
 
-- (NSBlockOperation *) opGenerateDisplayHistogram:(TSRawPipelineState *) state;
-
 // conversion
 - (CIImage *) ciImageFromPixelConverter:(TSPixelConverterRef) converter andSize:(NSSize) outputSize;
 
@@ -151,7 +149,7 @@
 		  shouldCache:(BOOL) cache
    completionCallback:(nonnull TSRawPipelineCompletionCallback) complete
 	 progressCallback:(nullable TSRawPipelineProgressCallback) progress
-   conversionProgress:(NSProgress * _Nullable * _Nonnull) outProgress {
+   conversionProgress:(NSProgress * _Nonnull * _Nullable) outProgress {
 	// debugging info about the file
 	DDLogDebug(@"Image size: %@", NSStringFromSize(image.imageSize));
 	
@@ -160,8 +158,7 @@
 	
 	NSBlockOperation *opDebayer, *opDemosaic, *opLensCorrect, *opConvertPlanar;
 	NSBlockOperation *opRotate, *opConvolute, *opMorphological, *opHisto;
-	NSBlockOperation *opConvertInterleaved, *opCoreImage, *opOutputHistogram;
-	NSBlockOperation *opConvertRGBGamma;
+	NSBlockOperation *opConvertInterleaved, *opCoreImage, *opConvertRGBGamma;
 	
 	TSRawPipelineState *state;
 	
@@ -251,8 +248,6 @@
 	
 	opCoreImage = [self opCoreImageFilters:state];
 	
-	opOutputHistogram = [self opGenerateDisplayHistogram:state];
-	
 	// set up interdependencies between the operations
 	[opDemosaic addDependency:opDebayer];
 	[opLensCorrect addDependency:opDemosaic];
@@ -268,8 +263,6 @@
 	[opConvertInterleaved addDependency:opHisto];
 	
 	[opCoreImage addDependency:opConvertInterleaved];
-	
-	[opOutputHistogram addDependency:opCoreImage];
 	
 	// add them to the queue to vamenos the operations
 	TSAddOperation(opDebayer, state);
@@ -287,8 +280,6 @@
 	TSAddOperation(opConvertInterleaved, state);
 	
 	TSAddOperation(opCoreImage, state);
-	
-	TSAddOperation(opOutputHistogram, state);
 }
 
 #pragma mark - RAW Processing Steps
@@ -538,7 +529,8 @@
 #endif
 		
 		// create CIImage
-		state.coreImageInput = [self ciImageFromPixelConverter:state.converter andSize:state.outputSize];
+		state.coreImageInput = [self ciImageFromPixelConverter:state.converter
+													   andSize:state.outputSize];
 	}];
 	
 	op.name = @"Convert to Interleaved Floating Point";
@@ -673,28 +665,12 @@
 									inPixelFormat:TSCIPixelFormatRGBA16
 								   andColourSpace:nil];
 		state.result = im;
-	}];
-	
-	op.name = @"CoreImage Filters";
-	return op;
-}
-
-#pragma mark Output
-/**
- * Calculates the final histogram over the image before calling the success
- * callback;
- */
-- (NSBlockOperation *) opGenerateDisplayHistogram:(TSRawPipelineState *) state {
-	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
-		state.stage = TSRawPipelineStageGenerateHistogram;
-		
-		// TODO: calculate histogram
 		
 		// execute success callback
 		[state completeWithImage:state.result];
 	}];
 	
-	op.name = @"Display Histogram Calculation";
+	op.name = @"CoreImage Filters";
 	return op;
 }
 

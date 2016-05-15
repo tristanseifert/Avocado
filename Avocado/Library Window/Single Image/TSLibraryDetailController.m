@@ -26,6 +26,10 @@ static void *TSImageKVO = &TSImageKVO;
 @property (nonatomic) TSDevelopImageViewerController *imageController;
 @property (nonatomic) TSDevelopSidebarController *sidebarController;
 
+// restored split view state
+@property (nonatomic) BOOL stateSidebarCollapsed;
+@property (nonatomic) CGFloat stateSplitPosition;
+
 @end
 
 @implementation TSLibraryDetailController
@@ -69,6 +73,15 @@ static void *TSImageKVO = &TSImageKVO;
 	sidebar.maximumThickness = TSEditSidebarMaxWidth;
 	
 	[self addSplitViewItem:sidebar];
+	
+	// restore the split view state
+	NSSplitViewItem *sb = [self splitViewItemForViewController:self.sidebarController];
+	sb.collapsed = self.stateSidebarCollapsed;
+	
+	if(self.stateSplitPosition >= 100.f) {
+		[self.splitView setPosition:self.stateSplitPosition
+				   ofDividerAtIndex:0];
+	}
 }
 
 /**
@@ -92,14 +105,28 @@ static void *TSImageKVO = &TSImageKVO;
  * Saves any view options. Keys should be prefixed by some unique value.
  */
 - (void) saveViewOptions:(NSKeyedArchiver *) archiver {
+	[self.imageController saveViewOptions:archiver];
+	[self.sidebarController saveViewOptions:archiver];
 	
+	// store position of first divider and collapsed state
+	NSSplitViewItem *sb = [self splitViewItemForViewController:self.sidebarController];
+	[archiver encodeBool:sb.isCollapsed forKey:@"Develop.SidebarCollapsed"];
+	
+	CGFloat pos = self.imageController.view.frame.size.width + 1;
+	[archiver encodeDouble:pos forKey:@"Develop.SidebarPosition0"];
 }
 
 /**
  * Restores view options. Keys should be prefixed by some unique value.
  */
 - (void) restoreViewOptions:(NSKeyedUnarchiver *) unArchiver {
+	[self.imageController restoreViewOptions:unArchiver];
+	[self.sidebarController restoreViewOptions:unArchiver];
 	
+	// restore split view position
+	self.stateSidebarCollapsed = [unArchiver decodeBoolForKey:@"Develop.SidebarCollapsed"];
+	
+	self.stateSplitPosition = [unArchiver decodeDoubleForKey:@"Develop.SidebarPosition0"];
 }
 
 #pragma mark KVO
@@ -125,6 +152,14 @@ static void *TSImageKVO = &TSImageKVO;
  */
 - (IBAction) returnToLightTable:(id) sender {
 	[self.windowController openLightTable];
+}
+
+/**
+ * Toggles the sidebar.
+ */
+- (IBAction) toggleSidebar:(id) sender {
+	NSSplitViewItem *sb = [self splitViewItemForViewController:self.sidebarController];
+	sb.collapsed = !sb.collapsed;
 }
 
 @end

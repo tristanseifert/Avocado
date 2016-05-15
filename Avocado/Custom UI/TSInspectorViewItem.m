@@ -195,6 +195,8 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 	self.titleBar.target = self;
 	self.titleBar.action = @selector(toggleAccordionState:);
 	
+	[self updateTitleBarTooltip];
+	
 	[self.view addView:self.titleBar
 			 inGravity:NSStackViewGravityTop];
 	
@@ -214,11 +216,12 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 	self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
 	
 	self.titleLabel.bezeled = NO;
+	self.titleLabel.bordered = NO;
 	self.titleLabel.drawsBackground = NO;
 	self.titleLabel.editable = NO;
 	self.titleLabel.selectable = NO;
 	
-	self.titleLabel.font = [NSFont systemFontOfSize:13 weight:NSFontWeightSemibold];
+	self.titleLabel.font = [NSFont systemFontOfSize:13 weight:NSFontWeightMedium];
 	self.titleLabel.textColor = [NSColor labelColor];
 	
 	// bind its string value to the content controller's title
@@ -263,7 +266,9 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 			
 			self.contentHeightConstraint.animator.constant = 0.f;
 			self.content.view.animator.alphaValue = 0.f;
-		} completionHandler:nil];
+		} completionHandler:^{
+			[self updateTitleBarTooltip];
+		}];
 	}
 	// expand the view
 	else {
@@ -276,10 +281,23 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 			
 			self.contentHeightConstraint.animator.constant = self.content.preferredContentSize.height;
 			self.content.view.animator.alphaValue = 1.f;
-		} completionHandler:nil];
+		} completionHandler:^{
+			[self updateTitleBarTooltip];
+		}];
 	}
 	
 	self.isExpanded = !self.isExpanded;
+}
+
+/**
+ * Updates the tooltip of the title bar.
+ */
+- (void) updateTitleBarTooltip {
+	if(self.isExpanded) {
+		self.titleBar.toolTip = [NSString stringWithFormat:NSLocalizedString(@"Collapse '%@'", @"accordion expand view tooltip"), self.content.title];
+	} else {
+		self.titleBar.toolTip = [NSString stringWithFormat:NSLocalizedString(@"Expand '%@'", @"accordion expand view tooltip"), self.content.title];
+	}
 }
 
 @end

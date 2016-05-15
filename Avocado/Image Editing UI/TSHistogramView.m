@@ -82,6 +82,7 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 - (void) updateImageBuffer;
 - (void) updateImageBufferLoadScaled:(BOOL) shouldAllocate;
 
+- (void) frameDidChangeNotification:(NSNotification *) n;
 - (void) layOutSublayers;
 
 - (void) updateDisplay;
@@ -106,6 +107,14 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 		
 		self.quality = 4;
 		
+		// add notification for frame change
+		NSNotificationCenter *c = [NSNotificationCenter defaultCenter];
+		
+		self.postsFrameChangedNotifications = YES;
+		
+		[c addObserver:self selector:@selector(frameDidChangeNotification:)
+				  name:NSViewFrameDidChangeNotification object:self];
+		
 		// add KVO for properties that cause recomputation of the histogram
 		[self addObserver:self forKeyPath:@"image" options:0
 				  context:TSImageKVOCtx];
@@ -122,6 +131,14 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 		[self allocateBuffers];
 		
 		self.quality = 4;
+		
+		// add notification for frame change
+		NSNotificationCenter *c = [NSNotificationCenter defaultCenter];
+		
+		self.postsFrameChangedNotifications = YES;
+		
+		[c addObserver:self selector:@selector(frameDidChangeNotification:)
+				  name:NSViewFrameDidChangeNotification object:self];
 		
 		// add KVO for properties that cause recomputation of the histogram
 		[self addObserver:self forKeyPath:@"image" options:0
@@ -142,19 +159,17 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	[[NSColor clearColor] setFill];
 	NSRectFill(dirtyRect);
 	
-	// stroke the border
-	[[NSColor labelColor] setStroke];
-	
-	NSBezierPath *p = [NSBezierPath bezierPathWithRoundedRect:self.bounds
-													  xRadius:1
-													  yRadius:1];
-	[p stroke];
-	
 	// fill the content
 	NSRect content = NSInsetRect(self.bounds, 1, 1);
 	
 	[[NSColor colorWithCalibratedWhite:0.f alpha:0.25] setFill];
 	NSRectFill(content);
+	
+	// stroke the border
+	[[NSColor labelColor] setStroke];
+	
+	NSBezierPath *p = [NSBezierPath bezierPathWithRect:self.bounds];
+	[p stroke];
 }
 
 /**
@@ -351,6 +366,9 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	// free image buffer and its struct
 	[self invalidateImageBuffer];
 	free(self.imgBuf);
+	
+	// remove observer
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 /**
@@ -432,12 +450,10 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 }
 
 /**
- * When the view itself participates in Autolayout, lay out the sublayers
- * manually.
+ * When the view's frame changes, this notification is fired. It causes the
+ * sublayers to be laid out again.
  */
-- (void) layout {
-	[super layout];
-	
+- (void) frameDidChangeNotification:(NSNotification *) n {
 	[self layOutSublayers];
 }
 
@@ -739,6 +755,9 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 		self.imgBufImageRef = [self.image CGImageForProposedRect:nil
 														 context:nil
 														   hints:nil];
+		CGImageRetain(self.imgBufImageRef);
+		
+		return;
 	}
 	
 	// calculate scale factor
@@ -751,7 +770,8 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 													  hints:nil];
 	
 	size_t bitsPerComponent = CGImageGetBitsPerComponent(cgImage);
-	size_t bytesPerRow = CGImageGetBytesPerRow(cgImage);
+	size_t bitsPerPixel = CGImageGetBitsPerPixel(cgImage);
+	size_t bytesPerRow = (bitsPerPixel / 8) * newSize.width;
 	CGColorSpaceRef colorSpace = CGImageGetColorSpace(cgImage);
 	CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(cgImage);
 	
@@ -773,7 +793,7 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	
 	// create a CGImage from the context, then clean up
 	CGImageRef scaledImage = CGBitmapContextCreateImage(ctx);
-	
+
 	CGContextRelease(ctx);
 	
 	// done.

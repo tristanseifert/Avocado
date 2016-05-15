@@ -12,5 +12,7 @@
 	<integer>3</integer>
 	<key>MainWindow.ActiveVC</key>
 	<integer>0</integer>
+	<key>Develop.SidebarCollapsed</key>
+	<false/>
 </dict>
 </plist>

@@ -16,4 +16,12 @@
 
 @property (nonatomic, weak) TSDevelopSidebarController *sidebar;
 
+- (void) saveViewOptions:(NSKeyedArchiver *) archiver;
+- (void) restoreViewOptions:(NSKeyedUnarchiver *) unArchiver;
+
+/**
+ * Runs the current image through the processing pipeline.
+ */
+- (void) processCurrentImage;
+
 @end
