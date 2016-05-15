@@ -41,7 +41,7 @@
  *		e. Geometry adjustments (crop, scaling, straightening, etc.)
  *		f. Vignetting and grain
  *
- * The outputs of stage 5, and stage 10 can be cached.
+ * The output of stage 5 is cached.
  *
  * Pipeline plugins can chose to process data at any major numbered
  * position in the pipeline. They are called _before_ the built-in pipeline
@@ -132,5 +132,12 @@ typedef void (^TSRawPipelineProgressCallback)(TSRawPipelineStage);
    completionCallback:(nonnull TSRawPipelineCompletionCallback) complete
 	 progressCallback:(nullable TSRawPipelineProgressCallback) progress
    conversionProgress:(NSProgress * _Nonnull * _Nullable) outProgress;
+
+/**
+ * Invalidates the internal caches of an image. This is automatically called
+ * when the cached image is different than the image for which a RAW processing
+ * is requested.
+ */
+- (void) clearImageCaches;
 
 @end

@@ -22,20 +22,40 @@
 #import "NSBlockOperation+AvocadoUtils.h"
 #import "NSColorSpace+ExtraColourSpaces.h"
 
+#import <compression.h>
+
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
 #import <CoreImage/CoreImage.h>
 #import <Accelerate/Accelerate.h>
 
-#define TSAddOperation(operation, state) \
-	[state addOperation:operation]; \
-	[self.queue addOperation:operation]; \
+/**
+ * When set to a non-zero value, information about the time taken for each of
+ * the RAW processing steps is printed.
+ */
+#define	TSWriteStepTiming	1
 
 /**
  * Set this define to 1 to write debug data from the various stages of the
  * pipeline to disk.
  */
-#define	WriteDebugData	0
+#define	WriteDebugData		0
+
+#define TSAddOperation(operation, state) \
+	[state addOperation:operation]; \
+	[self.queue addOperation:operation]; \
+
+#if TSWriteStepTiming
+	#define TSBeginOperation(name) \
+		time_t __tBegin = clock(); \
+		NSString *__opName = name;
+
+	#define TSEndOperation() \
+		DDLogDebug(@"Finished %@: %fs", __opName, ((double)(clock() - __tBegin)) / CLOCKS_PER_SEC);
+#else
+	#define TSBeginOperation(name)
+	#define TSEndOperation()
+#endif
 
 // TODO: figure out a way to more better expose this from a header?
 @interface TSLibraryImage ()
@@ -77,6 +97,8 @@
 - (NSBlockOperation *) opConvertToInterleaved:(TSRawPipelineState *) state;
 
 - (NSBlockOperation *) opCoreImageFilters:(TSRawPipelineState *) state;
+
+- (NSBlockOperation *) opStorePlanarInCache:(TSRawPipelineState *) state;
 
 // conversion
 - (CIImage *) ciImageFromPixelConverter:(TSPixelConverterRef) converter andSize:(NSSize) outputSize;
@@ -153,6 +175,7 @@
 	NSBlockOperation *opDebayer, *opDemosaic, *opLensCorrect, *opConvertPlanar;
 	NSBlockOperation *opRotate, *opConvolute, *opMorphological, *opHisto;
 	NSBlockOperation *opConvertInterleaved, *opCoreImage, *opConvertRGBGamma;
+	NSBlockOperation *opUpdateCache;
 	
 	TSRawPipelineState *state;
 	
@@ -246,6 +269,11 @@
 	
 	opCoreImage = [self opCoreImageFilters:state];
 	
+	// if we cache stuff, create the "update cache" operation
+	if(cache) {
+		opUpdateCache = [self opStorePlanarInCache:state];
+	}
+	
 	// set up interdependencies between the operations
 	[opDemosaic addDependency:opDebayer];
 	[opLensCorrect addDependency:opDemosaic];
@@ -253,7 +281,13 @@
 	
 	[opConvertPlanar addDependency:opConvertRGBGamma];
 	
-	[opRotate addDependency:opConvertPlanar];
+	if(cache) {
+		[opUpdateCache addDependency:opConvertPlanar];
+		[opRotate addDependency:opUpdateCache];
+	} else {
+		[opRotate addDependency:opConvertPlanar];
+	}
+	
 	[opConvolute addDependency:opRotate];
 	[opMorphological addDependency:opConvolute];
 	[opHisto addDependency:opMorphological];
@@ -267,8 +301,11 @@
 	TSAddOperation(opDemosaic, state);
 	TSAddOperation(opLensCorrect, state);
 	TSAddOperation(opConvertRGBGamma, state);
-	
 	TSAddOperation(opConvertPlanar, state);
+	
+	if(cache) {
+		TSAddOperation(opUpdateCache, state);
+	}
 	
 	TSAddOperation(opRotate, state);
 	TSAddOperation(opConvolute, state);
@@ -288,6 +325,8 @@
  */
 - (NSBlockOperation *) opDebayer:(TSRawPipelineState *) state {
 	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		TSBeginOperation(@"Debayering");
+		
 		NSError *err = nil;
 		
 		state.stage = TSRawPipelineStageDebayering;
@@ -297,8 +336,12 @@
 			DDLogError(@"Error unpacking raw data: %@", err);
 			
 			[state terminateWithError:err];
+			
+			TSEndOperation();
 			return;
 		}
+		
+		TSEndOperation();
 	}];
 	
 	op.name = @"Debayering";
@@ -316,6 +359,8 @@
  */
 - (NSBlockOperation *) opDemosaic:(TSRawPipelineState *) state {
 	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		TSBeginOperation(@"Demosaic");
+		
 		state.stage = TSRawPipelineStageDemosaicing;
 		libraw_data_t *libRaw = state.rawImage.libRaw;
 		
@@ -339,6 +384,8 @@
 		
 		ahd_interpolate_mod(libRaw, (uint16_t (*)[4]) self.interpolatedColourBuf);
 //		lmmse_interpolate(libRaw, (uint16_t (*)[4]) self.interpolatedColourBuf);
+		
+		TSEndOperation();
 	}];
 	
 	op.name = @"Demosaicing and Interpolation";
@@ -351,6 +398,8 @@
  */
 - (NSBlockOperation *) opGammaColourSpaceCorrect:(TSRawPipelineState *) state {
 	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		TSBeginOperation(@"Colour Profile Conversion and Gamma Adjustment");
+		
 		state.stage = TSRawPipelineStageConvertToRGB;
 		libraw_data_t *libRaw = state.rawImage.libRaw;
 		
@@ -389,6 +438,8 @@
 		
 		DDLogVerbose(@"Finished writing debug data");
 #endif
+		
+		TSEndOperation();
 	}];
 	
 	op.name = @"Colour Profile Conversion and Gamma Adjustment";
@@ -401,6 +452,8 @@
  */
 - (NSBlockOperation *) opLensCorrect:(TSRawPipelineState *) state {
 	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		TSBeginOperation(@"Lens Corrections");
+		
 		// only perform lens corrections if, well… they're desired
 		if(state.applyLensCorrections) {
 			state.stage = TSRawPipelineStageLensCorrection;
@@ -474,6 +527,8 @@
 				}
 			}
 		}
+		
+		TSEndOperation();
 	}];
 	
 	op.name = @"Lens Corrections";
@@ -487,6 +542,8 @@
  */
 - (NSBlockOperation *) opConvertToPlanar:(TSRawPipelineState *) state {
 	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		TSBeginOperation(@"Convert to Planar Floating Point");
+		
 		state.stage = TSRawPipelineStageConvertToPlanar;
 		
 		// if lens corrections were applied, the data is in the converter output
@@ -505,6 +562,7 @@
 		TSPixelConverterRGB16UToFloat(state.converter, 0xFFFF);
 		TSPixelConverterRGBFFFToPlanarF(state.converter);
 		
+		TSEndOperation();
 	}];
 	
 	op.name = @"Conver to Planar Floating Point";
@@ -517,6 +575,8 @@
  */
 - (NSBlockOperation *) opConvertToInterleaved:(TSRawPipelineState *) state {
 	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		TSBeginOperation(@"Convert to Interleaved Floating Point");
+		
 		state.stage = TSRawPipelineStageConvertToInterleaved;
 		
 		// do the conversion from planar to interleaved
@@ -529,6 +589,8 @@
 		// create CIImage
 		state.coreImageInput = [self ciImageFromPixelConverter:state.converter
 													   andSize:state.outputSize];
+		
+		TSEndOperation();
 	}];
 	
 	op.name = @"Convert to Interleaved Floating Point";
@@ -582,10 +644,15 @@
  */
 - (NSBlockOperation *) opRotateFlip:(TSRawPipelineState *) state {
 	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		TSBeginOperation(@"Rotation and Flipping");
+		
 		state.stage = TSRawPipelineStageRotationFlip;
 		
 		// do we need to apply rotation?
-		if(state.rawImage.rotation == 0) return;
+		if(state.rawImage.rotation == 0) {
+			TSEndOperation();
+			return;
+		}
 		
 		// calculate the correct rotation angle
 		NSInteger rotation = state.rawImage.rotation;
@@ -602,6 +669,8 @@
 		
 		// perform the rotation
 		TSPixelConverterRotate90(state.converter, (rotation / 90));
+		
+		TSEndOperation();
 	}];
 	
 	op.name = @"Rotation and Flipping";
@@ -613,9 +682,13 @@
  */
 - (NSBlockOperation *) opConvolve:(TSRawPipelineState *) state {
 	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		TSBeginOperation(@"Convolution");
+		
 		state.stage = TSRawPipelineStageConvolution;
 		
 		// apply sharpening and other kernels?
+		
+		TSEndOperation();
 	}];
 	
 	op.name = @"Convolution";
@@ -627,7 +700,11 @@
  */
 - (NSBlockOperation *) opMorphological:(TSRawPipelineState *) state {
 	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		TSBeginOperation(@"Morphological");
+		
 		state.stage = TSRawPipelineStageMorphological;
+		
+		TSEndOperation();
 	}];
 	
 	op.name = @"Morphological";
@@ -639,7 +716,11 @@
  */
 - (NSBlockOperation *) opHistogramAdjust:(TSRawPipelineState *) state {
 	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		TSBeginOperation(@"Histogram Adjustment");
+		
 		state.stage = TSRawPipelineStageHistogramModification;
+		
+		TSEndOperation();
 	}];
 	
 	op.name = @"Histogram Adjustments";
@@ -652,6 +733,8 @@
  */
 - (NSBlockOperation *) opCoreImageFilters:(TSRawPipelineState *) state {
 	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		TSBeginOperation(@"CoreImage Filters");
+		
 		NSImage *im;
 		TSCoreImagePipelineJob *job;
 		
@@ -668,9 +751,59 @@
 		
 		// execute success callback
 		[state completeWithImage:state.result];
+		
+		TSEndOperation();
 	}];
 	
 	op.name = @"CoreImage Filters";
+	return op;
+}
+
+#pragma mark - Caching
+/**
+ * Invalidates the internal caches of an image. This is automatically called
+ * when the cached image is different than the image for which a RAW processing
+ * is requested.
+ */
+- (void) clearImageCaches {
+	[self.rawStageCache removeAllObjects];
+}
+
+/**
+ * Resumes RAW processing with the cached output of stage 5; this will run
+ * all vImage and CoreImage operations.
+ */
+- (void) resumeCachedRaw {
+	
+}
+
+/**
+ * Stores a copy of the image buffer into the cache.
+ */
+- (void) storeFloatDataCached {
+	
+}
+
+/**
+ * Creates an operation that stores the planar floating point pixel data in the
+ * data cache.
+ */
+- (NSBlockOperation *) opStorePlanarInCache:(TSRawPipelineState *) state {
+	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		TSBeginOperation(@"Update Cache");
+		
+		// if not caching, exit
+		if(state.shouldCache == NO) {
+			TSEndOperation();
+			return;
+		}
+		
+		// otherwise, make a copy of the three planes
+		
+		TSEndOperation();
+	}];
+	
+	op.name = @"Update Cache";
 	return op;
 }
 
