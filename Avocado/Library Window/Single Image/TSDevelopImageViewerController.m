@@ -58,6 +58,7 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 	// set up image view
 	self.imageDisplayView = [[NSView alloc] initWithFrame:NSZeroRect];
 	self.imageDisplayView.wantsLayer = YES;
+	self.imageDisplayView.layer.drawsAsynchronously = YES;
 	
 	self.scrollView.documentView = self.imageDisplayView;
 }
@@ -125,6 +126,8 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
  */
 - (void) processCurrentImage {
 	DDAssert(self.image != nil, @"Image cannot be nil");
+	
+	// fetch a thumb?
 	
 	// actually process the image
 	if(self.image.fileTypeValue == TSLibraryImageRaw) {

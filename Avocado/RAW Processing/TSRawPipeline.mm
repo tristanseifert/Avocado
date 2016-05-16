@@ -698,7 +698,7 @@
 		
 		// process it pls
 		im = [self.ciPipeline produceImageFromJob:job
-									inPixelFormat:TSCIPixelFormatRGBA16
+									inPixelFormat:TSCIPixelFormatRGBA8
 								   andColourSpace:nil];
 		state.result = im;
 		
