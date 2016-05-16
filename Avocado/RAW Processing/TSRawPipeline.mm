@@ -113,6 +113,8 @@
 - (NSBlockOperation *) opStorePlanarInCache:(TSRawPipelineState *) state;
 - (NSBlockOperation *) opRestorePlanarFromCache:(TSRawPipelineState *) state;
 
+- (void) cleanUpState:(TSRawPipelineState *) state;
+
 // debugging
 - (void) dumpImageBufferInterleaved:(TSRawPipelineState *) state;
 - (void) dumpImageBufferCoreImage:(TSRawPipelineState *) state;
@@ -589,6 +591,24 @@
 	
 	// done
 	return im;
+	
+	
+//	// get info about the input buffer
+//	NSUInteger bytesPerRow = TSPixelConverterGetRGBXStride(converter);
+//	void *buf = TSPixelConverterGetRGBXPointer(converter);
+//	
+//	NSUInteger bufSz = bytesPerRow * outputSize.height;
+//	
+//	CGColorSpaceRef proPhoto = [NSColorSpace proPhotoRGBColorSpace].CGColorSpace;
+//	
+//	// create an NSData wrapper
+//	NSData *data = [[NSData alloc] initWithBytesNoCopy:buf length:bufSz
+//										  freeWhenDone:NO];
+//	
+//	// create the image
+//	im = [CIImage imageWithBitmapData:data bytesPerRow:bytesPerRow size:outputSize
+//							   format:kCIFormatRGBAf colorSpace:proPhoto];
+//	return im;
 }
 
 #pragma mark vImage Steps
@@ -704,6 +724,9 @@
 		
 		// execute success callback
 		[state completeWithImage:state.result];
+		
+		// clean up the state object
+		[self cleanUpState:state];
 		
 		TSEndOperation();
 	}];
@@ -932,6 +955,24 @@
 	
 	op.name = @"Restore Cached State";
 	return op;
+}
+
+#pragma mark Memory Management
+/**
+ * De-allocates any buffers that have previously been allocated in the state
+ * object.
+ */
+- (void) cleanUpState:(TSRawPipelineState *) state {
+	// de-reference the images
+	state.image = nil;
+	state.rawImage = nil;
+	
+	state.coreImageInput = nil;
+	state.result = nil;
+	
+	// free various other allocated buffers
+	free(state.histogramBuf);
+	free(state.gammaCurveBuf);
 }
 
 #pragma mark - Debugging Helpers

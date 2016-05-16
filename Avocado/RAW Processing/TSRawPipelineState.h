@@ -62,7 +62,7 @@
 /// Initial CIImage; passed to the first filter.
 @property (nonatomic) CIImage *coreImageInput;
 /// final image
-@property (nonatomic) NSImage *result;
+@property (nonatomic, weak) NSImage *result;
 
 /**
  * Adds an operation to the list of operations associated with the op.

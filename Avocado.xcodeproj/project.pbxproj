@@ -19,7 +19,7 @@
 		6A28F0591CD7FEA400228067 /* liblensfun.0.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A28F0581CD7FEA400228067 /* liblensfun.0.3.2.dylib */; };
 		6A28F05A1CD7FEB000228067 /* liblensfun.0.3.2.dylib in Embed dylibs and frameworks */ = {isa = PBXBuildFile; fileRef = 6A28F0581CD7FEA400228067 /* liblensfun.0.3.2.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		6A28F05E1CD810E200228067 /* libglib-2.0.0.dylib in Embed dylibs and frameworks */ = {isa = PBXBuildFile; fileRef = 6A28F05C1CD810D300228067 /* libglib-2.0.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		6A28F0631CD8190600228067 /* TSRawPipeline.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6A28F0621CD8190600228067 /* TSRawPipeline.mm */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive"; }; };
+		6A28F0631CD8190600228067 /* TSRawPipeline.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6A28F0621CD8190600228067 /* TSRawPipeline.mm */; };
 		6A28F0681CD940E500228067 /* TSPixelFormatConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A28F0661CD940E500228067 /* TSPixelFormatConverter.m */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive"; }; };
 		6A28F0701CD94A6400228067 /* TSRawPipelinePixelFormatTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A28F06F1CD94A6400228067 /* TSRawPipelinePixelFormatTests.m */; };
 		6A28F0771CD94CCD00228067 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEC351C1CD43FF00033DE0A /* CoreImage.framework */; };

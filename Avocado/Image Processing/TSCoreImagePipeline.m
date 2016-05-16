@@ -20,6 +20,8 @@
 /// CoreImage context; hardware-accelerated processing for filters
 @property (nonatomic) CIContext *context;
 
+static void TSCoreImagePipelineFreeBuffer(void *info, const void *data, size_t size);
+
 @end
 
 @implementation TSCoreImagePipeline
@@ -61,7 +63,8 @@
 - (NSImage *) produceImageFromJob:(TSCoreImagePipelineJob *) job
 					inPixelFormat:(TSCoreImagePixelFormat) format
 				   andColourSpace:(NSColorSpace *) colourSpace {
-	NSBitmapImageRep *bm;
+	CGImageRef im;
+	CGDataProviderRef provider;
 	
 	// prepare job (connects the filters)
 	[job prepareForRendering];
@@ -75,6 +78,8 @@
 	CIFormat fmt;
 	NSUInteger bytesPerPixel, bitsPerSample, bitsPerPixel;
 	
+	CGBitmapInfo bitmapInfo = (CGBitmapInfo) kCGImageAlphaPremultipliedLast;
+	
 	switch(format) {
 		case TSCIPixelFormatRGBA8:
 			fmt = kCIFormatRGBA8;
@@ -84,26 +89,31 @@
 		case TSCIPixelFormatRGBA16:
 			fmt = kCIFormatRGBA16;
 			bitsPerSample = 16;
+			
+			bitmapInfo |= kCGBitmapByteOrder16Host;
 			break;
 			
 		case TSCIPixelFormatRGBAf:
 			fmt = kCIFormatRGBAf;
 			bitsPerSample = 32;
+			
+			bitmapInfo |= kCGBitmapFloatComponents;
 			break;
 	}
 	
 	bitsPerPixel = (bitsPerSample * 4);
 	bytesPerPixel = (bitsPerPixel / 8);
 	
-	// set up a bitmap buffer
+	// set up a buffer, into which CoreImage renders
 	NSUInteger bytesPerRow = job.result.extent.size.width * bytesPerPixel;
 	NSUInteger bufSz = bytesPerRow * job.result.extent.size.height;
 	
 	NSUInteger width = job.result.extent.size.width;
 	NSUInteger height = job.result.extent.size.height;
-	
-	// render into it
+
 	void *buf = valloc(bufSz);
+	
+	// render into it with the requested pixel format
 	[self.context render:job.result toBitmap:buf rowBytes:bytesPerRow
 				  bounds:job.result.extent format:fmt
 			  colorSpace:colourSpace.CGColorSpace];
@@ -111,39 +121,32 @@
 	DDLogDebug(@"Allocating %li bytes for image size %@ (bpp = %li, bytes/row = %li)", bufSz, NSStringFromSize(job.result.extent.size), bitsPerPixel, bytesPerRow);
 	DDLogDebug(@"Buffer = %p", buf);
 	
-	// create bitmap rep from it
-	unsigned char *planes = { NULL };
 	
-	bm = [[TSBufferOwningBitmapRep alloc] initWithBitmapDataPlanes:&planes
-														pixelsWide:width
-														pixelsHigh:height
-													 bitsPerSample:bitsPerSample
-												   samplesPerPixel:4
-														  hasAlpha:YES
-														  isPlanar:NO
-													colorSpaceName:NSCalibratedRGBColorSpace
-													  bitmapFormat:0
-													   bytesPerRow:bytesPerRow
-													  bitsPerPixel:bitsPerPixel];
+	// create a direct access provider (with the buffer) and a CGImage
+	provider = CGDataProviderCreateWithData(nil, buf, bufSz, TSCoreImagePipelineFreeBuffer);
 	
-	memcpy(bm.bitmapData, buf, bufSz);
-	free(buf);
+	im = CGImageCreate(width, height, bitsPerSample, bitsPerPixel,
+					   bytesPerRow, colourSpace.CGColorSpace, bitmapInfo,
+					   provider, nil, YES, kCGRenderingIntentPerceptual);
 	
-	// create image
-	NSImage *im = [[NSImage alloc] initWithSize:job.result.extent.size];
-	[im addRepresentation:bm];
+	CGDataProviderRelease(provider);
 	
-	return im;
+	// create an NSImage encapsulating the CGImage
+	NSImage *result =  [[NSImage alloc] initWithCGImage:im size:NSZeroSize];
 	
-	// convert to CIImage (this causes rendering)
-//	CGImageRef im = [self.context createCGImage:job.result fromRect:job.result.extent];
-//	return [[NSImage alloc] initWithCGImage:im size:NSZeroSize];
+	// this is important to prevent a memory leak
+	CGImageRelease(im);
+	
+	return result;
+}
 
-//	NSCIImageRep *rep = [NSCIImageRep imageRepWithCIImage:job.result];
-//	NSImage *nsImage = [[NSImage alloc] initWithSize:rep.size];
-//	[nsImage addRepresentation:rep];
-//	
-//	return nsImage;
+/**
+ * Called by CoreImage when our data provider (passed to the CGImageCreate
+ * function) is no longer needed, for example, when the CGImage has been
+ * released.
+ */
+static void TSCoreImagePipelineFreeBuffer(void *info, const void *data, size_t size) {
+	free((void *) data);
 }
 
 @end

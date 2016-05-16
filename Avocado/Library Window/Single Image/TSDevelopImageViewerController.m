@@ -137,7 +137,7 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 				
 				// free the buffers
 				TSBufferOwningBitmapRep *bm = (TSBufferOwningBitmapRep *) rep;
-//				[bm TSFreeBuffers];
+				[bm TSFreeBuffers];
 			}
 		}];
 	}
@@ -148,9 +148,6 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 	if(self.image.fileTypeValue == TSLibraryImageRaw) {
 		// submit the RAW image to the rendering pipeline
 		[self.pipelineRaw queueRawFile:self.image shouldCache:YES completionCallback:^(NSImage *img, NSError *err) {
-			// free the old image
-			self.displayedImage = nil;
-			
 			// display it
 			if(img) {
 				self.displayedImage = img;
