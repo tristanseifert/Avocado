@@ -9,6 +9,7 @@
 #import "TSDevelopImageViewerController.h"
 #import "TSDevelopSidebarController.h"
 
+#import "TSBufferOwningBitmapRep.h"
 #import "TSHumanModels.h"
 #import "TSRawPipeline.h"
 
@@ -127,12 +128,30 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 - (void) processCurrentImage {
 	DDAssert(self.image != nil, @"Image cannot be nil");
 	
+	// deallocate previous image
+	if(self.displayedImage != nil) {
+		// get reps
+		[self.displayedImage.representations enumerateObjectsUsingBlock:^(NSImageRep *rep, NSUInteger idx, BOOL *stop) {
+			if([rep isKindOfClass:[TSBufferOwningBitmapRep class]]) {
+				DDLogDebug(@"Found %@ in image %@", rep, self.displayedImage);
+				
+				// free the buffers
+				TSBufferOwningBitmapRep *bm = (TSBufferOwningBitmapRep *) rep;
+//				[bm TSFreeBuffers];
+			}
+		}];
+	}
+	
 	// fetch a thumb?
 	
 	// actually process the image
 	if(self.image.fileTypeValue == TSLibraryImageRaw) {
 		// submit the RAW image to the rendering pipeline
 		[self.pipelineRaw queueRawFile:self.image shouldCache:YES completionCallback:^(NSImage *img, NSError *err) {
+			// free the old image
+			self.displayedImage = nil;
+			
+			// display it
 			if(img) {
 				self.displayedImage = img;
 			} else {

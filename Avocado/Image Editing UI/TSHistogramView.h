@@ -15,7 +15,7 @@
 @interface TSHistogramView : NSView
 
 /// This is the image of which we calculate the histogram
-@property (nonatomic, strong) NSImage *image;
+@property (nonatomic, weak) NSImage *image;
 
 /// Quality of the histogram, between 1 and 4; Each step causes a size reduction of 1/2.
 @property (nonatomic) NSUInteger quality;
