@@ -1,0 +1,1033 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="TSDevelopHueInspector">
+            <connections>
+                <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="Hz6-mo-xeY">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="235"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rSv-ig-nhG">
+                    <rect key="frame" x="45" y="205" width="230" height="20"/>
+                    <segmentedCell key="cell" controlSize="small" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="LyC-Om-Lkb">
+                        <font key="font" metaFont="smallSystem"/>
+                        <segments>
+                            <segment label="Hue" width="74" selected="YES"/>
+                            <segment label="Saturation" toolTip="Adjust saturation for all colours in a certain band" width="74" tag="1"/>
+                            <segment label="Lightness" toolTip="Adjust lightness for all colours in a certain band" width="74" tag="2"/>
+                        </segments>
+                    </segmentedCell>
+                    <connections>
+                        <action selector="takeSelectedTabViewItemFromSender:" target="wl4-Nn-7HR" id="KDn-mr-03n"/>
+                        <binding destination="DAF-iL-Nso" name="selectedTag" keyPath="values.TSDevelopHueInspectorTab" id="mj9-TX-04a"/>
+                    </connections>
+                </segmentedControl>
+                <tabView drawsBackground="NO" controlSize="small" type="noTabsNoBorder" translatesAutoresizingMaskIntoConstraints="NO" id="wl4-Nn-7HR">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="202"/>
+                    <tabViewItems>
+                        <tabViewItem label="Hue" identifier="1" id="9aH-6U-yvm">
+                            <view key="view" id="8rf-fT-LLy">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="202"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <subviews>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="J1e-C7-KaK">
+                                        <rect key="frame" x="3" y="178" width="68" height="14"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="64" id="2rf-1y-Vjw"/>
+                                        </constraints>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Red" id="W51-8h-ylW">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Kmx-KE-GgM" userLabel="Red Slider">
+                                        <rect key="frame" x="74" y="171" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Tw2-1O-SCX"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="3kK-qk-VWG" id="Hdv-Eu-4uz"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3kK-qk-VWG" userLabel="Red Text Field">
+                                        <rect key="frame" x="271" y="177" width="46" height="14"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="42" id="KMS-d6-ZTl"/>
+                                        </constraints>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="jKl-DV-adu">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="F9T-CY-uze">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="Kmx-KE-GgM" id="Iul-Dq-fIX"/>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="s9k-X6-ofh">
+                                        <rect key="frame" x="3" y="155" width="68" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Orange" id="0qB-MY-Tcn">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ctx-Qc-8Ab" userLabel="Orange Slider">
+                                        <rect key="frame" x="74" y="148" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Wct-HJ-cyf"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="Hzo-Qf-JxW" id="iT3-pC-8B0"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Hzo-Qf-JxW" userLabel="Orange Text Field">
+                                        <rect key="frame" x="271" y="154" width="46" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="kFf-dJ-D8I">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="xZC-Ct-ybi">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="Ctx-Qc-8Ab" id="mRV-je-fwC"/>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Y1d-9f-yJi">
+                                        <rect key="frame" x="3" y="132" width="68" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Yellow" id="fjj-9P-EHR">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="eIa-35-BYo" userLabel="Yellow Slider">
+                                        <rect key="frame" x="74" y="125" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="fFG-Im-LgM"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="ln7-mj-HFS" id="gap-LM-8lK"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ln7-mj-HFS" userLabel="Yellow Text Field">
+                                        <rect key="frame" x="271" y="131" width="46" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="IrN-bT-Uxm">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="BMH-oC-oX6">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="eIa-35-BYo" id="bIE-Vi-3Pj"/>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="qDI-OL-QhQ">
+                                        <rect key="frame" x="3" y="109" width="68" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Green" id="12F-6X-1t9">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="SuP-41-mMu" userLabel="Green Slider">
+                                        <rect key="frame" x="74" y="102" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="LS8-EN-LnQ"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="Myi-wf-KEe" id="eA3-mM-6Kz"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Myi-wf-KEe" userLabel="Green Text Field">
+                                        <rect key="frame" x="271" y="108" width="46" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="7jK-JF-XX0">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="BLo-Pt-0md">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="SuP-41-mMu" id="eqd-Wi-Lwv"/>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ILE-Yf-JKR">
+                                        <rect key="frame" x="3" y="86" width="68" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Aqua" id="bQw-h2-fyn">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="spm-Yw-U9v" userLabel="Aqua Slider">
+                                        <rect key="frame" x="74" y="79" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="YWD-19-kot"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="2nc-nw-Qlo" id="0fj-Kl-GYd"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2nc-nw-Qlo" userLabel="Aqua Text Field">
+                                        <rect key="frame" x="271" y="85" width="46" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="GQ7-GE-VBe">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="LV0-KX-PY8">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="spm-Yw-U9v" id="qJC-L6-d2v"/>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DuK-c1-cd5" userLabel="Blue">
+                                        <rect key="frame" x="3" y="63" width="68" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Blue" id="gjk-0g-wFE">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UyE-dH-dgg" userLabel="Blue Slider">
+                                        <rect key="frame" x="74" y="56" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="7bh-Hl-LWi"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="7PV-ZP-Hwp" id="Hf3-Ux-8lY"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7PV-ZP-Hwp" userLabel="Blue Text Field">
+                                        <rect key="frame" x="271" y="62" width="46" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="uFR-Uu-CfM">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="6MA-RS-feO">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="UyE-dH-dgg" id="TXu-GN-BoV"/>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uXX-nk-UM1" userLabel="Purple">
+                                        <rect key="frame" x="3" y="40" width="68" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Purple" id="Lha-Cp-Is6">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PFT-LY-qpq" userLabel="Purple Slider">
+                                        <rect key="frame" x="74" y="33" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="8WP-69-bZf"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="Stq-az-FIr" id="mmV-iE-43L"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Stq-az-FIr" userLabel="Purple Text Field">
+                                        <rect key="frame" x="271" y="39" width="46" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="t03-Ub-85l">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="4Ou-85-d1w">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="PFT-LY-qpq" id="u3P-we-XwL"/>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="OhG-F4-tkM" userLabel="Magenta">
+                                        <rect key="frame" x="3" y="17" width="68" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Magenta" id="GDr-9H-u2R">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YCO-Iz-lLl" userLabel="Magenta Slider">
+                                        <rect key="frame" x="74" y="10" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Rlt-Tg-ruo"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="AWz-XG-fmF" id="psT-pw-FAM"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="AWz-XG-fmF" userLabel="Magenta Text Field">
+                                        <rect key="frame" x="271" y="16" width="46" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="0um-id-stk">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="rjj-W2-dTl">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="YCO-Iz-lLl" id="5oZ-HO-H9n"/>
+                                        </connections>
+                                    </textField>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="Stq-az-FIr" firstAttribute="width" secondItem="3kK-qk-VWG" secondAttribute="width" id="2x4-Mq-zpT"/>
+                                    <constraint firstItem="J1e-C7-KaK" firstAttribute="top" secondItem="8rf-fT-LLy" secondAttribute="top" constant="10" id="3rz-c0-ccP"/>
+                                    <constraint firstItem="7PV-ZP-Hwp" firstAttribute="baseline" secondItem="UyE-dH-dgg" secondAttribute="baseline" constant="1" id="3yJ-J7-4Jx"/>
+                                    <constraint firstItem="qDI-OL-QhQ" firstAttribute="leading" secondItem="J1e-C7-KaK" secondAttribute="leading" id="4xy-jM-Iro"/>
+                                    <constraint firstItem="uXX-nk-UM1" firstAttribute="leading" secondItem="J1e-C7-KaK" secondAttribute="leading" id="7ag-dr-fhR"/>
+                                    <constraint firstItem="uXX-nk-UM1" firstAttribute="width" secondItem="J1e-C7-KaK" secondAttribute="width" id="7iU-ej-Vor"/>
+                                    <constraint firstItem="eIa-35-BYo" firstAttribute="leading" secondItem="Y1d-9f-yJi" secondAttribute="trailing" constant="5" id="9rY-C2-Xce"/>
+                                    <constraint firstItem="ln7-mj-HFS" firstAttribute="baseline" secondItem="eIa-35-BYo" secondAttribute="baseline" constant="1" id="A0a-qK-pGU"/>
+                                    <constraint firstItem="spm-Yw-U9v" firstAttribute="leading" secondItem="ILE-Yf-JKR" secondAttribute="trailing" constant="5" id="AS9-vz-XgG"/>
+                                    <constraint firstItem="SuP-41-mMu" firstAttribute="baseline" secondItem="qDI-OL-QhQ" secondAttribute="baseline" id="AXi-sj-q2B"/>
+                                    <constraint firstItem="UyE-dH-dgg" firstAttribute="top" secondItem="spm-Yw-U9v" secondAttribute="bottom" constant="3" id="Adh-hC-MPG"/>
+                                    <constraint firstItem="AWz-XG-fmF" firstAttribute="leading" secondItem="YCO-Iz-lLl" secondAttribute="trailing" constant="5" id="BJ0-F0-Ee1"/>
+                                    <constraint firstAttribute="trailing" secondItem="3kK-qk-VWG" secondAttribute="trailing" constant="5" id="Csg-B4-2lc"/>
+                                    <constraint firstItem="2nc-nw-Qlo" firstAttribute="leading" secondItem="spm-Yw-U9v" secondAttribute="trailing" constant="5" id="G2m-TI-Xhf"/>
+                                    <constraint firstItem="3kK-qk-VWG" firstAttribute="leading" secondItem="Kmx-KE-GgM" secondAttribute="trailing" constant="5" id="GLL-nC-EMq"/>
+                                    <constraint firstItem="OhG-F4-tkM" firstAttribute="width" secondItem="J1e-C7-KaK" secondAttribute="width" id="Hge-Qm-XKR"/>
+                                    <constraint firstItem="Myi-wf-KEe" firstAttribute="baseline" secondItem="SuP-41-mMu" secondAttribute="baseline" constant="1" id="I9X-LQ-7wl"/>
+                                    <constraint firstItem="UyE-dH-dgg" firstAttribute="baseline" secondItem="DuK-c1-cd5" secondAttribute="baseline" id="IIh-iL-ePH"/>
+                                    <constraint firstItem="eIa-35-BYo" firstAttribute="baseline" secondItem="Y1d-9f-yJi" secondAttribute="baseline" id="IbJ-kE-4Ct"/>
+                                    <constraint firstItem="Hzo-Qf-JxW" firstAttribute="leading" secondItem="Ctx-Qc-8Ab" secondAttribute="trailing" constant="5" id="JBW-Ff-tzx"/>
+                                    <constraint firstItem="Hzo-Qf-JxW" firstAttribute="trailing" secondItem="3kK-qk-VWG" secondAttribute="trailing" id="JHH-UL-5UT"/>
+                                    <constraint firstItem="2nc-nw-Qlo" firstAttribute="trailing" secondItem="3kK-qk-VWG" secondAttribute="trailing" id="K4O-Gu-aK2"/>
+                                    <constraint firstItem="OhG-F4-tkM" firstAttribute="leading" secondItem="J1e-C7-KaK" secondAttribute="leading" id="MG8-Se-ru7"/>
+                                    <constraint firstItem="ln7-mj-HFS" firstAttribute="leading" secondItem="3kK-qk-VWG" secondAttribute="leading" id="MMq-vH-Eg8"/>
+                                    <constraint firstItem="PFT-LY-qpq" firstAttribute="baseline" secondItem="uXX-nk-UM1" secondAttribute="baseline" id="PhX-fv-Kji"/>
+                                    <constraint firstItem="2nc-nw-Qlo" firstAttribute="width" secondItem="3kK-qk-VWG" secondAttribute="width" id="Prr-D7-e6w"/>
+                                    <constraint firstItem="Ctx-Qc-8Ab" firstAttribute="leading" secondItem="s9k-X6-ofh" secondAttribute="trailing" constant="5" id="QAn-mx-IFN"/>
+                                    <constraint firstItem="YCO-Iz-lLl" firstAttribute="top" secondItem="PFT-LY-qpq" secondAttribute="bottom" constant="3" id="RLH-0T-d63"/>
+                                    <constraint firstItem="Ctx-Qc-8Ab" firstAttribute="baseline" secondItem="s9k-X6-ofh" secondAttribute="baseline" id="RW9-1j-NMV"/>
+                                    <constraint firstItem="2nc-nw-Qlo" firstAttribute="baseline" secondItem="spm-Yw-U9v" secondAttribute="baseline" constant="1" id="SWo-CZ-q7h"/>
+                                    <constraint firstItem="7PV-ZP-Hwp" firstAttribute="trailing" secondItem="3kK-qk-VWG" secondAttribute="trailing" id="Sbz-Jj-49h"/>
+                                    <constraint firstItem="7PV-ZP-Hwp" firstAttribute="width" secondItem="3kK-qk-VWG" secondAttribute="width" id="SfN-DA-qcA"/>
+                                    <constraint firstItem="spm-Yw-U9v" firstAttribute="baseline" secondItem="ILE-Yf-JKR" secondAttribute="baseline" id="T6V-vy-kHr"/>
+                                    <constraint firstItem="UyE-dH-dgg" firstAttribute="leading" secondItem="DuK-c1-cd5" secondAttribute="trailing" constant="5" id="U5w-Jg-49v"/>
+                                    <constraint firstItem="PFT-LY-qpq" firstAttribute="leading" secondItem="uXX-nk-UM1" secondAttribute="trailing" constant="5" id="VTJ-49-fws"/>
+                                    <constraint firstItem="Kmx-KE-GgM" firstAttribute="baseline" secondItem="J1e-C7-KaK" secondAttribute="baseline" id="Vce-I9-isE"/>
+                                    <constraint firstItem="Y1d-9f-yJi" firstAttribute="leading" secondItem="J1e-C7-KaK" secondAttribute="leading" id="WS1-WQ-U9F"/>
+                                    <constraint firstItem="eIa-35-BYo" firstAttribute="top" secondItem="Ctx-Qc-8Ab" secondAttribute="bottom" constant="3" id="WSu-hN-gqj"/>
+                                    <constraint firstItem="AWz-XG-fmF" firstAttribute="trailing" secondItem="3kK-qk-VWG" secondAttribute="trailing" id="XA0-j5-lE5"/>
+                                    <constraint firstItem="Y1d-9f-yJi" firstAttribute="width" secondItem="J1e-C7-KaK" secondAttribute="width" id="YsJ-0z-Bqy"/>
+                                    <constraint firstItem="YCO-Iz-lLl" firstAttribute="baseline" secondItem="OhG-F4-tkM" secondAttribute="baseline" id="adu-Hv-eC0"/>
+                                    <constraint firstItem="Hzo-Qf-JxW" firstAttribute="width" secondItem="3kK-qk-VWG" secondAttribute="width" id="arx-qK-kze"/>
+                                    <constraint firstItem="DuK-c1-cd5" firstAttribute="width" secondItem="J1e-C7-KaK" secondAttribute="width" id="cRC-on-EVP"/>
+                                    <constraint firstItem="Stq-az-FIr" firstAttribute="baseline" secondItem="PFT-LY-qpq" secondAttribute="baseline" constant="1" id="cac-Cx-iOL"/>
+                                    <constraint firstItem="AWz-XG-fmF" firstAttribute="width" secondItem="3kK-qk-VWG" secondAttribute="width" id="d2z-w1-hmM"/>
+                                    <constraint firstItem="ILE-Yf-JKR" firstAttribute="width" secondItem="J1e-C7-KaK" secondAttribute="width" id="dj1-9J-YyW"/>
+                                    <constraint firstItem="Stq-az-FIr" firstAttribute="leading" secondItem="PFT-LY-qpq" secondAttribute="trailing" constant="5" id="dlU-W8-keE"/>
+                                    <constraint firstItem="s9k-X6-ofh" firstAttribute="width" secondItem="J1e-C7-KaK" secondAttribute="width" id="e4h-Hw-5Mn"/>
+                                    <constraint firstItem="s9k-X6-ofh" firstAttribute="leading" secondItem="J1e-C7-KaK" secondAttribute="leading" id="eKk-Wi-Q0y"/>
+                                    <constraint firstItem="ln7-mj-HFS" firstAttribute="leading" secondItem="eIa-35-BYo" secondAttribute="trailing" constant="5" id="ec0-Gg-H0a"/>
+                                    <constraint firstItem="SuP-41-mMu" firstAttribute="leading" secondItem="qDI-OL-QhQ" secondAttribute="trailing" constant="5" id="edT-oa-1ze"/>
+                                    <constraint firstItem="DuK-c1-cd5" firstAttribute="leading" secondItem="J1e-C7-KaK" secondAttribute="leading" id="fVH-8z-8gN"/>
+                                    <constraint firstItem="ln7-mj-HFS" firstAttribute="width" secondItem="3kK-qk-VWG" secondAttribute="width" id="hL2-iE-L41"/>
+                                    <constraint firstItem="Stq-az-FIr" firstAttribute="trailing" secondItem="3kK-qk-VWG" secondAttribute="trailing" id="i9l-Ov-Hyq"/>
+                                    <constraint firstItem="AWz-XG-fmF" firstAttribute="baseline" secondItem="YCO-Iz-lLl" secondAttribute="baseline" constant="1" id="k3L-qG-TFR"/>
+                                    <constraint firstItem="Hzo-Qf-JxW" firstAttribute="baseline" secondItem="Ctx-Qc-8Ab" secondAttribute="baseline" constant="1" id="l1P-48-QYV"/>
+                                    <constraint firstItem="spm-Yw-U9v" firstAttribute="top" secondItem="SuP-41-mMu" secondAttribute="bottom" constant="3" id="l7H-bC-mxg"/>
+                                    <constraint firstItem="Myi-wf-KEe" firstAttribute="trailing" secondItem="3kK-qk-VWG" secondAttribute="trailing" id="mee-TD-OFx"/>
+                                    <constraint firstItem="ILE-Yf-JKR" firstAttribute="leading" secondItem="J1e-C7-KaK" secondAttribute="leading" id="nOC-Kl-qhl"/>
+                                    <constraint firstItem="qDI-OL-QhQ" firstAttribute="width" secondItem="J1e-C7-KaK" secondAttribute="width" id="ozo-YK-9xq"/>
+                                    <constraint firstItem="Ctx-Qc-8Ab" firstAttribute="top" secondItem="Kmx-KE-GgM" secondAttribute="bottom" constant="3" id="rmt-BC-HZ4"/>
+                                    <constraint firstItem="7PV-ZP-Hwp" firstAttribute="leading" secondItem="UyE-dH-dgg" secondAttribute="trailing" constant="5" id="sTG-oE-Xaa"/>
+                                    <constraint firstItem="Myi-wf-KEe" firstAttribute="width" secondItem="3kK-qk-VWG" secondAttribute="width" id="sye-eG-aTY"/>
+                                    <constraint firstItem="SuP-41-mMu" firstAttribute="top" secondItem="eIa-35-BYo" secondAttribute="bottom" constant="3" id="tNz-bt-aKu"/>
+                                    <constraint firstItem="J1e-C7-KaK" firstAttribute="leading" secondItem="8rf-fT-LLy" secondAttribute="leading" constant="5" id="tQi-Gm-PnH"/>
+                                    <constraint firstItem="Myi-wf-KEe" firstAttribute="leading" secondItem="SuP-41-mMu" secondAttribute="trailing" constant="5" id="utc-y8-pdA"/>
+                                    <constraint firstItem="3kK-qk-VWG" firstAttribute="baseline" secondItem="Kmx-KE-GgM" secondAttribute="baseline" constant="1" id="vC3-tZ-wH7"/>
+                                    <constraint firstItem="PFT-LY-qpq" firstAttribute="top" secondItem="UyE-dH-dgg" secondAttribute="bottom" constant="3" id="w12-Pt-Odu"/>
+                                    <constraint firstItem="YCO-Iz-lLl" firstAttribute="leading" secondItem="OhG-F4-tkM" secondAttribute="trailing" constant="5" id="xFY-pv-oro"/>
+                                    <constraint firstItem="Kmx-KE-GgM" firstAttribute="leading" secondItem="J1e-C7-KaK" secondAttribute="trailing" constant="5" id="xKJ-UW-IV6"/>
+                                </constraints>
+                            </view>
+                        </tabViewItem>
+                        <tabViewItem label="Saturation" identifier="2" id="2HF-Ig-7Bx">
+                            <view key="view" id="ee1-eD-h7b">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="202"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <subviews>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Pnr-oU-sMJ">
+                                        <rect key="frame" x="3" y="178" width="68" height="14"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="64" id="oHr-V7-riP"/>
+                                            <constraint firstAttribute="width" constant="64" id="qYP-Vk-yBX"/>
+                                        </constraints>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Red" id="Owv-ek-Ib9">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ny7-f2-qRK" userLabel="Red Slider">
+                                        <rect key="frame" x="74" y="171" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="MMG-ie-HHY"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="1bw-FJ-Zhe" id="ZAL-iY-Gnq"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1bw-FJ-Zhe" userLabel="Red Text Field">
+                                        <rect key="frame" x="271" y="177" width="46" height="14"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="42" id="Z3a-cq-hBN"/>
+                                        </constraints>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="uPd-Ye-uLo">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="EEM-aE-72u">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="ny7-f2-qRK" id="f6O-76-RLW"/>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uDm-VJ-109">
+                                        <rect key="frame" x="3" y="155" width="68" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Orange" id="Yrp-af-kQj">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="owA-eL-4mG" userLabel="Orange Slider">
+                                        <rect key="frame" x="74" y="148" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="IZ5-ND-U7H"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="Q6s-Hw-n5H" id="qHh-Ka-omI"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Q6s-Hw-n5H" userLabel="Orange Text Field">
+                                        <rect key="frame" x="271" y="154" width="46" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="n3C-Mq-yXO">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="Cuj-TC-pbb">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="owA-eL-4mG" id="Ei9-uM-5zJ"/>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="AhO-Zl-mjJ">
+                                        <rect key="frame" x="3" y="132" width="68" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Yellow" id="cUp-sD-zeo">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zkq-sI-w8k" userLabel="Yellow Slider">
+                                        <rect key="frame" x="74" y="125" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="CAc-4G-kuj"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="OKo-k0-VEX" id="Y2W-05-WD9"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="OKo-k0-VEX" userLabel="Yellow Text Field">
+                                        <rect key="frame" x="271" y="131" width="46" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="aCW-1e-L1u">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="kb1-jg-Lio">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="zkq-sI-w8k" id="g1B-CV-BL6"/>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8hb-ui-A8x">
+                                        <rect key="frame" x="3" y="109" width="68" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Green" id="eAg-oc-Fb7">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3Dz-kS-STr" userLabel="Green Slider">
+                                        <rect key="frame" x="74" y="102" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="aWK-h3-LBC"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="sNI-zL-PMS" id="U4u-N4-T0a"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sNI-zL-PMS" userLabel="Green Text Field">
+                                        <rect key="frame" x="271" y="108" width="46" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="EVb-Xx-CIe">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="bxd-0G-qDd">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="3Dz-kS-STr" id="fMX-LI-flh"/>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WlY-Yh-diN">
+                                        <rect key="frame" x="3" y="86" width="68" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Aqua" id="w1a-Gf-leJ">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NYj-HO-bfu" userLabel="Aqua Slider">
+                                        <rect key="frame" x="74" y="79" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="x8j-rs-qyL"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="Rdm-yt-BgZ" id="IIR-jo-FgK"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Rdm-yt-BgZ" userLabel="Aqua Text Field">
+                                        <rect key="frame" x="271" y="85" width="46" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="321-s4-WyY">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="VtZ-Tk-cuK">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="NYj-HO-bfu" id="w9J-gM-ck7"/>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="e5S-xs-oop" userLabel="Blue">
+                                        <rect key="frame" x="3" y="63" width="68" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Blue" id="hzs-aF-fA3">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Y0v-hL-Rf6" userLabel="Blue Slider">
+                                        <rect key="frame" x="74" y="56" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="U6I-Sx-z79"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="pHg-hV-sQW" id="H8D-YK-p0y"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pHg-hV-sQW" userLabel="Blue Text Field">
+                                        <rect key="frame" x="271" y="62" width="46" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="TLR-Bi-Z6D">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="8QA-v7-J23">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="Y0v-hL-Rf6" id="AC9-hr-Q6b"/>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9jT-lR-L4p" userLabel="Purple">
+                                        <rect key="frame" x="3" y="40" width="68" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Purple" id="kVY-15-gut">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="MT4-oK-CxQ" userLabel="Purple Slider">
+                                        <rect key="frame" x="74" y="33" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="G9t-tk-qvC"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="NBm-4L-993" id="2Qe-h7-VQV"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NBm-4L-993" userLabel="Purple Text Field">
+                                        <rect key="frame" x="271" y="39" width="46" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="JAL-vT-YDI">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="Lbt-pG-cFY">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="MT4-oK-CxQ" id="9Fu-wR-xMs"/>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="oER-gQ-lIX" userLabel="Magenta">
+                                        <rect key="frame" x="3" y="17" width="68" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Magenta" id="Q5s-hD-cIv">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TbR-Ve-oOH" userLabel="Magenta Slider">
+                                        <rect key="frame" x="74" y="10" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="tl4-jI-K9O"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="LdZ-eD-0Uk" id="nyr-4V-b1p"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="LdZ-eD-0Uk" userLabel="Magenta Text Field">
+                                        <rect key="frame" x="271" y="16" width="46" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="xyw-zi-gLA">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="NO3-GT-x12">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="TbR-Ve-oOH" id="hgA-4b-xSL"/>
+                                        </connections>
+                                    </textField>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="Pnr-oU-sMJ" firstAttribute="top" secondItem="ee1-eD-h7b" secondAttribute="top" constant="10" id="1R6-Gh-nkQ"/>
+                                    <constraint firstItem="8hb-ui-A8x" firstAttribute="leading" secondItem="Pnr-oU-sMJ" secondAttribute="leading" id="1eD-gd-frH"/>
+                                    <constraint firstItem="Y0v-hL-Rf6" firstAttribute="leading" secondItem="e5S-xs-oop" secondAttribute="trailing" constant="5" id="2US-qH-zam"/>
+                                    <constraint firstItem="sNI-zL-PMS" firstAttribute="width" secondItem="1bw-FJ-Zhe" secondAttribute="width" id="3MK-Gr-fJv"/>
+                                    <constraint firstItem="LdZ-eD-0Uk" firstAttribute="trailing" secondItem="1bw-FJ-Zhe" secondAttribute="trailing" id="4lY-gl-Azu"/>
+                                    <constraint firstItem="OKo-k0-VEX" firstAttribute="width" secondItem="1bw-FJ-Zhe" secondAttribute="width" id="58K-Nu-Ruq"/>
+                                    <constraint firstItem="sNI-zL-PMS" firstAttribute="baseline" secondItem="3Dz-kS-STr" secondAttribute="baseline" constant="1" id="5ag-Nd-Ten"/>
+                                    <constraint firstItem="LdZ-eD-0Uk" firstAttribute="baseline" secondItem="TbR-Ve-oOH" secondAttribute="baseline" constant="1" id="6Sf-dx-Hzw"/>
+                                    <constraint firstItem="AhO-Zl-mjJ" firstAttribute="leading" secondItem="Pnr-oU-sMJ" secondAttribute="leading" id="6Wf-HT-qqF"/>
+                                    <constraint firstItem="oER-gQ-lIX" firstAttribute="leading" secondItem="Pnr-oU-sMJ" secondAttribute="leading" id="7As-Ta-ZSo"/>
+                                    <constraint firstItem="MT4-oK-CxQ" firstAttribute="baseline" secondItem="9jT-lR-L4p" secondAttribute="baseline" id="7pc-71-riZ"/>
+                                    <constraint firstItem="TbR-Ve-oOH" firstAttribute="leading" secondItem="oER-gQ-lIX" secondAttribute="trailing" constant="5" id="9CK-Aa-AA5"/>
+                                    <constraint firstItem="NBm-4L-993" firstAttribute="leading" secondItem="MT4-oK-CxQ" secondAttribute="trailing" constant="5" id="B5P-XZ-gCr"/>
+                                    <constraint firstItem="TbR-Ve-oOH" firstAttribute="baseline" secondItem="oER-gQ-lIX" secondAttribute="baseline" id="BCh-4I-AeD"/>
+                                    <constraint firstItem="e5S-xs-oop" firstAttribute="width" secondItem="Pnr-oU-sMJ" secondAttribute="width" id="Bhg-RA-yO0"/>
+                                    <constraint firstItem="uDm-VJ-109" firstAttribute="width" secondItem="Pnr-oU-sMJ" secondAttribute="width" id="C6e-AJ-Iqx"/>
+                                    <constraint firstItem="1bw-FJ-Zhe" firstAttribute="leading" secondItem="ny7-f2-qRK" secondAttribute="trailing" constant="5" id="CUQ-Jj-cso"/>
+                                    <constraint firstItem="3Dz-kS-STr" firstAttribute="leading" secondItem="8hb-ui-A8x" secondAttribute="trailing" constant="5" id="CeK-F2-Xzh"/>
+                                    <constraint firstItem="Rdm-yt-BgZ" firstAttribute="width" secondItem="1bw-FJ-Zhe" secondAttribute="width" id="Ceu-vw-7A7"/>
+                                    <constraint firstItem="Y0v-hL-Rf6" firstAttribute="baseline" secondItem="e5S-xs-oop" secondAttribute="baseline" id="D7c-Z5-NKb"/>
+                                    <constraint firstItem="TbR-Ve-oOH" firstAttribute="top" secondItem="MT4-oK-CxQ" secondAttribute="bottom" constant="3" id="D8R-hb-IDW"/>
+                                    <constraint firstItem="owA-eL-4mG" firstAttribute="baseline" secondItem="uDm-VJ-109" secondAttribute="baseline" id="E19-ei-nab"/>
+                                    <constraint firstItem="AhO-Zl-mjJ" firstAttribute="width" secondItem="Pnr-oU-sMJ" secondAttribute="width" id="GQa-QE-a8n"/>
+                                    <constraint firstItem="NYj-HO-bfu" firstAttribute="leading" secondItem="WlY-Yh-diN" secondAttribute="trailing" constant="5" id="Jwi-7S-4Sq"/>
+                                    <constraint firstItem="MT4-oK-CxQ" firstAttribute="top" secondItem="Y0v-hL-Rf6" secondAttribute="bottom" constant="3" id="KGj-Uw-Qpb"/>
+                                    <constraint firstItem="pHg-hV-sQW" firstAttribute="baseline" secondItem="Y0v-hL-Rf6" secondAttribute="baseline" constant="1" id="Ky6-ab-kTD"/>
+                                    <constraint firstItem="WlY-Yh-diN" firstAttribute="width" secondItem="Pnr-oU-sMJ" secondAttribute="width" id="LgV-Og-wRo"/>
+                                    <constraint firstItem="WlY-Yh-diN" firstAttribute="leading" secondItem="Pnr-oU-sMJ" secondAttribute="leading" id="Mvn-ke-53a"/>
+                                    <constraint firstItem="LdZ-eD-0Uk" firstAttribute="leading" secondItem="TbR-Ve-oOH" secondAttribute="trailing" constant="5" id="N9m-Pq-XkW"/>
+                                    <constraint firstItem="NYj-HO-bfu" firstAttribute="top" secondItem="3Dz-kS-STr" secondAttribute="bottom" constant="3" id="O2y-Vc-hpS"/>
+                                    <constraint firstItem="sNI-zL-PMS" firstAttribute="leading" secondItem="3Dz-kS-STr" secondAttribute="trailing" constant="5" id="OW8-cY-x0V"/>
+                                    <constraint firstItem="3Dz-kS-STr" firstAttribute="top" secondItem="zkq-sI-w8k" secondAttribute="bottom" constant="3" id="PgY-t5-HmX"/>
+                                    <constraint firstItem="Rdm-yt-BgZ" firstAttribute="leading" secondItem="NYj-HO-bfu" secondAttribute="trailing" constant="5" id="Piq-i9-JAO"/>
+                                    <constraint firstItem="pHg-hV-sQW" firstAttribute="trailing" secondItem="1bw-FJ-Zhe" secondAttribute="trailing" id="PxK-Lh-q2D"/>
+                                    <constraint firstItem="NYj-HO-bfu" firstAttribute="baseline" secondItem="WlY-Yh-diN" secondAttribute="baseline" id="VSS-n1-3h7"/>
+                                    <constraint firstItem="ny7-f2-qRK" firstAttribute="baseline" secondItem="Pnr-oU-sMJ" secondAttribute="baseline" id="WTP-oS-WRS"/>
+                                    <constraint firstItem="9jT-lR-L4p" firstAttribute="leading" secondItem="Pnr-oU-sMJ" secondAttribute="leading" id="Yi7-bH-szn"/>
+                                    <constraint firstItem="e5S-xs-oop" firstAttribute="leading" secondItem="Pnr-oU-sMJ" secondAttribute="leading" id="Yos-0x-wPp"/>
+                                    <constraint firstItem="MT4-oK-CxQ" firstAttribute="leading" secondItem="9jT-lR-L4p" secondAttribute="trailing" constant="5" id="Z1o-EV-EcD"/>
+                                    <constraint firstItem="zkq-sI-w8k" firstAttribute="leading" secondItem="AhO-Zl-mjJ" secondAttribute="trailing" constant="5" id="Zhc-5Z-vk4"/>
+                                    <constraint firstItem="zkq-sI-w8k" firstAttribute="baseline" secondItem="AhO-Zl-mjJ" secondAttribute="baseline" id="aFb-1j-vyk"/>
+                                    <constraint firstItem="LdZ-eD-0Uk" firstAttribute="width" secondItem="1bw-FJ-Zhe" secondAttribute="width" id="c12-Rm-cyC"/>
+                                    <constraint firstItem="owA-eL-4mG" firstAttribute="leading" secondItem="uDm-VJ-109" secondAttribute="trailing" constant="5" id="cyj-eG-4Nc"/>
+                                    <constraint firstAttribute="trailing" secondItem="1bw-FJ-Zhe" secondAttribute="trailing" constant="5" id="dHS-ZH-ywU"/>
+                                    <constraint firstItem="9jT-lR-L4p" firstAttribute="width" secondItem="Pnr-oU-sMJ" secondAttribute="width" id="dJO-zf-Duf"/>
+                                    <constraint firstItem="OKo-k0-VEX" firstAttribute="leading" secondItem="1bw-FJ-Zhe" secondAttribute="leading" id="dhf-yl-XUA"/>
+                                    <constraint firstItem="Pnr-oU-sMJ" firstAttribute="leading" secondItem="ee1-eD-h7b" secondAttribute="leading" constant="5" id="eB7-yA-Qcc"/>
+                                    <constraint firstItem="zkq-sI-w8k" firstAttribute="top" secondItem="owA-eL-4mG" secondAttribute="bottom" constant="3" id="eiT-2E-YPP"/>
+                                    <constraint firstItem="Q6s-Hw-n5H" firstAttribute="baseline" secondItem="owA-eL-4mG" secondAttribute="baseline" constant="1" id="g3X-Lt-wwz"/>
+                                    <constraint firstItem="Q6s-Hw-n5H" firstAttribute="trailing" secondItem="1bw-FJ-Zhe" secondAttribute="trailing" id="gQL-hq-yKX"/>
+                                    <constraint firstItem="pHg-hV-sQW" firstAttribute="width" secondItem="1bw-FJ-Zhe" secondAttribute="width" id="geU-fg-3LG"/>
+                                    <constraint firstItem="OKo-k0-VEX" firstAttribute="leading" secondItem="zkq-sI-w8k" secondAttribute="trailing" constant="5" id="gzv-71-tW0"/>
+                                    <constraint firstItem="sNI-zL-PMS" firstAttribute="trailing" secondItem="1bw-FJ-Zhe" secondAttribute="trailing" id="iBv-PM-gzN"/>
+                                    <constraint firstItem="NBm-4L-993" firstAttribute="trailing" secondItem="1bw-FJ-Zhe" secondAttribute="trailing" id="iDl-nA-P4L"/>
+                                    <constraint firstItem="pHg-hV-sQW" firstAttribute="leading" secondItem="Y0v-hL-Rf6" secondAttribute="trailing" constant="5" id="j1W-JY-Xih"/>
+                                    <constraint firstItem="1bw-FJ-Zhe" firstAttribute="baseline" secondItem="ny7-f2-qRK" secondAttribute="baseline" constant="1" id="jDa-N2-bXz"/>
+                                    <constraint firstItem="Y0v-hL-Rf6" firstAttribute="top" secondItem="NYj-HO-bfu" secondAttribute="bottom" constant="3" id="n4t-cb-hjf"/>
+                                    <constraint firstItem="Q6s-Hw-n5H" firstAttribute="width" secondItem="1bw-FJ-Zhe" secondAttribute="width" id="nRY-RQ-Lg8"/>
+                                    <constraint firstItem="owA-eL-4mG" firstAttribute="top" secondItem="ny7-f2-qRK" secondAttribute="bottom" constant="3" id="niE-Ro-Y79"/>
+                                    <constraint firstItem="NBm-4L-993" firstAttribute="baseline" secondItem="MT4-oK-CxQ" secondAttribute="baseline" constant="1" id="pzh-Xt-n9R"/>
+                                    <constraint firstItem="oER-gQ-lIX" firstAttribute="width" secondItem="Pnr-oU-sMJ" secondAttribute="width" id="rKQ-bo-5GX"/>
+                                    <constraint firstItem="OKo-k0-VEX" firstAttribute="baseline" secondItem="zkq-sI-w8k" secondAttribute="baseline" constant="1" id="rX0-mr-4yv"/>
+                                    <constraint firstItem="3Dz-kS-STr" firstAttribute="baseline" secondItem="8hb-ui-A8x" secondAttribute="baseline" id="s7N-0E-ceb"/>
+                                    <constraint firstItem="uDm-VJ-109" firstAttribute="leading" secondItem="Pnr-oU-sMJ" secondAttribute="leading" id="sET-jh-Bs6"/>
+                                    <constraint firstItem="ny7-f2-qRK" firstAttribute="leading" secondItem="Pnr-oU-sMJ" secondAttribute="trailing" constant="5" id="t75-BX-M3U"/>
+                                    <constraint firstItem="Rdm-yt-BgZ" firstAttribute="trailing" secondItem="1bw-FJ-Zhe" secondAttribute="trailing" id="tMv-ck-Ob5"/>
+                                    <constraint firstItem="8hb-ui-A8x" firstAttribute="width" secondItem="Pnr-oU-sMJ" secondAttribute="width" id="vyf-X5-zFo"/>
+                                    <constraint firstItem="NBm-4L-993" firstAttribute="width" secondItem="1bw-FJ-Zhe" secondAttribute="width" id="wRc-H4-R8J"/>
+                                    <constraint firstItem="Rdm-yt-BgZ" firstAttribute="baseline" secondItem="NYj-HO-bfu" secondAttribute="baseline" constant="1" id="xje-0K-pib"/>
+                                    <constraint firstItem="Q6s-Hw-n5H" firstAttribute="leading" secondItem="owA-eL-4mG" secondAttribute="trailing" constant="5" id="zDP-BK-ygz"/>
+                                </constraints>
+                            </view>
+                        </tabViewItem>
+                        <tabViewItem label="Brightness" identifier="" id="Ruc-hB-xJB">
+                            <view key="view" id="19g-NQ-6yJ">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="202"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <subviews>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RHs-hd-zsr">
+                                        <rect key="frame" x="3" y="178" width="68" height="14"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="64" id="3RV-ks-6Oi"/>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="64" id="oqM-DQ-4LL"/>
+                                        </constraints>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Red" id="1lO-lA-iE7">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="42l-fQ-fv7" userLabel="Red Slider">
+                                        <rect key="frame" x="74" y="171" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="xGj-uo-nyV"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="cdE-fv-Uyn" id="DGR-uK-5nS"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cdE-fv-Uyn" userLabel="Red Text Field">
+                                        <rect key="frame" x="271" y="177" width="46" height="14"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="42" id="Kkf-ea-ha4"/>
+                                        </constraints>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="eoM-Dq-mhv">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="w4C-Q8-riq">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="42l-fQ-fv7" id="2fL-B0-JZx"/>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Gis-iQ-74g">
+                                        <rect key="frame" x="3" y="155" width="68" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Orange" id="xe7-jQ-thn">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="nda-EI-fY1" userLabel="Orange Slider">
+                                        <rect key="frame" x="74" y="148" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Ju5-Ms-sMK"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="CzL-ea-4qT" id="lpw-K0-Nc5"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="CzL-ea-4qT" userLabel="Orange Text Field">
+                                        <rect key="frame" x="271" y="154" width="46" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="Dz8-FJ-sOW">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="gXZ-kN-911">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="nda-EI-fY1" id="Ics-ap-Z4q"/>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="R6j-5Z-DCC">
+                                        <rect key="frame" x="3" y="132" width="68" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Yellow" id="Xw6-XX-v8K">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Tqk-K3-3r9" userLabel="Yellow Slider">
+                                        <rect key="frame" x="74" y="125" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="PbQ-bu-gFc"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="3Df-xp-MGi" id="LSF-ac-5HS"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3Df-xp-MGi" userLabel="Yellow Text Field">
+                                        <rect key="frame" x="271" y="131" width="46" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="rDl-6K-w2i">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="tlL-HY-lmw">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="Tqk-K3-3r9" id="Ive-bB-WlS"/>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="QTy-o3-sCz">
+                                        <rect key="frame" x="3" y="109" width="68" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Green" id="uKm-Jn-stR">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="tdC-PP-YLq" userLabel="Green Slider">
+                                        <rect key="frame" x="74" y="102" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="a4Z-Bf-0dL"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="jyi-5Z-ulC" id="LUF-Ot-tLP"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jyi-5Z-ulC" userLabel="Green Text Field">
+                                        <rect key="frame" x="271" y="108" width="46" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="Dc1-sc-xYb">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="7MR-hm-BT1">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="tdC-PP-YLq" id="SeF-mx-1lf"/>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="31S-W3-2fr">
+                                        <rect key="frame" x="3" y="86" width="68" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Aqua" id="OQu-ox-CHJ">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2sv-q8-rS0" userLabel="Aqua Slider">
+                                        <rect key="frame" x="74" y="79" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="YWj-q6-yOs"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="8w7-qs-LQc" id="AoT-Pt-fmy"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8w7-qs-LQc" userLabel="Aqua Text Field">
+                                        <rect key="frame" x="271" y="85" width="46" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="kXS-Rj-tjN">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="5p4-D7-zLB">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="2sv-q8-rS0" id="k5C-Ro-Mr0"/>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ZMy-nT-7Uj" userLabel="Blue">
+                                        <rect key="frame" x="3" y="63" width="68" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Blue" id="AjI-lQ-dxU">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7nn-rz-Tft" userLabel="Blue Slider">
+                                        <rect key="frame" x="74" y="56" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="DhJ-Wq-NdE"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="j6s-Jm-DeI" id="aB4-V2-XaT"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="j6s-Jm-DeI" userLabel="Blue Text Field">
+                                        <rect key="frame" x="271" y="62" width="46" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="gbM-YB-RW6">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="IAI-YM-AMf">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="7nn-rz-Tft" id="7HS-zu-Cte"/>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ktb-dW-X4y" userLabel="Purple">
+                                        <rect key="frame" x="3" y="40" width="68" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Purple" id="OPC-In-3Nd">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DLf-MD-Rxq" userLabel="Purple Slider">
+                                        <rect key="frame" x="74" y="33" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="K6k-QZ-wGl"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="cWX-bU-gxV" id="heC-Bf-Pqc"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cWX-bU-gxV" userLabel="Purple Text Field">
+                                        <rect key="frame" x="271" y="39" width="46" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="aY5-Qg-XZ2">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="Rxs-GA-Qer">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="DLf-MD-Rxq" id="STx-6m-AAQ"/>
+                                        </connections>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KOw-40-pzv" userLabel="Magenta">
+                                        <rect key="frame" x="3" y="17" width="68" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Magenta" id="8aQ-fn-AyJ">
+                                            <font key="font" metaFont="systemMedium" size="11"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="O0D-KH-oMD" userLabel="Magenta Slider">
+                                        <rect key="frame" x="74" y="10" width="194" height="20"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="R6Y-f5-nbc"/>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="z2J-L3-vlR" id="Cp7-gn-EJg"/>
+                                        </connections>
+                                    </slider>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="z2J-L3-vlR" userLabel="Magenta Text Field">
+                                        <rect key="frame" x="271" y="16" width="46" height="14"/>
+                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="kpp-Du-Vsf">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="XFM-H7-VNG">
+                                                <real key="minimum" value="-1"/>
+                                                <real key="maximum" value="1"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <action selector="takeDoubleValueFrom:" target="O0D-KH-oMD" id="tFs-rn-lbP"/>
+                                        </connections>
+                                    </textField>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="Gis-iQ-74g" firstAttribute="leading" secondItem="RHs-hd-zsr" secondAttribute="leading" id="1Vd-qN-cAl"/>
+                                    <constraint firstItem="KOw-40-pzv" firstAttribute="leading" secondItem="RHs-hd-zsr" secondAttribute="leading" id="5JX-FD-Rmz"/>
+                                    <constraint firstItem="Tqk-K3-3r9" firstAttribute="baseline" secondItem="R6j-5Z-DCC" secondAttribute="baseline" id="7h4-6D-T3h"/>
+                                    <constraint firstItem="8w7-qs-LQc" firstAttribute="trailing" secondItem="cdE-fv-Uyn" secondAttribute="trailing" id="8q0-QX-1If"/>
+                                    <constraint firstItem="nda-EI-fY1" firstAttribute="baseline" secondItem="Gis-iQ-74g" secondAttribute="baseline" id="99z-ri-jOk"/>
+                                    <constraint firstItem="cdE-fv-Uyn" firstAttribute="baseline" secondItem="42l-fQ-fv7" secondAttribute="baseline" constant="1" id="9EH-Gn-dcs"/>
+                                    <constraint firstItem="CzL-ea-4qT" firstAttribute="leading" secondItem="nda-EI-fY1" secondAttribute="trailing" constant="5" id="9Ik-Dj-Kzo"/>
+                                    <constraint firstItem="31S-W3-2fr" firstAttribute="leading" secondItem="RHs-hd-zsr" secondAttribute="leading" id="9Iz-gP-jPh"/>
+                                    <constraint firstItem="RHs-hd-zsr" firstAttribute="top" secondItem="19g-NQ-6yJ" secondAttribute="top" constant="10" id="A0G-tP-RTv"/>
+                                    <constraint firstItem="cWX-bU-gxV" firstAttribute="trailing" secondItem="cdE-fv-Uyn" secondAttribute="trailing" id="Aec-9b-9Pt"/>
+                                    <constraint firstItem="RHs-hd-zsr" firstAttribute="leading" secondItem="19g-NQ-6yJ" secondAttribute="leading" constant="5" id="AgX-V1-Efd"/>
+                                    <constraint firstItem="QTy-o3-sCz" firstAttribute="width" secondItem="RHs-hd-zsr" secondAttribute="width" id="DFw-9z-0fZ"/>
+                                    <constraint firstItem="cWX-bU-gxV" firstAttribute="width" secondItem="cdE-fv-Uyn" secondAttribute="width" id="Erg-TK-XZb"/>
+                                    <constraint firstItem="R6j-5Z-DCC" firstAttribute="leading" secondItem="RHs-hd-zsr" secondAttribute="leading" id="F0P-ij-DaE"/>
+                                    <constraint firstItem="nda-EI-fY1" firstAttribute="top" secondItem="42l-fQ-fv7" secondAttribute="bottom" constant="3" id="FL1-Hi-HeN"/>
+                                    <constraint firstItem="7nn-rz-Tft" firstAttribute="top" secondItem="2sv-q8-rS0" secondAttribute="bottom" constant="3" id="G9V-aC-fnr"/>
+                                    <constraint firstItem="DLf-MD-Rxq" firstAttribute="leading" secondItem="ktb-dW-X4y" secondAttribute="trailing" constant="5" id="GEy-tc-9kJ"/>
+                                    <constraint firstItem="nda-EI-fY1" firstAttribute="leading" secondItem="Gis-iQ-74g" secondAttribute="trailing" constant="5" id="GZH-CY-PAS"/>
+                                    <constraint firstItem="jyi-5Z-ulC" firstAttribute="width" secondItem="cdE-fv-Uyn" secondAttribute="width" id="Grh-zY-Y47"/>
+                                    <constraint firstItem="31S-W3-2fr" firstAttribute="width" secondItem="RHs-hd-zsr" secondAttribute="width" id="Hi5-4b-ebY"/>
+                                    <constraint firstItem="8w7-qs-LQc" firstAttribute="width" secondItem="cdE-fv-Uyn" secondAttribute="width" id="IfA-pg-cdg"/>
+                                    <constraint firstItem="Tqk-K3-3r9" firstAttribute="leading" secondItem="R6j-5Z-DCC" secondAttribute="trailing" constant="5" id="KvS-Xh-lcX"/>
+                                    <constraint firstItem="7nn-rz-Tft" firstAttribute="leading" secondItem="ZMy-nT-7Uj" secondAttribute="trailing" constant="5" id="M6h-Zd-w3l"/>
+                                    <constraint firstItem="ktb-dW-X4y" firstAttribute="leading" secondItem="RHs-hd-zsr" secondAttribute="leading" id="Me1-NV-ggv"/>
+                                    <constraint firstItem="DLf-MD-Rxq" firstAttribute="top" secondItem="7nn-rz-Tft" secondAttribute="bottom" constant="3" id="N20-gV-vvm"/>
+                                    <constraint firstItem="j6s-Jm-DeI" firstAttribute="trailing" secondItem="cdE-fv-Uyn" secondAttribute="trailing" id="Ol5-dn-dRB"/>
+                                    <constraint firstItem="ZMy-nT-7Uj" firstAttribute="width" secondItem="RHs-hd-zsr" secondAttribute="width" id="PKX-3n-Wmt"/>
+                                    <constraint firstItem="3Df-xp-MGi" firstAttribute="leading" secondItem="cdE-fv-Uyn" secondAttribute="leading" id="QHC-gF-OUu"/>
+                                    <constraint firstItem="Gis-iQ-74g" firstAttribute="width" secondItem="RHs-hd-zsr" secondAttribute="width" id="QbS-3a-PBd"/>
+                                    <constraint firstItem="j6s-Jm-DeI" firstAttribute="leading" secondItem="7nn-rz-Tft" secondAttribute="trailing" constant="5" id="Qn2-ht-Kvq"/>
+                                    <constraint firstItem="cdE-fv-Uyn" firstAttribute="leading" secondItem="42l-fQ-fv7" secondAttribute="trailing" constant="5" id="RQG-ht-v6O"/>
+                                    <constraint firstItem="cWX-bU-gxV" firstAttribute="baseline" secondItem="DLf-MD-Rxq" secondAttribute="baseline" constant="1" id="Rdv-cs-ytB"/>
+                                    <constraint firstItem="DLf-MD-Rxq" firstAttribute="baseline" secondItem="ktb-dW-X4y" secondAttribute="baseline" id="TKK-xg-pDS"/>
+                                    <constraint firstItem="tdC-PP-YLq" firstAttribute="top" secondItem="Tqk-K3-3r9" secondAttribute="bottom" constant="3" id="TVZ-FK-C4i"/>
+                                    <constraint firstItem="j6s-Jm-DeI" firstAttribute="width" secondItem="cdE-fv-Uyn" secondAttribute="width" id="Tjg-ki-YgA"/>
+                                    <constraint firstItem="CzL-ea-4qT" firstAttribute="trailing" secondItem="cdE-fv-Uyn" secondAttribute="trailing" id="UZj-PQ-lG8"/>
+                                    <constraint firstItem="42l-fQ-fv7" firstAttribute="baseline" secondItem="RHs-hd-zsr" secondAttribute="baseline" id="Uat-dO-ZiN"/>
+                                    <constraint firstItem="ZMy-nT-7Uj" firstAttribute="leading" secondItem="RHs-hd-zsr" secondAttribute="leading" id="VSa-qH-K5y"/>
+                                    <constraint firstItem="tdC-PP-YLq" firstAttribute="leading" secondItem="QTy-o3-sCz" secondAttribute="trailing" constant="5" id="VXQ-Id-vNU"/>
+                                    <constraint firstItem="Tqk-K3-3r9" firstAttribute="top" secondItem="nda-EI-fY1" secondAttribute="bottom" constant="3" id="Vmv-Ao-jFT"/>
+                                    <constraint firstItem="cWX-bU-gxV" firstAttribute="leading" secondItem="DLf-MD-Rxq" secondAttribute="trailing" constant="5" id="VnG-uc-EE6"/>
+                                    <constraint firstItem="7nn-rz-Tft" firstAttribute="baseline" secondItem="ZMy-nT-7Uj" secondAttribute="baseline" id="Vtt-WB-foZ"/>
+                                    <constraint firstItem="3Df-xp-MGi" firstAttribute="width" secondItem="cdE-fv-Uyn" secondAttribute="width" id="XRT-oY-cQG"/>
+                                    <constraint firstItem="42l-fQ-fv7" firstAttribute="leading" secondItem="RHs-hd-zsr" secondAttribute="trailing" constant="5" id="Xjk-l9-GYt"/>
+                                    <constraint firstItem="2sv-q8-rS0" firstAttribute="baseline" secondItem="31S-W3-2fr" secondAttribute="baseline" id="Yha-Jo-1Rt"/>
+                                    <constraint firstItem="z2J-L3-vlR" firstAttribute="leading" secondItem="O0D-KH-oMD" secondAttribute="trailing" constant="5" id="Zax-eW-amh"/>
+                                    <constraint firstItem="z2J-L3-vlR" firstAttribute="baseline" secondItem="O0D-KH-oMD" secondAttribute="baseline" constant="1" id="a4i-EP-6oM"/>
+                                    <constraint firstItem="O0D-KH-oMD" firstAttribute="leading" secondItem="KOw-40-pzv" secondAttribute="trailing" constant="5" id="aAr-zS-KPu"/>
+                                    <constraint firstItem="O0D-KH-oMD" firstAttribute="baseline" secondItem="KOw-40-pzv" secondAttribute="baseline" id="b8J-i8-abs"/>
+                                    <constraint firstItem="QTy-o3-sCz" firstAttribute="leading" secondItem="RHs-hd-zsr" secondAttribute="leading" id="bB6-HN-tsD"/>
+                                    <constraint firstItem="jyi-5Z-ulC" firstAttribute="baseline" secondItem="tdC-PP-YLq" secondAttribute="baseline" constant="1" id="boQ-9T-d2k"/>
+                                    <constraint firstItem="z2J-L3-vlR" firstAttribute="trailing" secondItem="cdE-fv-Uyn" secondAttribute="trailing" id="bwr-7V-dLk"/>
+                                    <constraint firstItem="ktb-dW-X4y" firstAttribute="width" secondItem="RHs-hd-zsr" secondAttribute="width" id="cNL-QQ-8Mj"/>
+                                    <constraint firstItem="jyi-5Z-ulC" firstAttribute="leading" secondItem="tdC-PP-YLq" secondAttribute="trailing" constant="5" id="cfM-xG-RxK"/>
+                                    <constraint firstItem="O0D-KH-oMD" firstAttribute="top" secondItem="DLf-MD-Rxq" secondAttribute="bottom" constant="3" id="dJQ-6R-VX1"/>
+                                    <constraint firstItem="8w7-qs-LQc" firstAttribute="leading" secondItem="2sv-q8-rS0" secondAttribute="trailing" constant="5" id="g6T-Oj-Kdm"/>
+                                    <constraint firstItem="CzL-ea-4qT" firstAttribute="width" secondItem="cdE-fv-Uyn" secondAttribute="width" id="hbL-xv-R1x"/>
+                                    <constraint firstItem="tdC-PP-YLq" firstAttribute="baseline" secondItem="QTy-o3-sCz" secondAttribute="baseline" id="jcW-hu-2g3"/>
+                                    <constraint firstItem="3Df-xp-MGi" firstAttribute="baseline" secondItem="Tqk-K3-3r9" secondAttribute="baseline" constant="1" id="kuw-ex-924"/>
+                                    <constraint firstItem="3Df-xp-MGi" firstAttribute="leading" secondItem="Tqk-K3-3r9" secondAttribute="trailing" constant="5" id="laq-9A-9Km"/>
+                                    <constraint firstItem="jyi-5Z-ulC" firstAttribute="trailing" secondItem="cdE-fv-Uyn" secondAttribute="trailing" id="mUz-iS-8Cl"/>
+                                    <constraint firstItem="z2J-L3-vlR" firstAttribute="width" secondItem="cdE-fv-Uyn" secondAttribute="width" id="mdA-NS-ZXB"/>
+                                    <constraint firstItem="8w7-qs-LQc" firstAttribute="baseline" secondItem="2sv-q8-rS0" secondAttribute="baseline" constant="1" id="nBU-j4-5Ys"/>
+                                    <constraint firstItem="CzL-ea-4qT" firstAttribute="baseline" secondItem="nda-EI-fY1" secondAttribute="baseline" constant="1" id="nhp-ao-HV5"/>
+                                    <constraint firstItem="j6s-Jm-DeI" firstAttribute="baseline" secondItem="7nn-rz-Tft" secondAttribute="baseline" constant="1" id="o92-Kv-V0e"/>
+                                    <constraint firstItem="2sv-q8-rS0" firstAttribute="leading" secondItem="31S-W3-2fr" secondAttribute="trailing" constant="5" id="pgj-xn-hhl"/>
+                                    <constraint firstItem="KOw-40-pzv" firstAttribute="width" secondItem="RHs-hd-zsr" secondAttribute="width" id="qfn-QM-Uc6"/>
+                                    <constraint firstItem="R6j-5Z-DCC" firstAttribute="width" secondItem="RHs-hd-zsr" secondAttribute="width" id="s2c-lW-lWU"/>
+                                    <constraint firstItem="2sv-q8-rS0" firstAttribute="top" secondItem="tdC-PP-YLq" secondAttribute="bottom" constant="3" id="uDt-8K-gaq"/>
+                                    <constraint firstAttribute="trailing" secondItem="cdE-fv-Uyn" secondAttribute="trailing" constant="5" id="v2c-2l-0WK"/>
+                                </constraints>
+                            </view>
+                        </tabViewItem>
+                    </tabViewItems>
+                </tabView>
+            </subviews>
+            <constraints>
+                <constraint firstItem="rSv-ig-nhG" firstAttribute="centerX" secondItem="Hz6-mo-xeY" secondAttribute="centerX" id="1eS-L7-Hr4"/>
+                <constraint firstItem="rSv-ig-nhG" firstAttribute="top" secondItem="Hz6-mo-xeY" secondAttribute="top" constant="10" id="8Ds-IA-dDj"/>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="rSv-ig-nhG" secondAttribute="trailing" constant="5" id="Eda-Hy-AsT"/>
+                <constraint firstItem="rSv-ig-nhG" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Hz6-mo-xeY" secondAttribute="leading" constant="5" id="SuF-Ct-vLq"/>
+                <constraint firstItem="wl4-Nn-7HR" firstAttribute="top" secondItem="rSv-ig-nhG" secondAttribute="bottom" constant="5" id="T0S-hY-0kF"/>
+                <constraint firstAttribute="bottom" secondItem="wl4-Nn-7HR" secondAttribute="bottom" id="WKY-e7-hv3"/>
+                <constraint firstAttribute="trailing" secondItem="wl4-Nn-7HR" secondAttribute="trailing" id="taH-G1-GAj"/>
+                <constraint firstItem="wl4-Nn-7HR" firstAttribute="leading" secondItem="Hz6-mo-xeY" secondAttribute="leading" id="wh4-OC-4nL"/>
+            </constraints>
+        </customView>
+        <userDefaultsController representsSharedInstance="YES" id="DAF-iL-Nso"/>
+    </objects>
+</document>

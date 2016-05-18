@@ -167,7 +167,21 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	// stroke the border
 	[[NSColor labelColor] setStroke];
 	
-	NSBezierPath *p = [NSBezierPath bezierPathWithRect:self.bounds];
+	NSBezierPath *p = [NSBezierPath bezierPath];
+	
+	[p moveToPoint:NSMakePoint(0, 0)];
+	
+	[p lineToPoint:NSMakePoint(self.bounds.size.width, 0)];
+	[p moveToPoint:NSMakePoint(self.bounds.size.width, 1)];
+	
+	[p lineToPoint:NSMakePoint(self.bounds.size.width, self.bounds.size.height)];
+	[p moveToPoint:NSMakePoint(self.bounds.size.width - 1, self.bounds.size.height)];
+	
+	[p lineToPoint:NSMakePoint(0, self.bounds.size.height)];
+	[p moveToPoint:NSMakePoint(0, self.bounds.size.height - 1)];
+	
+	[p lineToPoint:NSMakePoint(0, 1)];
+	
 	[p stroke];
 }
 

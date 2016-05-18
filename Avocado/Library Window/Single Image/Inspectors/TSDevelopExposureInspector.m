@@ -17,7 +17,7 @@
 - (instancetype) init {
 	if(self = [super initWithNibName:@"TSDevelopExposureInspector" bundle:nil]) {
 		self.title = NSLocalizedString(@"Exposure", @"exposure inspector title");
-		self.preferredContentSize = NSMakeSize(0, 275);
+		self.preferredContentSize = NSMakeSize(0, 215);
 	}
 	
 	return self;

@@ -13,6 +13,7 @@
 #import "TSInspectorViewController.h"
 
 #import "TSDevelopExposureInspector.h"
+#import "TSDevelopHueInspector.h"
 
 // KVO context for the displayedImage property
 static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
@@ -26,7 +27,7 @@ static void *TSImageKVO = &TSImageKVO;
 @property (nonatomic) IBOutlet TSInspectorViewController *inspector;
 
 @property (nonatomic) TSInspectorViewItem *inspectorExposure;
-@property (nonatomic) TSInspectorViewItem *inspectorWhiteBal;
+@property (nonatomic) TSInspectorViewItem *inspectorHue;
 
 @end
 
@@ -42,11 +43,10 @@ static void *TSImageKVO = &TSImageKVO;
 		self.inspectorExposure = [TSInspectorViewItem itemWithContentController:exp
 																	   expanded:YES];
 		
-		// set up white balance inspector
-		TSDevelopExposureInspector *wb = [[TSDevelopExposureInspector alloc] init];
-		wb.title = @"White Balance";
-		self.inspectorWhiteBal = [TSInspectorViewItem itemWithContentController:wb
-																	   expanded:YES];
+		// set up hue
+		TSDevelopHueInspector *hue = [[TSDevelopHueInspector alloc] init];
+		self.inspectorHue = [TSInspectorViewItem itemWithContentController:hue
+																  expanded:YES];
 		
 		// add KVO
 		[self addObserver:self forKeyPath:@"displayedImage"
@@ -69,7 +69,7 @@ static void *TSImageKVO = &TSImageKVO;
 	
 	// add the previously created views to the inspector
 	[self.inspector addInspectorView:self.inspectorExposure];
-	[self.inspector addInspectorView:self.inspectorWhiteBal];
+	[self.inspector addInspectorView:self.inspectorHue];
 }
 
 #pragma mark KVO
