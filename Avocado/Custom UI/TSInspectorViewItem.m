@@ -37,10 +37,12 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 @property (nonatomic) NSTextField *titleLabel;
 
 // whether the content view is expanded or not.
-@property (nonatomic, readwrite) BOOL isExpanded;
+@property (nonatomic, readwrite) BOOL isContentExpanded;
 
 - (void) setUpTitleBar;
+
 - (void) toggleAccordionState:(id) sender;
+- (void) setContentVisible:(BOOL) visible withAnimation:(BOOL) animate;
 
 @end
 
@@ -55,7 +57,7 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 	TSInspectorViewItem *i = [[TSInspectorViewItem alloc] init];
 	
 	i.content = content;
-	i.isExpanded = expanded;
+	i.isContentExpanded = expanded;
 	
 	// done
 	return i;
@@ -134,7 +136,7 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 									  constant:self.content.preferredContentSize.height];
 	c.priority = NSLayoutPriorityRequired;
 	
-	if(self.isExpanded == NO) {
+	if(self.isContentExpanded == NO) {
 		c.constant = 0.f;
 	}
 
@@ -221,7 +223,7 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 	self.titleLabel.editable = NO;
 	self.titleLabel.selectable = NO;
 	
-	self.titleLabel.font = [NSFont systemFontOfSize:13 weight:NSFontWeightMedium];
+	self.titleLabel.font = [NSFont systemFontOfSize:13 weight:NSFontWeightSemibold];
 	self.titleLabel.textColor = [NSColor labelColor];
 	
 	// bind its string value to the content controller's title
@@ -255,49 +257,97 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
  * Handles toggling of the disclosure triangle.
  */
 - (void) toggleAccordionState:(id) sender {
-	// collapse the view
-	if(self.isExpanded) {
-		[NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
-			context.duration = TSInspectorAccordionAnimationDuration;
-			context.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-			
-			if(NSApp.currentEvent.modifierFlags & NSShiftKeyMask)
-				context.duration = context.duration * 5.f;
-			
-			self.contentHeightConstraint.animator.constant = 0.f;
-			self.content.view.animator.alphaValue = 0.f;
-		} completionHandler:^{
-			[self updateTitleBarTooltip];
-		}];
-	}
-	// expand the view
-	else {
-		[NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
-			context.duration = TSInspectorAccordionAnimationDuration;
-			context.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-			
-			if(NSApp.currentEvent.modifierFlags & NSShiftKeyMask)
-				context.duration = context.duration * 5.f;
-			
-			self.contentHeightConstraint.animator.constant = self.content.preferredContentSize.height;
-			self.content.view.animator.alphaValue = 1.f;
-		} completionHandler:^{
-			[self updateTitleBarTooltip];
-		}];
-	}
-	
-	self.isExpanded = !self.isExpanded;
+	[self setContentVisible:!self.isContentExpanded withAnimation:YES];
 }
 
 /**
  * Updates the tooltip of the title bar.
  */
 - (void) updateTitleBarTooltip {
-	if(self.isExpanded) {
+	if(self.isContentExpanded) {
 		self.titleBar.toolTip = [NSString stringWithFormat:NSLocalizedString(@"Collapse '%@'", @"accordion expand view tooltip"), self.content.title];
 	} else {
 		self.titleBar.toolTip = [NSString stringWithFormat:NSLocalizedString(@"Expand '%@'", @"accordion expand view tooltip"), self.content.title];
 	}
+}
+
+/**
+ * Changes the dimensions of the content view, either showing or hiding it. If
+ * requested, animation is used.
+ */
+- (void) setContentVisible:(BOOL) visible withAnimation:(BOOL) animate {
+	self.isContentExpanded = visible;
+	
+	if(animate) {
+		// collapse the view
+		if(!visible) {
+			[NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
+				context.duration = TSInspectorAccordionAnimationDuration;
+				context.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+				
+				if(NSApp.currentEvent.modifierFlags & NSShiftKeyMask)
+					context.duration = context.duration * 5.f;
+				
+				self.contentHeightConstraint.animator.constant = 0.f;
+				self.content.view.animator.alphaValue = 0.f;
+			} completionHandler:^{
+				[self updateTitleBarTooltip];
+			}];
+		}
+		// expand the view
+		else {
+			[NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
+				context.duration = TSInspectorAccordionAnimationDuration;
+				context.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+				
+				if(NSApp.currentEvent.modifierFlags & NSShiftKeyMask)
+					context.duration = context.duration * 5.f;
+				
+				self.contentHeightConstraint.animator.constant = self.content.preferredContentSize.height;
+				self.content.view.animator.alphaValue = 1.f;
+			} completionHandler:^{
+				[self updateTitleBarTooltip];
+			}];
+		}
+	}
+	// no animation is to be used
+	else {
+		// collapse the view
+		if(!visible) {
+			self.contentHeightConstraint.constant = 0.f;
+			self.content.view.alphaValue = 0.f;
+		}
+		// expand the view
+		else {
+			self.contentHeightConstraint.constant = self.content.preferredContentSize.height;
+			self.content.view.alphaValue = 1.f;
+		}
+		
+		// update the tooltip
+		[self updateTitleBarTooltip];
+	}
+}
+
+#pragma mark Properties
+/**
+ * When the isExpanded property is changed, the size is updated, without any
+ * animations.
+ */
+- (void) setExpanded:(BOOL) expanded {
+	self.isContentExpanded = expanded;
+	
+	[self setContentVisible:expanded withAnimation:NO];
+}
+
+/**
+ * Returns the expansion state.
+ */
+- (BOOL) expanded {
+	return self.isContentExpanded;
+}
+
++ (NSSet *) keyPathsForValuesAffectingExpanded {
+	return [NSSet setWithObject:@"isContentExpanded"];
 }
 
 @end

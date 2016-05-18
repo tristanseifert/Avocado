@@ -16,7 +16,7 @@
 
 - (instancetype) init {
 	if(self = [super initWithNibName:@"TSDevelopHueInspector" bundle:nil]) {
-		self.title = NSLocalizedString(@"Hue, Saturation, Lightness", @"exposure inspector title");
+		self.title = NSLocalizedString(@"Hue, Saturation, Lightness", @"HSL inspector title");
 		self.preferredContentSize = NSMakeSize(0, 235);
 	}
 	

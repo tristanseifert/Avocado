@@ -38,6 +38,8 @@
 		6A7EC3CB1CD685AF007E91E8 /* TSThumbCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7EC3CA1CD685AF007E91E8 /* TSThumbCache.m */; };
 		6A9224271CECC6DE00EE6408 /* TSDevelopHueInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A9224251CECC6DE00EE6408 /* TSDevelopHueInspector.m */; };
 		6A9224281CECC6DE00EE6408 /* TSDevelopHueInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A9224261CECC6DE00EE6408 /* TSDevelopHueInspector.xib */; };
+		6A92242C1CED242200EE6408 /* TSDevelopDetailInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A92242A1CED242200EE6408 /* TSDevelopDetailInspector.m */; };
+		6A92242D1CED242200EE6408 /* TSDevelopDetailInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A92242B1CED242200EE6408 /* TSDevelopDetailInspector.xib */; };
 		6AA9358C1CE787D9004E9F9C /* TSDevelopImageViewerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA935871CE787D9004E9F9C /* TSDevelopImageViewerController.m */; };
 		6AA9358D1CE787D9004E9F9C /* TSDevelopImageViewerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AA935881CE787D9004E9F9C /* TSDevelopImageViewerController.xib */; };
 		6AA9358E1CE787D9004E9F9C /* TSDevelopSidebarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA9358A1CE787D9004E9F9C /* TSDevelopSidebarController.m */; };
@@ -165,6 +167,9 @@
 		6A9224241CECC6DE00EE6408 /* TSDevelopHueInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSDevelopHueInspector.h; path = "Library Window/Single Image/Inspectors/TSDevelopHueInspector.h"; sourceTree = "<group>"; };
 		6A9224251CECC6DE00EE6408 /* TSDevelopHueInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSDevelopHueInspector.m; path = "Library Window/Single Image/Inspectors/TSDevelopHueInspector.m"; sourceTree = "<group>"; };
 		6A9224261CECC6DE00EE6408 /* TSDevelopHueInspector.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSDevelopHueInspector.xib; path = "Library Window/Single Image/Inspectors/TSDevelopHueInspector.xib"; sourceTree = "<group>"; };
+		6A9224291CED242200EE6408 /* TSDevelopDetailInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSDevelopDetailInspector.h; path = "Library Window/Single Image/Inspectors/TSDevelopDetailInspector.h"; sourceTree = "<group>"; };
+		6A92242A1CED242200EE6408 /* TSDevelopDetailInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSDevelopDetailInspector.m; path = "Library Window/Single Image/Inspectors/TSDevelopDetailInspector.m"; sourceTree = "<group>"; };
+		6A92242B1CED242200EE6408 /* TSDevelopDetailInspector.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSDevelopDetailInspector.xib; path = "Library Window/Single Image/Inspectors/TSDevelopDetailInspector.xib"; sourceTree = "<group>"; };
 		6AA935861CE787D9004E9F9C /* TSDevelopImageViewerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSDevelopImageViewerController.h; path = "Library Window/Single Image/TSDevelopImageViewerController.h"; sourceTree = "<group>"; };
 		6AA935871CE787D9004E9F9C /* TSDevelopImageViewerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSDevelopImageViewerController.m; path = "Library Window/Single Image/TSDevelopImageViewerController.m"; sourceTree = "<group>"; };
 		6AA935881CE787D9004E9F9C /* TSDevelopImageViewerController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSDevelopImageViewerController.xib; path = "Library Window/Single Image/TSDevelopImageViewerController.xib"; sourceTree = "<group>"; };
@@ -464,6 +469,9 @@
 				6A9224241CECC6DE00EE6408 /* TSDevelopHueInspector.h */,
 				6A9224251CECC6DE00EE6408 /* TSDevelopHueInspector.m */,
 				6A9224261CECC6DE00EE6408 /* TSDevelopHueInspector.xib */,
+				6A9224291CED242200EE6408 /* TSDevelopDetailInspector.h */,
+				6A92242A1CED242200EE6408 /* TSDevelopDetailInspector.m */,
+				6A92242B1CED242200EE6408 /* TSDevelopDetailInspector.xib */,
 			);
 			name = Inspectors;
 			sourceTree = "<group>";
@@ -867,6 +875,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A5C615C1CD64B7100E3C3C9 /* TSLibraryLightTableCell.xib in Resources */,
+				6A92242D1CED242200EE6408 /* TSDevelopDetailInspector.xib in Resources */,
 				6AA9358F1CE787D9004E9F9C /* TSDevelopSidebarController.xib in Resources */,
 				6AAEFC961CE6C0DE0003DF4B /* TSDefaultAppState.plist in Resources */,
 				6AE87BD11CD275C90053CD9D /* Assets.xcassets in Resources */,
@@ -1027,6 +1036,7 @@
 				6A28F0631CD8190600228067 /* TSRawPipeline.mm in Sources */,
 				6A28F0681CD940E500228067 /* TSPixelFormatConverter.m in Sources */,
 				6ABC2DC21CD43586006B959F /* _TSLibraryImageAdjustment.m in Sources */,
+				6A92242C1CED242200EE6408 /* TSDevelopDetailInspector.m in Sources */,
 				6ABC2DB01CD4357E006B959F /* TSLibraryImageAdjustment.m in Sources */,
 				6A06F4481CE01C3C001DFC4C /* TSCoreImagePipelineJob.m in Sources */,
 				6AA9359E1CE7AF43004E9F9C /* TSDevelopExposureInspector.m in Sources */,

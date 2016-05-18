@@ -14,6 +14,7 @@
 
 #import "TSDevelopExposureInspector.h"
 #import "TSDevelopHueInspector.h"
+#import "TSDevelopDetailInspector.h"
 
 // KVO context for the displayedImage property
 static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
@@ -25,9 +26,11 @@ static void *TSImageKVO = &TSImageKVO;
 @property (nonatomic) IBOutlet TSHistogramView *mrHistogram;
 
 @property (nonatomic) IBOutlet TSInspectorViewController *inspector;
+@property (nonatomic) NSDictionary *restoredInspectorState;
 
 @property (nonatomic) TSInspectorViewItem *inspectorExposure;
 @property (nonatomic) TSInspectorViewItem *inspectorHue;
+@property (nonatomic) TSInspectorViewItem *inspectorDetail;
 
 @end
 
@@ -47,6 +50,10 @@ static void *TSImageKVO = &TSImageKVO;
 		TSDevelopHueInspector *hue = [[TSDevelopHueInspector alloc] init];
 		self.inspectorHue = [TSInspectorViewItem itemWithContentController:hue
 																  expanded:YES];
+		// set up detail
+		TSDevelopDetailInspector *detail = [[TSDevelopDetailInspector alloc] init];
+		self.inspectorDetail = [TSInspectorViewItem itemWithContentController:detail
+																	 expanded:YES];
 		
 		// add KVO
 		[self addObserver:self forKeyPath:@"displayedImage"
@@ -70,6 +77,12 @@ static void *TSImageKVO = &TSImageKVO;
 	// add the previously created views to the inspector
 	[self.inspector addInspectorView:self.inspectorExposure];
 	[self.inspector addInspectorView:self.inspectorHue];
+	[self.inspector addInspectorView:self.inspectorDetail];
+	
+	// restore state
+	if(self.restoredInspectorState != nil) {
+		[self.inspector restoreWithState:self.restoredInspectorState];
+	}
 }
 
 #pragma mark KVO
@@ -97,14 +110,17 @@ static void *TSImageKVO = &TSImageKVO;
  * Saves view state.
  */
 - (void) saveViewOptions:(NSKeyedArchiver *) archiver {
-	
+	// save inspector state
+	NSDictionary *inspectorState = self.inspector.stateDict;
+	[archiver encodeObject:inspectorState forKey:@"Develop.Sidebar.InspectorState"];
 }
 
 /**
  * Restores previously saved view state.
  */
 - (void) restoreViewOptions:(NSKeyedUnarchiver *) unArchiver {
-	
+	self.restoredInspectorState = [unArchiver decodeObjectOfClass:[NSDictionary class]
+														   forKey:@"Develop.Sidebar.InspectorState"];
 }
 
 @end
