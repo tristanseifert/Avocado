@@ -40,6 +40,7 @@
                     <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="vcT-cY-BNv"/>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="itQ-a9-1Im" id="wDU-Bv-a7d"/>
+                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentNoiseReductionLevel" id="stN-an-76T"/>
                     </connections>
                 </slider>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="itQ-a9-1Im" userLabel="Noise Level Text Field">
@@ -73,6 +74,7 @@
                     <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="hHS-3q-tSu"/>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="gQE-DR-gsJ" id="nwV-Rz-kVS"/>
+                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentNoiseReductionSharpness" id="DCH-mY-kf6"/>
                     </connections>
                 </slider>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gQE-DR-gsJ" userLabel="Sharpness Text Field">
@@ -117,6 +119,7 @@
                     <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="vrW-Jx-rjq"/>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="fam-Xb-jam" id="5iP-26-sW1"/>
+                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentSharpenLuminance" id="hTC-m5-9LY"/>
                     </connections>
                 </slider>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fam-Xb-jam" userLabel="Luminance Text Field">
@@ -147,6 +150,7 @@
                     <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="25" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="uJ6-L0-k7Y"/>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="8uY-g1-xkW" id="MoC-bV-aOx"/>
+                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentSharpenRadius" id="0Zu-23-d0O"/>
                     </connections>
                 </slider>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8uY-g1-xkW" userLabel="Radius Text Field">
@@ -190,6 +194,7 @@
                     <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="bn0-pU-uXg"/>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="zHv-ag-Rq6" id="qoC-sg-Mdq"/>
+                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentSharpenIntensity" id="A1T-R2-mf2"/>
                     </connections>
                 </slider>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zHv-ag-Rq6" userLabel="Intensity Text Field">

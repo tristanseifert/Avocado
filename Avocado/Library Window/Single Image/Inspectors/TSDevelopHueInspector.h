@@ -8,6 +8,15 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class TSLibraryImage;
 @interface TSDevelopHueInspector : NSViewController
+
+/// settings dictionary
+@property (nonatomic) NSMutableDictionary<NSString *, id> *settings;
+
+/// selected image
+@property (nonatomic, weak) TSLibraryImage *activeImage;
+/// output of last render pass
+@property (nonatomic, weak) NSImage *renderedImage;
 
 @end

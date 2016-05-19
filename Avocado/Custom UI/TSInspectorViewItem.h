@@ -12,6 +12,12 @@
 
 /**
  * Sets up an inspector view item, using the given view controller as the
+ * content. It will be expanded by default.
+ */
++ (instancetype) itemWithContentController:(NSViewController *) content;
+
+/**
+ * Sets up an inspector view item, using the given view controller as the
  * content.
  */
 + (instancetype) itemWithContentController:(NSViewController *) content expanded:(BOOL) expanded;

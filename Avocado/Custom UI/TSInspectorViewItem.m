@@ -51,6 +51,14 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 
 /**
  * Sets up an inspector view item, using the given view controller as the
+ * content. It will be expanded by default.
+ */
++ (instancetype) itemWithContentController:(NSViewController *) content {
+	return [[self class] itemWithContentController:content expanded:YES];
+}
+
+/**
+ * Sets up an inspector view item, using the given view controller as the
  * content.
  */
 + (instancetype) itemWithContentController:(NSViewController *) content expanded:(BOOL) expanded {

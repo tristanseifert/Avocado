@@ -16,7 +16,7 @@
 
 - (instancetype) init {
 	if(self = [super initWithNibName:@"TSDevelopDetailInspector" bundle:nil]) {
-		self.title = NSLocalizedString(@"Detail", @"detauk inspector title");
+		self.title = NSLocalizedString(@"Detail", @"detail inspector title");
 		self.preferredContentSize = NSMakeSize(0, 223);
 	}
 	

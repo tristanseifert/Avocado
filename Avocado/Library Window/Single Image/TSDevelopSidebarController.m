@@ -28,9 +28,9 @@ static void *TSImageKVO = &TSImageKVO;
 @property (nonatomic) IBOutlet TSInspectorViewController *inspector;
 @property (nonatomic) NSDictionary *restoredInspectorState;
 
-@property (nonatomic) TSInspectorViewItem *inspectorExposure;
-@property (nonatomic) TSInspectorViewItem *inspectorHue;
-@property (nonatomic) TSInspectorViewItem *inspectorDetail;
+@property (nonatomic) TSDevelopExposureInspector *inspectorExposure;
+@property (nonatomic) TSDevelopHueInspector *inspectorHue;
+@property (nonatomic) TSDevelopDetailInspector *inspectorDetail;
 
 @end
 
@@ -42,19 +42,12 @@ static void *TSImageKVO = &TSImageKVO;
 - (instancetype) init {
 	if(self = [super initWithNibName:@"TSDevelopSidebarController" bundle:nil]) {
 		// set up exposure inspector
-		TSDevelopExposureInspector *exp = [[TSDevelopExposureInspector alloc] init];
-		self.inspectorExposure = [TSInspectorViewItem itemWithContentController:exp
-																	   expanded:YES];
+		self.inspectorExposure = [[TSDevelopExposureInspector alloc] init];
 		
 		// set up hue
-		TSDevelopHueInspector *hue = [[TSDevelopHueInspector alloc] init];
-		self.inspectorHue = [TSInspectorViewItem itemWithContentController:hue
-																  expanded:YES];
+		self.inspectorHue = [[TSDevelopHueInspector alloc] init];
 		// set up detail
-		TSDevelopDetailInspector *detail = [[TSDevelopDetailInspector alloc] init];
-		self.inspectorDetail = [TSInspectorViewItem itemWithContentController:detail
-																	 expanded:YES];
-		
+		self.inspectorDetail = [[TSDevelopDetailInspector alloc] init];
 		// add KVO
 		[self addObserver:self forKeyPath:@"displayedImage"
 				  options:0 context:TSDisplayedImageKVO];
@@ -69,15 +62,49 @@ static void *TSImageKVO = &TSImageKVO;
  * Sets some stuff up when the view controller has loaded.
  */
 - (void) viewDidLoad {
+	TSInspectorViewItem *inspect;
+	
     [super viewDidLoad];
 	
 	// prepare Mr. Histogram
 	self.mrHistogram.quality = 4;
 	
 	// add the previously created views to the inspector
-	[self.inspector addInspectorView:self.inspectorExposure];
-	[self.inspector addInspectorView:self.inspectorHue];
-	[self.inspector addInspectorView:self.inspectorDetail];
+	inspect = [TSInspectorViewItem itemWithContentController:self.inspectorExposure];
+	[self.inspector addInspectorView:inspect];
+	
+	inspect = [TSInspectorViewItem itemWithContentController:self.inspectorHue];
+	[self.inspector addInspectorView:inspect];
+	
+	inspect = [TSInspectorViewItem itemWithContentController:self.inspectorDetail];
+	[self.inspector addInspectorView:inspect];
+	
+	// add bindings for input image to inspectors
+	[self.inspectorExposure bind:@"activeImage"
+						toObject:self withKeyPath:@"image"
+						 options:nil];
+	[self.inspectorHue bind:@"activeImage"
+				   toObject:self withKeyPath:@"image"
+					options:nil];
+	[self.inspectorDetail bind:@"activeImage"
+					  toObject:self withKeyPath:@"image"
+					   options:nil];
+	
+	// add bindings for displayed image to inspectors
+	[self.inspectorExposure bind:@"renderedImage"
+						toObject:self withKeyPath:@"displayedImage"
+						 options:nil];
+	[self.inspectorHue bind:@"renderedImage"
+				   toObject:self withKeyPath:@"displayedImage"
+					options:nil];
+	[self.inspectorDetail bind:@"renderedImage"
+					  toObject:self withKeyPath:@"displayedImage"
+					   options:nil];
+	
+	// add bindings to Mr. Histogram
+	[self.mrHistogram bind:@"image"
+				  toObject:self withKeyPath:@"displayedImage"
+				   options:nil];
 	
 	// restore state
 	if(self.restoredInspectorState != nil) {
@@ -95,11 +122,11 @@ static void *TSImageKVO = &TSImageKVO;
 						context:(void *) context {
 	// the displayed image property changed
 	if(context == TSDisplayedImageKVO) {
-		self.mrHistogram.image = self.displayedImage;
+		
 	}
 	// input image changed
 	else if(context == TSImageKVO) {
-	
+		
 	} else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}

@@ -32,6 +32,7 @@
                     <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-5" maxValue="5" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Yee-XK-BGL"/>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="QSu-p7-CNw" id="vZn-gC-Ik0"/>
+                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentExposureEV" id="N6W-SR-Y2y"/>
                     </connections>
                 </slider>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="QSu-p7-CNw" userLabel="Exposure Text Field">
