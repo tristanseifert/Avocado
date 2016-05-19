@@ -9,18 +9,15 @@ extern NSString  * _Nonnull const TSAdjustmentKeyExposure;
 /// adjustment of exposure, in EV [-5, 5]
 extern NSString  * _Nonnull const TSAdjustmentKeyExposureEV;
 
-#pragma mark Noise Reduction
-/// noise reduction adjustments
-extern NSString  * _Nonnull const TSAdjustmentKeyNoiseReduction;
+#pragma mark Noise Reduction and Sharpening
+/// Detail adjustment dictionary key
+extern NSString * _Nonnull const TSAdjustmentKeyDetail;
 
 /// noise reduction level [0, 1]
 extern NSString * _Nonnull const TSAdjustmentKeyNoiseReductionLevel;
 /// noise reduction sharpness [0, 1]
 extern NSString * _Nonnull const TSAdjustmentKeyNoiseReductionSharpness;
 
-#pragma mark Sharpening
-/// Sharpening
-extern NSString * _Nonnull const TSAdjustmentKeySharpen;
 
 /// Luminance sharpening amount [0, 1]
 extern NSString * _Nonnull const TSAdjustmentKeySharpenLuminance;
@@ -28,6 +25,8 @@ extern NSString * _Nonnull const TSAdjustmentKeySharpenLuminance;
 extern NSString * _Nonnull const TSAdjustmentKeySharpenRadius;
 /// Unsharp mask radius [0, 1]
 extern NSString * _Nonnull const TSAdjustmentKeySharpenIntensity;
+/// Median filter (bool)
+extern NSString * _Nonnull const TSAdjustmentKeySharpenMedianFilter;
 
 
 /**
@@ -55,6 +54,8 @@ typedef NS_ENUM(short, TSLibraryImageRotation) {
 };
 
 @interface TSLibraryImage : _TSLibraryImage {}
+
+- (void) loadDefaultAdjustments;
 
 /**
  * Key/value dictionary containing the image metadata.
@@ -97,6 +98,6 @@ typedef NS_ENUM(short, TSLibraryImageRotation) {
  * Adjustments applied on the image; each key represents a particular
  * filter, with a subdictionary containing all of its input values.
  */
-@property (nonatomic, strong, nullable) NSMutableDictionary<NSString *, NSMutableDictionary *> *adjustments;
+@property (nonatomic, strong, nullable) NSDictionary<NSString *, NSDictionary<NSString *, id> *> *adjustments;
 
 @end

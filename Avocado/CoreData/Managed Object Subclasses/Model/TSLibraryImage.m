@@ -7,6 +7,8 @@
 #import <Quartz/Quartz.h>
 #import <Cocoa/Cocoa.h>
 
+static void *TSLibraryImageAdjustmentsKVOCtx = &TSLibraryImageAdjustmentsKVOCtx;
+
 /// current adjustments version
 const NSUInteger TSLibraryImageVersion = 0x00010000;
 
@@ -18,14 +20,15 @@ NSString * const TSLibraryImageVersionKey = @"TSLibraryImageVersion";
 NSString * const TSAdjustmentKeyExposure = @"TSAdjustmentExposure";
 NSString * const TSAdjustmentKeyExposureEV = @"TSAdjustmentExposureEV";
 
-NSString  * _Nonnull const TSAdjustmentKeyNoiseReduction = @"TSAdjustmentNoiseReduction";
+NSString  * _Nonnull const TSAdjustmentKeyDetail = @"TSAdjustmentDetail";
+
 NSString * _Nonnull const TSAdjustmentKeyNoiseReductionLevel = @"TSAdjustmentNoiseReductionLevel";
 NSString * _Nonnull const TSAdjustmentKeyNoiseReductionSharpness = @"TSAdjustmentNoiseReductionSharpness";
 
-NSString * _Nonnull const TSAdjustmentKeySharpen = @"TSAdjustmentSharpen";
 NSString * _Nonnull const TSAdjustmentKeySharpenLuminance = @"TSAdjustmentSharpenLuminance";
 NSString * _Nonnull const TSAdjustmentKeySharpenRadius = @"TSAdjustmentSharpenRadius";
 NSString * _Nonnull const TSAdjustmentKeySharpenIntensity = @"TSAdjustmentSharpenIntensity";
+NSString * _Nonnull const TSAdjustmentKeySharpenMedianFilter = @"TSAdjustmentSharpenMedianFilter";
 
 
 /// context indicating that the date shot has changed
@@ -39,7 +42,9 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 @property (nonatomic, readonly) NSDictionary *imageIOMetadata;
 
 - (void) commonInit;
+
 - (void) addKVO;
+- (void) removeKVO;
 
 - (void) loadDefaultAdjustments;
 - (void) decodeAdjustmentsData;
@@ -52,7 +57,7 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 @synthesize libRawHandle = _libRawHandleCache;
 @synthesize rotation = _imageRotationFromMetadata;
 @synthesize imageIOMetadata = _imageIOMetadataCache;
-@synthesize adjustments;
+@synthesize adjustments = _adjustments;
 
 #pragma mark Lifecycle
 /**
@@ -63,7 +68,7 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 	
 	[self commonInit];
 	
-	// decode the stored adjustments data
+	// decode stored adjustments data
 	[self decodeAdjustmentsData];
 }
 
@@ -74,6 +79,10 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 	[super awakeFromInsert];
 	
 	[self commonInit];
+	
+	// set default values
+	[self setPrimitiveUuid:[NSUUID new].UUIDString];
+	[self loadDefaultAdjustments];
 }
 
 /**
@@ -86,13 +95,21 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 	[self encodeAdjustmentsData];
 	
 	// remove KVO observers (fuck this shit)
-	@try {
-		[self removeObserver:self forKeyPath:@"dateShots"];
-	} @catch (NSException __unused *exception) { }
+	[self removeKVO];
 	
 	// clear caches
 	_libRawHandleCache = nil;
 	_imageRotationFromMetadata = TSLibraryImageRotationUnknown;
+}
+
+/**
+ * Cleans up some more shit, like the fucking ridiculously broken KVO
+ * observer things, on deallocation. This is a last ditch effort to prevent
+ * the fucking moronically designed ObjC runtime from fucking itself when
+ * a KVO observer is registered and we deallocate.
+ */
+- (void) dealloc {
+	[self removeKVO];
 }
 
 /**
@@ -104,11 +121,6 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 	
 	// clear caches
 	_imageRotationFromMetadata = TSLibraryImageRotationUnknown;
-	
-	// set UUID, if applicable
-	if(self.uuid == nil) {
-		self.uuid = [NSUUID new].UUIDString;
-	}
 }
 
 /**
@@ -118,37 +130,35 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 	NSMutableDictionary *filter;
 	
 	// create adjusments dict
-	self.adjustments = [NSMutableDictionary new];
+	NSMutableDictionary<NSString *, NSDictionary *> *adjustments = [NSMutableDictionary new];
 	
 	// create exposure adjustments
 	filter = [NSMutableDictionary new];
 	
 	filter[TSAdjustmentKeyExposureEV] = @0.f;
 	
-	self.adjustments[TSAdjustmentKeyExposure] = filter;
+	adjustments[TSAdjustmentKeyExposure] = [filter copy];
 	
-	// create noise reduction adjustments
+	// create noise reduction and sharpening adjustments
 	filter = [NSMutableDictionary new];
 	
 	filter[TSAdjustmentKeyNoiseReductionLevel] = @0.02f;
 	filter[TSAdjustmentKeyNoiseReductionSharpness] = @0.4f;
 	
-	self.adjustments[TSAdjustmentKeyNoiseReduction] = filter;
-	
-	// create sharpening adjustments
-	filter = [NSMutableDictionary new];
 	
 	filter[TSAdjustmentKeySharpenLuminance] = @0.4f;
 	
 	filter[TSAdjustmentKeySharpenRadius] = @2.5f;
 	filter[TSAdjustmentKeySharpenIntensity] = @0.5f;
 	
-	self.adjustments[TSAdjustmentKeySharpen] = filter;
+	filter[TSAdjustmentKeySharpenMedianFilter] = @NO;
 	
 	
-	// save the data pls
-	DDLogDebug(@"Default adjustments for %p: %@", self, self.adjustments);
-	[self encodeAdjustmentsData];
+	adjustments[TSAdjustmentKeyDetail] = [filter copy];
+	
+	
+	// save
+	self.adjustments = [adjustments copy];
 }
 
 /**
@@ -157,14 +167,13 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 - (void) decodeAdjustmentsData {
 	// if there is no data to decode, exit
 	if(self.rawAdjustmentData == nil) {
-		DDLogDebug(@"Setting default adjustment data");
-		
-		[self loadDefaultAdjustments];
+		DDLogWarn(@"There is n o adjustment data; this shouldn't happen.");
 		return;
 	}
 	
 	// decode existing data
 	NSKeyedUnarchiver *unarchiver = [NSKeyedUnarchiver unarchiveObjectWithData:self.rawAdjustmentData];
+	unarchiver.requiresSecureCoding = YES;
 	
 	// check version
 	NSUInteger ver = [unarchiver decodeIntegerForKey:TSLibraryImageVersionKey];
@@ -174,7 +183,7 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 	}
 	
 	// decode adjustments
-	self.adjustments = [unarchiver decodeObjectOfClass:[NSMutableDictionary class] forKey:TSLibraryImageAdjustmentKey];
+	self.adjustments = [unarchiver decodeObjectOfClass:[NSDictionary class] forKey:TSLibraryImageAdjustmentKey];
 	
 	// finish
 	[unarchiver finishDecoding];
@@ -185,7 +194,9 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
  */
 - (void) encodeAdjustmentsData {
 	NSMutableData *d = [NSMutableData new];
+	
 	NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:d];
+	archiver.requiresSecureCoding = YES;
 	
 	// set the version and data
 	[archiver encodeInteger:TSLibraryImageVersion
@@ -207,6 +218,22 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 - (void) addKVO {
 	[self addObserver:self forKeyPath:@"dateShot" options:0
 			  context:TSLibraryImageDateShotKVOCtx];
+	[self addObserver:self forKeyPath:@"adjustments" options:0
+			  context:TSLibraryImageAdjustmentsKVOCtx];
+	
+}
+
+/**
+ * Removes KVO observers.
+ */
+- (void) removeKVO {
+	@try {
+		[self removeObserver:self forKeyPath:@"dateShot"];
+	} @catch (NSException __unused *exception) { }
+	
+	@try {
+		[self removeObserver:self forKeyPath:@"adjustments"];
+	} @catch (NSException __unused *exception) { }
 }
 
 /**
@@ -218,7 +245,14 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 	if(context == TSLibraryImageDateShotKVOCtx) {
 		// set the "dayShot" to the date, sans time component
 		self.dayShotValue = [self.dateShot timeIntervalSince1970WithoutTime];
-	} else {
+	}
+	// adjustments changed
+	else if(context == TSLibraryImageAdjustmentsKVOCtx) {
+		DDLogVerbose(@"Adjustments data changed for %p", self);
+		[self encodeAdjustmentsData];
+	}
+	// superclass handles other KVO
+	else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}
 }
