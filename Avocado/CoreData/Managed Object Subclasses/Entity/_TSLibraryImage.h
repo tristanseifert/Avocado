@@ -11,7 +11,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class TSLibraryImageAdjustment;
 @class TSLibraryAlbum;
 @class TSLibraryTag;
 
@@ -52,33 +51,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, nullable) NSString* pvtImageSize;
 
+@property (nonatomic, strong, nullable) NSData* rawAdjustmentData;
+
 @property (nonatomic, strong, nullable) NSString* thumbUUID;
 
 @property (nonatomic, strong, nullable) NSString* uuid;
-
-@property (nonatomic, strong, nullable) NSOrderedSet<TSLibraryImageAdjustment*> *adjustments;
-- (nullable NSMutableOrderedSet<TSLibraryImageAdjustment*>*)adjustmentsSet;
 
 @property (nonatomic, strong, nullable) NSSet<TSLibraryAlbum*> *parentAlbums;
 - (nullable NSMutableSet<TSLibraryAlbum*>*)parentAlbumsSet;
 
 @property (nonatomic, strong, nullable) NSSet<TSLibraryTag*> *tags;
 - (nullable NSMutableSet<TSLibraryTag*>*)tagsSet;
-
-@end
-
-@interface _TSLibraryImage (AdjustmentsCoreDataGeneratedAccessors)
-- (void)addAdjustments:(NSOrderedSet<TSLibraryImageAdjustment*>*)value_;
-- (void)removeAdjustments:(NSOrderedSet<TSLibraryImageAdjustment*>*)value_;
-- (void)addAdjustmentsObject:(TSLibraryImageAdjustment*)value_;
-- (void)removeAdjustmentsObject:(TSLibraryImageAdjustment*)value_;
-
-- (void)insertObject:(TSLibraryImageAdjustment*)value inAdjustmentsAtIndex:(NSUInteger)idx;
-- (void)removeObjectFromAdjustmentsAtIndex:(NSUInteger)idx;
-- (void)insertAdjustments:(NSArray *)value atIndexes:(NSIndexSet *)indexes;
-- (void)removeAdjustmentsAtIndexes:(NSIndexSet *)indexes;
-- (void)replaceObjectInAdjustmentsAtIndex:(NSUInteger)idx withObject:(TSLibraryImageAdjustment*)value;
-- (void)replaceAdjustmentsAtIndexes:(NSIndexSet *)indexes withAdjustments:(NSArray *)values;
 
 @end
 
@@ -130,14 +113,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString*)primitivePvtImageSize;
 - (void)setPrimitivePvtImageSize:(NSString*)value;
 
+- (NSData*)primitiveRawAdjustmentData;
+- (void)setPrimitiveRawAdjustmentData:(NSData*)value;
+
 - (NSString*)primitiveThumbUUID;
 - (void)setPrimitiveThumbUUID:(NSString*)value;
 
 - (NSString*)primitiveUuid;
 - (void)setPrimitiveUuid:(NSString*)value;
-
-- (NSMutableOrderedSet<TSLibraryImageAdjustment*>*)primitiveAdjustments;
-- (void)setPrimitiveAdjustments:(NSMutableOrderedSet<TSLibraryImageAdjustment*>*)value;
 
 - (NSMutableSet<TSLibraryAlbum*>*)primitiveParentAlbums;
 - (void)setPrimitiveParentAlbums:(NSMutableSet<TSLibraryAlbum*>*)value;
@@ -156,12 +139,12 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)fileUrl;
 + (NSString *)metadata;
 + (NSString *)pvtImageSize;
++ (NSString *)rawAdjustmentData;
 + (NSString *)thumbUUID;
 + (NSString *)uuid;
 @end
 
 @interface TSLibraryImageRelationships: NSObject
-+ (NSString *)adjustments;
 + (NSString *)parentAlbums;
 + (NSString *)tags;
 @end

@@ -95,20 +95,11 @@
 
 @dynamic pvtImageSize;
 
+@dynamic rawAdjustmentData;
+
 @dynamic thumbUUID;
 
 @dynamic uuid;
-
-@dynamic adjustments;
-
-- (NSMutableOrderedSet<TSLibraryImageAdjustment*>*)adjustmentsSet {
-	[self willAccessValueForKey:@"adjustments"];
-
-	NSMutableOrderedSet<TSLibraryImageAdjustment*> *result = (NSMutableOrderedSet<TSLibraryImageAdjustment*>*)[self mutableOrderedSetValueForKey:@"adjustments"];
-
-	[self didAccessValueForKey:@"adjustments"];
-	return result;
-}
 
 @dynamic parentAlbums;
 
@@ -132,66 +123,6 @@
 	return result;
 }
 
-@end
-
-@implementation _TSLibraryImage (AdjustmentsCoreDataGeneratedAccessors)
-- (void)addAdjustments:(NSOrderedSet<TSLibraryImageAdjustment*>*)value_ {
-	[self.adjustmentsSet unionOrderedSet:value_];
-}
-- (void)removeAdjustments:(NSOrderedSet<TSLibraryImageAdjustment*>*)value_ {
-	[self.adjustmentsSet minusOrderedSet:value_];
-}
-- (void)addAdjustmentsObject:(TSLibraryImageAdjustment*)value_ {
-	[self.adjustmentsSet addObject:value_];
-}
-- (void)removeAdjustmentsObject:(TSLibraryImageAdjustment*)value_ {
-	[self.adjustmentsSet removeObject:value_];
-}
-- (void)insertObject:(TSLibraryImageAdjustment*)value inAdjustmentsAtIndex:(NSUInteger)idx {
-    NSIndexSet* indexes = [NSIndexSet indexSetWithIndex:idx];
-    [self willChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:@"adjustments"];
-    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self adjustments]];
-    [tmpOrderedSet insertObject:value atIndex:idx];
-    [self setPrimitiveValue:tmpOrderedSet forKey:@"adjustments"];
-    [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:@"adjustments"];
-}
-- (void)removeObjectFromAdjustmentsAtIndex:(NSUInteger)idx {
-    NSIndexSet* indexes = [NSIndexSet indexSetWithIndex:idx];
-    [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:@"adjustments"];
-    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self adjustments]];
-    [tmpOrderedSet removeObjectAtIndex:idx];
-    [self setPrimitiveValue:tmpOrderedSet forKey:@"adjustments"];
-    [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:@"adjustments"];
-}
-- (void)insertAdjustments:(NSArray *)value atIndexes:(NSIndexSet *)indexes {
-    [self willChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:@"adjustments"];
-    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self adjustments]];
-    [tmpOrderedSet insertObjects:value atIndexes:indexes];
-    [self setPrimitiveValue:tmpOrderedSet forKey:@"adjustments"];
-    [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:@"adjustments"];
-}
-- (void)removeAdjustmentsAtIndexes:(NSIndexSet *)indexes {
-    [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:@"adjustments"];
-    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self adjustments]];
-    [tmpOrderedSet removeObjectsAtIndexes:indexes];
-    [self setPrimitiveValue:tmpOrderedSet forKey:@"adjustments"];
-    [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:@"adjustments"];
-}
-- (void)replaceObjectInAdjustmentsAtIndex:(NSUInteger)idx withObject:(TSLibraryImageAdjustment*)value {
-    NSIndexSet* indexes = [NSIndexSet indexSetWithIndex:idx];
-    [self willChange:NSKeyValueChangeReplacement valuesAtIndexes:indexes forKey:@"adjustments"];
-    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self adjustments]];
-    [tmpOrderedSet replaceObjectAtIndex:idx withObject:value];
-    [self setPrimitiveValue:tmpOrderedSet forKey:@"adjustments"];
-    [self didChange:NSKeyValueChangeReplacement valuesAtIndexes:indexes forKey:@"adjustments"];
-}
-- (void)replaceAdjustmentsAtIndexes:(NSIndexSet *)indexes withAdjustments:(NSArray *)value {
-    [self willChange:NSKeyValueChangeReplacement valuesAtIndexes:indexes forKey:@"adjustments"];
-    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self adjustments]];
-    [tmpOrderedSet replaceObjectsAtIndexes:indexes withObjects:value];
-    [self setPrimitiveValue:tmpOrderedSet forKey:@"adjustments"];
-    [self didChange:NSKeyValueChangeReplacement valuesAtIndexes:indexes forKey:@"adjustments"];
-}
 @end
 
 @implementation TSLibraryImageAttributes 
@@ -219,6 +150,9 @@
 + (NSString *)pvtImageSize {
 	return @"pvtImageSize";
 }
++ (NSString *)rawAdjustmentData {
+	return @"rawAdjustmentData";
+}
 + (NSString *)thumbUUID {
 	return @"thumbUUID";
 }
@@ -228,9 +162,6 @@
 @end
 
 @implementation TSLibraryImageRelationships 
-+ (NSString *)adjustments {
-	return @"adjustments";
-}
 + (NSString *)parentAlbums {
 	return @"parentAlbums";
 }

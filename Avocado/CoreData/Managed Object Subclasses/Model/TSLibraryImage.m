@@ -7,6 +7,18 @@
 #import <Quartz/Quartz.h>
 #import <Cocoa/Cocoa.h>
 
+/// current adjustments version
+const NSUInteger TSLibraryImageVersion = 0x00010000;
+
+/// key for the adjustments dictionary
+NSString * const TSLibraryImageAdjustmentKey = @"TSLibraryImageAdjustment";
+/// key for the adjustments version in the adjustments dictionary
+NSString * const TSLibraryImageVersionKey = @"TSLibraryImageVersion";
+
+NSString * const TSAdjustmentKeyExposure = @"TSAdjustmentExposure";
+NSString * const TSAdjustmentKeyExposureEV = @"TSAdjustmentExposureEV";
+
+
 /// context indicating that the date shot has changed
 static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 
@@ -20,6 +32,10 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 - (void) commonInit;
 - (void) addKVO;
 
+- (void) loadDefaultAdjustments;
+- (void) decodeAdjustmentsData;
+- (void) encodeAdjustmentsData;
+
 @end
 
 @implementation TSLibraryImage
@@ -27,6 +43,7 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 @synthesize libRawHandle = _libRawHandleCache;
 @synthesize rotation = _imageRotationFromMetadata;
 @synthesize imageIOMetadata = _imageIOMetadataCache;
+@synthesize adjustments;
 
 #pragma mark Lifecycle
 /**
@@ -36,6 +53,9 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 	[super awakeFromFetch];
 	
 	[self commonInit];
+	
+	// decode the stored adjustments data
+	[self decodeAdjustmentsData];
 }
 
 /**
@@ -52,6 +72,9 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
  */
 - (void) willTurnIntoFault {
 	[super willTurnIntoFault];
+	
+	// encode the adjustments dictionary
+	[self encodeAdjustmentsData];
 	
 	// remove KVO observers (fuck this shit)
 	@try {
@@ -77,6 +100,70 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 	if(self.uuid == nil) {
 		self.uuid = [NSUUID new].UUIDString;
 	}
+}
+
+/**
+ * Loads/creates the default adjustments data.
+ */
+- (void) loadDefaultAdjustments {
+	// create adjusments dict
+	self.adjustments = [NSMutableDictionary new];
+	
+	// create exposure adjustments
+	self.adjustments[TSAdjustmentKeyExposure] = [NSMutableDictionary new];
+	self.adjustments[TSAdjustmentKeyExposure][TSAdjustmentKeyExposureEV] = @0.f;
+	
+	// save
+	[self encodeAdjustmentsData];
+}
+
+/**
+ * Uses a keyed unarchiver to decode previously saved adjustments data.
+ */
+- (void) decodeAdjustmentsData {
+	// if there is no data to decode, exit
+	if(self.rawAdjustmentData == nil) {
+		DDLogDebug(@"Setting default adjustment data");
+		
+		[self loadDefaultAdjustments];
+		return;
+	}
+	
+	// decode existing data
+	NSKeyedUnarchiver *unarchiver = [NSKeyedUnarchiver unarchiveObjectWithData:self.rawAdjustmentData];
+	
+	// check version
+	NSUInteger ver = [unarchiver decodeIntegerForKey:TSLibraryImageVersionKey];
+	
+	if(ver < TSLibraryImageVersion) {
+		DDLogDebug(@"Upgrading adjustments for %p from 0x%08lx to 0x%08lx", self, ver, TSLibraryImageVersion);
+	}
+	
+	// decode adjustments
+	self.adjustments = [unarchiver decodeObjectOfClass:[NSMutableDictionary class] forKey:TSLibraryImageAdjustmentKey];
+	
+	// finish
+	[unarchiver finishDecoding];
+}
+
+/**
+ * Uses a keyed archiver to encode the current adjustments data.
+ */
+- (void) encodeAdjustmentsData {
+	NSMutableData *d = [NSMutableData new];
+	NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:d];
+	
+	// set the version and data
+	[archiver encodeInteger:TSLibraryImageVersion
+					 forKey:TSLibraryImageVersionKey];
+	
+	[archiver encodeObject:self.adjustments
+					forKey:TSLibraryImageAdjustmentKey];
+	
+	// finish
+	[archiver finishEncoding];
+	
+	self.rawAdjustmentData = [d copy];
 }
 
 #pragma mark KVO

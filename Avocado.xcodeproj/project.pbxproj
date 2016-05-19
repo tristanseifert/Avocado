@@ -40,6 +40,7 @@
 		6A9224281CECC6DE00EE6408 /* TSDevelopHueInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A9224261CECC6DE00EE6408 /* TSDevelopHueInspector.xib */; };
 		6A92242C1CED242200EE6408 /* TSDevelopDetailInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A92242A1CED242200EE6408 /* TSDevelopDetailInspector.m */; };
 		6A92242D1CED242200EE6408 /* TSDevelopDetailInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A92242B1CED242200EE6408 /* TSDevelopDetailInspector.xib */; };
+		6A9224311CEE192000EE6408 /* TSExposureAdjustmentFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A9224301CEE192000EE6408 /* TSExposureAdjustmentFilter.m */; };
 		6AA9358C1CE787D9004E9F9C /* TSDevelopImageViewerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA935871CE787D9004E9F9C /* TSDevelopImageViewerController.m */; };
 		6AA9358D1CE787D9004E9F9C /* TSDevelopImageViewerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AA935881CE787D9004E9F9C /* TSDevelopImageViewerController.xib */; };
 		6AA9358E1CE787D9004E9F9C /* TSDevelopSidebarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA9358A1CE787D9004E9F9C /* TSDevelopSidebarController.m */; };
@@ -62,12 +63,10 @@
 		6ABC2DAC1CD4357E006B959F /* TSLibraryAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DA11CD4357E006B959F /* TSLibraryAlbum.m */; };
 		6ABC2DAD1CD4357E006B959F /* TSLibraryAlbumCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DA31CD4357E006B959F /* TSLibraryAlbumCollection.m */; };
 		6ABC2DAE1CD4357E006B959F /* TSLibraryExportService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DA51CD4357E006B959F /* TSLibraryExportService.m */; };
-		6ABC2DB01CD4357E006B959F /* TSLibraryImageAdjustment.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DA91CD4357E006B959F /* TSLibraryImageAdjustment.m */; };
 		6ABC2DB11CD4357E006B959F /* TSLibraryTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DAB1CD4357E006B959F /* TSLibraryTag.m */; };
 		6ABC2DBE1CD43586006B959F /* _TSLibraryAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DB31CD43586006B959F /* _TSLibraryAlbum.m */; };
 		6ABC2DBF1CD43586006B959F /* _TSLibraryAlbumCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DB51CD43586006B959F /* _TSLibraryAlbumCollection.m */; };
 		6ABC2DC01CD43586006B959F /* _TSLibraryExportService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DB71CD43586006B959F /* _TSLibraryExportService.m */; };
-		6ABC2DC21CD43586006B959F /* _TSLibraryImageAdjustment.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DBB1CD43586006B959F /* _TSLibraryImageAdjustment.m */; };
 		6ABC2DC31CD43586006B959F /* _TSLibraryTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DBD1CD43586006B959F /* _TSLibraryTag.m */; };
 		6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */; };
 		6AE87BCC1CD275C90053CD9D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BCB1CD275C90053CD9D /* main.m */; };
@@ -170,6 +169,8 @@
 		6A9224291CED242200EE6408 /* TSDevelopDetailInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSDevelopDetailInspector.h; path = "Library Window/Single Image/Inspectors/TSDevelopDetailInspector.h"; sourceTree = "<group>"; };
 		6A92242A1CED242200EE6408 /* TSDevelopDetailInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSDevelopDetailInspector.m; path = "Library Window/Single Image/Inspectors/TSDevelopDetailInspector.m"; sourceTree = "<group>"; };
 		6A92242B1CED242200EE6408 /* TSDevelopDetailInspector.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSDevelopDetailInspector.xib; path = "Library Window/Single Image/Inspectors/TSDevelopDetailInspector.xib"; sourceTree = "<group>"; };
+		6A92242F1CEE192000EE6408 /* TSExposureAdjustmentFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSExposureAdjustmentFilter.h; path = "Avocado/Image Processing/Filters/Exposure/TSExposureAdjustmentFilter.h"; sourceTree = "<group>"; };
+		6A9224301CEE192000EE6408 /* TSExposureAdjustmentFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSExposureAdjustmentFilter.m; path = "Avocado/Image Processing/Filters/Exposure/TSExposureAdjustmentFilter.m"; sourceTree = "<group>"; };
 		6AA935861CE787D9004E9F9C /* TSDevelopImageViewerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSDevelopImageViewerController.h; path = "Library Window/Single Image/TSDevelopImageViewerController.h"; sourceTree = "<group>"; };
 		6AA935871CE787D9004E9F9C /* TSDevelopImageViewerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSDevelopImageViewerController.m; path = "Library Window/Single Image/TSDevelopImageViewerController.m"; sourceTree = "<group>"; };
 		6AA935881CE787D9004E9F9C /* TSDevelopImageViewerController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSDevelopImageViewerController.xib; path = "Library Window/Single Image/TSDevelopImageViewerController.xib"; sourceTree = "<group>"; };
@@ -214,8 +215,6 @@
 		6ABC2DA31CD4357E006B959F /* TSLibraryAlbumCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryAlbumCollection.m; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryAlbumCollection.m"; sourceTree = "<group>"; };
 		6ABC2DA41CD4357E006B959F /* TSLibraryExportService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryExportService.h; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryExportService.h"; sourceTree = "<group>"; };
 		6ABC2DA51CD4357E006B959F /* TSLibraryExportService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryExportService.m; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryExportService.m"; sourceTree = "<group>"; };
-		6ABC2DA81CD4357E006B959F /* TSLibraryImageAdjustment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryImageAdjustment.h; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImageAdjustment.h"; sourceTree = "<group>"; };
-		6ABC2DA91CD4357E006B959F /* TSLibraryImageAdjustment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryImageAdjustment.m; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImageAdjustment.m"; sourceTree = "<group>"; };
 		6ABC2DAA1CD4357E006B959F /* TSLibraryTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryTag.h; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryTag.h"; sourceTree = "<group>"; };
 		6ABC2DAB1CD4357E006B959F /* TSLibraryTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryTag.m; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryTag.m"; sourceTree = "<group>"; };
 		6ABC2DB21CD43586006B959F /* _TSLibraryAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _TSLibraryAlbum.h; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryAlbum.h"; sourceTree = "<group>"; };
@@ -226,8 +225,6 @@
 		6ABC2DB71CD43586006B959F /* _TSLibraryExportService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryExportService.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryExportService.m"; sourceTree = "<group>"; };
 		6ABC2DB81CD43586006B959F /* _TSLibraryImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _TSLibraryImage.h; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImage.h"; sourceTree = "<group>"; };
 		6ABC2DB91CD43586006B959F /* _TSLibraryImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryImage.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImage.m"; sourceTree = "<group>"; };
-		6ABC2DBA1CD43586006B959F /* _TSLibraryImageAdjustment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _TSLibraryImageAdjustment.h; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImageAdjustment.h"; sourceTree = "<group>"; };
-		6ABC2DBB1CD43586006B959F /* _TSLibraryImageAdjustment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryImageAdjustment.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImageAdjustment.m"; sourceTree = "<group>"; };
 		6ABC2DBC1CD43586006B959F /* _TSLibraryTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _TSLibraryTag.h; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryTag.h"; sourceTree = "<group>"; };
 		6ABC2DBD1CD43586006B959F /* _TSLibraryTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryTag.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryTag.m"; sourceTree = "<group>"; };
 		6AC3E7CF1CDD6A880099B932 /* TSRawImageDataHelpers.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = TSRawImageDataHelpers.h; path = "Avocado/RAW Processing/TSRawImageDataHelpers.h"; sourceTree = "<group>"; };
@@ -327,6 +324,7 @@
 			children = (
 				6A06F44A1CE0205D001DFC4C /* TSCoreImageFilter.h */,
 				6A06F44B1CE0205D001DFC4C /* TSCoreImageFilter.m */,
+				6A92242E1CEE18CA00EE6408 /* Exposure */,
 				6A6ED4181CE4D195001EFA21 /* Hue/Saturation */,
 			);
 			name = Filters;
@@ -443,6 +441,15 @@
 				6A7EC3CA1CD685AF007E91E8 /* TSThumbCache.m */,
 			);
 			name = "Thumb Handling";
+			sourceTree = "<group>";
+		};
+		6A92242E1CEE18CA00EE6408 /* Exposure */ = {
+			isa = PBXGroup;
+			children = (
+				6A92242F1CEE192000EE6408 /* TSExposureAdjustmentFilter.h */,
+				6A9224301CEE192000EE6408 /* TSExposureAdjustmentFilter.m */,
+			);
+			name = Exposure;
 			sourceTree = "<group>";
 		};
 		6AA935961CE7AA44004E9F9C /* Inspector */ = {
@@ -583,8 +590,6 @@
 				6ABC2DB71CD43586006B959F /* _TSLibraryExportService.m */,
 				6ABC2DB81CD43586006B959F /* _TSLibraryImage.h */,
 				6ABC2DB91CD43586006B959F /* _TSLibraryImage.m */,
-				6ABC2DBA1CD43586006B959F /* _TSLibraryImageAdjustment.h */,
-				6ABC2DBB1CD43586006B959F /* _TSLibraryImageAdjustment.m */,
 				6ABC2DBC1CD43586006B959F /* _TSLibraryTag.h */,
 				6ABC2DBD1CD43586006B959F /* _TSLibraryTag.m */,
 				6ABC2D9A1CD42C4A006B959F /* _TSLibraryImage.h */,
@@ -602,8 +607,6 @@
 				6ABC2DA31CD4357E006B959F /* TSLibraryAlbumCollection.m */,
 				6ABC2DA41CD4357E006B959F /* TSLibraryExportService.h */,
 				6ABC2DA51CD4357E006B959F /* TSLibraryExportService.m */,
-				6ABC2DA81CD4357E006B959F /* TSLibraryImageAdjustment.h */,
-				6ABC2DA91CD4357E006B959F /* TSLibraryImageAdjustment.m */,
 				6ABC2DAA1CD4357E006B959F /* TSLibraryTag.h */,
 				6ABC2DAB1CD4357E006B959F /* TSLibraryTag.m */,
 				6ABC2D9D1CD42C56006B959F /* TSLibraryImage.h */,
@@ -985,6 +988,7 @@
 			files = (
 				6AE87BCC1CD275C90053CD9D /* main.m in Sources */,
 				6AEC35121CD43E070033DE0A /* TSMainLibraryWindowController.m in Sources */,
+				6A9224311CEE192000EE6408 /* TSExposureAdjustmentFilter.m in Sources */,
 				6AA9358C1CE787D9004E9F9C /* TSDevelopImageViewerController.m in Sources */,
 				6AEC350C1CD437170033DE0A /* TSCoreDataStore.m in Sources */,
 				6A7EC3CB1CD685AF007E91E8 /* TSThumbCache.m in Sources */,
@@ -1035,9 +1039,7 @@
 				6ABC2DBF1CD43586006B959F /* _TSLibraryAlbumCollection.m in Sources */,
 				6A28F0631CD8190600228067 /* TSRawPipeline.mm in Sources */,
 				6A28F0681CD940E500228067 /* TSPixelFormatConverter.m in Sources */,
-				6ABC2DC21CD43586006B959F /* _TSLibraryImageAdjustment.m in Sources */,
 				6A92242C1CED242200EE6408 /* TSDevelopDetailInspector.m in Sources */,
-				6ABC2DB01CD4357E006B959F /* TSLibraryImageAdjustment.m in Sources */,
 				6A06F4481CE01C3C001DFC4C /* TSCoreImagePipelineJob.m in Sources */,
 				6AA9359E1CE7AF43004E9F9C /* TSDevelopExposureInspector.m in Sources */,
 			);

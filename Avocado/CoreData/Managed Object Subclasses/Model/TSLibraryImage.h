@@ -1,5 +1,14 @@
 #import "_TSLibraryImage.h"
 
+/// current adjustment dictionary version
+extern const NSUInteger TSLibraryImageVersion;
+
+#pragma mark Exposure Adjustment
+/// exposure adjustments
+extern NSString  * _Nonnull const TSAdjustmentKeyExposure;
+/// adjustment of exposure, in EV
+extern NSString  * _Nonnull const TSAdjustmentKeyExposureEV;
+
 /**
  * Enum holding the 'type' of the image, as determined by which rendering
  * pipeline it will use.
@@ -29,12 +38,12 @@ typedef NS_ENUM(short, TSLibraryImageRotation) {
 /**
  * Key/value dictionary containing the image metadata.
  */
-@property (nonatomic) NSDictionary *metadata;
+@property (nonatomic) NSDictionary * _Nonnull metadata;
 
 /**
  * URL of the source file.
  */
-@property (nonatomic) NSURL *fileUrl;
+@property (nonatomic) NSURL * _Nonnull fileUrl;
 
 /**
  * Kind of image. See the `TSLibraryImageType` description for more info.
@@ -62,5 +71,11 @@ typedef NS_ENUM(short, TSLibraryImageRotation) {
  * Determines whether the image is rotated.
  */
 @property (nonatomic, readonly) TSLibraryImageRotation rotation;
+
+/**
+ * Adjustments applied on the image; each key represents a particular
+ * filter, with a subdictionary containing all of its input values.
+ */
+@property (nonatomic, strong, nullable) NSMutableDictionary<NSString *, NSMutableDictionary *> *adjustments;
 
 @end
