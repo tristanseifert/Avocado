@@ -18,6 +18,15 @@ NSString * const TSLibraryImageVersionKey = @"TSLibraryImageVersion";
 NSString * const TSAdjustmentKeyExposure = @"TSAdjustmentExposure";
 NSString * const TSAdjustmentKeyExposureEV = @"TSAdjustmentExposureEV";
 
+NSString  * _Nonnull const TSAdjustmentKeyNoiseReduction = @"TSAdjustmentNoiseReduction";
+NSString * _Nonnull const TSAdjustmentKeyNoiseReductionLevel = @"TSAdjustmentNoiseReductionLevel";
+NSString * _Nonnull const TSAdjustmentKeyNoiseReductionSharpness = @"TSAdjustmentNoiseReductionSharpness";
+
+NSString * _Nonnull const TSAdjustmentKeySharpen = @"TSAdjustmentSharpen";
+NSString * _Nonnull const TSAdjustmentKeySharpenLuminance = @"TSAdjustmentSharpenLuminance";
+NSString * _Nonnull const TSAdjustmentKeySharpenRadius = @"TSAdjustmentSharpenRadius";
+NSString * _Nonnull const TSAdjustmentKeySharpenIntensity = @"TSAdjustmentSharpenIntensity";
+
 
 /// context indicating that the date shot has changed
 static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
@@ -106,14 +115,39 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
  * Loads/creates the default adjustments data.
  */
 - (void) loadDefaultAdjustments {
+	NSMutableDictionary *filter;
+	
 	// create adjusments dict
 	self.adjustments = [NSMutableDictionary new];
 	
 	// create exposure adjustments
-	self.adjustments[TSAdjustmentKeyExposure] = [NSMutableDictionary new];
-	self.adjustments[TSAdjustmentKeyExposure][TSAdjustmentKeyExposureEV] = @0.f;
+	filter = [NSMutableDictionary new];
 	
-	// save
+	filter[TSAdjustmentKeyExposureEV] = @0.f;
+	
+	self.adjustments[TSAdjustmentKeyExposure] = filter;
+	
+	// create noise reduction adjustments
+	filter = [NSMutableDictionary new];
+	
+	filter[TSAdjustmentKeyNoiseReductionLevel] = @0.02f;
+	filter[TSAdjustmentKeyNoiseReductionSharpness] = @0.4f;
+	
+	self.adjustments[TSAdjustmentKeyNoiseReduction] = filter;
+	
+	// create sharpening adjustments
+	filter = [NSMutableDictionary new];
+	
+	filter[TSAdjustmentKeySharpenLuminance] = @0.4f;
+	
+	filter[TSAdjustmentKeySharpenRadius] = @2.5f;
+	filter[TSAdjustmentKeySharpenIntensity] = @0.5f;
+	
+	self.adjustments[TSAdjustmentKeySharpen] = filter;
+	
+	
+	// save the data pls
+	DDLogDebug(@"Default adjustments for %p: %@", self, self.adjustments);
 	[self encodeAdjustmentsData];
 }
 

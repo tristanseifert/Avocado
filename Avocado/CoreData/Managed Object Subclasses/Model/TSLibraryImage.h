@@ -6,8 +6,29 @@ extern const NSUInteger TSLibraryImageVersion;
 #pragma mark Exposure Adjustment
 /// exposure adjustments
 extern NSString  * _Nonnull const TSAdjustmentKeyExposure;
-/// adjustment of exposure, in EV
+/// adjustment of exposure, in EV [-5, 5]
 extern NSString  * _Nonnull const TSAdjustmentKeyExposureEV;
+
+#pragma mark Noise Reduction
+/// noise reduction adjustments
+extern NSString  * _Nonnull const TSAdjustmentKeyNoiseReduction;
+
+/// noise reduction level [0, 1]
+extern NSString * _Nonnull const TSAdjustmentKeyNoiseReductionLevel;
+/// noise reduction sharpness [0, 1]
+extern NSString * _Nonnull const TSAdjustmentKeyNoiseReductionSharpness;
+
+#pragma mark Sharpening
+/// Sharpening
+extern NSString * _Nonnull const TSAdjustmentKeySharpen;
+
+/// Luminance sharpening amount [0, 1]
+extern NSString * _Nonnull const TSAdjustmentKeySharpenLuminance;
+/// Unsharp mask radius [0, 5]
+extern NSString * _Nonnull const TSAdjustmentKeySharpenRadius;
+/// Unsharp mask radius [0, 1]
+extern NSString * _Nonnull const TSAdjustmentKeySharpenIntensity;
+
 
 /**
  * Enum holding the 'type' of the image, as determined by which rendering

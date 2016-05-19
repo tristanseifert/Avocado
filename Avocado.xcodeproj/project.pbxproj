@@ -41,6 +41,8 @@
 		6A92242C1CED242200EE6408 /* TSDevelopDetailInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A92242A1CED242200EE6408 /* TSDevelopDetailInspector.m */; };
 		6A92242D1CED242200EE6408 /* TSDevelopDetailInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A92242B1CED242200EE6408 /* TSDevelopDetailInspector.xib */; };
 		6A9224311CEE192000EE6408 /* TSExposureAdjustmentFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A9224301CEE192000EE6408 /* TSExposureAdjustmentFilter.m */; };
+		6A9224351CEE394400EE6408 /* TSNoiseReductionAdjustmentFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A9224341CEE394400EE6408 /* TSNoiseReductionAdjustmentFilter.m */; };
+		6A9224381CEE39AD00EE6408 /* TSSharpeningAdjustmentFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A9224371CEE39AD00EE6408 /* TSSharpeningAdjustmentFilter.m */; };
 		6AA9358C1CE787D9004E9F9C /* TSDevelopImageViewerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA935871CE787D9004E9F9C /* TSDevelopImageViewerController.m */; };
 		6AA9358D1CE787D9004E9F9C /* TSDevelopImageViewerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AA935881CE787D9004E9F9C /* TSDevelopImageViewerController.xib */; };
 		6AA9358E1CE787D9004E9F9C /* TSDevelopSidebarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA9358A1CE787D9004E9F9C /* TSDevelopSidebarController.m */; };
@@ -171,6 +173,10 @@
 		6A92242B1CED242200EE6408 /* TSDevelopDetailInspector.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSDevelopDetailInspector.xib; path = "Library Window/Single Image/Inspectors/TSDevelopDetailInspector.xib"; sourceTree = "<group>"; };
 		6A92242F1CEE192000EE6408 /* TSExposureAdjustmentFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSExposureAdjustmentFilter.h; path = "Avocado/Image Processing/Filters/Exposure/TSExposureAdjustmentFilter.h"; sourceTree = "<group>"; };
 		6A9224301CEE192000EE6408 /* TSExposureAdjustmentFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSExposureAdjustmentFilter.m; path = "Avocado/Image Processing/Filters/Exposure/TSExposureAdjustmentFilter.m"; sourceTree = "<group>"; };
+		6A9224331CEE394400EE6408 /* TSNoiseReductionAdjustmentFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSNoiseReductionAdjustmentFilter.h; path = "Avocado/Image Processing/Filters/NR and Sharpening/TSNoiseReductionAdjustmentFilter.h"; sourceTree = "<group>"; };
+		6A9224341CEE394400EE6408 /* TSNoiseReductionAdjustmentFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSNoiseReductionAdjustmentFilter.m; path = "Avocado/Image Processing/Filters/NR and Sharpening/TSNoiseReductionAdjustmentFilter.m"; sourceTree = "<group>"; };
+		6A9224361CEE39AD00EE6408 /* TSSharpeningAdjustmentFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSSharpeningAdjustmentFilter.h; path = "Avocado/Image Processing/Filters/NR and Sharpening/TSSharpeningAdjustmentFilter.h"; sourceTree = "<group>"; };
+		6A9224371CEE39AD00EE6408 /* TSSharpeningAdjustmentFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSSharpeningAdjustmentFilter.m; path = "Avocado/Image Processing/Filters/NR and Sharpening/TSSharpeningAdjustmentFilter.m"; sourceTree = "<group>"; };
 		6AA935861CE787D9004E9F9C /* TSDevelopImageViewerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSDevelopImageViewerController.h; path = "Library Window/Single Image/TSDevelopImageViewerController.h"; sourceTree = "<group>"; };
 		6AA935871CE787D9004E9F9C /* TSDevelopImageViewerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSDevelopImageViewerController.m; path = "Library Window/Single Image/TSDevelopImageViewerController.m"; sourceTree = "<group>"; };
 		6AA935881CE787D9004E9F9C /* TSDevelopImageViewerController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSDevelopImageViewerController.xib; path = "Library Window/Single Image/TSDevelopImageViewerController.xib"; sourceTree = "<group>"; };
@@ -324,6 +330,7 @@
 			children = (
 				6A06F44A1CE0205D001DFC4C /* TSCoreImageFilter.h */,
 				6A06F44B1CE0205D001DFC4C /* TSCoreImageFilter.m */,
+				6A9224321CEE392500EE6408 /* NR and Sharpening */,
 				6A92242E1CEE18CA00EE6408 /* Exposure */,
 				6A6ED4181CE4D195001EFA21 /* Hue/Saturation */,
 			);
@@ -450,6 +457,17 @@
 				6A9224301CEE192000EE6408 /* TSExposureAdjustmentFilter.m */,
 			);
 			name = Exposure;
+			sourceTree = "<group>";
+		};
+		6A9224321CEE392500EE6408 /* NR and Sharpening */ = {
+			isa = PBXGroup;
+			children = (
+				6A9224331CEE394400EE6408 /* TSNoiseReductionAdjustmentFilter.h */,
+				6A9224341CEE394400EE6408 /* TSNoiseReductionAdjustmentFilter.m */,
+				6A9224361CEE39AD00EE6408 /* TSSharpeningAdjustmentFilter.h */,
+				6A9224371CEE39AD00EE6408 /* TSSharpeningAdjustmentFilter.m */,
+			);
+			name = "NR and Sharpening";
 			sourceTree = "<group>";
 		};
 		6AA935961CE7AA44004E9F9C /* Inspector */ = {
@@ -996,6 +1014,7 @@
 				6ABC2DBE1CD43586006B959F /* _TSLibraryAlbum.m in Sources */,
 				6AEC76731CD50DDD00870FAE /* TSImportUIController.m in Sources */,
 				6AE87C211CD3D5460053CD9D /* TSRawImage.m in Sources */,
+				6A9224351CEE394400EE6408 /* TSNoiseReductionAdjustmentFilter.m in Sources */,
 				6A9224271CECC6DE00EE6408 /* TSDevelopHueInspector.m in Sources */,
 				6AA935991CE7AA75004E9F9C /* TSInspectorViewItem.m in Sources */,
 				6AB32EA11CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m in Sources */,
@@ -1039,6 +1058,7 @@
 				6ABC2DBF1CD43586006B959F /* _TSLibraryAlbumCollection.m in Sources */,
 				6A28F0631CD8190600228067 /* TSRawPipeline.mm in Sources */,
 				6A28F0681CD940E500228067 /* TSPixelFormatConverter.m in Sources */,
+				6A9224381CEE39AD00EE6408 /* TSSharpeningAdjustmentFilter.m in Sources */,
 				6A92242C1CED242200EE6408 /* TSDevelopDetailInspector.m in Sources */,
 				6A06F4481CE01C3C001DFC4C /* TSCoreImagePipelineJob.m in Sources */,
 				6AA9359E1CE7AF43004E9F9C /* TSDevelopExposureInspector.m in Sources */,
