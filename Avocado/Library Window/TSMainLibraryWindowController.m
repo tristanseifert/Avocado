@@ -84,16 +84,21 @@
 					
 					oid = [psc managedObjectIDForURIRepresentation:self.lastDevelopImage];
 					
-					TSLibraryImage *im = [ctx existingObjectWithID:oid error:&err];
-					
-					// set the image
-					if(im && err == nil) {
-						[self activateViewController:self.vcEdit animated:NO];
+					if(oid != nil) {
+						TSLibraryImage *im = [ctx existingObjectWithID:oid error:&err];
 						
-						self.vcEdit.image = im;
+						// set the image
+						if(im && err == nil) {
+							[self activateViewController:self.vcEdit animated:NO];
+							
+							self.vcEdit.image = im;
+						} else {
+							DDLogError(@"Couldn't unarchive image with URI %@: %@", self.lastDevelopImage, err);
+							
+							[self activateViewController:self.vcOverview animated:NO];
+						}
 					} else {
-						DDLogError(@"Couldn't unarchive image with URI %@: %@", self.lastDevelopImage, err);
-						
+						DDLogWarn(@"Got invalid object id (null), going to light table view instead");
 						[self activateViewController:self.vcOverview animated:NO];
 					}
 				});

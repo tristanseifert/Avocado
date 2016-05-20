@@ -91,9 +91,6 @@ NSString * _Nonnull const TSAdjustmentKeySharpenMedianFilter = @"TSAdjustmentSha
 - (void) willTurnIntoFault {
 	[super willTurnIntoFault];
 	
-	// encode the adjustments dictionary
-	[self encodeAdjustmentsData];
-	
 	// remove KVO observers (fuck this shit)
 	[self removeKVO];
 	
@@ -420,9 +417,7 @@ NSString * _Nonnull const TSAdjustmentKeySharpenMedianFilter = @"TSAdjustmentSha
 	_adjustments = adjustments;
 	
 	// save
-	if(self.ignoreAdjustmentChanges == NO) {
-		DDLogVerbose(@"Adjustments data setter called for %p (thread %@)\n%@", self, [NSThread currentThread].name, [NSThread callStackSymbols]);
-		
+	if(self.ignoreAdjustmentChanges == NO) {		
 		[self encodeAdjustmentsData];
 	}
 }
