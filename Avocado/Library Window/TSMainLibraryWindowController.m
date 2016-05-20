@@ -62,20 +62,6 @@
 	// load restorable state
 	[self readStateFromDisk];
 	
-	// do the thing
-	NSArray<TSLibraryImage *> *all = [TSLibraryImage MR_findAll];
-	
-	[all enumerateObjectsUsingBlock:^(TSLibraryImage *mainIm, NSUInteger idx, BOOL *stop) {
-//		[MagicalRecord saveWithBlock:^(NSManagedObjectContext *ctx) {
-//			TSLibraryImage *im = [mainIm MR_inContext:ctx];
-//			
-//			im.uuid = [NSUUID new].UUIDString;
-//			[im loadDefaultAdjustments];
-//		}];
-		
-		DDLogDebug(@"Data for %p: %@ %@", mainIm, mainIm.adjustments, mainIm.rawAdjustmentData);
-	}];
-	
 	// figure out what view controller to show
 	switch(self.activeVC) {
 		// light table

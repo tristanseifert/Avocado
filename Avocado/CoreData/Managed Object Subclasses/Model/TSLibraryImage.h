@@ -55,8 +55,6 @@ typedef NS_ENUM(short, TSLibraryImageRotation) {
 
 @interface TSLibraryImage : _TSLibraryImage {}
 
-- (void) loadDefaultAdjustments;
-
 /**
  * Key/value dictionary containing the image metadata.
  */

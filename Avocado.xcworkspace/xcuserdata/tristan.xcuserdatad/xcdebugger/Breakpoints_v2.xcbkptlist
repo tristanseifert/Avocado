@@ -430,11 +430,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Avocado/Library Window/TSMainLibraryWindowController.m"
-            timestampString = "485389622.936424"
+            timestampString = "485401831.669173"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "234"
-            endingLineNumber = "234"
+            startingLineNumber = "220"
+            endingLineNumber = "220"
             landmarkName = "-appWillTerminate:"
             landmarkType = "5">
          </BreakpointContent>

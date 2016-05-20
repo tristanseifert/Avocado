@@ -7,6 +7,9 @@
 #import <Quartz/Quartz.h>
 #import <Cocoa/Cocoa.h>
 
+/// context indicating that the date shot has changed
+static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
+/// context indicating that the image adjustments dictionary has changed
 static void *TSLibraryImageAdjustmentsKVOCtx = &TSLibraryImageAdjustmentsKVOCtx;
 
 /// current adjustments version
@@ -30,16 +33,15 @@ NSString * _Nonnull const TSAdjustmentKeySharpenRadius = @"TSAdjustmentSharpenRa
 NSString * _Nonnull const TSAdjustmentKeySharpenIntensity = @"TSAdjustmentSharpenIntensity";
 NSString * _Nonnull const TSAdjustmentKeySharpenMedianFilter = @"TSAdjustmentSharpenMedianFilter";
 
-
-/// context indicating that the date shot has changed
-static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
-
 @interface TSLibraryImage ()
 
 /// cached LibRAW handle for this file. This may be released after a while.
 @property (nonatomic, readonly) TSRawImage *libRawHandle;
 /// cached ImageIO metadata
 @property (nonatomic, readonly) NSDictionary *imageIOMetadata;
+
+/// when set, any changes to the adjustments data are ignored
+@property (nonatomic) BOOL ignoreAdjustmentChanges;
 
 - (void) commonInit;
 
@@ -58,6 +60,7 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 @synthesize rotation = _imageRotationFromMetadata;
 @synthesize imageIOMetadata = _imageIOMetadataCache;
 @synthesize adjustments = _adjustments;
+@synthesize ignoreAdjustmentChanges = _ignoreAdjustmentChanges;
 
 #pragma mark Lifecycle
 /**
@@ -67,9 +70,6 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 	[super awakeFromFetch];
 	
 	[self commonInit];
-	
-	// decode stored adjustments data
-	[self decodeAdjustmentsData];
 }
 
 /**
@@ -166,13 +166,13 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
  */
 - (void) decodeAdjustmentsData {
 	// if there is no data to decode, exit
-	if(self.rawAdjustmentData == nil) {
-		DDLogWarn(@"There is n o adjustment data; this shouldn't happen.");
+	if(self.pvtAdjustmentData == nil) {
+		DDLogWarn(@"There is no adjustment data; this shouldn't happen.");
 		return;
 	}
 	
 	// decode existing data
-	NSKeyedUnarchiver *unarchiver = [NSKeyedUnarchiver unarchiveObjectWithData:self.rawAdjustmentData];
+	NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:self.pvtAdjustmentData];
 	unarchiver.requiresSecureCoding = YES;
 	
 	// check version
@@ -183,7 +183,11 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 	}
 	
 	// decode adjustments
+	self.ignoreAdjustmentChanges = YES;
+
 	self.adjustments = [unarchiver decodeObjectOfClass:[NSDictionary class] forKey:TSLibraryImageAdjustmentKey];
+	
+	self.ignoreAdjustmentChanges = NO;
 	
 	// finish
 	[unarchiver finishDecoding];
@@ -205,10 +209,10 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 	[archiver encodeObject:self.adjustments
 					forKey:TSLibraryImageAdjustmentKey];
 	
-	// finish
+	// finish and store raw data
 	[archiver finishEncoding];
 	
-	self.rawAdjustmentData = [d copy];
+	self.pvtAdjustmentData = d;
 }
 
 #pragma mark KVO
@@ -218,8 +222,8 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 - (void) addKVO {
 	[self addObserver:self forKeyPath:@"dateShot" options:0
 			  context:TSLibraryImageDateShotKVOCtx];
-	[self addObserver:self forKeyPath:@"adjustments" options:0
-			  context:TSLibraryImageAdjustmentsKVOCtx];
+//	[self addObserver:self forKeyPath:@"adjustments" options:0
+//			  context:TSLibraryImageAdjustmentsKVOCtx];
 	
 }
 
@@ -248,7 +252,9 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 	}
 	// adjustments changed
 	else if(context == TSLibraryImageAdjustmentsKVOCtx) {
-		DDLogVerbose(@"Adjustments data changed for %p", self);
+		if(self.ignoreAdjustmentChanges == YES) return;
+		
+		DDLogVerbose(@"Adjustments data changed for %p\n%@", self, [NSThread callStackSymbols]);
 		[self encodeAdjustmentsData];
 	}
 	// superclass handles other KVO
@@ -383,6 +389,46 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 	
 	// return our internal cache
 	return _imageIOMetadataCache;
+}
+
+/**
+ * Returns adjustment data; if it doesn't exist, it tries to load it, and if
+ * that fails, simply returns the defaults.
+ */
+- (NSDictionary<NSString *, NSDictionary<NSString *, id> *> *) adjustments {
+	if(_adjustments == nil) {
+		// try to load stored adjustments data
+		[self decodeAdjustmentsData];
+		
+		if(_adjustments != nil) {
+			return _adjustments;
+		}
+		
+		// otherwise, load the defaults
+		[self loadDefaultAdjustments];
+	}
+	
+	// return the stored adjustment data
+	return _adjustments;
+}
+
+/**
+ * Sets the adjustment data; calling this firstly stores it, then updates
+ * the internal data representation.
+ */
+- (void) setAdjustments:(NSDictionary<NSString *,NSDictionary<NSString *,id> *> *) adjustments {
+	_adjustments = adjustments;
+	
+	// save
+	if(self.ignoreAdjustmentChanges == NO) {
+		DDLogVerbose(@"Adjustments data setter called for %p (thread %@)\n%@", self, [NSThread currentThread].name, [NSThread callStackSymbols]);
+		
+		[self encodeAdjustmentsData];
+	}
+}
+
++ (NSSet *) keyPathsForValuesAffectingAdjustments {
+	return [NSSet setWithObject:@"pvtAdjustmentData"];
 }
 
 @end
