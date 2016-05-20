@@ -39,7 +39,6 @@
                     <rect key="frame" x="80" y="173" width="188" height="20"/>
                     <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="vcT-cY-BNv"/>
                     <connections>
-                        <action selector="takeDoubleValueFrom:" target="itQ-a9-1Im" id="wDU-Bv-a7d"/>
                         <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentNoiseReductionLevel" id="stN-an-76T"/>
                     </connections>
                 </slider>
@@ -58,7 +57,8 @@
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                     <connections>
-                        <action selector="takeDoubleValueFrom:" target="KoM-gi-2rc" id="u6m-ox-vMx"/>
+                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentNoiseReductionLevel" id="tW4-uJ-Wjb"/>
+                        <outlet property="nextKeyView" destination="gQE-DR-gsJ" id="d4f-EH-ANn"/>
                     </connections>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bbF-Bc-h1S">
@@ -73,7 +73,6 @@
                     <rect key="frame" x="80" y="150" width="188" height="20"/>
                     <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="hHS-3q-tSu"/>
                     <connections>
-                        <action selector="takeDoubleValueFrom:" target="gQE-DR-gsJ" id="nwV-Rz-kVS"/>
                         <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentNoiseReductionSharpness" id="DCH-mY-kf6"/>
                     </connections>
                 </slider>
@@ -89,7 +88,8 @@
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                     <connections>
-                        <action selector="takeDoubleValueFrom:" target="mtD-oa-Tvr" id="mcX-lK-Kro"/>
+                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentNoiseReductionSharpness" id="l7f-uX-CXZ"/>
+                        <outlet property="nextKeyView" destination="fam-Xb-jam" id="JR5-Rt-IYU"/>
                     </connections>
                 </textField>
                 <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="XAM-o2-roX" userLabel="Horizontal Line Separator">
@@ -118,7 +118,6 @@
                     <rect key="frame" x="80" y="89" width="188" height="20"/>
                     <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="vrW-Jx-rjq"/>
                     <connections>
-                        <action selector="takeDoubleValueFrom:" target="fam-Xb-jam" id="5iP-26-sW1"/>
                         <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentSharpenLuminance" id="hTC-m5-9LY"/>
                     </connections>
                 </slider>
@@ -134,7 +133,8 @@
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                     <connections>
-                        <action selector="takeDoubleValueFrom:" target="iV4-Jd-Vop" id="LG0-CK-RPw"/>
+                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentSharpenLuminance" id="1iW-BW-QI8"/>
+                        <outlet property="nextKeyView" destination="8uY-g1-xkW" id="Iso-gw-jum"/>
                     </connections>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hhW-ye-9hV">
@@ -149,7 +149,6 @@
                     <rect key="frame" x="80" y="66" width="188" height="20"/>
                     <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="25" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="uJ6-L0-k7Y"/>
                     <connections>
-                        <action selector="takeDoubleValueFrom:" target="8uY-g1-xkW" id="MoC-bV-aOx"/>
                         <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentSharpenRadius" id="0Zu-23-d0O"/>
                     </connections>
                 </slider>
@@ -165,7 +164,8 @@
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                     <connections>
-                        <action selector="takeDoubleValueFrom:" target="NOJ-Bg-2iI" id="At1-nm-SAE"/>
+                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentSharpenRadius" id="wsi-q8-pz4"/>
+                        <outlet property="nextKeyView" destination="zHv-ag-Rq6" id="Dpe-dl-wr1"/>
                     </connections>
                 </textField>
                 <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="gEq-t5-Pg7" userLabel="Horizontal Line Separator">
@@ -175,13 +175,14 @@
                     <font key="titleFont" metaFont="system"/>
                 </box>
                 <button translatesAutoresizingMaskIntoConstraints="NO" id="xgt-oF-NxP">
-                    <rect key="frame" x="77" y="7" width="90" height="18"/>
+                    <rect key="frame" x="77" y="7" width="92" height="18"/>
                     <buttonCell key="cell" type="check" title="Median Filter" bezelStyle="regularSquare" imagePosition="left" controlSize="small" state="on" inset="2" id="p7K-Ca-V9p">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="smallSystem"/>
+                        <font key="font" metaFont="systemMedium" size="11"/>
                     </buttonCell>
                     <connections>
                         <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentSharpenMedianFilter" id="Xfo-Ah-MgC"/>
+                        <outlet property="nextKeyView" destination="itQ-a9-1Im" id="CA8-1b-8j5"/>
                     </connections>
                 </button>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="xEe-Pf-WNo">
@@ -196,7 +197,6 @@
                     <rect key="frame" x="80" y="43" width="188" height="20"/>
                     <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="bn0-pU-uXg"/>
                     <connections>
-                        <action selector="takeDoubleValueFrom:" target="zHv-ag-Rq6" id="qoC-sg-Mdq"/>
                         <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentSharpenIntensity" id="A1T-R2-mf2"/>
                     </connections>
                 </slider>
@@ -212,7 +212,8 @@
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                     <connections>
-                        <action selector="takeDoubleValueFrom:" target="Esg-mq-GeT" id="zem-cU-0Ql"/>
+                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentSharpenIntensity" id="5B1-IE-0bw"/>
+                        <outlet property="nextKeyView" destination="xgt-oF-NxP" id="tMz-7o-dyU"/>
                     </connections>
                 </textField>
             </subviews>

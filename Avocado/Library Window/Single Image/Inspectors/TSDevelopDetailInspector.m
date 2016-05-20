@@ -150,10 +150,20 @@ static NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 		
 		// set it back
 		im.adjustments = [adjustments copy];
+	} completion:^(BOOL saved, NSError *err) {
+		// if the context was saved, perform the "settings changed" block
+		if(saved) {
+			if(self.settingsChangeBlock) {
+				self.settingsChangeBlock();
+			}
+		} else {
+			DDLogError(@"Error saving image: %@", err);
+			
+			[NSApp presentError:err modalForWindow:self.view.window
+					   delegate:nil didPresentSelector:nil
+					contextInfo:nil];
+		}
 	}];
-	
-	// do the things
-	DDLogVerbose(@"Requesting image re-render due to settings change: %@ (from %@)", self.settings, self);
 }
 
 @end

@@ -22,7 +22,7 @@ static void *TSUpdateParamsCtx = &TSUpdateParamsCtx;
 @implementation TSNoiseReductionAdjustmentFilter
 
 /**
- * Initializes the exposure adjustment filter.
+ * Initializes the noise reduction filter.
  */
 - (instancetype) init {
 	if(self = [super init]) {
@@ -40,6 +40,22 @@ static void *TSUpdateParamsCtx = &TSUpdateParamsCtx;
 	}
 	
 	return self;
+}
+
+/**
+ * Removes KVO.
+ */
+- (void) dealloc {
+	@try {
+		[self removeObserver:self forKeyPath:@"filterInput"];
+	} @catch(NSException* __unused) { }
+	
+	@try {
+		[self removeObserver:self forKeyPath:@"noiseLevel"];
+	} @catch(NSException* __unused) { }
+	@try {
+		[self removeObserver:self forKeyPath:@"sharpening"];
+	} @catch(NSException* __unused) { }
 }
 
 /**

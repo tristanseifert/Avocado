@@ -19,6 +19,8 @@
 
 #import "TSHumanModels.h"
 
+#import "TSLibraryImage+CoreImagePipeline.h"
+
 #import "NSBlockOperation+AvocadoUtils.h"
 #import "NSColorSpace+ExtraColourSpaces.h"
 
@@ -28,6 +30,7 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import <CoreImage/CoreImage.h>
 #import <Accelerate/Accelerate.h>
+#import <MagicalRecord/MagicalRecord.h>
 
 /**
  * When set to a non-zero value, information about the time taken for each of
@@ -69,6 +72,8 @@
 
 /// raw stage cache; this holds a data object that contains each plane
 @property (nonatomic) NSMutableData *rawStageCache;
+/// half size raw stage cache; each plane, but at half size.
+@property (nonatomic) NSMutableData *halfSizeRawStageCache;
 /// UUID of the image for which the cache is valid
 @property (nonatomic) NSString *rawCacheImageUuid;
 /// pixel format converter
@@ -152,6 +157,7 @@
 	free(self.interpolatedColourBuf);
 }
 
+#pragma mark Job Submission
 /**
  * Queues the given library image (must be a RAW file) onto the processing
  * queue, with the given callback.
@@ -233,8 +239,6 @@
 	// create the pipeline state
 	state = [TSRawPipelineState new];
 	
-	state.image = image;
-	state.imageUuid = image.uuid;
 	state.stage = TSRawPipelineStageInitializing;
 	state.shouldCache = cache;
 	
@@ -243,18 +247,28 @@
 	state.completionCallback = complete;
 	state.progressCallback = progress;
 	
-	state.rawImage = image.libRawHandle;
 	state.interpolatedColourBuf = self.interpolatedColourBuf;
 	
 	state.histogramBuf = (int *) valloc(sizeof(int) * 4 * 0x2000);
 	state.gammaCurveBuf = (uint16_t *) valloc(sizeof(uint16_t) * 0x10000);
 	
-	state.outputSize = state.rawImage.size;
-	
 	state.applyLensCorrections = NO;
 	state.lcLens = nil;
 	state.lcModifier = nil;
 	
+	// set up the context
+	state.mocCtx = [NSManagedObjectContext MR_context];
+	state.mocCtx.name = [NSString stringWithFormat:@"%@ %@/%@", [self className], self, state];
+	
+	state.image = [image MR_inContext:state.mocCtx];
+	
+	// get some data out of the image data
+	[state.mocCtx performBlockAndWait:^{
+		state.imageUuid = state.image.uuid;
+		state.rawImage = state.image.libRawHandle;
+		
+		state.outputSize = state.rawImage.size;
+	}];
 	
 	// check if we can resume the processing operation
 	if(cache && self.rawStageCache != nil && self.rawCacheImageUuid == image.uuid) {
@@ -715,6 +729,11 @@
 		
 		// produce a job object
 		job = [[TSCoreImagePipelineJob alloc] initWithInput:state.coreImageInput];
+		
+		// create the filter chain
+		[state.mocCtx performBlockAndWait:^{
+			[state.image TSCIPipelineSetUpJob:job];
+		}];
 		
 		// process it pls
 		im = [self.ciPipeline produceImageFromJob:job

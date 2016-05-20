@@ -15,6 +15,12 @@
 #import <CoreImage/CoreImage.h>
 #import <AppKit/AppKit.h>
 
+/**
+ * When set to a nonzero value, information about buffer allocation will
+ * be logged.
+ */
+#define LogBufferAllocations	0
+
 @interface TSCoreImagePipeline ()
 
 /// CoreImage context; hardware-accelerated processing for filters
@@ -35,7 +41,7 @@ static void TSCoreImagePipelineFreeBuffer(void *info, const void *data, size_t s
 		// set up CoreImage context
 		NSDictionary *ciOptions = @{
 			// request GPU rendering if possible
-			kCIContextUseSoftwareRenderer: @YES,
+			kCIContextUseSoftwareRenderer: @NO,
 			// use 128bpp floating point RGBA format
 			kCIContextWorkingFormat: @(kCIFormatRGBAf),
 		};
@@ -118,8 +124,10 @@ static void TSCoreImagePipelineFreeBuffer(void *info, const void *data, size_t s
 				  bounds:job.result.extent format:fmt
 			  colorSpace:colourSpace.CGColorSpace];
 	
+#if LogBufferAllocations
 	DDLogDebug(@"Allocating %li bytes for image size %@ (bpp = %li, bytes/row = %li)", bufSz, NSStringFromSize(job.result.extent.size), bitsPerPixel, bytesPerRow);
 	DDLogDebug(@"Buffer = %p", buf);
+#endif
 	
 	
 	// create a direct access provider (with the buffer) and a CGImage

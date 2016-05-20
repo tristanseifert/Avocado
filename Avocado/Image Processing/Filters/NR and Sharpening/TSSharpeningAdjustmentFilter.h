@@ -24,6 +24,6 @@
 /// sharpening radius for unsharp mask [0, 25]
 @property (nonatomic) CGFloat sharpenRadius;
 /// sharpening intensity [0, 1]
-@property (nonatomic) CGFloat sharpIntensity;
+@property (nonatomic) CGFloat sharpenIntensity;
 
 @end

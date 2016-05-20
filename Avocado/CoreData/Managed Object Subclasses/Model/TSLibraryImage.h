@@ -6,6 +6,7 @@ extern const NSUInteger TSLibraryImageVersion;
 #pragma mark Exposure Adjustment
 /// exposure adjustments
 extern NSString  * _Nonnull const TSAdjustmentKeyExposure;
+
 /// adjustment of exposure, in EV [-5, 5]
 extern NSString  * _Nonnull const TSAdjustmentKeyExposureEV;
 

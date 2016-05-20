@@ -14,6 +14,7 @@
 
 #import "lensfun.h"
 
+@class NSManagedObjectContext;
 @class CIImage;
 @class TSLibraryImage;
 @class TSRawImage;
@@ -24,6 +25,8 @@
 /// a progress object with which to track progress
 @property (nonatomic) NSProgress *progress;
 
+/// managed object context on which to access the image
+@property (nonatomic) NSManagedObjectContext *mocCtx;
 /// library image that is being processed
 @property (nonatomic, strong) TSLibraryImage *image;
 /// UUID of the image

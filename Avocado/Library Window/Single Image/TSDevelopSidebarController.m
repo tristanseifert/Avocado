@@ -7,6 +7,7 @@
 //
 
 #import "TSDevelopSidebarController.h"
+#import "TSDevelopImageViewerController.h"
 
 #import "TSHumanModels.h"
 #import "TSHistogramView.h"
@@ -43,11 +44,21 @@ static void *TSImageKVO = &TSImageKVO;
 	if(self = [super initWithNibName:@"TSDevelopSidebarController" bundle:nil]) {
 		// set up exposure inspector
 		self.inspectorExposure = [[TSDevelopExposureInspector alloc] init];
-		
-		// set up hue
+		// set up HSL inspector
 		self.inspectorHue = [[TSDevelopHueInspector alloc] init];
-		// set up detail
+		// set up detail inspector
 		self.inspectorDetail = [[TSDevelopDetailInspector alloc] init];
+		
+		// assign the re-rendering block
+		void (^reRenderBlock)(void) = ^ {
+			// this just causes the image controller to re-process the image
+			[self.imageViewer processCurrentImage];
+		};
+		
+		self.inspectorExposure.settingsChangeBlock = reRenderBlock;
+		self.inspectorHue.settingsChangeBlock = reRenderBlock;
+		self.inspectorDetail.settingsChangeBlock = reRenderBlock;
+		
 		// add KVO
 		[self addObserver:self forKeyPath:@"displayedImage"
 				  options:0 context:TSDisplayedImageKVO];

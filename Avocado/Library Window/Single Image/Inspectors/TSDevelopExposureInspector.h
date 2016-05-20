@@ -8,15 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class TSLibraryImage;
-@interface TSDevelopExposureInspector : NSViewController
+#import "TSDevelopInspector.h"
 
-/// settings dictionary
-@property (nonatomic) NSMutableDictionary<NSString *, id> *settings;
-
-/// selected image
-@property (nonatomic, weak) TSLibraryImage *activeImage;
-/// output of last render pass
-@property (nonatomic, weak) NSImage *renderedImage;
+@interface TSDevelopExposureInspector : TSDevelopInspector
 
 @end

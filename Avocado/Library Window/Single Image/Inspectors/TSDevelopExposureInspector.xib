@@ -31,7 +31,6 @@
                     <rect key="frame" x="80" y="207" width="188" height="20"/>
                     <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-5" maxValue="5" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Yee-XK-BGL"/>
                     <connections>
-                        <action selector="takeDoubleValueFrom:" target="QSu-p7-CNw" id="vZn-gC-Ik0"/>
                         <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentExposureEV" id="N6W-SR-Y2y"/>
                     </connections>
                 </slider>
@@ -50,7 +49,8 @@
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                     <connections>
-                        <action selector="takeDoubleValueFrom:" target="2bF-Pl-prG" id="BeX-Jq-Gcg"/>
+                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentExposureEV" id="mrv-GY-Vsv"/>
+                        <outlet property="nextKeyView" destination="DzL-g5-d5l" id="HAr-Sw-9ys"/>
                     </connections>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="aOF-c7-Sab">
@@ -81,6 +81,7 @@
                     </textFieldCell>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="c0n-vc-mXl" id="xcr-mz-57Y"/>
+                        <outlet property="nextKeyView" destination="kGV-ad-gN5" id="rm0-WO-Ykh"/>
                     </connections>
                 </textField>
                 <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="kDX-C8-I6z" userLabel="Horizontal Line Separator">
@@ -117,6 +118,7 @@
                     </textFieldCell>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="Jdm-aB-xqr" id="ruE-2S-jpk"/>
+                        <outlet property="nextKeyView" destination="hwS-L2-yEx" id="brq-jx-OgW"/>
                     </connections>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="csS-Or-5Xp">
@@ -147,6 +149,7 @@
                     </textFieldCell>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="je0-d4-KHW" id="vhh-xk-CQ7"/>
+                        <outlet property="nextKeyView" destination="bAS-WQ-mYV" id="OwC-kN-tIa"/>
                     </connections>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RvW-Ai-lea">
@@ -177,6 +180,7 @@
                     </textFieldCell>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="bOx-97-Cu0" id="h0H-EB-cV0"/>
+                        <outlet property="nextKeyView" destination="AhU-HY-Gbd" id="FjV-5F-fGw"/>
                     </connections>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fkc-bR-QH2">
@@ -207,6 +211,7 @@
                     </textFieldCell>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="nHS-v3-48F" id="jqd-Rw-cz4"/>
+                        <outlet property="nextKeyView" destination="bj1-RP-22u" id="ges-Ms-ujM"/>
                     </connections>
                 </textField>
                 <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="4fG-n4-kTF" userLabel="Horizontal Line Separator">
@@ -243,6 +248,7 @@
                     </textFieldCell>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="f7B-1x-qbC" id="ZIU-r3-Pul"/>
+                        <outlet property="nextKeyView" destination="OzR-OW-VAX" id="M2X-2T-evz"/>
                     </connections>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WYX-Fj-ovU">
@@ -273,6 +279,7 @@
                     </textFieldCell>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="zVa-2f-h03" id="K22-bc-Kc0"/>
+                        <outlet property="nextKeyView" destination="QSu-p7-CNw" id="gNt-qh-Vqz"/>
                     </connections>
                 </textField>
             </subviews>

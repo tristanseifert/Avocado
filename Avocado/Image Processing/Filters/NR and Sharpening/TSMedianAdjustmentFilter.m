@@ -1,26 +1,24 @@
 //
-//  TSExposureAdjustmentFilter.m
+//  TSMedianAdjustmentFilter.m
 //  Avocado
 //
 //  Created by Tristan Seifert on 20160519.
 //  Copyright © 2016 Tristan Seifert. All rights reserved.
 //
 
-#import "TSExposureAdjustmentFilter.h"
+#import "TSMedianAdjustmentFilter.h"
 
 #import <CoreImage/CoreImage.h>
 
 static void *TSInputKVOCtx = &TSInputKVOCtx;
-static void *TSUpdateParamsCtx = &TSUpdateParamsCtx;
 
-@interface TSExposureAdjustmentFilter ()
+@interface TSMedianAdjustmentFilter ()
 
-/// exposure adjustment filter
-@property (nonatomic) CIFilter *expoFilter;
+@property (nonatomic) CIFilter *medianFilter;
 
 @end
 
-@implementation TSExposureAdjustmentFilter
+@implementation TSMedianAdjustmentFilter
 
 /**
  * Initializes the exposure adjustment filter.
@@ -28,14 +26,11 @@ static void *TSUpdateParamsCtx = &TSUpdateParamsCtx;
 - (instancetype) init {
 	if(self = [super init]) {
 		// create the filter.
-		self.expoFilter = [CIFilter filterWithName:@"CIExposureAdjust"];
+		self.medianFilter = [CIFilter filterWithName:@"CIMedianFilter"];
 		
 		// add KVO
 		[self addObserver:self forKeyPath:@"filterInput"
 				  options:0 context:TSInputKVOCtx];
-		
-		[self addObserver:self forKeyPath:@"evAdjustment"
-				  options:0 context:TSUpdateParamsCtx];
 	}
 	
 	return self;
@@ -48,10 +43,6 @@ static void *TSUpdateParamsCtx = &TSUpdateParamsCtx;
 	@try {
 		[self removeObserver:self forKeyPath:@"filterInput"];
 	} @catch(NSException* __unused) { }
-	
-	@try {
-		[self removeObserver:self forKeyPath:@"evAdjustment"];
-	} @catch(NSException* __unused) { }
 }
 
 /**
@@ -63,24 +54,19 @@ static void *TSUpdateParamsCtx = &TSUpdateParamsCtx;
 						context:(void *) context {
 	// input image changed
 	if(context == TSInputKVOCtx) {
-		[self.expoFilter setValue:self.filterInput
-						   forKey:kCIInputImageKey];
-	}
-	// a filter input changed, so update its parameters
-	else if(context == TSUpdateParamsCtx) {
-		[self.expoFilter setValue:@(self.evAdjustment)
-						   forKey:kCIInputEVKey];
+		[self.medianFilter setValue:self.filterInput
+							 forKey:kCIInputImageKey];
 	}
 }
 
 /// Category for this filter
 - (TSCoreImageFilterCategory) category {
-	return TSFilterCategoryColourAdjustment;
+	return TSFilterCategoryNoiseReduceBlur;
 }
 
 /// Returns the filter output
 - (CIImage *) filterOutput {
-	return [self.expoFilter valueForKey:kCIOutputImageKey];
+	return [self.medianFilter valueForKey:kCIOutputImageKey];
 }
 
 @end

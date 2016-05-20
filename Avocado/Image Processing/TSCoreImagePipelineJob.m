@@ -113,7 +113,7 @@
 	// iterate over each of the sets with the same block
 	void (^setIterator)(TSCoreImageFilter*, NSUInteger, BOOL*) = ^(TSCoreImageFilter *filter, NSUInteger idx, BOOL *stop) {
 		// if we had a previous filter, connect its output to this input
-		if(lastFilter == nil) {
+		if(lastFilter != nil) {
 			[self connectInputOfFilter:filter toFilterOutput:lastFilter];
 		}
 		// connect its input to the input image

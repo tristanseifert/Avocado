@@ -23,7 +23,7 @@ static void *TSUpdateParamsCtx = &TSUpdateParamsCtx;
 @implementation TSSharpeningAdjustmentFilter
 
 /**
- * Initializes the exposure adjustment filter.
+ * Initializes the sharpening filter.
  */
 - (instancetype) init {
 	if(self = [super init]) {
@@ -39,11 +39,30 @@ static void *TSUpdateParamsCtx = &TSUpdateParamsCtx;
 				  options:0 context:TSUpdateParamsCtx];
 		[self addObserver:self forKeyPath:@"sharpenRadius"
 				  options:0 context:TSUpdateParamsCtx];
-		[self addObserver:self forKeyPath:@"sharpIntensity"
+		[self addObserver:self forKeyPath:@"sharpenIntensity"
 				  options:0 context:TSUpdateParamsCtx];
 	}
 	
 	return self;
+}
+
+/**
+ * Removes KVO.
+ */
+- (void) dealloc {
+	@try {
+		[self removeObserver:self forKeyPath:@"filterInput"];
+	} @catch(NSException* __unused) { }
+	
+	@try {
+		[self removeObserver:self forKeyPath:@"lumaSharpening"];
+	} @catch(NSException* __unused) { }
+	@try {
+		[self removeObserver:self forKeyPath:@"sharpenRadius"];
+	} @catch(NSException* __unused) { }
+	@try {
+		[self removeObserver:self forKeyPath:@"sharpenIntensity"];
+	} @catch(NSException* __unused) { }
 }
 
 /**
@@ -67,7 +86,7 @@ static void *TSUpdateParamsCtx = &TSUpdateParamsCtx;
 		
 		[self.unsharpMask setValue:@(self.sharpenRadius)
 							forKey:kCIInputRadiusKey];
-		[self.unsharpMask setValue:@(self.sharpIntensity)
+		[self.unsharpMask setValue:@(self.sharpenIntensity)
 							forKey:kCIInputIntensityKey];
 	}
 }
