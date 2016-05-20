@@ -46,6 +46,8 @@
 		6A92243B1CEEAE8300EE6408 /* TSLibraryImage+CoreImagePipeline.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A92243A1CEEAE8300EE6408 /* TSLibraryImage+CoreImagePipeline.m */; };
 		6A92243F1CEEB67700EE6408 /* TSDevelopInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A92243E1CEEB67700EE6408 /* TSDevelopInspector.m */; };
 		6A9224421CEEB89000EE6408 /* TSMedianAdjustmentFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A9224411CEEB89000EE6408 /* TSMedianAdjustmentFilter.m */; };
+		6A9224471CEEBC5300EE6408 /* TSDevelopLoadingIndicatorWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A9224451CEEBC5300EE6408 /* TSDevelopLoadingIndicatorWindowController.m */; };
+		6A9224481CEEBC5300EE6408 /* TSDevelopLoadingIndicatorWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A9224461CEEBC5300EE6408 /* TSDevelopLoadingIndicatorWindowController.xib */; };
 		6AA9358C1CE787D9004E9F9C /* TSDevelopImageViewerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA935871CE787D9004E9F9C /* TSDevelopImageViewerController.m */; };
 		6AA9358D1CE787D9004E9F9C /* TSDevelopImageViewerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AA935881CE787D9004E9F9C /* TSDevelopImageViewerController.xib */; };
 		6AA9358E1CE787D9004E9F9C /* TSDevelopSidebarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA9358A1CE787D9004E9F9C /* TSDevelopSidebarController.m */; };
@@ -186,6 +188,9 @@
 		6A92243E1CEEB67700EE6408 /* TSDevelopInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSDevelopInspector.m; path = "Image Processing/Filters/TSDevelopInspector.m"; sourceTree = "<group>"; };
 		6A9224401CEEB89000EE6408 /* TSMedianAdjustmentFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSMedianAdjustmentFilter.h; path = "Avocado/Image Processing/Filters/NR and Sharpening/TSMedianAdjustmentFilter.h"; sourceTree = "<group>"; };
 		6A9224411CEEB89000EE6408 /* TSMedianAdjustmentFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSMedianAdjustmentFilter.m; path = "Avocado/Image Processing/Filters/NR and Sharpening/TSMedianAdjustmentFilter.m"; sourceTree = "<group>"; };
+		6A9224441CEEBC5300EE6408 /* TSDevelopLoadingIndicatorWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSDevelopLoadingIndicatorWindowController.h; path = "Library Window/Single Image/TSDevelopLoadingIndicatorWindowController.h"; sourceTree = "<group>"; };
+		6A9224451CEEBC5300EE6408 /* TSDevelopLoadingIndicatorWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSDevelopLoadingIndicatorWindowController.m; path = "Library Window/Single Image/TSDevelopLoadingIndicatorWindowController.m"; sourceTree = "<group>"; };
+		6A9224461CEEBC5300EE6408 /* TSDevelopLoadingIndicatorWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSDevelopLoadingIndicatorWindowController.xib; path = "Library Window/Single Image/TSDevelopLoadingIndicatorWindowController.xib"; sourceTree = "<group>"; };
 		6AA935861CE787D9004E9F9C /* TSDevelopImageViewerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSDevelopImageViewerController.h; path = "Library Window/Single Image/TSDevelopImageViewerController.h"; sourceTree = "<group>"; };
 		6AA935871CE787D9004E9F9C /* TSDevelopImageViewerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSDevelopImageViewerController.m; path = "Library Window/Single Image/TSDevelopImageViewerController.m"; sourceTree = "<group>"; };
 		6AA935881CE787D9004E9F9C /* TSDevelopImageViewerController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSDevelopImageViewerController.xib; path = "Library Window/Single Image/TSDevelopImageViewerController.xib"; sourceTree = "<group>"; };
@@ -490,6 +495,16 @@
 			name = Superclass;
 			sourceTree = "<group>";
 		};
+		6A9224431CEEBC3200EE6408 /* Loading Overlay Window */ = {
+			isa = PBXGroup;
+			children = (
+				6A9224441CEEBC5300EE6408 /* TSDevelopLoadingIndicatorWindowController.h */,
+				6A9224451CEEBC5300EE6408 /* TSDevelopLoadingIndicatorWindowController.m */,
+				6A9224461CEEBC5300EE6408 /* TSDevelopLoadingIndicatorWindowController.xib */,
+			);
+			name = "Loading Overlay Window";
+			sourceTree = "<group>";
+		};
 		6AA935961CE7AA44004E9F9C /* Inspector */ = {
 			isa = PBXGroup;
 			children = (
@@ -747,6 +762,7 @@
 				6AA935891CE787D9004E9F9C /* TSDevelopSidebarController.h */,
 				6AA9358A1CE787D9004E9F9C /* TSDevelopSidebarController.m */,
 				6AA9358B1CE787D9004E9F9C /* TSDevelopSidebarController.xib */,
+				6A9224431CEEBC3200EE6408 /* Loading Overlay Window */,
 				6AA9359A1CE7AF25004E9F9C /* Inspectors */,
 				6A6ED4111CE20595001EFA21 /* UI Components */,
 			);
@@ -929,6 +945,7 @@
 				6AA9359F1CE7AF43004E9F9C /* TSDevelopExposureInspector.xib in Resources */,
 				6A9224281CECC6DE00EE6408 /* TSDevelopHueInspector.xib in Resources */,
 				6AEC76781CD50E6E00870FAE /* TSImportPanelAccessory.xib in Resources */,
+				6A9224481CEEBC5300EE6408 /* TSDevelopLoadingIndicatorWindowController.xib in Resources */,
 				6AEC35131CD43E070033DE0A /* TSMainLibraryWindow.xib in Resources */,
 				6AA9358D1CE787D9004E9F9C /* TSDevelopImageViewerController.xib in Resources */,
 				6AEC35421CD443460033DE0A /* TSLibraryOverview.xib in Resources */,
@@ -1054,6 +1071,7 @@
 				6A1307CC1CDA4A6E00FFC99A /* TSRawPipelineState.mm in Sources */,
 				6AA935A81CE7DD68004E9F9C /* TSFlippedClipView.m in Sources */,
 				6AA935951CE7A6A4004E9F9C /* TSInspectorViewController.m in Sources */,
+				6A9224471CEEBC5300EE6408 /* TSDevelopLoadingIndicatorWindowController.m in Sources */,
 				6AA935AB1CE81A35004E9F9C /* TSRawImageDataHelpers.m in Sources */,
 				6AB32E9C1CDE4574004FF7A3 /* lmmse_interpolate.m in Sources */,
 				6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */,

@@ -10,9 +10,9 @@
 
 #import "TSDevelopImageViewerController.h"
 #import "TSDevelopSidebarController.h"
+#import "TSMainLibraryWindowController.h"
 
 #import "TSHumanModels.h"
-#import "TSMainLibraryWindowController.h"
 
 /// minimum width of the sidebar
 static const CGFloat TSEditSidebarMinWidth = 250.f;

@@ -8,6 +8,7 @@
 
 #import "TSDevelopImageViewerController.h"
 #import "TSDevelopSidebarController.h"
+#import "TSDevelopLoadingIndicatorWindowController.h"
 
 #import "TSBufferOwningBitmapRep.h"
 #import "TSHumanModels.h"
@@ -27,6 +28,11 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 
 @property (nonatomic) TSRawPipeline *pipelineRaw;
 
+@property (nonatomic) BOOL shouldAdjustImageSize;
+
+// loading controller
+@property (nonatomic) TSDevelopLoadingIndicatorWindowController *loadController;
+
 - (void) updateImageView;
 
 @end
@@ -45,6 +51,9 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 		
 		// set up rendering pipelines
 		self.pipelineRaw = [TSRawPipeline new];
+		
+		// set up load controller
+		self.loadController = [TSDevelopLoadingIndicatorWindowController new];
 	}
 	
 	return self;
@@ -64,6 +73,25 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 	self.scrollView.documentView = self.imageDisplayView;
 }
 
+/**
+ * When the view appears, add the loading window as a subwindow.
+ */
+- (void) viewWillAppear {
+	[super viewWillAppear];
+	
+	[self.view.window addChildWindow:self.loadController.window
+							 ordered:NSWindowAbove];
+}
+
+/**
+ * When the view disappeared, hide the loading window.
+ */
+- (void) viewDidDisappear {
+	[super viewDidDisappear];
+	
+	[self.view.window removeChildWindow:self.loadController.window];
+}
+
 #pragma mark KVO
 /**
  * Handles KVO, including that for the image changing.
@@ -79,6 +107,10 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 		
 		// if there is a new image, process it
 		if(self.image != nil) {
+			// cause the view to be resized
+			self.shouldAdjustImageSize = YES;
+	
+			// process image
 			[self processCurrentImage];
 		}
 	}
@@ -116,10 +148,12 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 	((NSView *) self.scrollView.documentView).frame = self.imageDisplayView.frame;
 	
 	// zoom out to fit the image
-	CGFloat xFactor = NSWidth(self.scrollView.bounds) / imageSize.width;
-	CGFloat yFactor = NSHeight(self.scrollView.bounds) / imageSize.height;
+	if(self.shouldAdjustImageSize == YES) {
+		CGFloat xFactor = NSWidth(self.scrollView.bounds) / imageSize.width;
+		CGFloat yFactor = NSHeight(self.scrollView.bounds) / imageSize.height;
 	
-	self.scrollView.magnification = MIN(xFactor, yFactor);
+		self.scrollView.magnification = MIN(xFactor, yFactor);
+	}
 }
 
 /**
@@ -127,6 +161,9 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
  */
 - (void) processCurrentImage {
 	DDAssert(self.image != nil, @"Image cannot be nil");
+	
+	// show loading indicator
+	[self.loadController showLoadingWindowInView:self.view withAnimation:YES];
 	
 	// deallocate previous image
 	if(self.displayedImage != nil) {
@@ -154,6 +191,11 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 			} else {
 				DDLogError(@"Error processing image: %@", err);
 			}
+			
+			// hide and disallow further view resizing
+			self.shouldAdjustImageSize = NO;
+			
+			[self.loadController hideLoadingWindowWithAnimation:YES];
 		} progressCallback:^(TSRawPipelineStage stage) {
 			
 		} conversionProgress:nil];
