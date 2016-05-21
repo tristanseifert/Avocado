@@ -9,6 +9,7 @@
 #import "TSDevelopImageViewerController.h"
 #import "TSDevelopSidebarController.h"
 #import "TSDevelopLoadingIndicatorWindowController.h"
+#import "TSThumbCache.h"
 
 #import "TSBufferOwningBitmapRep.h"
 #import "TSHumanModels.h"
@@ -109,6 +110,13 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 		if(self.image != nil) {
 			// cause the view to be resized
 			self.shouldAdjustImageSize = YES;
+			
+			// get a thumbnail
+			CGFloat s = MAX(NSWidth(self.view.bounds), NSHeight(self.view.bounds));
+			
+			[[TSThumbCache sharedInstance] getThumbForImage:self.image withSize:NSMakeSize(s, s) andCallback:^(NSImage *thumb) {
+				self.displayedImage = thumb;
+			}];
 	
 			// process image
 			[self processCurrentImage];

@@ -46,7 +46,7 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 		[self addObserver:self forKeyPath:@"activeImage"
 				  options:0 context:TSActiveImageKVOCtx];
 		
-		self.ignoreChanges = NO;
+		self.ignoreChanges = YES;
 		[self addAdjustmentKVO];
 	}
 	

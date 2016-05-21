@@ -242,6 +242,8 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	curve.fillColor = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:TSCurveFillAlpha].CGColor;
 	curve.strokeColor = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:TSCurveStrokeAlpha].CGColor;
 	
+	curve.lineJoin = kCALineJoinRound;
+	
 	curve.lineWidth = 1.f;
 	curve.masksToBounds = YES;
 }
