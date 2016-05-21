@@ -1,5 +1,5 @@
 # Avocado
-A native OS X Lightroom alternative, with support for RAW file processing via `LibRaw.`
+A native OS X image catalog manager and editor, with support for RAW file processing via `LibRaw.` (This thing will eventually work kind of like a certain Adobe product, that has 'room' in its name. =P)
 
 ## Building
 The app can be built as normally via Xcode. All dependencies (installed via CocoaPods, and git submodules) must be installed beforehand, however. Several dependencies must also be built, in the following order:

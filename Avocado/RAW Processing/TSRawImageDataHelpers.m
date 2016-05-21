@@ -76,8 +76,9 @@ void TSRawCopyBayerData(libraw_data_t *libRaw, unsigned short cblack[4], unsigne
 		}
 		
 		// store the highest pixel value
-		if(*dmaxp < ldmax)
+		if(*dmaxp < ldmax) {
 			*dmaxp = ldmax;
+		}
 	}
 }
 
