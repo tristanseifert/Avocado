@@ -12,13 +12,13 @@
 
 @interface TSDevelopDetailInspector : TSDevelopInspector
 
-@property (nonatomic) CGFloat nrLevel;
-@property (nonatomic) CGFloat nrSharpness;
+@property (nonatomic) NSNumber *nrLevel;
+@property (nonatomic) NSNumber *nrSharpness;
 
-@property (nonatomic) CGFloat sharpenLuminance;
-@property (nonatomic) CGFloat sharpenRadius;
-@property (nonatomic) CGFloat sharpenIntensity;
+@property (nonatomic) NSNumber *sharpenLuminance;
+@property (nonatomic) NSNumber *sharpenRadius;
+@property (nonatomic) NSNumber *sharpenIntensity;
 
-@property (nonatomic) BOOL sharpenMedianFilter;
+@property (nonatomic) NSNumber *sharpenMedianFilter;
 
 @end

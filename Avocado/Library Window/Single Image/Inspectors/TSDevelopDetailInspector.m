@@ -46,6 +46,7 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 		[self addObserver:self forKeyPath:@"activeImage"
 				  options:0 context:TSActiveImageKVOCtx];
 		
+		self.ignoreChanges = NO;
 		[self addAdjustmentKVO];
 	}
 	
@@ -138,22 +139,22 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 	self.ignoreChanges = YES;
 	
 	// load noise reduction level
-	self.nrLevel = TSAdjustmentXDbl(self.activeImage, TSAdjustmentKeyNoiseReductionLevel);
+	self.nrLevel = TSAdjustmentX(self.activeImage, TSAdjustmentKeyNoiseReductionLevel);
 	// load noise reduction sharpness
-	self.nrSharpness = TSAdjustmentXDbl(self.activeImage, TSAdjustmentKeyNoiseReductionSharpness);
+	self.nrSharpness = TSAdjustmentX(self.activeImage, TSAdjustmentKeyNoiseReductionSharpness);
 	
 	// load sharpening — luminance
-	self.sharpenLuminance = TSAdjustmentXDbl(self.activeImage, TSAdjustmentKeySharpenLuminance);
+	self.sharpenLuminance = TSAdjustmentX(self.activeImage, TSAdjustmentKeySharpenLuminance);
 	// load sharpening — radius
-	self.sharpenRadius = TSAdjustmentXDbl(self.activeImage, TSAdjustmentKeySharpenRadius);
+	self.sharpenRadius = TSAdjustmentX(self.activeImage, TSAdjustmentKeySharpenRadius);
 	// load sharpening — intensity
-	self.sharpenIntensity = TSAdjustmentXDbl(self.activeImage, TSAdjustmentKeySharpenIntensity);
+	self.sharpenIntensity = TSAdjustmentX(self.activeImage, TSAdjustmentKeySharpenIntensity);
 	
 	// load median filter
-	self.sharpenMedianFilter = TSAdjustment(self.activeImage, TSAdjustmentKeySharpenMedianFilter).x.boolValue;
+	self.sharpenMedianFilter = TSAdjustmentX(self.activeImage, TSAdjustmentKeySharpenMedianFilter);
 	
 	// allow change handling again
-	self.ignoreChanges = YES;
+	self.ignoreChanges = NO;
 }
 
 /**
@@ -161,21 +162,21 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
  */
 - (void) saveAdjustmentData:(TSLibraryImage *) im {
 	// save noise reduction level
-	TSAdjustment(im, TSAdjustmentKeyNoiseReductionLevel).x = @(self.nrLevel);
+	TSAdjustmentX(im, TSAdjustmentKeyNoiseReductionLevel) = self.nrLevel;
 	
 	// save noise reduction sharpness
-	TSAdjustment(im, TSAdjustmentKeyNoiseReductionSharpness).x = @(self.nrSharpness);
+	TSAdjustmentX(im, TSAdjustmentKeyNoiseReductionSharpness) = self.nrSharpness;
 	
 	
 	// save sharpening — luminance
-	TSAdjustment(im, TSAdjustmentKeySharpenLuminance).x = @(self.sharpenLuminance);
+	TSAdjustmentX(im, TSAdjustmentKeySharpenLuminance) = self.sharpenLuminance;
 	// save sharpening — radius
-	TSAdjustment(im, TSAdjustmentKeySharpenRadius).x = @(self.sharpenRadius);
+	TSAdjustmentX(im, TSAdjustmentKeySharpenRadius) = self.sharpenRadius;
 	// save sharpening — intensity
-	TSAdjustment(im, TSAdjustmentKeySharpenIntensity).x = @(self.sharpenIntensity);
+	TSAdjustmentX(im, TSAdjustmentKeySharpenIntensity) = self.sharpenIntensity;
 	
 	// save median filter
-	TSAdjustment(im, TSAdjustmentKeySharpenMedianFilter).x = @(self.sharpenMedianFilter);
+	TSAdjustmentX(im, TSAdjustmentKeySharpenMedianFilter) = self.sharpenMedianFilter;
 }
 
 /**

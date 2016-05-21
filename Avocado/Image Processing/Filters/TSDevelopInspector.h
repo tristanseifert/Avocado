@@ -12,14 +12,14 @@
 #define TSAdjustment(im, key) \
 ((TSLibraryImageAdjustment *) [im.adjustments valueForKey:key])
 
-/// evaluates to the X value of an adjustment, as a double
-#define TSAdjustmentXDbl(im, key) TSAdjustment(im, key).x.doubleValue
-/// evaluates to the Y value of an adjustment, as a double
-#define TSAdjustmentYDbl(im, key) TSAdjustment(im, key).y.doubleValue
-/// evaluates to the Z value of an adjustment, as a double
-#define TSAdjustmentZDbl(im, key) TSAdjustment(im, key).z.doubleValue
-/// evaluates to the W value of an adjustment, as a double
-#define TSAdjustmentWDbl(im, key) TSAdjustment(im, key).w.doubleValue
+/// evaluates to the X value of an adjustment
+#define TSAdjustmentX(im, key) TSAdjustment(im, key).x
+/// evaluates to the Y value of an adjustment
+#define TSAdjustmentY(im, key) TSAdjustment(im, key).y
+/// evaluates to the Z value of an adjustment
+#define TSAdjustmentZ(im, key) TSAdjustment(im, key).z
+/// evaluates to the W value of an adjustment
+#define TSAdjustmentW(im, key) TSAdjustment(im, key).w
 
 @class TSLibraryImage;
 @interface TSDevelopInspector : NSViewController

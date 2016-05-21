@@ -45,6 +45,7 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 		[self addObserver:self forKeyPath:@"activeImage"
 				  options:0 context:TSActiveImageKVOCtx];
 		
+		self.ignoreChanges = NO;
 		[self addAdjustmentKVO];
 	}
 	
@@ -137,10 +138,10 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 	self.ignoreChanges = YES;
 	
 	// load exposure
-	self.exposureAdjustment = TSAdjustmentXDbl(self.activeImage, TSAdjustmentKeyExposureEV);
+	self.exposureAdjustment = TSAdjustmentX(self.activeImage, TSAdjustmentKeyExposureEV);
 	
 	// allow change handling again
-	self.ignoreChanges = YES;
+	self.ignoreChanges = NO;
 }
 
 /**
@@ -148,7 +149,7 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
  */
 - (void) saveAdjustmentData:(TSLibraryImage *) im {
 	// save exposure
-	TSAdjustment(im, TSAdjustmentKeyExposureEV).x = @(self.exposureAdjustment);
+	TSAdjustmentX(im, TSAdjustmentKeyExposureEV) = self.exposureAdjustment;
 }
 
 /**
