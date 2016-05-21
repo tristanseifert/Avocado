@@ -14,7 +14,7 @@ This library is needed as a dependency for Lensfun, as OS X does not ship with g
 
 You will need to acquire the gettext source separately, and place it into the Dependencies folder. gettext-0.19.7 is the version used.
 
-# glib
+### glib
 Because building glib is a _huge_ pain in the ass, a binary copy is provided, as compiled on OS X 10.11 Yosemite. It already has its install name and dependencies fixed so that it actually works.
 
 ### Lensfun
