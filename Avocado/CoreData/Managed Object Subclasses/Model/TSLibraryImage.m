@@ -161,10 +161,17 @@ NSString * _Nonnull const TSAdjustmentKeySharpenMedianFilter = @"tsAdjustmentSha
 		
 		// enumerate the values dict and set the appropriate key paths
 		[values enumerateKeysAndObjectsUsingBlock:^(NSString *adjKey, NSNumber *adjValue, BOOL *stop) {
-			[adj setValue:adjValue forKey:adjKey];
+			if([adjValue isKindOfClass:NSNumber.class]) {
+				[adj setValue:adjValue forKey:adjKey];
 			
-			DDLogDebug(@"Setting adjustment %@: %@ = %@", keyStr, adjKey, adjValue);
+				DDLogDebug(@"Setting adjustment %@: %@ = %@", keyStr, adjKey, adjValue);
+			} else {
+				DDLogWarn(@"Cannot set key %@ to %@ (type %@) on %@", adjKey, adjValue, NSStringFromClass(adjValue.class), keyStr);
+			}
 		}];
+		
+		// add to image
+		[self addPvtAdjustmentsObject:adj];
 	}];
 }
 

@@ -50,8 +50,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, nullable) id metadata;
 
-@property (nonatomic, strong, nullable) NSData* pvtAdjustmentData;
-
 @property (nonatomic, strong, nullable) NSString* pvtImageSize;
 
 @property (nonatomic, strong, nullable) NSString* thumbUUID;
@@ -122,9 +120,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (id)primitiveMetadata;
 - (void)setPrimitiveMetadata:(id)value;
 
-- (NSData*)primitivePvtAdjustmentData;
-- (void)setPrimitivePvtAdjustmentData:(NSData*)value;
-
 - (NSString*)primitivePvtImageSize;
 - (void)setPrimitivePvtImageSize:(NSString*)value;
 
@@ -153,7 +148,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)fileType;
 + (NSString *)fileUrl;
 + (NSString *)metadata;
-+ (NSString *)pvtAdjustmentData;
 + (NSString *)pvtImageSize;
 + (NSString *)thumbUUID;
 + (NSString *)uuid;

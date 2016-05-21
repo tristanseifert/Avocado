@@ -204,8 +204,24 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
  * Restores view options. Keys should be prefixed by some unique value.
  */
 - (void) restoreViewOptions:(NSKeyedUnarchiver *) unArchiver {
-	self.voThumbSize = [unArchiver decodeDoubleForKey:@"LightTable.ThumbSize"];
-	self.voSortKey = [unArchiver decodeIntegerForKey:@"LightTable.SortKey"];
+	// decode thumb size
+	CGFloat thumbSz = [unArchiver decodeDoubleForKey:@"LightTable.ThumbSize"];
+	
+	if(thumbSz >= 1 && thumbSz <= 6) {
+		self.voThumbSize = thumbSz;
+	} else {
+		self.voThumbSize = 3;
+	}
+	
+	// decode sort key state
+	NSInteger sortKey = [unArchiver decodeIntegerForKey:@"LightTable.SortKey"];
+	if(sortKey >= 1 && sortKey <= 3) {
+		self.voSortKey = sortKey;
+	} else {
+		self.voSortKey = 1;
+	}
+	
+	// get faroviting and thumb state
 	self.voShowFavoriting = [unArchiver decodeBoolForKey:@"LightTable.ShowFavoriteControls"];
 	
 	self.voExtractThumbs = [unArchiver decodeBoolForKey:@"LightTable.ExtractThumbs"];

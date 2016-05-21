@@ -10,27 +10,27 @@
 	<key>TSAdjustmentKeyNoiseReductionLevel</key>
 	<dict>
 		<key>x</key>
-		<string>0.02</string>
+		<real>0.02</real>
 	</dict>
 	<key>TSAdjustmentKeyNoiseReductionSharpness</key>
 	<dict>
 		<key>x</key>
-		<string>0.4</string>
+		<real>0.4</real>
 	</dict>
 	<key>TSAdjustmentKeySharpenLuminance</key>
 	<dict>
 		<key>x</key>
-		<string>0.4</string>
+		<real>0.4</real>
 	</dict>
 	<key>TSAdjustmentKeySharpenRadius</key>
 	<dict>
 		<key>x</key>
-		<string>2.5</string>
+		<real>2.5</real>
 	</dict>
 	<key>TSAdjustmentKeySharpenIntensity</key>
 	<dict>
 		<key>x</key>
-		<string>0.5</string>
+		<real>0.5</real>
 	</dict>
 	<key>TSAdjustmentKeySharpenMedianFilter</key>
 	<dict>

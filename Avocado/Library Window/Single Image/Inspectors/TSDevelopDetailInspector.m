@@ -16,12 +16,19 @@ static void *TSActiveImageKVOCtx = &TSActiveImageKVOCtx;
 static void *TSSettingsKVOCtx = &TSSettingsKVOCtx;
 
 /// delay between invocations of change that must pass to re-render image
-static NSTimeInterval TSSettingsChangeDebounce = 0.66f;
+static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
+
 
 @interface TSDevelopDetailInspector ()
 
-- (void) addSettingsKVO;
-- (void) removeSettingsKVO;
+/// when set, any changes to the image properties are ignored
+@property (nonatomic) BOOL ignoreChanges;
+
+- (void) loadAdjustmentData;
+- (void) saveAdjustmentData:(TSLibraryImage *) im;
+
+- (void) addAdjustmentKVO;
+- (void) removeAdjustmentKVO;
 
 - (void) settingsChanged;
 - (void) saveAfterSettingsChange;
@@ -38,9 +45,18 @@ static NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 		// add some KVO observers
 		[self addObserver:self forKeyPath:@"activeImage"
 				  options:0 context:TSActiveImageKVOCtx];
+		
+		[self addAdjustmentKVO];
 	}
 	
 	return self;
+}
+
+/**
+ * Performs some cleanup on deallocation.
+ */
+- (void) dealloc {
+	[self removeAdjustmentKVO];
 }
 
 /**
@@ -51,73 +67,27 @@ static NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 						context:(void *) context {
 	// image changed
 	if(context == TSActiveImageKVOCtx) {
-		// remove settings KVO
-		[self removeSettingsKVO];
-		
 		// cancel last invocation for settings change
 		[[self class] cancelPreviousPerformRequestsWithTarget:self
 													 selector:@selector(saveAfterSettingsChange)
 													   object:nil];
 		
-		// set image
+		// copy the image adjustments
 		if(self.activeImage) {
-			self.settings = [self.activeImage.adjustments[TSAdjustmentKeyDetail] mutableCopy];
-			[self addSettingsKVO];
-		} else {
-			// clear settings if no image present
-			self.settings = nil;
+			[self loadAdjustmentData];
 		}
 	}
 	// settings changed
 	else if(context == TSSettingsKVOCtx) {
-		[self settingsChanged];
+		if(self.ignoreChanges == NO) {
+			[self settingsChanged];
+		}
 	}
 	// anything else
 	else {
 		[super observeValueForKeyPath:keyPath ofObject:object
 							   change:change context:context];
 	}
-}
-
-/**
- * Adds KVO to the various settings dictionary keys.
- */
-- (void) addSettingsKVO {
-	NSArray<NSString *> *keys = @[
-		TSAdjustmentKeyNoiseReductionLevel,
-		TSAdjustmentKeyNoiseReductionSharpness,
-		TSAdjustmentKeySharpenLuminance,
-		TSAdjustmentKeySharpenRadius,
-		TSAdjustmentKeySharpenIntensity,
-		TSAdjustmentKeySharpenMedianFilter
-	];
-	
-	[keys enumerateObjectsUsingBlock:^(NSString *key, NSUInteger idx, BOOL *stop) {
-		[self.settings addObserver:self
-						forKeyPath:key
-						   options:0 context:TSSettingsKVOCtx];
-	}];
-}
-
-/**
- * Removes all existing KVO observers (that we registered, anyhow) from
- * the settings dictionary.
- */
-- (void) removeSettingsKVO {
-	NSArray<NSString *> *keys = @[
-		TSAdjustmentKeyNoiseReductionLevel,
-		TSAdjustmentKeyNoiseReductionSharpness,
-		TSAdjustmentKeySharpenLuminance,
-		TSAdjustmentKeySharpenRadius,
-		TSAdjustmentKeySharpenIntensity,
-		TSAdjustmentKeySharpenMedianFilter
-	];
-	
-	[keys enumerateObjectsUsingBlock:^(NSString *key, NSUInteger idx, BOOL *stop) {
-		@try {
-			[self.settings removeObserver:self forKeyPath:key];
-		} @catch (NSException __unused *exception) { }
-	}];
 }
 
 /**
@@ -135,6 +105,7 @@ static NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 			   withObject:nil afterDelay:TSSettingsChangeDebounce];
 }
 
+#pragma mark Settings Saving/Loading
 /**
  * Copies the settings dictionary back into the image object, then saves
  * it. This also requests that the image is re-rendered.
@@ -143,13 +114,7 @@ static NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 	// perform the request in a save block
 	[MagicalRecord saveWithBlock:^(NSManagedObjectContext *ctx) {
 		TSLibraryImage *im = [self.activeImage MR_inContext:ctx];
-		
-		// copy and update the adjustments dictionary
-		NSMutableDictionary *adjustments = [im.adjustments mutableCopy];
-		adjustments[TSAdjustmentKeyDetail] = [self.settings copy];
-		
-		// set it back
-		im.adjustments = [adjustments copy];
+		[self saveAdjustmentData:im];
 	} completion:^(BOOL saved, NSError *err) {
 		// if the context was saved, perform the "settings changed" block
 		if(saved) {
@@ -164,6 +129,78 @@ static NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 					contextInfo:nil];
 		}
 	}];
+}
+
+/**
+ * Loads the adjustments data from the image.
+ */
+- (void) loadAdjustmentData {
+	self.ignoreChanges = YES;
+	
+	// load noise reduction level
+	self.nrLevel = TSAdjustmentXDbl(self.activeImage, TSAdjustmentKeyNoiseReductionLevel);
+	// load noise reduction sharpness
+	self.nrSharpness = TSAdjustmentXDbl(self.activeImage, TSAdjustmentKeyNoiseReductionSharpness);
+	
+	// load sharpening — luminance
+	self.sharpenLuminance = TSAdjustmentXDbl(self.activeImage, TSAdjustmentKeySharpenLuminance);
+	// load sharpening — radius
+	self.sharpenRadius = TSAdjustmentXDbl(self.activeImage, TSAdjustmentKeySharpenRadius);
+	// load sharpening — intensity
+	self.sharpenIntensity = TSAdjustmentXDbl(self.activeImage, TSAdjustmentKeySharpenIntensity);
+	
+	// load median filter
+	self.sharpenMedianFilter = TSAdjustment(self.activeImage, TSAdjustmentKeySharpenMedianFilter).x.boolValue;
+	
+	// allow change handling again
+	self.ignoreChanges = YES;
+}
+
+/**
+ * Saves adjustment data back into the given image.
+ */
+- (void) saveAdjustmentData:(TSLibraryImage *) im {
+	// save noise reduction level
+	TSAdjustment(im, TSAdjustmentKeyNoiseReductionLevel).x = @(self.nrLevel);
+	
+	// save noise reduction sharpness
+	TSAdjustment(im, TSAdjustmentKeyNoiseReductionSharpness).x = @(self.nrSharpness);
+	
+	
+	// save sharpening — luminance
+	TSAdjustment(im, TSAdjustmentKeySharpenLuminance).x = @(self.sharpenLuminance);
+	// save sharpening — radius
+	TSAdjustment(im, TSAdjustmentKeySharpenRadius).x = @(self.sharpenRadius);
+	// save sharpening — intensity
+	TSAdjustment(im, TSAdjustmentKeySharpenIntensity).x = @(self.sharpenIntensity);
+	
+	// save median filter
+	TSAdjustment(im, TSAdjustmentKeySharpenMedianFilter).x = @(self.sharpenMedianFilter);
+}
+
+/**
+ * Adds KVO observers to the mirror properties.
+ */
+- (void) addAdjustmentKVO {
+	NSArray *keys = @[@"nrLevel", @"nrSharpness", @"sharpenLuminance", @"sharpenRadius", @"sharpenIntensity", @"sharpenMedianFilter"];
+	
+	for(NSString *key in keys) {
+		[self addObserver:self forKeyPath:key
+				  options:0 context:TSSettingsKVOCtx];
+	}
+}
+
+/**
+ * Removes any previously installed KVO listeners.
+ */
+- (void) removeAdjustmentKVO {
+	NSArray *keys = @[@"nrLevel", @"nrSharpness", @"sharpenLuminance", @"sharpenRadius", @"sharpenIntensity", @"sharpenMedianFilter"];
+	
+	for(NSString *key in keys) {
+		@try {
+			[self removeObserver:self forKeyPath:key];
+		} @catch (NSException * __unused) {}
+	}
 }
 
 @end

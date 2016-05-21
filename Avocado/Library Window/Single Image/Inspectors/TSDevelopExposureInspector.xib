@@ -31,7 +31,7 @@
                     <rect key="frame" x="80" y="207" width="188" height="20"/>
                     <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-5" maxValue="5" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Yee-XK-BGL"/>
                     <connections>
-                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentExposureEV" id="N6W-SR-Y2y"/>
+                        <binding destination="-2" name="value" keyPath="self.exposureAdjustment" id="FjM-99-ga3"/>
                     </connections>
                 </slider>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="QSu-p7-CNw" userLabel="Exposure Text Field">
@@ -49,7 +49,7 @@
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                     <connections>
-                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentExposureEV" id="mrv-GY-Vsv"/>
+                        <binding destination="-2" name="value" keyPath="self.exposureAdjustment" id="k1H-JV-MjO"/>
                         <outlet property="nextKeyView" destination="DzL-g5-d5l" id="HAr-Sw-9ys"/>
                     </connections>
                 </textField>

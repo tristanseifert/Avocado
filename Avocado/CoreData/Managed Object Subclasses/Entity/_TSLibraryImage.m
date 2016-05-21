@@ -93,8 +93,6 @@
 
 @dynamic metadata;
 
-@dynamic pvtAdjustmentData;
-
 @dynamic pvtImageSize;
 
 @dynamic thumbUUID;
@@ -157,9 +155,6 @@
 }
 + (NSString *)metadata {
 	return @"metadata";
-}
-+ (NSString *)pvtAdjustmentData {
-	return @"pvtAdjustmentData";
 }
 + (NSString *)pvtImageSize {
 	return @"pvtImageSize";

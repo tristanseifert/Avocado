@@ -39,7 +39,7 @@
                     <rect key="frame" x="80" y="173" width="188" height="20"/>
                     <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="vcT-cY-BNv"/>
                     <connections>
-                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentNoiseReductionLevel" id="stN-an-76T"/>
+                        <binding destination="-2" name="value" keyPath="self.nrLevel" id="kBs-Mn-ODA"/>
                     </connections>
                 </slider>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="itQ-a9-1Im" userLabel="Noise Level Text Field">
@@ -57,7 +57,7 @@
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                     <connections>
-                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentNoiseReductionLevel" id="tW4-uJ-Wjb"/>
+                        <binding destination="-2" name="value" keyPath="self.nrLevel" id="cX2-NA-iMU"/>
                         <outlet property="nextKeyView" destination="gQE-DR-gsJ" id="d4f-EH-ANn"/>
                     </connections>
                 </textField>
@@ -73,7 +73,7 @@
                     <rect key="frame" x="80" y="150" width="188" height="20"/>
                     <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="hHS-3q-tSu"/>
                     <connections>
-                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentNoiseReductionSharpness" id="DCH-mY-kf6"/>
+                        <binding destination="-2" name="value" keyPath="self.nrSharpness" id="RPc-sa-XcV"/>
                     </connections>
                 </slider>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gQE-DR-gsJ" userLabel="Sharpness Text Field">
@@ -88,7 +88,7 @@
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                     <connections>
-                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentNoiseReductionSharpness" id="l7f-uX-CXZ"/>
+                        <binding destination="-2" name="value" keyPath="self.nrSharpness" id="Dg7-6g-LSP"/>
                         <outlet property="nextKeyView" destination="fam-Xb-jam" id="JR5-Rt-IYU"/>
                     </connections>
                 </textField>
@@ -118,7 +118,7 @@
                     <rect key="frame" x="80" y="89" width="188" height="20"/>
                     <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="vrW-Jx-rjq"/>
                     <connections>
-                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentSharpenLuminance" id="hTC-m5-9LY"/>
+                        <binding destination="-2" name="value" keyPath="self.sharpenLuminance" id="thU-Qt-WtR"/>
                     </connections>
                 </slider>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fam-Xb-jam" userLabel="Luminance Text Field">
@@ -133,7 +133,7 @@
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                     <connections>
-                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentSharpenLuminance" id="1iW-BW-QI8"/>
+                        <binding destination="-2" name="value" keyPath="self.sharpenLuminance" id="QZx-0T-enk"/>
                         <outlet property="nextKeyView" destination="8uY-g1-xkW" id="Iso-gw-jum"/>
                     </connections>
                 </textField>
@@ -149,7 +149,7 @@
                     <rect key="frame" x="80" y="66" width="188" height="20"/>
                     <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="25" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="uJ6-L0-k7Y"/>
                     <connections>
-                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentSharpenRadius" id="0Zu-23-d0O"/>
+                        <binding destination="-2" name="value" keyPath="self.sharpenRadius" id="EmS-Dm-sof"/>
                     </connections>
                 </slider>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8uY-g1-xkW" userLabel="Radius Text Field">
@@ -164,7 +164,7 @@
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                     <connections>
-                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentSharpenRadius" id="wsi-q8-pz4"/>
+                        <binding destination="-2" name="value" keyPath="self.sharpenRadius" id="0Bl-Qe-w9v"/>
                         <outlet property="nextKeyView" destination="zHv-ag-Rq6" id="Dpe-dl-wr1"/>
                     </connections>
                 </textField>
@@ -181,7 +181,7 @@
                         <font key="font" metaFont="systemMedium" size="11"/>
                     </buttonCell>
                     <connections>
-                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentSharpenMedianFilter" id="Xfo-Ah-MgC"/>
+                        <binding destination="-2" name="value" keyPath="self.sharpenMedianFilter" id="KfZ-EZ-fpw"/>
                         <outlet property="nextKeyView" destination="itQ-a9-1Im" id="CA8-1b-8j5"/>
                     </connections>
                 </button>
@@ -197,7 +197,7 @@
                     <rect key="frame" x="80" y="43" width="188" height="20"/>
                     <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="bn0-pU-uXg"/>
                     <connections>
-                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentSharpenIntensity" id="A1T-R2-mf2"/>
+                        <binding destination="-2" name="value" keyPath="self.sharpenIntensity" id="Cl0-qV-u3A"/>
                     </connections>
                 </slider>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zHv-ag-Rq6" userLabel="Intensity Text Field">
@@ -212,7 +212,7 @@
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                     <connections>
-                        <binding destination="-2" name="value" keyPath="self.settings.TSAdjustmentSharpenIntensity" id="5B1-IE-0bw"/>
+                        <binding destination="-2" name="value" keyPath="self.sharpenIntensity" id="lwY-jq-tXi"/>
                         <outlet property="nextKeyView" destination="xgt-oF-NxP" id="tMz-7o-dyU"/>
                     </connections>
                 </textField>

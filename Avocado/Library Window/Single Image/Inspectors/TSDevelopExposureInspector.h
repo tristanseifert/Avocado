@@ -12,4 +12,7 @@
 
 @interface TSDevelopExposureInspector : TSDevelopInspector
 
+/// exposure adjustment, in EV
+@property (nonatomic) CGFloat exposureAdjustment;
+
 @end
