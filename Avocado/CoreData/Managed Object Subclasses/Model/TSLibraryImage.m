@@ -1,37 +1,31 @@
 #import "TSLibraryImage.h"
+#import "TSHumanModels.h"
 #import "TSRawImage.h"
 #import "NSDate+AvocadoUtils.h"
 #import "TSImageIOHelper.h"
 
+#import <MagicalRecord/MagicalRecord.h>
 #import <ImageIO/ImageIO.h>
 #import <Quartz/Quartz.h>
 #import <Cocoa/Cocoa.h>
 
+#include <dlfcn.h>
+
+/// default adjustments data; this is loaded once.
+static NSDictionary<NSString *, NSDictionary<NSString *, NSNumber *> *> *TSDefaultAdjustments = nil;
+
 /// context indicating that the date shot has changed
 static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
-/// context indicating that the image adjustments dictionary has changed
-static void *TSLibraryImageAdjustmentsKVOCtx = &TSLibraryImageAdjustmentsKVOCtx;
 
-/// current adjustments version
-const NSUInteger TSLibraryImageVersion = 0x00010000;
 
-/// key for the adjustments dictionary
-NSString * const TSLibraryImageAdjustmentKey = @"TSLibraryImageAdjustment";
-/// key for the adjustments version in the adjustments dictionary
-NSString * const TSLibraryImageVersionKey = @"TSLibraryImageVersion";
+NSString * const TSAdjustmentKeyExposureEV = @"tsAdjustmentExposureEV";
 
-NSString * const TSAdjustmentKeyExposure = @"TSAdjustmentExposure";
-NSString * const TSAdjustmentKeyExposureEV = @"TSAdjustmentExposureEV";
-
-NSString  * _Nonnull const TSAdjustmentKeyDetail = @"TSAdjustmentDetail";
-
-NSString * _Nonnull const TSAdjustmentKeyNoiseReductionLevel = @"TSAdjustmentNoiseReductionLevel";
-NSString * _Nonnull const TSAdjustmentKeyNoiseReductionSharpness = @"TSAdjustmentNoiseReductionSharpness";
-
-NSString * _Nonnull const TSAdjustmentKeySharpenLuminance = @"TSAdjustmentSharpenLuminance";
-NSString * _Nonnull const TSAdjustmentKeySharpenRadius = @"TSAdjustmentSharpenRadius";
-NSString * _Nonnull const TSAdjustmentKeySharpenIntensity = @"TSAdjustmentSharpenIntensity";
-NSString * _Nonnull const TSAdjustmentKeySharpenMedianFilter = @"TSAdjustmentSharpenMedianFilter";
+NSString * _Nonnull const TSAdjustmentKeyNoiseReductionLevel = @"tsAdjustmentNRLevel";
+NSString * _Nonnull const TSAdjustmentKeyNoiseReductionSharpness = @"tsAdjustmentNRSharpness";
+NSString * _Nonnull const TSAdjustmentKeySharpenLuminance = @"tsAdjustmentSharpenLuminance";
+NSString * _Nonnull const TSAdjustmentKeySharpenRadius = @"tsAdjustmentSharpenRadius";
+NSString * _Nonnull const TSAdjustmentKeySharpenIntensity = @"tsAdjustmentSharpenIntensity";
+NSString * _Nonnull const TSAdjustmentKeySharpenMedianFilter = @"tsAdjustmentSharpenMedianFilter";
 
 @interface TSLibraryImage ()
 
@@ -43,14 +37,15 @@ NSString * _Nonnull const TSAdjustmentKeySharpenMedianFilter = @"TSAdjustmentSha
 /// when set, any changes to the adjustments data are ignored
 @property (nonatomic) BOOL ignoreAdjustmentChanges;
 
+/// adjustments proxy
+@property (nonatomic, strong) TSLibraryImageAdjustmentsProxy* adjustments;
+
 - (void) commonInit;
 
 - (void) addKVO;
 - (void) removeKVO;
 
 - (void) loadDefaultAdjustments;
-- (void) decodeAdjustmentsData;
-- (void) encodeAdjustmentsData;
 
 @end
 
@@ -118,98 +113,59 @@ NSString * _Nonnull const TSAdjustmentKeySharpenMedianFilter = @"TSAdjustmentSha
 	
 	// clear caches
 	_imageRotationFromMetadata = TSLibraryImageRotationUnknown;
+	
+	// set up the adjustments proxy
+	self.adjustments = [TSLibraryImageAdjustmentsProxy new];
+	self.adjustments.image = self;
 }
 
 /**
  * Loads/creates the default adjustments data.
+ *
+ * @note This function does NOT do its own saving. The caller is responsible for
+ * calling this either wrapped in an save block, or saving the managed object
+ * context of this object directly afterward, such that the adjustments will
+ * propagate correctly.
  */
 - (void) loadDefaultAdjustments {
-	NSMutableDictionary *filter;
+	// load the default adjustments… but only once
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		NSBundle *b;
+		NSURL *url;
+		
+		// get the url of the plist
+		b = [NSBundle mainBundle];
+		url = [b URLForResource:@"TSLibraryImageDefaultAdjustments" withExtension:@"plist"];
+		
+		// then load it
+		TSDefaultAdjustments = [NSDictionary dictionaryWithContentsOfURL:url];
+	});
 	
-	// create adjusments dict
-	NSMutableDictionary<NSString *, NSDictionary *> *adjustments = [NSMutableDictionary new];
-	
-	// create exposure adjustments
-	filter = [NSMutableDictionary new];
-	
-	filter[TSAdjustmentKeyExposureEV] = @0.f;
-	
-	adjustments[TSAdjustmentKeyExposure] = [filter copy];
-	
-	// create noise reduction and sharpening adjustments
-	filter = [NSMutableDictionary new];
-	
-	filter[TSAdjustmentKeyNoiseReductionLevel] = @0.02f;
-	filter[TSAdjustmentKeyNoiseReductionSharpness] = @0.4f;
-	
-	
-	filter[TSAdjustmentKeySharpenLuminance] = @0.4f;
-	
-	filter[TSAdjustmentKeySharpenRadius] = @2.5f;
-	filter[TSAdjustmentKeySharpenIntensity] = @0.5f;
-	
-	filter[TSAdjustmentKeySharpenMedianFilter] = @NO;
-	
-	
-	adjustments[TSAdjustmentKeyDetail] = [filter copy];
-	
-	
-	// save
-	self.adjustments = [adjustments copy];
-}
-
-/**
- * Uses a keyed unarchiver to decode previously saved adjustments data.
- */
-- (void) decodeAdjustmentsData {
-	// if there is no data to decode, exit
-	if(self.pvtAdjustmentData == nil) {
-		DDLogWarn(@"There is no adjustment data; this shouldn't happen.");
-		return;
-	}
-	
-	// decode existing data
-	NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:self.pvtAdjustmentData];
-	unarchiver.requiresSecureCoding = YES;
-	
-	// check version
-	NSUInteger ver = [unarchiver decodeIntegerForKey:TSLibraryImageVersionKey];
-	
-	if(ver < TSLibraryImageVersion) {
-		DDLogDebug(@"Upgrading adjustments for %p from 0x%08lx to 0x%08lx", self, ver, TSLibraryImageVersion);
-	}
-	
-	// decode adjustments
-	self.ignoreAdjustmentChanges = YES;
-
-	self.adjustments = [unarchiver decodeObjectOfClass:[NSDictionary class] forKey:TSLibraryImageAdjustmentKey];
-	
-	self.ignoreAdjustmentChanges = NO;
-	
-	// finish
-	[unarchiver finishDecoding];
-}
-
-/**
- * Uses a keyed archiver to encode the current adjustments data.
- */
-- (void) encodeAdjustmentsData {
-	NSMutableData *d = [NSMutableData new];
-	
-	NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:d];
-	archiver.requiresSecureCoding = YES;
-	
-	// set the version and data
-	[archiver encodeInteger:TSLibraryImageVersion
-					 forKey:TSLibraryImageVersionKey];
-	
-	[archiver encodeObject:self.adjustments
-					forKey:TSLibraryImageAdjustmentKey];
-	
-	// finish and store raw data
-	[archiver finishEncoding];
-	
-	self.pvtAdjustmentData = d;
+	// enumerate the adjustments dictionary
+	[TSDefaultAdjustments enumerateKeysAndObjectsUsingBlock:^(NSString *adjustmentKey, NSDictionary<NSString *, NSNumber *> *values, BOOL *stop) {
+		TSLibraryImageAdjustment *adj;
+		
+		// look up the actual key (they're the names of string consts)
+		void *keyAddr = dlsym(RTLD_SELF, adjustmentKey.UTF8String);
+		NSString *keyStr = *(NSString * __unsafe_unretained *) keyAddr;
+		
+		DDAssert([keyStr isKindOfClass:NSString.class] == YES, @"KeyAddr %p is incorrect, doesn't point to an NSString; this shouldn't happen", keyAddr);
+		
+		// create an object
+		adj = [TSLibraryImageAdjustment MR_createEntityInContext:self.managedObjectContext];
+		DDAssert(adj != nil, @"Couldn't create adjustment object; this shouldn't happen");
+		
+		// set its key
+		adj.property = keyStr;
+		
+		// enumerate the values dict and set the appropriate key paths
+		[values enumerateKeysAndObjectsUsingBlock:^(NSString *adjKey, NSNumber *adjValue, BOOL *stop) {
+			[adj setValue:adjValue forKey:adjKey];
+			
+			DDLogDebug(@"Setting adjustment %@: %@ = %@", keyStr, adjKey, adjValue);
+		}];
+	}];
 }
 
 #pragma mark KVO
@@ -219,8 +175,6 @@ NSString * _Nonnull const TSAdjustmentKeySharpenMedianFilter = @"TSAdjustmentSha
 - (void) addKVO {
 	[self addObserver:self forKeyPath:@"dateShot" options:0
 			  context:TSLibraryImageDateShotKVOCtx];
-//	[self addObserver:self forKeyPath:@"adjustments" options:0
-//			  context:TSLibraryImageAdjustmentsKVOCtx];
 	
 }
 
@@ -230,10 +184,6 @@ NSString * _Nonnull const TSAdjustmentKeySharpenMedianFilter = @"TSAdjustmentSha
 - (void) removeKVO {
 	@try {
 		[self removeObserver:self forKeyPath:@"dateShot"];
-	} @catch (NSException __unused *exception) { }
-	
-	@try {
-		[self removeObserver:self forKeyPath:@"adjustments"];
 	} @catch (NSException __unused *exception) { }
 }
 
@@ -246,13 +196,6 @@ NSString * _Nonnull const TSAdjustmentKeySharpenMedianFilter = @"TSAdjustmentSha
 	if(context == TSLibraryImageDateShotKVOCtx) {
 		// set the "dayShot" to the date, sans time component
 		self.dayShotValue = [self.dateShot timeIntervalSince1970WithoutTime];
-	}
-	// adjustments changed
-	else if(context == TSLibraryImageAdjustmentsKVOCtx) {
-		if(self.ignoreAdjustmentChanges == YES) return;
-		
-		DDLogVerbose(@"Adjustments data changed for %p\n%@", self, [NSThread callStackSymbols]);
-		[self encodeAdjustmentsData];
 	}
 	// superclass handles other KVO
 	else {
@@ -386,44 +329,6 @@ NSString * _Nonnull const TSAdjustmentKeySharpenMedianFilter = @"TSAdjustmentSha
 	
 	// return our internal cache
 	return _imageIOMetadataCache;
-}
-
-/**
- * Returns adjustment data; if it doesn't exist, it tries to load it, and if
- * that fails, simply returns the defaults.
- */
-- (NSDictionary<NSString *, NSDictionary<NSString *, id> *> *) adjustments {
-	if(_adjustments == nil) {
-		// try to load stored adjustments data
-		[self decodeAdjustmentsData];
-		
-		if(_adjustments != nil) {
-			return _adjustments;
-		}
-		
-		// otherwise, load the defaults
-		[self loadDefaultAdjustments];
-	}
-	
-	// return the stored adjustment data
-	return _adjustments;
-}
-
-/**
- * Sets the adjustment data; calling this firstly stores it, then updates
- * the internal data representation.
- */
-- (void) setAdjustments:(NSDictionary<NSString *,NSDictionary<NSString *,id> *> *) adjustments {
-	_adjustments = adjustments;
-	
-	// save
-	if(self.ignoreAdjustmentChanges == NO) {		
-		[self encodeAdjustmentsData];
-	}
-}
-
-+ (NSSet *) keyPathsForValuesAffectingAdjustments {
-	return [NSSet setWithObject:@"pvtAdjustmentData"];
 }
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "TSLibraryImage+CoreImagePipeline.h"
+#import "TSHumanModels.h"
 
 #import "TSCoreImagePipelineJob.h"
 
@@ -15,6 +16,19 @@
 #import "TSNoiseReductionAdjustmentFilter.h"
 #import "TSMedianAdjustmentFilter.h"
 #import "TSHSLAdjustmentFilter.h"
+
+/// this returns an image adjustment for the given key
+#define TSAdjustment(key) \
+	((TSLibraryImageAdjustment *) [self.adjustments valueForKey:key])
+
+/// evaluates to the X value of an adjustment, as a double
+#define TSAdjustmentXDbl(key) TSAdjustment(key).x.doubleValue
+/// evaluates to the Y value of an adjustment, as a double
+#define TSAdjustmentYDbl(key) TSAdjustment(key).y.doubleValue
+/// evaluates to the Z value of an adjustment, as a double
+#define TSAdjustmentZDbl(key) TSAdjustment(key).z.doubleValue
+/// evaluates to the W value of an adjustment, as a double
+#define TSAdjustmentWDbl(key) TSAdjustment(key).w.doubleValue
 
 @interface TSLibraryImage (CoreImagePipeline_Private)
 
@@ -46,11 +60,10 @@
 - (void) TSCISetUpNoiseReduction:(TSCoreImagePipelineJob *) job {
 	TSNoiseReductionAdjustmentFilter *filter = [TSNoiseReductionAdjustmentFilter new];
 	
-	// configure filter
-	NSDictionary *d = self.adjustments[TSAdjustmentKeyDetail];
 	
-	filter.noiseLevel = [d[TSAdjustmentKeyNoiseReductionLevel] doubleValue];
-	filter.sharpening = [d[TSAdjustmentKeyNoiseReductionSharpness] doubleValue];
+	// configure filter
+	filter.noiseLevel = TSAdjustmentXDbl(TSAdjustmentKeyNoiseReductionLevel);
+	filter.sharpening = TSAdjustmentXDbl(TSAdjustmentKeyNoiseReductionSharpness);
 	
 	// add to job
 	[job addFilter:filter];
@@ -63,12 +76,10 @@
 	TSSharpeningAdjustmentFilter *filter = [TSSharpeningAdjustmentFilter new];
 	
 	// configure filter
-	NSDictionary *d = self.adjustments[TSAdjustmentKeyDetail];
+	filter.lumaSharpening = TSAdjustmentXDbl(TSAdjustmentKeySharpenLuminance);
 	
-	filter.lumaSharpening = [d[TSAdjustmentKeySharpenLuminance] doubleValue];
-	
-	filter.sharpenRadius = [d[TSAdjustmentKeySharpenRadius] doubleValue];
-	filter.sharpenIntensity = [d[TSAdjustmentKeySharpenIntensity] doubleValue];
+	filter.sharpenRadius = TSAdjustmentXDbl(TSAdjustmentKeySharpenRadius);
+	filter.sharpenIntensity = TSAdjustmentXDbl(TSAdjustmentKeySharpenIntensity);
 	
 	// add to job
 	[job addFilter:filter];
@@ -79,8 +90,7 @@
  * to the filter chain.
  */
 - (void) TSCISetUpMedianFilter:(TSCoreImagePipelineJob *) job {
-	NSDictionary *d = self.adjustments[TSAdjustmentKeyDetail];
-	BOOL hasMedian = [d[TSAdjustmentKeySharpenMedianFilter] boolValue];
+	BOOL hasMedian = TSAdjustment(TSAdjustmentKeySharpenMedianFilter).x.boolValue;
 	
 	if(hasMedian) {
 		TSMedianAdjustmentFilter *filter = [TSMedianAdjustmentFilter new];
@@ -99,9 +109,7 @@
 	TSExposureAdjustmentFilter *filter = [TSExposureAdjustmentFilter new];
 	
 	// configure filter
-	NSDictionary *d = self.adjustments[TSAdjustmentKeyExposure];
-	
-	filter.evAdjustment = [d[TSAdjustmentKeyExposureEV] doubleValue];
+	filter.evAdjustment = TSAdjustmentXDbl(TSAdjustmentKeyExposureEV);
 	
 	// add to job
 	[job addFilter:filter];

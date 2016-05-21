@@ -112,6 +112,17 @@
 	return result;
 }
 
+@dynamic pvtAdjustments;
+
+- (NSMutableSet<TSLibraryImageAdjustment*>*)pvtAdjustmentsSet {
+	[self willAccessValueForKey:@"pvtAdjustments"];
+
+	NSMutableSet<TSLibraryImageAdjustment*> *result = (NSMutableSet<TSLibraryImageAdjustment*>*)[self mutableSetValueForKey:@"pvtAdjustments"];
+
+	[self didAccessValueForKey:@"pvtAdjustments"];
+	return result;
+}
+
 @dynamic tags;
 
 - (NSMutableSet<TSLibraryTag*>*)tagsSet {
@@ -164,6 +175,9 @@
 @implementation TSLibraryImageRelationships 
 + (NSString *)parentAlbums {
 	return @"parentAlbums";
+}
++ (NSString *)pvtAdjustments {
+	return @"pvtAdjustments";
 }
 + (NSString *)tags {
 	return @"tags";

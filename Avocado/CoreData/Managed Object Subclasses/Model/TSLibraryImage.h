@@ -1,24 +1,18 @@
 #import "_TSLibraryImage.h"
+#import "TSLibraryImageAdjustmentsProxy.h"
 
 /// current adjustment dictionary version
 extern const NSUInteger TSLibraryImageVersion;
 
 #pragma mark Exposure Adjustment
-/// exposure adjustments
-extern NSString  * _Nonnull const TSAdjustmentKeyExposure;
-
 /// adjustment of exposure, in EV [-5, 5]
 extern NSString  * _Nonnull const TSAdjustmentKeyExposureEV;
 
 #pragma mark Noise Reduction and Sharpening
-/// Detail adjustment dictionary key
-extern NSString * _Nonnull const TSAdjustmentKeyDetail;
-
 /// noise reduction level [0, 1]
 extern NSString * _Nonnull const TSAdjustmentKeyNoiseReductionLevel;
 /// noise reduction sharpness [0, 1]
 extern NSString * _Nonnull const TSAdjustmentKeyNoiseReductionSharpness;
-
 
 /// Luminance sharpening amount [0, 1]
 extern NSString * _Nonnull const TSAdjustmentKeySharpenLuminance;
@@ -94,9 +88,9 @@ typedef NS_ENUM(short, TSLibraryImageRotation) {
 @property (nonatomic, readonly) TSLibraryImageRotation rotation;
 
 /**
- * Adjustments applied on the image; each key represents a particular
- * filter, with a subdictionary containing all of its input values.
+ * Adjustments proxy; use KVC to get the adjustment objects for any of the
+ * `TSAdjustmentKey…` adjustments.
  */
-@property (nonatomic, strong, nullable) NSDictionary<NSString *, NSDictionary<NSString *, id> *> *adjustments;
+@property (nonatomic, readonly) TSLibraryImageAdjustmentsProxy* _Nonnull adjustments;
 
 @end

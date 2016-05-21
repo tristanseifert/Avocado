@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>TSAdjustmentKeyExposureEV</key>
+	<dict>
+		<key>x</key>
+		<integer>0</integer>
+	</dict>
+	<key>TSAdjustmentKeyNoiseReductionLevel</key>
+	<dict>
+		<key>x</key>
+		<string>0.02</string>
+	</dict>
+	<key>TSAdjustmentKeyNoiseReductionSharpness</key>
+	<dict>
+		<key>x</key>
+		<string>0.4</string>
+	</dict>
+	<key>TSAdjustmentKeySharpenLuminance</key>
+	<dict>
+		<key>x</key>
+		<string>0.4</string>
+	</dict>
+	<key>TSAdjustmentKeySharpenRadius</key>
+	<dict>
+		<key>x</key>
+		<string>2.5</string>
+	</dict>
+	<key>TSAdjustmentKeySharpenIntensity</key>
+	<dict>
+		<key>x</key>
+		<string>0.5</string>
+	</dict>
+	<key>TSAdjustmentKeySharpenMedianFilter</key>
+	<dict>
+		<key>x</key>
+		<false/>
+	</dict>
+</dict>
+</plist>

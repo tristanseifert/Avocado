@@ -12,6 +12,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class TSLibraryAlbum;
+@class TSLibraryImageAdjustment;
 @class TSLibraryTag;
 
 @class NSObject;
@@ -60,6 +61,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSSet<TSLibraryAlbum*> *parentAlbums;
 - (nullable NSMutableSet<TSLibraryAlbum*>*)parentAlbumsSet;
 
+@property (nonatomic, strong, nullable) NSSet<TSLibraryImageAdjustment*> *pvtAdjustments;
+- (nullable NSMutableSet<TSLibraryImageAdjustment*>*)pvtAdjustmentsSet;
+
 @property (nonatomic, strong, nullable) NSSet<TSLibraryTag*> *tags;
 - (nullable NSMutableSet<TSLibraryTag*>*)tagsSet;
 
@@ -70,6 +74,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removeParentAlbums:(NSSet<TSLibraryAlbum*>*)value_;
 - (void)addParentAlbumsObject:(TSLibraryAlbum*)value_;
 - (void)removeParentAlbumsObject:(TSLibraryAlbum*)value_;
+
+@end
+
+@interface _TSLibraryImage (PvtAdjustmentsCoreDataGeneratedAccessors)
+- (void)addPvtAdjustments:(NSSet<TSLibraryImageAdjustment*>*)value_;
+- (void)removePvtAdjustments:(NSSet<TSLibraryImageAdjustment*>*)value_;
+- (void)addPvtAdjustmentsObject:(TSLibraryImageAdjustment*)value_;
+- (void)removePvtAdjustmentsObject:(TSLibraryImageAdjustment*)value_;
 
 @end
 
@@ -125,6 +137,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSMutableSet<TSLibraryAlbum*>*)primitiveParentAlbums;
 - (void)setPrimitiveParentAlbums:(NSMutableSet<TSLibraryAlbum*>*)value;
 
+- (NSMutableSet<TSLibraryImageAdjustment*>*)primitivePvtAdjustments;
+- (void)setPrimitivePvtAdjustments:(NSMutableSet<TSLibraryImageAdjustment*>*)value;
+
 - (NSMutableSet<TSLibraryTag*>*)primitiveTags;
 - (void)setPrimitiveTags:(NSMutableSet<TSLibraryTag*>*)value;
 
@@ -146,6 +161,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface TSLibraryImageRelationships: NSObject
 + (NSString *)parentAlbums;
++ (NSString *)pvtAdjustments;
 + (NSString *)tags;
 @end
 

@@ -97,6 +97,10 @@
 		6AEC76781CD50E6E00870FAE /* TSImportPanelAccessory.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC76761CD50E6E00870FAE /* TSImportPanelAccessory.xib */; };
 		6AEC767B1CD516EF00870FAE /* TSLibraryOverviewLightTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC767A1CD516EF00870FAE /* TSLibraryOverviewLightTableController.m */; };
 		6AEC767E1CD5187D00870FAE /* TSLibraryLightTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC767D1CD5187D00870FAE /* TSLibraryLightTableCell.m */; };
+		6AFDED371CF0B72E0015C181 /* TSLibraryImageAdjustment.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AFDED361CF0B72E0015C181 /* TSLibraryImageAdjustment.m */; };
+		6AFDED3A1CF0B7350015C181 /* _TSLibraryImageAdjustment.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AFDED391CF0B7350015C181 /* _TSLibraryImageAdjustment.m */; };
+		6AFDED3E1CF0B7B50015C181 /* TSLibraryImageAdjustmentsProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AFDED3D1CF0B7B50015C181 /* TSLibraryImageAdjustmentsProxy.m */; };
+		6AFDED401CF0BB0B0015C181 /* TSLibraryImageDefaultAdjustments.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6AFDED3F1CF0BB0B0015C181 /* TSLibraryImageDefaultAdjustments.plist */; };
 		90D8F3504CA87BC8DFD0DDE7 /* Pods_Avocado.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 819223217746015A3002C6D6 /* Pods_Avocado.framework */; };
 /* End PBXBuildFile section */
 
@@ -296,6 +300,13 @@
 		6AEC767A1CD516EF00870FAE /* TSLibraryOverviewLightTableController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryOverviewLightTableController.m; path = "Library Window/Overview/TSLibraryOverviewLightTableController.m"; sourceTree = "<group>"; };
 		6AEC767C1CD5187D00870FAE /* TSLibraryLightTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryLightTableCell.h; path = "Library Window/Overview/TSLibraryLightTableCell.h"; sourceTree = "<group>"; };
 		6AEC767D1CD5187D00870FAE /* TSLibraryLightTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryLightTableCell.m; path = "Library Window/Overview/TSLibraryLightTableCell.m"; sourceTree = "<group>"; };
+		6AFDED351CF0B72D0015C181 /* TSLibraryImageAdjustment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryImageAdjustment.h; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImageAdjustment.h"; sourceTree = "<group>"; };
+		6AFDED361CF0B72E0015C181 /* TSLibraryImageAdjustment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryImageAdjustment.m; path = "Avocado/CoreData/Managed Object Subclasses/Model/TSLibraryImageAdjustment.m"; sourceTree = "<group>"; };
+		6AFDED381CF0B7350015C181 /* _TSLibraryImageAdjustment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _TSLibraryImageAdjustment.h; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImageAdjustment.h"; sourceTree = "<group>"; };
+		6AFDED391CF0B7350015C181 /* _TSLibraryImageAdjustment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryImageAdjustment.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImageAdjustment.m"; sourceTree = "<group>"; };
+		6AFDED3C1CF0B7B50015C181 /* TSLibraryImageAdjustmentsProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLibraryImageAdjustmentsProxy.h; path = "Avocado/CoreData/Managed Object Subclasses/Library Image Helpers/TSLibraryImageAdjustmentsProxy.h"; sourceTree = "<group>"; };
+		6AFDED3D1CF0B7B50015C181 /* TSLibraryImageAdjustmentsProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSLibraryImageAdjustmentsProxy.m; path = "Avocado/CoreData/Managed Object Subclasses/Library Image Helpers/TSLibraryImageAdjustmentsProxy.m"; sourceTree = "<group>"; };
+		6AFDED3F1CF0BB0B0015C181 /* TSLibraryImageDefaultAdjustments.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = TSLibraryImageDefaultAdjustments.plist; path = "Avocado/CoreData/Managed Object Subclasses/Library Image Helpers/TSLibraryImageDefaultAdjustments.plist"; sourceTree = "<group>"; };
 		70A0E8562B68C925C7E5445C /* Pods-Avocado.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Avocado.release.xcconfig"; path = "Pods/Target Support Files/Pods-Avocado/Pods-Avocado.release.xcconfig"; sourceTree = "<group>"; };
 		819223217746015A3002C6D6 /* Pods_Avocado.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Avocado.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -629,6 +640,7 @@
 			isa = PBXGroup;
 			children = (
 				6ABC2D991CD42C30006B959F /* TSHumanModels.h */,
+				6AFDED3B1CF0B7680015C181 /* Image */,
 				6AE87BF01CD277860053CD9D /* Model */,
 				6AE87BEF1CD277830053CD9D /* Entity */,
 			);
@@ -650,6 +662,8 @@
 				6ABC2DBD1CD43586006B959F /* _TSLibraryTag.m */,
 				6ABC2D9A1CD42C4A006B959F /* _TSLibraryImage.h */,
 				6ABC2D9B1CD42C4A006B959F /* _TSLibraryImage.m */,
+				6AFDED381CF0B7350015C181 /* _TSLibraryImageAdjustment.h */,
+				6AFDED391CF0B7350015C181 /* _TSLibraryImageAdjustment.m */,
 			);
 			name = Entity;
 			sourceTree = "<group>";
@@ -663,10 +677,6 @@
 				6ABC2DA31CD4357E006B959F /* TSLibraryAlbumCollection.m */,
 				6ABC2DA41CD4357E006B959F /* TSLibraryExportService.h */,
 				6ABC2DA51CD4357E006B959F /* TSLibraryExportService.m */,
-				6ABC2DAA1CD4357E006B959F /* TSLibraryTag.h */,
-				6ABC2DAB1CD4357E006B959F /* TSLibraryTag.m */,
-				6ABC2D9D1CD42C56006B959F /* TSLibraryImage.h */,
-				6ABC2D9E1CD42C56006B959F /* TSLibraryImage.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -818,6 +828,22 @@
 			name = "Image View";
 			sourceTree = "<group>";
 		};
+		6AFDED3B1CF0B7680015C181 /* Image */ = {
+			isa = PBXGroup;
+			children = (
+				6ABC2D9D1CD42C56006B959F /* TSLibraryImage.h */,
+				6ABC2D9E1CD42C56006B959F /* TSLibraryImage.m */,
+				6AFDED351CF0B72D0015C181 /* TSLibraryImageAdjustment.h */,
+				6AFDED361CF0B72E0015C181 /* TSLibraryImageAdjustment.m */,
+				6ABC2DAA1CD4357E006B959F /* TSLibraryTag.h */,
+				6ABC2DAB1CD4357E006B959F /* TSLibraryTag.m */,
+				6AFDED3C1CF0B7B50015C181 /* TSLibraryImageAdjustmentsProxy.h */,
+				6AFDED3D1CF0B7B50015C181 /* TSLibraryImageAdjustmentsProxy.m */,
+				6AFDED3F1CF0BB0B0015C181 /* TSLibraryImageDefaultAdjustments.plist */,
+			);
+			name = Image;
+			sourceTree = "<group>";
+		};
 		8A1D7E197716AC0277E58CE5 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -940,6 +966,7 @@
 				6AAEFC961CE6C0DE0003DF4B /* TSDefaultAppState.plist in Resources */,
 				6AE87BD11CD275C90053CD9D /* Assets.xcassets in Resources */,
 				6AEC35481CD443B90033DE0A /* TSLibraryDetail.xib in Resources */,
+				6AFDED401CF0BB0B0015C181 /* TSLibraryImageDefaultAdjustments.plist in Resources */,
 				6AE87BD41CD275C90053CD9D /* MainMenu.xib in Resources */,
 				6A6ED41D1CE4D30A001EFA21 /* TSHSLAdjustmentFilter.cikernel in Resources */,
 				6AA9359F1CE7AF43004E9F9C /* TSDevelopExposureInspector.xib in Resources */,
@@ -1063,6 +1090,7 @@
 				6A92243B1CEEAE8300EE6408 /* TSLibraryImage+CoreImagePipeline.m in Sources */,
 				6ABC2DC31CD43586006B959F /* _TSLibraryTag.m in Sources */,
 				6AA9358E1CE787D9004E9F9C /* TSDevelopSidebarController.m in Sources */,
+				6AFDED3A1CF0B7350015C181 /* _TSLibraryImageAdjustment.m in Sources */,
 				6ABC2DAC1CD4357E006B959F /* TSLibraryAlbum.m in Sources */,
 				6AEC76771CD50E6E00870FAE /* TSImportOpenPanelAccessory.m in Sources */,
 				6AEC35471CD443B90033DE0A /* TSLibraryDetailController.m in Sources */,
@@ -1082,6 +1110,7 @@
 				6A5C615F1CD67C5B00E3C3C9 /* TSImageIOHelper.m in Sources */,
 				6A6ED4101CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.m in Sources */,
 				6A79876B1CDD5CA200FB3A8E /* ahd_interpolate_mod.c in Sources */,
+				6AFDED3E1CF0B7B50015C181 /* TSLibraryImageAdjustmentsProxy.m in Sources */,
 				6AEC35411CD443460033DE0A /* TSLibraryOverviewController.m in Sources */,
 				6AEC767B1CD516EF00870FAE /* TSLibraryOverviewLightTableController.m in Sources */,
 				6AEC766C1CD4FF2A00870FAE /* TSImportController.m in Sources */,
@@ -1096,6 +1125,7 @@
 				6AA935A51CE7CDE1004E9F9C /* TSInspectorTitleBar.m in Sources */,
 				6ABC2DC01CD43586006B959F /* _TSLibraryExportService.m in Sources */,
 				6AA935C61CEA45CA004E9F9C /* TSBufferOwningBitmapRep.m in Sources */,
+				6AFDED371CF0B72E0015C181 /* TSLibraryImageAdjustment.m in Sources */,
 				6AA935A21CE7C354004E9F9C /* TSVibrantStackView.m in Sources */,
 				6AEC767E1CD5187D00870FAE /* TSLibraryLightTableCell.m in Sources */,
 				6A9224421CEEB89000EE6408 /* TSMedianAdjustmentFilter.m in Sources */,
