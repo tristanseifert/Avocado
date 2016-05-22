@@ -46,7 +46,7 @@
 
 #define TSAddOperation(operation, state) \
 	[state addOperation:operation]; \
-	[self.queue addOperation:operation]; \
+	[self.queue addOperation:operation];
 
 #if TSWriteStepTiming
 	#define TSBeginOperation(name) \
@@ -127,10 +127,12 @@
 - (NSBlockOperation *) opStorePlanarInCache:(TSRawPipelineState *) state;
 - (NSBlockOperation *) opRestorePlanarFromCache:(TSRawPipelineState *) state;
 
-- (void) writeCachesToDisk;
+- (NSBlockOperation *) opWriteCachesToDisk:(TSRawPipelineState *) state;
+- (void) writeCachesToDiskWithState:(TSRawPipelineState *) state;
 - (BOOL) compressData:(NSData *) data toFile:(NSURL *) url;
 
 // housekeeping
+- (NSBlockOperation *) opCleanUp:(TSRawPipelineState *) state;
 - (void) cleanUpState:(TSRawPipelineState *) state;
 
 // debugging
@@ -801,9 +803,6 @@
 				DDLogError(@"Unsupported output format: %lu", state.outFormat);
 		}
 		
-		// clean up the state object
-		[self cleanUpState:state];
-		
 		TSEndOperation();
 	}];
 	
@@ -820,7 +819,7 @@
 	NSBlockOperation *opDebayer, *opDemosaic, *opLensCorrect, *opConvertPlanar;
 	NSBlockOperation *opRotate, *opConvolute, *opMorphological, *opHisto;
 	NSBlockOperation *opConvertInterleaved, *opCoreImage, *opConvertRGBGamma;
-	NSBlockOperation *opUpdateCache;
+	NSBlockOperation *opUpdateCache, *opWriteCachesToDisk, *opCleanUp;
 	
 	// set up the various operations
 	opDebayer = [self opDebayer:state];
@@ -839,9 +838,12 @@
 	
 	opCoreImage = [self opCoreImageFilters:state];
 	
-	// if we cache stuff, create the "update cache" operation
+	opCleanUp = [self opCleanUp:state];
+	
+	// if caching is enabled, create the cache updating operations
 	if(cache) {
 		opUpdateCache = [self opStorePlanarInCache:state];
+		opWriteCachesToDisk = [self opWriteCachesToDisk:state];
 	}
 	
 	// set up interdependencies between the operations
@@ -866,6 +868,14 @@
 	
 	[opCoreImage addDependency:opConvertInterleaved];
 	
+	// if caching, ensure the 'write caches to disk' operation executes
+	if(cache) {
+		[opWriteCachesToDisk addDependency:opCoreImage];
+		[opCleanUp addDependency:opWriteCachesToDisk];
+	} else {
+		[opCleanUp addDependency:opCoreImage];
+	}
+	
 	// add them to the queue to vamenos the operations
 	TSAddOperation(opDebayer, state);
 	TSAddOperation(opDemosaic, state);
@@ -885,6 +895,14 @@
 	TSAddOperation(opConvertInterleaved, state);
 	
 	TSAddOperation(opCoreImage, state);
+	
+	if(cache) {
+		TSAddOperation(opWriteCachesToDisk, state);
+	}
+	
+	TSAddOperation(opCleanUp, state);
+	
+	DDLogVerbose(@"opWriteCachesToDisk = %@, opCleanUp = %@", opWriteCachesToDisk, opCleanUp);
 }
 
 /**
@@ -894,6 +912,7 @@
 - (void) resumePipelineRunWithCachedData:(TSRawPipelineState *) state shouldCacheResults:(BOOL) cache {
 	NSBlockOperation *opRotate, *opConvolute, *opMorphological, *opHisto;
 	NSBlockOperation *opConvertInterleaved, *opCoreImage,  *opRestoreCache;
+	NSBlockOperation *opCleanUp;
 	
 	// set up the various operations
 	opRestoreCache = [self opRestorePlanarFromCache:state];
@@ -906,6 +925,7 @@
 	opConvertInterleaved = [self opConvertToInterleaved:state];
 	
 	opCoreImage = [self opCoreImageFilters:state];
+	opCleanUp = [self opCleanUp:state];
 	
 	// set up interdependencies between the operations
 	[opRotate addDependency:opRestoreCache];
@@ -917,6 +937,7 @@
 	[opConvertInterleaved addDependency:opHisto];
 	
 	[opCoreImage addDependency:opConvertInterleaved];
+	[opCleanUp addDependency:opCoreImage];
 	
 	// add them to the queue to vamenos the operations
 	TSAddOperation(opRestoreCache, state);
@@ -929,6 +950,7 @@
 	TSAddOperation(opConvertInterleaved, state);
 	
 	TSAddOperation(opCoreImage, state);
+	TSAddOperation(opCleanUp, state);
 }
 
 #pragma mark Cache Handling
@@ -1163,6 +1185,30 @@
 
 #pragma mark Cache Persistence
 /**
+ * Creates an operation, executed after the image callback has run, which will
+ * compress and write the cached data to the on-disk cache.
+ */
+- (NSBlockOperation *) opWriteCachesToDisk:(TSRawPipelineState *) state {
+	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		TSBeginOperation(@"Write Cache to Disk");
+		
+		// if not caching, exit; technically this should never be NO
+		if(state.shouldCache == NO) {
+			TSEndOperation();
+			return;
+		}
+		
+		// write to disk (could do some more complex checks here)
+		[self writeCachesToDiskWithState:state];
+		
+		TSEndOperation();
+	}];
+	
+	op.name = @"Write Cache to Disk";
+	return op;
+}
+
+/**
  * Writes the caches for the current imge to disk. Both the full and half size
  * caches are written into a file in the user's Caches folder. Each file has
  * the image's UUID as its filename, with the extension `rawcache` for the full
@@ -1170,8 +1216,32 @@
  *
  * @note If the files already exist, they are truncated.
  */
-- (void) writeCachesToDisk {
+- (void) writeCachesToDiskWithState:(TSRawPipelineState *) state {
+	NSURL *url;
+	NSString *name;
+	BOOL success;
 	
+	// write the full size cache
+	name = [NSString stringWithFormat:@"%@_planar", state.imageUuid];
+	name = [name stringByAppendingPathExtension:@"rawcache"];
+	url = [self.cacheUrl URLByAppendingPathComponent:name isDirectory:NO];
+	
+	success = [self compressData:self.rawStageCache toFile:url];
+	
+	if(!success) {
+		DDLogWarn(@"Couldn't write full size cache for UUID %@ to %@", self.rawCacheImageUuid, url);
+	}
+	
+	// write the half size cache
+	name = [NSString stringWithFormat:@"%@_planar", state.imageUuid];
+	name = [name stringByAppendingPathExtension:@"rawcache2"];
+	url = [self.cacheUrl URLByAppendingPathComponent:name isDirectory:NO];
+	
+	success = [self compressData:self.halfSizeRawStageCache toFile:url];
+	
+	if(!success) {
+		DDLogWarn(@"Couldn't write half size cache for UUID %@ to %@", self.rawCacheImageUuid, url);
+	}
 }
 
 /**
@@ -1182,11 +1252,14 @@
 - (BOOL) compressData:(NSData *) data toFile:(NSURL *) url {
 	compression_status status;
 	compression_stream stream;
+	compression_stream_flags flags = (compression_stream_flags) 0;
 	
 	NSOutputStream *outStream;
 	
 	NSInteger bytesWritten = 0;
-	NSError *err = nil;
+	NSUInteger totalBytesWritten = 0;
+	
+	DDLogVerbose(@"Compressing %lu bytes to %@", data.length, url);
 	
 	// try to create a file descriptor
 	outStream = [NSOutputStream outputStreamWithURL:url append:NO];
@@ -1196,8 +1269,10 @@
 		return NO;
 	}
 	
+	[outStream open];
+	
 	// set up compression
-	status = compression_stream_init(&stream, COMPRESSION_STREAM_ENCODE, COMPRESSION_LZFSE);
+	status = compression_stream_init(&stream, COMPRESSION_STREAM_ENCODE, COMPRESSION_LZ4);
 	
 	if(status != COMPRESSION_STATUS_OK) {
 		DDLogError(@"Error initializing compression: %i", status);
@@ -1217,46 +1292,59 @@
 	
 	// actually compress the data
 	do {
-		// perform a compression iteration
-		status = compression_stream_process(&stream, 0);
+		// is the input buffer empty?
+		if(stream.src_size == 0) {
+			flags = COMPRESSION_STREAM_FINALIZE;
+			DDLogVerbose(@"Finalizing compression…");
+		}
 		
-		// if status is ok, write the block out
-		if(status == COMPRESSION_STATUS_OK) {
-			// the entire output chunk was written
-			if(stream.dst_size == 0) {
-				bytesWritten = [outStream write:(uint8_t *) outChunk.mutableBytes
-									  maxLength:chunkSize];
+		// perform an iteration of the compression algorithm
+		status = compression_stream_process(&stream, flags);
+		
+		switch(status) {
+			// if status is ok, write the block out
+			case COMPRESSION_STATUS_OK:
+				// the entire output chunk was written
+				if(stream.dst_size == 0) {
+					bytesWritten = [outStream write:(uint8_t *) outChunk.mutableBytes
+										  maxLength:chunkSize];
+					totalBytesWritten += bytesWritten;
+					
+					// Re-use output buffer
+					stream.dst_ptr = (uint8_t *) outChunk.mutableBytes;
+					stream.dst_size = chunkSize;
+				}
 				
-				// Re-use output buffer
-				stream.dst_ptr = (uint8_t *) outChunk.mutableBytes;
-				stream.dst_size = chunkSize;
-			}
-		}
-		// if status is end, calculate how many bytes to actually write
-		else if(status == COMPRESSION_STATUS_END) {
-			// there was a partial write
-			if (stream.dst_ptr > outChunk.mutableBytes) {
-				// calculate how many bytes to write
-				NSUInteger bytesToWrite = stream.dst_ptr - ((uint8_t *) outChunk.mutableBytes);
+				break;
 				
-				// write that much pls
-				bytesWritten = [outStream write:(uint8_t *) outChunk.mutableBytes
-									  maxLength:bytesToWrite];
+			// if status is end, calculate how many bytes to actually write
+			case COMPRESSION_STATUS_END: {
+				// some data were compressed, but less than the chunk size
+				if (stream.dst_ptr > outChunk.mutableBytes) {
+					// calculate how many bytes to write
+					NSUInteger bytesToWrite = stream.dst_ptr - ((uint8_t *) outChunk.mutableBytes);
+					
+					// write that much pls
+					bytesWritten = [outStream write:(uint8_t *) outChunk.mutableBytes
+										  maxLength:bytesToWrite];
+					totalBytesWritten += bytesWritten;
+				}
+				
+				break;
 			}
-			
-			// exit the loop
-			break;
-		}
-		// lastly, handle an error
-		else if(status == COMPRESSION_STATUS_ERROR) {
-			DDLogError(@"Error occurred while compressing");
-			return NO;
+				
+			// lastly, handle an error
+			default:
+				DDLogError(@"Error occurred while compressing");
+				return NO;
 		}
 	} while(status == COMPRESSION_STATUS_OK);
 	
+	// log some state
+	DDLogDebug(@"Wrote %lu bytes (uncompressed = %lu) to %@; compression factor = %3.4f", totalBytesWritten, data.length, url, ((float) data.length / (float) totalBytesWritten));
+	
 	// clean up output stream
 	[outStream close];
-	
 	
 	// clean up compression
 	compression_stream_destroy(&stream);
@@ -1290,6 +1378,23 @@
 }
 
 #pragma mark Memory Management
+/**
+ * Performs any needed cleanup on the pipeline, once complete.
+ */
+- (NSBlockOperation *) opCleanUp:(TSRawPipelineState *) state {
+	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+		TSBeginOperation(@"Clean Up");
+		
+		// deallocate buffers
+		[self cleanUpState:state];
+		
+		TSEndOperation();
+	}];
+	
+	op.name = @"Clean Up";
+	return op;
+}
+
 /**
  * De-allocates any buffers that have previously been allocated in the state
  * object.
