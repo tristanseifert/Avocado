@@ -70,12 +70,6 @@
 /// operation queue for RAW processing; a TSRawPipelineJob is queued on it.
 @property (nonatomic) NSOperationQueue *queue;
 
-/// raw stage cache; this holds a data object that contains each plane
-@property (nonatomic) NSMutableData *rawStageCache;
-/// half size raw stage cache; each plane, but at half size.
-@property (nonatomic) NSMutableData *halfSizeRawStageCache;
-/// UUID of the image for which the cache is valid
-@property (nonatomic) NSString *rawCacheImageUuid;
 /// pixel format converter
 @property (nonatomic) TSPixelConverterRef pixelConverter;
 
@@ -112,6 +106,15 @@
 - (CIImage *) ciImageFromPixelConverter:(TSPixelConverterRef) converter andSize:(NSSize) outputSize;
 
 // caching
+/// URL to the raw cache folder
+@property (nonatomic, readonly, getter=rawCacheUrl) NSURL *cacheUrl;
+/// raw stage cache; this holds a data object that contains each plane
+@property (nonatomic) NSMutableData *rawStageCache;
+/// half size raw stage cache; each plane, but at half size.
+@property (nonatomic) NSMutableData *halfSizeRawStageCache;
+/// UUID of the image for which the cache is valid
+@property (nonatomic) NSString *rawCacheImageUuid;
+
 - (void) beginFullPipelineRunWithState:(TSRawPipelineState *) state shouldCacheResults:(BOOL) cache;
 - (void) resumePipelineRunWithCachedData:(TSRawPipelineState *) state shouldCacheResults:(BOOL) cache;
 
@@ -124,6 +127,10 @@
 - (NSBlockOperation *) opStorePlanarInCache:(TSRawPipelineState *) state;
 - (NSBlockOperation *) opRestorePlanarFromCache:(TSRawPipelineState *) state;
 
+- (void) writeCachesToDisk;
+- (BOOL) compressData:(NSData *) data toFile:(NSURL *) url;
+
+// housekeeping
 - (void) cleanUpState:(TSRawPipelineState *) state;
 
 // debugging
@@ -935,6 +942,7 @@
 	self.halfSizeRawStageCache = nil;
 }
 
+#pragma mark Cache Encoding
 /**
  * Stores a copy of the image buffer into the cache.
  */
@@ -1028,6 +1036,7 @@
 	self.halfSizeRawStageCache = buffer;
 }
 
+#pragma mark Cache Decoding
 /**
  * Reads the planar buffer cache, dissects it back into the three original
  * planes, and copies that data back into the planes.
@@ -1099,6 +1108,7 @@
 	}
 }
 
+#pragma mark Cache Operations
 /**
  * Creates an operation that stores the planar floating point pixel data in the
  * data cache.
@@ -1149,6 +1159,134 @@
 	
 	op.name = @"Restore Cached State";
 	return op;
+}
+
+#pragma mark Cache Persistence
+/**
+ * Writes the caches for the current imge to disk. Both the full and half size
+ * caches are written into a file in the user's Caches folder. Each file has
+ * the image's UUID as its filename, with the extension `rawcache` for the full
+ * size image, and `rawcache2` for the half-sized image.
+ *
+ * @note If the files already exist, they are truncated.
+ */
+- (void) writeCachesToDisk {
+	
+}
+
+/**
+ * Uses libcompression to compress the given block of data using Apple's LZFSE
+ * compression algorithm. The compressor will operate in stream mode, working
+ * on fixed-size chunks of data at a time.
+ */
+- (BOOL) compressData:(NSData *) data toFile:(NSURL *) url {
+	compression_status status;
+	compression_stream stream;
+	
+	NSOutputStream *outStream;
+	
+	NSInteger bytesWritten = 0;
+	NSError *err = nil;
+	
+	// try to create a file descriptor
+	outStream = [NSOutputStream outputStreamWithURL:url append:NO];
+	
+	if(outStream == nil) {
+		DDLogError(@"Error creating output stream for url %@", url);
+		return NO;
+	}
+	
+	// set up compression
+	status = compression_stream_init(&stream, COMPRESSION_STREAM_ENCODE, COMPRESSION_LZFSE);
+	
+	if(status != COMPRESSION_STATUS_OK) {
+		DDLogError(@"Error initializing compression: %i", status);
+		return NO;
+	}
+	
+	// populate the input data pointers
+	stream.src_ptr = (const uint8_t *) data.bytes;
+	stream.src_size = data.length;
+
+	// allocate an output buffer and set its information
+	NSUInteger chunkSize = (1024 * 1024);
+	NSMutableData *outChunk = [NSMutableData dataWithLength:chunkSize];
+	
+	stream.dst_ptr = (uint8_t *) outChunk.mutableBytes;
+	stream.dst_size = chunkSize;
+	
+	// actually compress the data
+	do {
+		// perform a compression iteration
+		status = compression_stream_process(&stream, 0);
+		
+		// if status is ok, write the block out
+		if(status == COMPRESSION_STATUS_OK) {
+			// the entire output chunk was written
+			if(stream.dst_size == 0) {
+				bytesWritten = [outStream write:(uint8_t *) outChunk.mutableBytes
+									  maxLength:chunkSize];
+				
+				// Re-use output buffer
+				stream.dst_ptr = (uint8_t *) outChunk.mutableBytes;
+				stream.dst_size = chunkSize;
+			}
+		}
+		// if status is end, calculate how many bytes to actually write
+		else if(status == COMPRESSION_STATUS_END) {
+			// there was a partial write
+			if (stream.dst_ptr > outChunk.mutableBytes) {
+				// calculate how many bytes to write
+				NSUInteger bytesToWrite = stream.dst_ptr - ((uint8_t *) outChunk.mutableBytes);
+				
+				// write that much pls
+				bytesWritten = [outStream write:(uint8_t *) outChunk.mutableBytes
+									  maxLength:bytesToWrite];
+			}
+			
+			// exit the loop
+			break;
+		}
+		// lastly, handle an error
+		else if(status == COMPRESSION_STATUS_ERROR) {
+			DDLogError(@"Error occurred while compressing");
+			return NO;
+		}
+	} while(status == COMPRESSION_STATUS_OK);
+	
+	// clean up output stream
+	[outStream close];
+	
+	
+	// clean up compression
+	compression_stream_destroy(&stream);
+	return YES;
+}
+
+/**
+ * Gets the URL to the raw cache.
+ */
+- (NSURL *) rawCacheUrl {
+	NSError *err = nil;
+	NSFileManager *fm = [NSFileManager defaultManager];
+	
+	// query system for url
+	NSURL *cachesUrl = [[fm URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] lastObject];
+	cachesUrl = [cachesUrl URLByAppendingPathComponent:@"me.tseifert.Avocado" isDirectory:YES];
+	cachesUrl = [cachesUrl URLByAppendingPathComponent:@"TSRawPipeline" isDirectory:YES];
+	
+	// create directory, if needed
+	[fm createDirectoryAtURL:cachesUrl withIntermediateDirectories:YES
+				  attributes:nil error:&err];
+	
+	if(err != nil) {
+		DDLogError(@"Could not create Caches directory: %@, %@", cachesUrl, err);
+		[NSApp presentError:err];
+		
+		return nil;
+	}
+
+	return cachesUrl;
 }
 
 #pragma mark Memory Management
