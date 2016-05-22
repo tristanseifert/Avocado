@@ -106,7 +106,7 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 										toItem:self.view
 									 attribute:NSLayoutAttributeLeading
 									multiplier:1.f constant:0];
-	c.priority = NSLayoutPriorityDefaultHigh;
+	c.priority = NSLayoutPriorityRequired;
 	[self.view addConstraint:c];
 	
 	c = [NSLayoutConstraint constraintWithItem:self.titleBar
@@ -115,7 +115,7 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 										toItem:self.view
 									 attribute:NSLayoutAttributeTrailing
 									multiplier:1.f constant:0];
-	c.priority = NSLayoutPriorityDefaultHigh;
+	c.priority = NSLayoutPriorityRequired;
 	[self.view addConstraint:c];
 	
 	c = [NSLayoutConstraint constraintWithItem:self.titleBar
@@ -124,7 +124,7 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 										toItem:self.view
 									 attribute:NSLayoutAttributeTop
 									multiplier:1.f constant:0];
-	c.priority = NSLayoutPriorityDefaultHigh;
+	c.priority = NSLayoutPriorityRequired;
 	[self.view addConstraint:c];
 	
 	
@@ -158,7 +158,7 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 										toItem:self.view
 									 attribute:NSLayoutAttributeLeading
 									multiplier:1.f constant:10.f];
-	c.priority = NSLayoutPriorityDefaultHigh;
+	c.priority = NSLayoutPriorityRequired;
 	[self.view addConstraint:c];
 	
 	c = [NSLayoutConstraint constraintWithItem:self.content.view
@@ -167,7 +167,7 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 										toItem:self.view
 									 attribute:NSLayoutAttributeTrailing
 									multiplier:1.f constant:-10.f];
-	c.priority = NSLayoutPriorityDefaultHigh;
+	c.priority = NSLayoutPriorityRequired;
 	[self.view addConstraint:c];
 	
 	c = [NSLayoutConstraint constraintWithItem:self.content.view
@@ -176,7 +176,7 @@ static const CGFloat TSInspectorTitleBarHeight = 25.f;
 										toItem:self.view
 									 attribute:NSLayoutAttributeBottom
 									multiplier:1.f constant:0];
-	c.priority = NSLayoutPriorityDefaultHigh;
+	c.priority = NSLayoutPriorityRequired;
 	[self.view addConstraint:c];
 	
 	// align the top of the content to the bottom of the title bar

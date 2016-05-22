@@ -64,11 +64,11 @@ static void TSCoreImagePipelineFreeBuffer(void *info, const void *data, size_t s
  * @param colourSpace Output colour space, or nil to use a generic RGB
  * space.
  *
- * @return The output image of the pipeline.
+ * @return The output image of the pipeline, as an NSImage.
  */
-- (NSImage *) produceImageFromJob:(TSCoreImagePipelineJob *) job
-					inPixelFormat:(TSCoreImagePixelFormat) format
-				   andColourSpace:(NSColorSpace *) colourSpace {
+- (NSImage *) produceNSImageFromJob:(TSCoreImagePipelineJob *) job
+					withPixelFormat:(TSCoreImagePixelFormat) format
+					 andColourSpace:(NSColorSpace *) colourSpace {
 	CGImageRef im;
 	CGDataProviderRef provider;
 	

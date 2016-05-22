@@ -66,10 +66,13 @@
 /// image modifier for lens corrections, based on the above lens
 @property (nonatomic) lfModifier *lcModifier;
 
+/// desired output format
+@property (nonatomic) TSRawPipelineOutputFormat outFormat;
+
 /// Initial CIImage; passed to the first filter.
 @property (nonatomic) CIImage *coreImageInput;
-/// final image
-@property (nonatomic, weak) NSImage *result;
+/// final image (if rendering to CPU)
+@property (nonatomic, weak) NSImage *cpuResult;
 
 /**
  * Adds an operation to the list of operations associated with the op.

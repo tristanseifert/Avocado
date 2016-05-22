@@ -1021,7 +1021,7 @@
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="rSv-ig-nhG" secondAttribute="trailing" constant="5" id="Eda-Hy-AsT"/>
                 <constraint firstItem="rSv-ig-nhG" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Hz6-mo-xeY" secondAttribute="leading" constant="5" id="SuF-Ct-vLq"/>
                 <constraint firstItem="wl4-Nn-7HR" firstAttribute="top" secondItem="rSv-ig-nhG" secondAttribute="bottom" constant="5" id="T0S-hY-0kF"/>
-                <constraint firstAttribute="bottom" secondItem="wl4-Nn-7HR" secondAttribute="bottom" id="WKY-e7-hv3"/>
+                <constraint firstAttribute="bottom" secondItem="wl4-Nn-7HR" secondAttribute="bottom" priority="750" id="WKY-e7-hv3"/>
                 <constraint firstAttribute="trailing" secondItem="wl4-Nn-7HR" secondAttribute="trailing" id="taH-G1-GAj"/>
                 <constraint firstItem="wl4-Nn-7HR" firstAttribute="leading" secondItem="Hz6-mo-xeY" secondAttribute="leading" id="wh4-OC-4nL"/>
             </constraints>

@@ -36,7 +36,7 @@ typedef NS_ENUM(NSUInteger, TSCoreImagePixelFormat) {
  * 
  * @return The output image of the pipeline.
  */
-- (NSImage *) produceImageFromJob:(TSCoreImagePipelineJob *) job inPixelFormat:(TSCoreImagePixelFormat) format andColourSpace:(NSColorSpace *) colourSpace;
+- (NSImage *) produceNSImageFromJob:(TSCoreImagePipelineJob *) job withPixelFormat:(TSCoreImagePixelFormat) format andColourSpace:(NSColorSpace *) colourSpace;
 
 
 @end

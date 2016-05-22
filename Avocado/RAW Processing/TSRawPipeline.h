@@ -51,6 +51,40 @@
 #import <Foundation/Foundation.h>
 
 /**
+ * Output formats of the raw pipeline. This determines whether the
+ * resultant image is copied to the CPU (as an NSImage) or will stay
+ * on the GPU to be displayed on-screen (via Metal).
+ */
+typedef NS_ENUM(NSUInteger, TSRawPipelineOutputFormat) {
+	/**
+	 * Renders the image into a bitmap context on the CPU. The
+	 * precise implementation details of how CoreImage does this are
+	 * unknown; however, this will entail reading the entire image
+	 * out of VRAM, performing pixel conversions, and allocating
+	 * memory on the CPU side.
+	 *
+	 * It can be specified what bit depth (8 or 16 bits/component)
+	 * the output image will have. By default, it will use 8 bits.
+	 *
+	 * @note This should only really be used when the final intent
+	 * is to write the image to a file.
+	 */
+	TSRawPipelineOutputFormatNSImage8Bit,
+	TSRawPipelineOutputFormatNSImage16Bit,
+	
+	TSRawPipelineOutputFormatNSImage = TSRawPipelineOutputFormatNSImage8Bit,
+	
+	/**
+	 * The image is rendered into a Metal texture, which is used by
+	 * the GPU-accelerated image display view. This avoids the costly
+	 * transfer of pixel data from VRAM, as well as any potential
+	 * format conversion that the CPU may need to perform before the
+	 * image is blitted onto the screen.
+	 */
+	TSRawPipelineOutputFormatGPU
+};
+
+/**
  * Various rendering intents for which the raw pipeline may be able
  * to use different optimizations for.
  *
@@ -162,6 +196,7 @@ typedef void (^TSRawPipelineProgressCallback)(TSRawPipelineStage);
 - (void) queueRawFile:(nonnull TSLibraryImage *) image
 		  shouldCache:(BOOL) cache
 	  renderingIntent:(TSRawPipelineIntent) intent
+		 outputFormat:(TSRawPipelineOutputFormat) outFormat
    completionCallback:(nonnull TSRawPipelineCompletionCallback) complete
 	 progressCallback:(nullable TSRawPipelineProgressCallback) progress
    conversionProgress:(NSProgress * _Nonnull * _Nullable) outProgress;

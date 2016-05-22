@@ -180,6 +180,18 @@
  * everything to be recomputed. This should only be used if the user is
  * in the interactive editing mode for that particular image.
  *
+ * @param intent Final rendering intent of the image; i.e. what the image will
+ * be used for. This gives the pipeline hints to change the way the image is
+ * processed, balancing speed and quality for the given use case. Note that
+ * some intents may produce images smaller than the full image.
+ *
+ * @param outFormat Output format of the image; since the final pass of the
+ * pipeline involves using CoreImage on the GPU, it is much faster to instead
+ * render the image into a GPU texture, and use a bit of Metal magic to render
+ * it in a view. If the image should be written to a file, it is of course
+ * necessary to copy the image to the CPU, in which case an NSImage will be
+ * produced.
+ *
  * @param progressCallback This optional callback is invoked every time the
  * pipeline moves on to a later stage.
  *
@@ -189,6 +201,7 @@
 - (void) queueRawFile:(nonnull TSLibraryImage *) image
 		  shouldCache:(BOOL) cache
 	  renderingIntent:(TSRawPipelineIntent) intent
+		 outputFormat:(TSRawPipelineOutputFormat) outFormat
    completionCallback:(nonnull TSRawPipelineCompletionCallback) complete
 	 progressCallback:(nullable TSRawPipelineProgressCallback) progress
    conversionProgress:(NSProgress * _Nonnull * _Nullable) outProgress {
@@ -255,7 +268,9 @@
 	
 	state.stage = TSRawPipelineStageInitializing;
 	state.shouldCache = cache;
+	
 	state.intent = intent;
+	state.outFormat = outFormat;
 	
 	state.converter = self.pixelConverter;
 	
@@ -749,14 +764,35 @@
 			[state.image TSCIPipelineSetUpJob:job];
 		}];
 		
-		// process it pls
-		im = [self.ciPipeline produceImageFromJob:job
-									inPixelFormat:TSCIPixelFormatRGBA8
-								   andColourSpace:nil];
-		state.result = im;
+		// render the image as appropriate
+		TSCoreImagePixelFormat fmt = TSCIPixelFormatRGBA8;
 		
-		// execute success callback
-		[state completeWithImage:state.result];
+		switch(state.outFormat) {
+			// use 16-bit RGBA
+			case TSRawPipelineOutputFormatNSImage16Bit:
+				fmt = TSCIPixelFormatRGBA16;
+			
+			// use 8-bit RGBA
+			case TSRawPipelineOutputFormatNSImage8Bit: {
+				// determine output colour space
+				NSColorSpace *space = [NSColorSpace sRGBColorSpace];
+				
+				// process image
+				im = [self.ciPipeline produceNSImageFromJob:job
+											withPixelFormat:fmt
+											 andColourSpace:space];
+				state.cpuResult = im;
+				
+				// execute success callback
+				[state completeWithImage:state.cpuResult];
+				
+				break;
+			}
+			
+			// handle any unknown formats; this shouldn't happen
+			default:
+				DDLogError(@"Unsupported output format: %lu", state.outFormat);
+		}
 		
 		// clean up the state object
 		[self cleanUpState:state];
@@ -1126,7 +1162,7 @@
 	state.rawImage = nil;
 	
 	state.coreImageInput = nil;
-	state.result = nil;
+	state.cpuResult = nil;
 	
 	// free various other allocated buffers
 	free(state.histogramBuf);
