@@ -162,6 +162,20 @@
 		// set up context
 		self.moc = [NSManagedObjectContext MR_context];
 		self.moc.name = [NSString stringWithFormat:@"%@//%@//Shared", [self className], self];
+		
+		// create the cache directory
+		NSError *err = nil;
+		NSFileManager *fm = [NSFileManager defaultManager];
+		
+		[fm createDirectoryAtURL:self.cacheUrl withIntermediateDirectories:YES
+					  attributes:nil error:&err];
+		
+		if(err != nil) {
+			DDLogError(@"Could not create caches directory: %@, %@", self.cacheUrl, err);
+			[NSApp presentError:err];
+			
+			return nil;
+		}
 	}
 	
 	return self;
@@ -901,8 +915,6 @@
 	}
 	
 	TSAddOperation(opCleanUp, state);
-	
-	DDLogVerbose(@"opWriteCachesToDisk = %@, opCleanUp = %@", opWriteCachesToDisk, opCleanUp);
 }
 
 /**
@@ -1254,22 +1266,30 @@
 	compression_stream stream;
 	compression_stream_flags flags = (compression_stream_flags) 0;
 	
-	NSOutputStream *outStream;
+	NSFileHandle *fd;
+	NSError *err = nil;
 	
-	NSInteger bytesWritten = 0;
 	NSUInteger totalBytesWritten = 0;
 	
 	DDLogVerbose(@"Compressing %lu bytes to %@", data.length, url);
 	
-	// try to create a file descriptor
-	outStream = [NSOutputStream outputStreamWithURL:url append:NO];
+	// create the file, if needed
+	NSFileManager *fm = [NSFileManager defaultManager];
 	
-	if(outStream == nil) {
-		DDLogError(@"Error creating output stream for url %@", url);
+	if([fm createFileAtPath:url.path contents:[NSData new] attributes:nil] == NO) {
+		DDLogError(@"Couldn't create file at %@", url.path);
 		return NO;
 	}
 	
-	[outStream open];
+	// try to create a file descriptor
+	fd = [NSFileHandle fileHandleForWritingToURL:url error:&err];
+	
+	if(fd == nil || err != nil) {
+		DDLogError(@"Error creating output stream for url %@: %@", url, err);
+		return NO;
+	}
+	
+	[fd seekToFileOffset:0];
 	
 	// set up compression
 	status = compression_stream_init(&stream, COMPRESSION_STREAM_ENCODE, COMPRESSION_LZ4);
@@ -1284,7 +1304,7 @@
 	stream.src_size = data.length;
 
 	// allocate an output buffer and set its information
-	NSUInteger chunkSize = (1024 * 1024);
+	NSUInteger chunkSize = (512 * 1024);
 	NSMutableData *outChunk = [NSMutableData dataWithLength:chunkSize];
 	
 	stream.dst_ptr = (uint8_t *) outChunk.mutableBytes;
@@ -1306,9 +1326,8 @@
 			case COMPRESSION_STATUS_OK:
 				// the entire output chunk was written
 				if(stream.dst_size == 0) {
-					bytesWritten = [outStream write:(uint8_t *) outChunk.mutableBytes
-										  maxLength:chunkSize];
-					totalBytesWritten += bytesWritten;
+					[fd writeData:outChunk];
+					totalBytesWritten += chunkSize;
 					
 					// Re-use output buffer
 					stream.dst_ptr = (uint8_t *) outChunk.mutableBytes;
@@ -1323,11 +1342,11 @@
 				if (stream.dst_ptr > outChunk.mutableBytes) {
 					// calculate how many bytes to write
 					NSUInteger bytesToWrite = stream.dst_ptr - ((uint8_t *) outChunk.mutableBytes);
+					outChunk.length = bytesToWrite;
 					
 					// write that much pls
-					bytesWritten = [outStream write:(uint8_t *) outChunk.mutableBytes
-										  maxLength:bytesToWrite];
-					totalBytesWritten += bytesWritten;
+					[fd writeData:outChunk];
+					totalBytesWritten += bytesToWrite;
 				}
 				
 				break;
@@ -1344,7 +1363,7 @@
 	DDLogDebug(@"Wrote %lu bytes (uncompressed = %lu) to %@; compression factor = %3.4f", totalBytesWritten, data.length, url, ((float) data.length / (float) totalBytesWritten));
 	
 	// clean up output stream
-	[outStream close];
+	[fd closeFile];
 	
 	// clean up compression
 	compression_stream_destroy(&stream);
@@ -1362,17 +1381,6 @@
 	NSURL *cachesUrl = [[fm URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] lastObject];
 	cachesUrl = [cachesUrl URLByAppendingPathComponent:@"me.tseifert.Avocado" isDirectory:YES];
 	cachesUrl = [cachesUrl URLByAppendingPathComponent:@"TSRawPipeline" isDirectory:YES];
-	
-	// create directory, if needed
-	[fm createDirectoryAtURL:cachesUrl withIntermediateDirectories:YES
-				  attributes:nil error:&err];
-	
-	if(err != nil) {
-		DDLogError(@"Could not create Caches directory: %@, %@", cachesUrl, err);
-		[NSApp presentError:err];
-		
-		return nil;
-	}
 
 	return cachesUrl;
 }
