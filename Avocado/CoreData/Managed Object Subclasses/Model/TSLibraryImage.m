@@ -142,6 +142,9 @@ NSString * _Nonnull const TSAdjustmentKeySharpenMedianFilter = @"tsAdjustmentSha
 		TSDefaultAdjustments = [NSDictionary dictionaryWithContentsOfURL:url];
 	});
 	
+	// this is the date all adjustments will have
+	NSDate *now = [NSDate new];
+	
 	// enumerate the adjustments dictionary
 	[TSDefaultAdjustments enumerateKeysAndObjectsUsingBlock:^(NSString *adjustmentKey, NSDictionary<NSString *, NSNumber *> *values, BOOL *stop) {
 		TSLibraryImageAdjustment *adj;
@@ -158,6 +161,7 @@ NSString * _Nonnull const TSAdjustmentKeySharpenMedianFilter = @"tsAdjustmentSha
 		
 		// set its key
 		adj.property = keyStr;
+		adj.dateAdded = now;
 		
 		// enumerate the values dict and set the appropriate key paths
 		[values enumerateKeysAndObjectsUsingBlock:^(NSString *adjKey, NSNumber *adjValue, BOOL *stop) {

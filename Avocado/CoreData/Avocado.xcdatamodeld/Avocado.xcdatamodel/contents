@@ -6,12 +6,33 @@
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Image" inverseName="parentAlbums" inverseEntity="Image" syncable="YES"/>
         <relationship name="parentCollection" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AlbumCollection" inverseName="albums" inverseEntity="AlbumCollection" syncable="YES"/>
+        <compoundIndexes>
+            <compoundIndex>
+                <index value="title"/>
+                <index value="summary"/>
+            </compoundIndex>
+            <compoundIndex>
+                <index value="title"/>
+            </compoundIndex>
+            <compoundIndex>
+                <index value="created"/>
+            </compoundIndex>
+            <compoundIndex>
+                <index value="title"/>
+                <index value="created"/>
+            </compoundIndex>
+        </compoundIndexes>
     </entity>
     <entity name="AlbumCollection" representedClassName="TSLibraryAlbumCollection" syncable="YES">
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="albums" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Album" inverseName="parentCollection" inverseEntity="Album" syncable="YES"/>
         <relationship name="collections" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="AlbumCollection" inverseName="parentCollection" inverseEntity="AlbumCollection" syncable="YES"/>
         <relationship name="parentCollection" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AlbumCollection" inverseName="collections" inverseEntity="AlbumCollection" syncable="YES"/>
+        <compoundIndexes>
+            <compoundIndex>
+                <index value="title"/>
+            </compoundIndex>
+        </compoundIndexes>
     </entity>
     <entity name="ExportService" representedClassName="TSLibraryExportService" syncable="YES">
         <attribute name="instanceUuid" optional="YES" attributeType="String" syncable="YES"/>
@@ -33,8 +54,23 @@
         <relationship name="parentAlbums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Album" inverseName="images" inverseEntity="Album" syncable="YES"/>
         <relationship name="pvtAdjustments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ImageAdjustment" inverseName="image" inverseEntity="ImageAdjustment" syncable="YES"/>
         <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tag" inverseName="images" inverseEntity="Tag" syncable="YES"/>
+        <compoundIndexes>
+            <compoundIndex>
+                <index value="uuid"/>
+            </compoundIndex>
+            <compoundIndex>
+                <index value="dayShot"/>
+            </compoundIndex>
+            <compoundIndex>
+                <index value="dateShot"/>
+            </compoundIndex>
+            <compoundIndex>
+                <index value="dateImported"/>
+            </compoundIndex>
+        </compoundIndexes>
     </entity>
     <entity name="ImageAdjustment" representedClassName="TSLibraryImageAdjustment" syncable="YES">
+        <attribute name="dateAdded" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="property" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="w" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="x" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
@@ -43,24 +79,29 @@
         <relationship name="image" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Image" inverseName="pvtAdjustments" inverseEntity="Image" syncable="YES"/>
         <compoundIndexes>
             <compoundIndex>
-                <index value="image"/>
+                <index value="property"/>
             </compoundIndex>
             <compoundIndex>
-                <index value="image"/>
                 <index value="property"/>
+                <index value="dateAdded"/>
             </compoundIndex>
         </compoundIndexes>
     </entity>
     <entity name="Tag" representedClassName="TSLibraryTag" syncable="YES">
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Image" inverseName="tags" inverseEntity="Image" syncable="YES"/>
+        <compoundIndexes>
+            <compoundIndex>
+                <index value="title"/>
+            </compoundIndex>
+        </compoundIndexes>
     </entity>
     <elements>
         <element name="Album" positionX="99" positionY="78" width="128" height="120"/>
         <element name="AlbumCollection" positionX="97" positionY="-72" width="128" height="105"/>
         <element name="ExportService" positionX="441" positionY="-90" width="128" height="105"/>
         <element name="Image" positionX="97" positionY="243" width="128" height="240"/>
-        <element name="ImageAdjustment" positionX="261" positionY="63" width="128" height="135"/>
+        <element name="ImageAdjustment" positionX="261" positionY="63" width="128" height="150"/>
         <element name="Tag" positionX="351" positionY="396" width="128" height="75"/>
     </elements>
 </model>

@@ -22,6 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 @property (nonatomic, readonly, strong) TSLibraryImageAdjustmentID *objectID;
 
+@property (nonatomic, strong, nullable) NSDate* dateAdded;
+
 @property (nonatomic, strong, nullable) NSString* property;
 
 @property (nonatomic, strong, nullable) NSNumber* w;
@@ -53,6 +55,9 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface _TSLibraryImageAdjustment (CoreDataGeneratedPrimitiveAccessors)
+
+- (NSDate*)primitiveDateAdded;
+- (void)setPrimitiveDateAdded:(NSDate*)value;
 
 - (NSString*)primitiveProperty;
 - (void)setPrimitiveProperty:(NSString*)value;
@@ -87,6 +92,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface TSLibraryImageAdjustmentAttributes: NSObject 
++ (NSString *)dateAdded;
 + (NSString *)property;
 + (NSString *)w;
 + (NSString *)x;

@@ -10,6 +10,9 @@
 
 #import <Quartz/Quartz.h>
 
+// animation duration
+static const NSTimeInterval TSAnimationDuration = 0.33f;
+
 @interface TSDevelopLoadingIndicatorWindowController ()
 
 @property (nonatomic) IBOutlet NSVisualEffectView *effectView;
@@ -110,7 +113,7 @@
 		
 		// animate alpha to 1.0
 		[NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
-			context.duration = 0.5f;
+			context.duration = TSAnimationDuration;
 			context.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
 			
 			if(NSApp.currentEvent.modifierFlags & NSShiftKeyMask)
@@ -134,7 +137,7 @@
 	if(animation) {
 		[NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
 			// set duration and timing function
-			context.duration = 0.5f;
+			context.duration = TSAnimationDuration;
 			context.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
 			
 			if(NSApp.currentEvent.modifierFlags & NSShiftKeyMask)

@@ -42,7 +42,7 @@
 
 	// fill the background
 	if(self.useSelectedDrawingStyle) {
-		[[NSColor colorWithCalibratedWhite:1.f alpha:0.25f] setFill];
+		[[NSColor colorWithCalibratedWhite:1.f alpha:0.266f] setFill];
 	} else {
 		[[NSColor colorWithCalibratedWhite:1.f alpha:0.15f] setFill];
 	}
@@ -55,7 +55,7 @@
 	
 	// prepare to draw lines
 	NSBezierPath *p;
-	[[NSColor colorWithCalibratedWhite:1.f alpha:0.10f] setStroke];
+	[[NSColor colorWithCalibratedWhite:1.f alpha:0.074f] setStroke];
 	
 	// draw bottom line
 	p = [NSBezierPath bezierPathWithRect:NSMakeRect(0, -0.5, NSWidth(self.frame), 1)];

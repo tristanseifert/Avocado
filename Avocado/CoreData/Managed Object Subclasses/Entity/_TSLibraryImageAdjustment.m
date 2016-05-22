@@ -53,6 +53,8 @@
 	return keyPaths;
 }
 
+@dynamic dateAdded;
+
 @dynamic property;
 
 @dynamic w;
@@ -140,6 +142,9 @@
 @end
 
 @implementation TSLibraryImageAdjustmentAttributes 
++ (NSString *)dateAdded {
+	return @"dateAdded";
+}
 + (NSString *)property {
 	return @"property";
 }

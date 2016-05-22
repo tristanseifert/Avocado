@@ -48,6 +48,7 @@
 		6A9224421CEEB89000EE6408 /* TSMedianAdjustmentFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A9224411CEEB89000EE6408 /* TSMedianAdjustmentFilter.m */; };
 		6A9224471CEEBC5300EE6408 /* TSDevelopLoadingIndicatorWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A9224451CEEBC5300EE6408 /* TSDevelopLoadingIndicatorWindowController.m */; };
 		6A9224481CEEBC5300EE6408 /* TSDevelopLoadingIndicatorWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A9224461CEEBC5300EE6408 /* TSDevelopLoadingIndicatorWindowController.xib */; };
+		6AA637661CF1F10C00683F83 /* LensfunDB.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 6AA637651CF1F10C00683F83 /* LensfunDB.bundle */; };
 		6AA9358C1CE787D9004E9F9C /* TSDevelopImageViewerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA935871CE787D9004E9F9C /* TSDevelopImageViewerController.m */; };
 		6AA9358D1CE787D9004E9F9C /* TSDevelopImageViewerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AA935881CE787D9004E9F9C /* TSDevelopImageViewerController.xib */; };
 		6AA9358E1CE787D9004E9F9C /* TSDevelopSidebarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA9358A1CE787D9004E9F9C /* TSDevelopSidebarController.m */; };
@@ -195,6 +196,7 @@
 		6A9224441CEEBC5300EE6408 /* TSDevelopLoadingIndicatorWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSDevelopLoadingIndicatorWindowController.h; path = "Library Window/Single Image/TSDevelopLoadingIndicatorWindowController.h"; sourceTree = "<group>"; };
 		6A9224451CEEBC5300EE6408 /* TSDevelopLoadingIndicatorWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSDevelopLoadingIndicatorWindowController.m; path = "Library Window/Single Image/TSDevelopLoadingIndicatorWindowController.m"; sourceTree = "<group>"; };
 		6A9224461CEEBC5300EE6408 /* TSDevelopLoadingIndicatorWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSDevelopLoadingIndicatorWindowController.xib; path = "Library Window/Single Image/TSDevelopLoadingIndicatorWindowController.xib"; sourceTree = "<group>"; };
+		6AA637651CF1F10C00683F83 /* LensfunDB.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = LensfunDB.bundle; path = Avocado/Resources/LensfunDB.bundle; sourceTree = "<group>"; };
 		6AA935861CE787D9004E9F9C /* TSDevelopImageViewerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSDevelopImageViewerController.h; path = "Library Window/Single Image/TSDevelopImageViewerController.h"; sourceTree = "<group>"; };
 		6AA935871CE787D9004E9F9C /* TSDevelopImageViewerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSDevelopImageViewerController.m; path = "Library Window/Single Image/TSDevelopImageViewerController.m"; sourceTree = "<group>"; };
 		6AA935881CE787D9004E9F9C /* TSDevelopImageViewerController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSDevelopImageViewerController.xib; path = "Library Window/Single Image/TSDevelopImageViewerController.xib"; sourceTree = "<group>"; };
@@ -374,6 +376,7 @@
 		6A28F0551CD7FDE100228067 /* lensfun */ = {
 			isa = PBXGroup;
 			children = (
+				6AA637651CF1F10C00683F83 /* LensfunDB.bundle */,
 				6A28F0581CD7FEA400228067 /* liblensfun.0.3.2.dylib */,
 				6A28F0571CD7FE7E00228067 /* Headers */,
 			);
@@ -968,6 +971,7 @@
 				6AEC35481CD443B90033DE0A /* TSLibraryDetail.xib in Resources */,
 				6AFDED401CF0BB0B0015C181 /* TSLibraryImageDefaultAdjustments.plist in Resources */,
 				6AE87BD41CD275C90053CD9D /* MainMenu.xib in Resources */,
+				6AA637661CF1F10C00683F83 /* LensfunDB.bundle in Resources */,
 				6A6ED41D1CE4D30A001EFA21 /* TSHSLAdjustmentFilter.cikernel in Resources */,
 				6AA9359F1CE7AF43004E9F9C /* TSDevelopExposureInspector.xib in Resources */,
 				6A9224281CECC6DE00EE6408 /* TSDevelopHueInspector.xib in Resources */,
