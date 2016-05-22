@@ -51,6 +51,38 @@
 #import <Foundation/Foundation.h>
 
 /**
+ * Various rendering intents for which the raw pipeline may be able
+ * to use different optimizations for.
+ *
+ * For example, using the 'fast display' mode may allow the pipeline
+ * to downscale pixel data, or use faster, less precise algorithms in
+ * the computation of pixel data.
+ */
+typedef NS_ENUM(NSUInteger, TSRawPipelineIntent) {
+	TSRawPipelineIntentUnknown,
+	
+	/**
+	 * Fast display; outputs an image that is half the resolution of
+	 * the input image. Scaling, rotation, and colour conversions are
+	 * performed with less precision.
+	 */
+	TSRawPipelineIntentDisplayFast,
+	
+	/**
+	 * Slow display: Uses the full size image, and high quality algo-
+	 * rithms optimized for on-screen display.
+	 */
+	TSRawPipelineIntentDisplaySlow,
+	
+	/**
+	 * Output: Produces an image using the highest quality algorithms
+	 * available to the pipeline, with a higher bit depth than the
+	 * screen output modes provide.
+	 */
+	TSRawPipelineIntentOutput
+};
+
+/**
  * An enumeration declaring the current stage in the processing pipeline. As
  * some steps may have sub-steps that each can take a considerable amount of
  * time, the high 16 bits contain the step number, while the low 16 bits
@@ -129,6 +161,7 @@ typedef void (^TSRawPipelineProgressCallback)(TSRawPipelineStage);
  */
 - (void) queueRawFile:(nonnull TSLibraryImage *) image
 		  shouldCache:(BOOL) cache
+	  renderingIntent:(TSRawPipelineIntent) intent
    completionCallback:(nonnull TSRawPipelineCompletionCallback) complete
 	 progressCallback:(nullable TSRawPipelineProgressCallback) progress
    conversionProgress:(NSProgress * _Nonnull * _Nullable) outProgress;

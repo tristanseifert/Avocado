@@ -84,6 +84,9 @@
 /// size (in bytes) of the interpolated colour buffer
 @property (nonatomic) size_t interpolatedColourBufSz;
 
+/// managed object context, for accessing image objects
+@property (nonatomic) NSManagedObjectContext *moc;
+
 /// CoreImage pipeline
 @property (nonatomic) TSCoreImagePipeline *ciPipeline;
 
@@ -115,6 +118,9 @@
 - (void) storeFloatDataCached:(TSRawPipelineState *) state;
 - (void) restoreFloatDataCached:(TSRawPipelineState *) state;
 
+- (void) storeHalfSizeFloatDataCached:(TSRawPipelineState *) state;
+- (void) restoreHalfSizeFloatDataCached:(TSRawPipelineState *) state;
+
 - (NSBlockOperation *) opStorePlanarInCache:(TSRawPipelineState *) state;
 - (NSBlockOperation *) opRestorePlanarFromCache:(TSRawPipelineState *) state;
 
@@ -143,6 +149,10 @@
 		
 		// create CoreImage pipeline
 		self.ciPipeline = [TSCoreImagePipeline new];
+		
+		// set up context
+		self.moc = [NSManagedObjectContext MR_context];
+		self.moc.name = [NSString stringWithFormat:@"%@//%@//Shared", [self className], self];
 	}
 	
 	return self;
@@ -178,6 +188,7 @@
  */
 - (void) queueRawFile:(nonnull TSLibraryImage *) image
 		  shouldCache:(BOOL) cache
+	  renderingIntent:(TSRawPipelineIntent) intent
    completionCallback:(nonnull TSRawPipelineCompletionCallback) complete
 	 progressCallback:(nullable TSRawPipelineProgressCallback) progress
    conversionProgress:(NSProgress * _Nonnull * _Nullable) outProgress {
@@ -189,7 +200,7 @@
 	
 	// reset file
 	if([image.libRawHandle recycle] != YES) {
-		DDLogWarn(@"Couldn't recycle raw file: this might be bad, continuing anyways.");
+		DDLogWarn(@"Couldn't recycle raw file: this might cause issues later on, but continuing anyways.");
 	}
 	
 	// figure out whether we can use the existing converter
@@ -230,7 +241,10 @@
 	
 	// clear the caches, if the image is different
 	if(cache && [self.rawCacheImageUuid isEqualToString:image.uuid] == NO) {
-		DDLogDebug(@"Clearing raw caches, since current image (%@) is different than cache image (%@)", image.uuid, self.rawCacheImageUuid);
+		// don't log if cache is empty
+		if(self.rawCacheImageUuid != nil) {
+			DDLogDebug(@"Clearing raw caches, since current image (%@) is different than cache image (%@)", image.uuid, self.rawCacheImageUuid);
+		}
 		
 		[self clearImageCaches];
 		self.rawCacheImageUuid = image.uuid;
@@ -241,6 +255,7 @@
 	
 	state.stage = TSRawPipelineStageInitializing;
 	state.shouldCache = cache;
+	state.intent = intent;
 	
 	state.converter = self.pixelConverter;
 	
@@ -257,9 +272,7 @@
 	state.lcModifier = nil;
 	
 	// set up the context
-	state.mocCtx = [NSManagedObjectContext MR_context];
-	state.mocCtx.name = [NSString stringWithFormat:@"%@ %@/%@", [self className], self, state];
-	
+	state.mocCtx = self.moc;
 	state.image = [image MR_inContext:state.mocCtx];
 	
 	// get some data out of the image data
@@ -268,6 +281,7 @@
 		state.rawImage = state.image.libRawHandle;
 		
 		state.outputSize = state.rawImage.size;
+		state.rawSize = state.image.imageSize;
 	}];
 	
 	// check if we can resume the processing operation
@@ -446,34 +460,34 @@
 				uint16_t *dst = (uint16_t *) TSPixelConverterGetRGBXPointer(state.converter);
 				// imgData is the original 48bpp RGB data
 				uint16_t *imgData = (uint16_t *) self.interpolatedColourBuf;
-				int imgDataStride = state.outputSize.width * 3 * sizeof(uint16_t);
+				int imgDataStride = state.rawSize.width * 3 * sizeof(uint16_t);
 				
 				// allocate the coordinate buffer for subpixel coordinates
-				size_t subPixelCoordsSz = sizeof(float) * 3 * 2 * state.outputSize.width;
+				size_t subPixelCoordsSz = sizeof(float) * 3 * 2 * state.rawSize.width;
 
 				float *subPixelCoords = (float *) valloc(subPixelCoordsSz);
 				memset(subPixelCoords, 0, subPixelCoordsSz);
 				
 				
 				// perform the step for each scanline separately
-				for(y = 0; (ok && (y < state.outputSize.height)); y++) {
+				for(y = 0; (ok && (y < state.rawSize.height)); y++) {
 					// remove vignetting
 					if(step == 0) {
 						ok = m->ApplyColorModification(imgData, 0, y,
-													   state.outputSize.width, 1,
+													   state.rawSize.width, 1,
 													   LF_CR_3(RED,BLUE,GREEN), imgDataStride);
 					}
 					
 					// correct geometry and TCA
 					else if(step == 1) {
 						ok = m->ApplySubpixelGeometryDistortion(0, y,
-																state.outputSize.width,
+																state.rawSize.width,
 																1, subPixelCoords);
 						// interpolate the pixels into output buffer
 						if(ok) {
 							float *src = subPixelCoords;
 							
-							for(x = 0; x < state.outputSize.width; x++) {
+							for(x = 0; x < state.rawSize.width; x++) {
 								// copy the RGB pixels individually
 								*dst++ = TSInterpolatePixelBilinear(imgData, imgDataStride, src[0], src[1]);
 								*dst++ = TSInterpolatePixelBilinear(imgData, imgDataStride, src[2], src[3]);
@@ -491,8 +505,8 @@
 					}
 					
 					// increment the input and output pointers
-					imgData += ((size_t) (3 * state.outputSize.width));
-					dst += ((size_t) (3 * state.outputSize.width));
+					imgData += ((size_t) (3 * state.rawSize.width));
+					dst += ((size_t) (3 * state.rawSize.width));
 				}
 			}
 		}
@@ -517,7 +531,7 @@
 		
 		// if lens corrections were applied, the data is in the converter output
 		if(state.applyLensCorrections == YES) {
-			size_t num_bytes = (state.outputSize.width * 3 * sizeof(uint16_t)) * state.outputSize.height;
+			size_t num_bytes = (state.rawSize.width * 3 * sizeof(uint16_t)) * state.rawSize.height;
 			void *correctedData = TSPixelConverterGetRGBXPointer(state.converter);
 			
 			// we must copy the data; otherwise, it'll explode!
@@ -882,6 +896,7 @@
  */
 - (void) clearImageCaches {
 	self.rawStageCache = nil;
+	self.halfSizeRawStageCache = nil;
 }
 
 /**
@@ -890,7 +905,7 @@
 - (void) storeFloatDataCached:(TSRawPipelineState *) state {
 	// get how many kerjiggers each plane is
 	vImage_Buffer plane = TSPixelConverterGetPlanevImageBufferBuffer(state.converter, 0);
-	size_t planeBytes = plane.rowBytes * plane.height;
+	NSUInteger planeBytes = plane.rowBytes * plane.height;
 	
 	NSMutableData *buffer = [NSMutableData dataWithCapacity:planeBytes * 3];
 	
@@ -907,19 +922,91 @@
 }
 
 /**
+ * Creates a half size (1/4 the pixels) version of each of the planes, and
+ * stores it as the half-size cache.
+ *
+ * @note If the pixel dimensions of the input image are odd, the number will
+ * be truncated, i.e. rounded down.
+ */
+- (void) storeHalfSizeFloatDataCached:(TSRawPipelineState *) state {
+	vImage_Error err = kvImageNoError;
+	vImage_Buffer planeIn = TSPixelConverterGetPlanevImageBufferBuffer(state.converter, 0);
+	
+	// calculate the size and bytes/row
+	NSSize halfSize = NSMakeSize(planeIn.width, planeIn.height);
+	halfSize.width = floor(halfSize.width / 2.f);
+	halfSize.height = floor(halfSize.height / 2.f);
+	
+	NSUInteger bytesPerRow = ((NSUInteger) halfSize.width) * sizeof(float);
+	if((bytesPerRow & 0x1F) != 0) {
+		// align to 32-byte boundary
+		bytesPerRow += (0x20 - (bytesPerRow & 0x1F));
+	}
+	
+	NSUInteger planeBytes = bytesPerRow * halfSize.height;
+	
+	// set up an output buffer structure
+	vImage_Buffer planeOut = {
+		.height = (NSUInteger) halfSize.height,
+		.width = (NSUInteger) halfSize.width,
+		.rowBytes = bytesPerRow
+	};
+	
+	// calculate size of temporary vImage buffer, then allocate it
+	void *vImageTemp = NULL;
+	err = vImageScale_PlanarF(&planeIn, &planeOut, NULL, kvImageGetTempBufferSize);
+	
+	if(err > 0) {
+		vImageTemp = (void *) valloc(err);
+		DDLogDebug(@"Allocated %lu bytes for vImage temp buffer", err);
+	} else {
+		DDLogError(@"Couldn't get size of temp buffer for scaling, error %lu", err);
+		return;
+	}
+	
+	// allocate the output buffer
+	NSMutableData *buffer = [NSMutableData dataWithLength:planeBytes * 3];
+	
+	// run the scaling process for each buffer
+	for(NSUInteger idx = 0; idx < 3; idx++) {
+		// set up input and output buffers
+		planeIn = TSPixelConverterGetPlanevImageBufferBuffer(state.converter, idx);
+		planeOut.data = (((uint8_t *) buffer.mutableBytes) + (planeBytes * idx));
+		
+		// perform scale operation
+		err = vImageScale_PlanarF(&planeIn, &planeOut, vImageTemp, kvImageNoFlags);
+		
+		// check for error
+		if(err != kvImageNoError) {
+			DDLogError(@"Error during scale: %lu", err);
+			
+			// clean up and exit
+			free(vImageTemp);
+			return;
+		}
+	}
+	
+	// clean up
+	free(vImageTemp);
+	
+	self.halfSizeRawStageCache = buffer;
+}
+
+/**
  * Reads the planar buffer cache, dissects it back into the three original
  * planes, and copies that data back into the planes.
  */
 - (void) restoreFloatDataCached:(TSRawPipelineState *) state {
-	size_t offset, planeBytes;
+	NSUInteger offset, planeBytes;
+	
+	// check that the cache is intact
+	if(self.rawStageCache == nil) {
+		DDLogError(@"Cache was freed from cache since operation started… this is bad.");
+	}
 	
 	// calculate plane size and get buffer
 	vImage_Buffer plane = TSPixelConverterGetPlanevImageBufferBuffer(state.converter, 0);
 	planeBytes = plane.rowBytes * plane.height;
-	
-	if(self.rawStageCache == nil) {
-		DDLogError(@"Cache was freed from cache since operation started… this is bad.");
-	}
 	
 	// make a copy of each of the planes
 	for(NSUInteger idx = 0; idx < 3; idx++) {
@@ -927,6 +1014,52 @@
 		offset = idx * planeBytes;
 		
 		[self.rawStageCache getBytes:plane.data range:NSMakeRange(offset, planeBytes)];
+	}
+}
+
+/**
+ * Restores the half-sized planar data from the buffer, copying it into the
+ * image converter. This also ensures the sizes are properly handled, and that
+ * any structs that rely on the image's size are scaled.
+ */
+- (void) restoreHalfSizeFloatDataCached:(TSRawPipelineState *) state {
+	NSUInteger offset, planeBytes;
+	
+	// check that the cache is intact
+	if(self.halfSizeRawStageCache == nil) {
+		DDLogError(@"Cache was freed from cache since operation started… this is bad.");
+	}
+	
+	// update the raw (input pixel) size
+	NSSize newSize;
+	
+	newSize.width = floor(state.rawSize.width / 2.f);
+	newSize.height = floor(state.rawSize.height / 2.f);
+	
+	state.rawSize = newSize;
+	
+	// update output size
+	newSize.width = floor(state.outputSize.width / 2.f);
+	newSize.height = floor(state.outputSize.height / 2.f);
+	
+	state.outputSize = newSize;
+	
+	DDLogVerbose(@"Resuming cached raw processing, size %@", NSStringFromSize(newSize));
+	
+	// resize the pixel converter
+	TSPixelConverterResize(state.converter, state.rawSize.width, state.rawSize.height);
+	
+	// get the plane size
+	vImage_Buffer planeOut = TSPixelConverterGetPlanevImageBufferBuffer(state.converter, 0);
+	planeBytes = planeOut.rowBytes * planeOut.height;
+	
+	// read out the buffer data from the cache
+	for(NSUInteger idx = 0; idx < 3; idx++) {
+		planeOut = TSPixelConverterGetPlanevImageBufferBuffer(state.converter, idx);
+		offset = idx * planeBytes;
+		
+		[self.halfSizeRawStageCache getBytes:planeOut.data
+									   range:NSMakeRange(offset, planeBytes)];
 	}
 }
 
@@ -945,6 +1078,7 @@
 		}
 		
 		[self storeFloatDataCached:state];
+		[self storeHalfSizeFloatDataCached:state];
 		
 		TSEndOperation();
 	}];
@@ -967,7 +1101,12 @@
 			return;
 		}
 		
-		[self restoreFloatDataCached:state];
+		// if NOT fast display, use full size data
+		if(state.intent != TSRawPipelineIntentDisplayFast) {
+			[self restoreFloatDataCached:state];
+		} else {
+			[self restoreHalfSizeFloatDataCached:state];
+		}
 		
 		TSEndOperation();
 	}];

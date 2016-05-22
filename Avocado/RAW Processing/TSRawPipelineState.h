@@ -36,6 +36,8 @@
 @property (nonatomic) TSRawImage *rawImage;
 /// whether results of this processing step should be cached or naw
 @property (nonatomic) BOOL shouldCache;
+/// rendering intent for the pipeline
+@property (nonatomic) TSRawPipelineIntent intent;
 
 /// 64bpp buffer for the interpolated RGBX data; used by converter.
 @property (nonatomic) void *interpolatedColourBuf;
@@ -44,6 +46,8 @@
 /// gamma curve buffer, 0x10000 * sizeof(uint16_t)
 @property (nonatomic) uint16_t *gammaCurveBuf;
 
+/// size of the image being processed
+@property (nonatomic) NSSize rawSize;
 /// output size of the image; if rotation is applied, this is changed as needed.
 @property (nonatomic) NSSize outputSize;
 
