@@ -56,4 +56,10 @@
  */
 - (NSData *) cachedDataForUuid:(NSString *) uuid;
 
+/**
+ * Evicts all data for a given UUID from the cache. Any compressed
+ * data files will also be removed from disk.
+ */
+- (void) evictDataForUuid:(NSString *) uuid;
+
 @end

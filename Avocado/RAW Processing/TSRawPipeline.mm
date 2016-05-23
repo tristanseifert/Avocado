@@ -107,27 +107,16 @@
 /// cache handler
 @property (nonatomic) TSRawCache *cache;
 
-/// raw stage cache; this holds a data object that contains each plane
-@property (nonatomic) NSMutableData *rawStageCache;
-/// half size raw stage cache; each plane, but at half size.
-@property (nonatomic) NSMutableData *halfSizeRawStageCache;
-/// UUID of the image for which the cache is valid
-@property (nonatomic) NSString *rawCacheImageUuid;
-
 - (void) beginFullPipelineRunWithState:(TSRawPipelineState *) state shouldCacheResults:(BOOL) cache;
 - (void) resumePipelineRunWithCachedData:(TSRawPipelineState *) state shouldCacheResults:(BOOL) cache;
 
 - (void) storeFloatDataCached:(TSRawPipelineState *) state;
 - (void) restoreFloatDataCached:(TSRawPipelineState *) state;
 
-- (void) storeHalfSizeFloatDataCached:(TSRawPipelineState *) state;
 - (void) restoreHalfSizeFloatDataCached:(TSRawPipelineState *) state;
 
 - (NSBlockOperation *) opStorePlanarInCache:(TSRawPipelineState *) state;
 - (NSBlockOperation *) opRestorePlanarFromCache:(TSRawPipelineState *) state;
-
-- (NSBlockOperation *) opWriteCachesToDisk:(TSRawPipelineState *) state;
-- (void) writeCachesToDiskWithState:(TSRawPipelineState *) state;
 
 // housekeeping
 - (NSBlockOperation *) opCleanUp:(TSRawPipelineState *) state;
@@ -262,17 +251,6 @@
 		DDLogDebug(@"Allocated %lu bytes for interpolated colour buffer", self.interpolatedColourBufSz);
 	}
 	
-	// clear the caches, if the image is different
-	if(cache && [self.rawCacheImageUuid isEqualToString:image.uuid] == NO) {
-		// don't log if cache is empty
-		if(self.rawCacheImageUuid != nil) {
-			DDLogDebug(@"Clearing raw caches, since current image (%@) is different than cache image (%@)", image.uuid, self.rawCacheImageUuid);
-		}
-		
-		[self clearImageCaches];
-		self.rawCacheImageUuid = image.uuid;
-	}
-	
 	// create the pipeline state
 	state = [TSRawPipelineState new];
 	
@@ -310,7 +288,7 @@
 	}];
 	
 	// check if we can resume the processing operation
-	if(cache && self.rawStageCache != nil && self.rawCacheImageUuid == image.uuid) {
+	if(cache && [self.cache hasDataForUuid:state.imageUuid] == YES) {
 		DDLogVerbose(@"Resuming RAW processing for %@ from stage 5", image.uuid);
 		
 		state.progress = [NSProgress progressWithTotalUnitCount:6];
@@ -820,7 +798,7 @@
 	NSBlockOperation *opDebayer, *opDemosaic, *opLensCorrect, *opConvertPlanar;
 	NSBlockOperation *opRotate, *opConvolute, *opMorphological, *opHisto;
 	NSBlockOperation *opConvertInterleaved, *opCoreImage, *opConvertRGBGamma;
-	NSBlockOperation *opUpdateCache, *opWriteCachesToDisk, *opCleanUp;
+	NSBlockOperation *opUpdateCache, *opCleanUp;
 	
 	// set up the various operations
 	opDebayer = [self opDebayer:state];
@@ -844,7 +822,6 @@
 	// if caching is enabled, create the cache updating operations
 	if(cache) {
 		opUpdateCache = [self opStorePlanarInCache:state];
-		opWriteCachesToDisk = [self opWriteCachesToDisk:state];
 	}
 	
 	// set up interdependencies between the operations
@@ -869,13 +846,7 @@
 	
 	[opCoreImage addDependency:opConvertInterleaved];
 	
-	// if caching, ensure the 'write caches to disk' operation executes
-	if(cache) {
-		[opWriteCachesToDisk addDependency:opCoreImage];
-		[opCleanUp addDependency:opWriteCachesToDisk];
-	} else {
-		[opCleanUp addDependency:opCoreImage];
-	}
+	[opCleanUp addDependency:opCoreImage];
 	
 	// add them to the queue to vamenos the operations
 	TSAddOperation(opDebayer, state);
@@ -896,10 +867,6 @@
 	TSAddOperation(opConvertInterleaved, state);
 	
 	TSAddOperation(opCoreImage, state);
-	
-	if(cache) {
-		TSAddOperation(opWriteCachesToDisk, state);
-	}
 	
 	TSAddOperation(opCleanUp, state);
 }
@@ -954,13 +921,15 @@
 
 #pragma mark Cache Handling
 /**
- * Invalidates the internal caches of an image. This is automatically called
- * when the cached image is different than the image for which a RAW processing
- * is requested.
+ * Invalidates the internal caches of an image.
  */
-- (void) clearImageCaches {
-	self.rawStageCache = nil;
-	self.halfSizeRawStageCache = nil;
+- (void) clearCachesForImage:(nonnull TSLibraryImage *) inImage {
+	[self.moc performBlock:^{
+		TSLibraryImage *image = [inImage MR_inContext:self.moc];
+		
+		// evict it from the cache
+		[self.cache evictDataForUuid:image.uuid];
+	}];
 }
 
 #pragma mark Cache Encoding
@@ -983,78 +952,7 @@
 	}
 	
 	// store in the cache
-	self.rawStageCache = buffer;
-}
-
-/**
- * Creates a half size (1/4 the pixels) version of each of the planes, and
- * stores it as the half-size cache.
- *
- * @note If the pixel dimensions of the input image are odd, the number will
- * be truncated, i.e. rounded down.
- */
-- (void) storeHalfSizeFloatDataCached:(TSRawPipelineState *) state {
-	vImage_Error err = kvImageNoError;
-	vImage_Buffer planeIn = TSPixelConverterGetPlanevImageBufferBuffer(state.converter, 0);
-	
-	// calculate the size and bytes/row
-	NSSize halfSize = NSMakeSize(planeIn.width, planeIn.height);
-	halfSize.width = floor(halfSize.width / 2.f);
-	halfSize.height = floor(halfSize.height / 2.f);
-	
-	NSUInteger bytesPerRow = ((NSUInteger) halfSize.width) * sizeof(float);
-	if((bytesPerRow & 0x1F) != 0) {
-		// align to 32-byte boundary
-		bytesPerRow += (0x20 - (bytesPerRow & 0x1F));
-	}
-	
-	NSUInteger planeBytes = bytesPerRow * halfSize.height;
-	
-	// set up an output buffer structure
-	vImage_Buffer planeOut = {
-		.height = (NSUInteger) halfSize.height,
-		.width = (NSUInteger) halfSize.width,
-		.rowBytes = bytesPerRow
-	};
-	
-	// calculate size of temporary vImage buffer, then allocate it
-	void *vImageTemp = NULL;
-	err = vImageScale_PlanarF(&planeIn, &planeOut, NULL, kvImageGetTempBufferSize);
-	
-	if(err > 0) {
-		vImageTemp = (void *) valloc(err);
-		DDLogDebug(@"Allocated %lu bytes for vImage temp buffer", err);
-	} else {
-		DDLogError(@"Couldn't get size of temp buffer for scaling, error %lu", err);
-		return;
-	}
-	
-	// allocate the output buffer
-	NSMutableData *buffer = [NSMutableData dataWithLength:planeBytes * 3];
-	
-	// run the scaling process for each buffer
-	for(NSUInteger idx = 0; idx < 3; idx++) {
-		// set up input and output buffers
-		planeIn = TSPixelConverterGetPlanevImageBufferBuffer(state.converter, idx);
-		planeOut.data = (((uint8_t *) buffer.mutableBytes) + (planeBytes * idx));
-		
-		// perform scale operation
-		err = vImageScale_PlanarF(&planeIn, &planeOut, vImageTemp, kvImageNoFlags);
-		
-		// check for error
-		if(err != kvImageNoError) {
-			DDLogError(@"Error during scale: %lu", err);
-			
-			// clean up and exit
-			free(vImageTemp);
-			return;
-		}
-	}
-	
-	// clean up
-	free(vImageTemp);
-	
-	self.halfSizeRawStageCache = buffer;
+	[self.cache setData:buffer forUuid:state.imageUuid];
 }
 
 #pragma mark Cache Decoding
@@ -1065,9 +963,11 @@
 - (void) restoreFloatDataCached:(TSRawPipelineState *) state {
 	NSUInteger offset, planeBytes;
 	
-	// check that the cache is intact
-	if(self.rawStageCache == nil) {
-		DDLogError(@"Cache was freed from cache since operation started… this is bad.");
+	// get the cached data
+	NSData *cachedData = [self.cache cachedDataForUuid:state.imageUuid];
+	
+	if(cachedData == nil) {
+		DDLogError(@"Cache lost its data for this image since operation was started… this is bad.");
 	}
 	
 	// calculate plane size and get buffer
@@ -1079,7 +979,7 @@
 		plane = TSPixelConverterGetPlanevImageBufferBuffer(state.converter, idx);
 		offset = idx * planeBytes;
 		
-		[self.rawStageCache getBytes:plane.data range:NSMakeRange(offset, planeBytes)];
+		[cachedData getBytes:plane.data range:NSMakeRange(offset, planeBytes)];
 	}
 }
 
@@ -1089,7 +989,7 @@
  * any structs that rely on the image's size are scaled.
  */
 - (void) restoreHalfSizeFloatDataCached:(TSRawPipelineState *) state {
-	NSUInteger offset, planeBytes;
+	/*NSUInteger offset, planeBytes;
 	
 	// check that the cache is intact
 	if(self.halfSizeRawStageCache == nil) {
@@ -1126,7 +1026,9 @@
 		
 		[self.halfSizeRawStageCache getBytes:planeOut.data
 									   range:NSMakeRange(offset, planeBytes)];
-	}
+	}*/
+	
+	[self restoreFloatDataCached:state];
 }
 
 #pragma mark Cache Operations
@@ -1145,7 +1047,6 @@
 		}
 		
 		[self storeFloatDataCached:state];
-		[self storeHalfSizeFloatDataCached:state];
 		
 		TSEndOperation();
 	}];
@@ -1180,44 +1081,6 @@
 	
 	op.name = @"Restore Cached State";
 	return op;
-}
-
-#pragma mark Cache Persistence
-/**
- * Creates an operation, executed after the image callback has run, which will
- * compress and write the cached data to the on-disk cache.
- */
-- (NSBlockOperation *) opWriteCachesToDisk:(TSRawPipelineState *) state {
-	NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
-		TSBeginOperation(@"Write Cache to Disk");
-		
-		// if not caching, exit; technically this should never be NO
-		if(state.shouldCache == NO) {
-			TSEndOperation();
-			return;
-		}
-		
-		// write to disk (could do some more complex checks here)
-		[self writeCachesToDiskWithState:state];
-		
-		TSEndOperation();
-	}];
-	
-	op.name = @"Write Cache to Disk";
-	return op;
-}
-
-/**
- * Writes the caches for the current imge to disk. Both the full and half size
- * caches are written into a file in the user's Caches folder. Each file has
- * the image's UUID as its filename, with the extension `rawcache` for the full
- * size image, and `rawcache2` for the half-sized image.
- *
- * @note If the files already exist, they are truncated.
- */
-- (void) writeCachesToDiskWithState:(TSRawPipelineState *) state {
-	// write just the full size data
-	[self.cache setData:self.rawStageCache forUuid:state.imageUuid];
 }
 
 #pragma mark Memory Management

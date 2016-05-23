@@ -29,6 +29,7 @@ NSString * const TSRawCacheDateModifiedKey = @"TSRawCacheDateModified";
 /// key for number of stripes into which the data is split
 NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 
+// TODO: Ensure atomicity and thread safety when accessing data structures
 @interface TSRawCache ()
 
 /// compression and loading operation queue
@@ -219,6 +220,7 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 	
 	NSInteger stripes = [info[TSRawCacheNumStripesKey] integerValue];
 	
+	DDLogVerbose(@"Reading on-disk cache for %@ (%li stripes)", uuid, stripes);
 	
 	// create a buffer object to hold the full decompressed data
 	NSInteger totalSize = [info[TSRawCacheUncompressedSizeKey] integerValue];
@@ -251,7 +253,7 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 	DDLogDebug(@"Finished %fs", ((double)(clock() - __tBegin)) / CLOCKS_PER_SEC);
 	
 	
-	// write the metadata at some point in the future
+	// write the metadata to disk at some point in the future
 	[self.queue addOperationWithBlock:^{
 		[self encodeCacheMetadata];
 	}];
@@ -261,6 +263,53 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 	
 	self.cacheData[uuid] = data;
 	return data;
+}
+
+/**
+ * Evicts all data for a given UUID from the cache. Any compressed
+ * data files will also be removed from disk.
+ */
+- (void) evictDataForUuid:(NSString *) uuid {
+	NSError *err = nil;
+	NSFileManager *fm = [NSFileManager defaultManager];
+	
+	// ensure there's even data for that uuid
+	if([self hasDataForUuid:uuid] == NO) {
+		return;
+	}
+	
+	// delete any in-memory data
+	[self.cacheData removeObjectForKey:uuid];
+	
+	
+	// get info from the metadata, then delete it
+	NSDictionary *info = self.cacheMetadata[uuid];
+	NSInteger stripes = [info[TSRawCacheNumStripesKey] integerValue];
+	
+	[self.cacheMetadata removeObjectForKey:uuid];
+	self.isCacheMetadataDirty = YES;
+	
+	
+	// delete each of the stripes from disk
+	for(NSUInteger i = 0; i < stripes; i++) {
+		NSString *name;
+		NSURL *url;
+		
+		// create filename and url
+		name = [NSString stringWithFormat:@"%@-%lu.bin", uuid, i];
+		url = [self.cacheUrl URLByAppendingPathComponent:name
+											 isDirectory:NO];
+		
+		// attempt to delete it
+		if([fm removeItemAtURL:url error:&err] == NO) {
+			DDLogError(@"Error deleting stripe %@: %@", url, err);
+		}
+	}
+	
+	// write the metadata to disk at some point in the future
+	[self.queue addOperationWithBlock:^{
+		[self encodeCacheMetadata];
+	}];
 }
 
 #pragma mark State Restoration
@@ -477,16 +526,6 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 	
 	NSFileHandle *fd;
 	NSError *err = nil;
-	
-	//	DDLogVerbose(@"Compressing %lu bytes to %@", data.length, url);
-	
-	// create the file, if needed
-	NSFileManager *fm = [NSFileManager defaultManager];
-	
-	if([fm createFileAtPath:url.path contents:[NSData new] attributes:nil] == NO) {
-		DDLogError(@"Couldn't create file at %@", url.path);
-		return NO;
-	}
 	
 	// try to create a file descriptor
 	fd = [NSFileHandle fileHandleForReadingFromURL:url error:&err];

@@ -202,10 +202,8 @@ typedef void (^TSRawPipelineProgressCallback)(TSRawPipelineStage);
    conversionProgress:(NSProgress * _Nonnull * _Nullable) outProgress;
 
 /**
- * Invalidates the internal caches of an image. This is automatically called
- * when the cached image is different than the image for which a RAW processing
- * is requested.
+ * Invalidates the internal caches of an image.
  */
-- (void) clearImageCaches;
+- (void) clearCachesForImage:(nonnull TSLibraryImage *) image;
 
 @end
