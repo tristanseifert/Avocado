@@ -179,6 +179,9 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 			url = [self.cacheUrl URLByAppendingPathComponent:name
 														isDirectory:NO];
 			
+			// start an operation to disallow sudden termination
+			id activity = [[NSProcessInfo processInfo] beginActivityWithOptions:NSActivitySuddenTerminationDisabled | NSActivityAutomaticTerminationDisabled | NSActivityBackground reason:@"TSRawCache Write"];
+			
 			// create subdata from the input data
 			offset = (i * TSRawCacheStripeSize);
 			length = MIN(data.length - offset, TSRawCacheStripeSize);
@@ -191,6 +194,9 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 			if(success != YES) {
 				DDLogWarn(@"Couldn't compress %@", url);
 			}
+			
+			// end the operation
+			[[NSProcessInfo processInfo] endActivity:activity];
 			
 #if LogTimings
 			DDLogDebug(@"Finished %fs", ((double)(clock() - __tBegin)) / CLOCKS_PER_SEC);
@@ -398,6 +404,9 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 	NSMutableData *data;
 	NSKeyedArchiver *archiver;
 	
+	// start an activity
+	id activity = [[NSProcessInfo processInfo] beginActivityWithOptions:NSActivitySuddenTerminationDisabled | NSActivityAutomaticTerminationDisabled | NSActivityBackground reason:@"TSRawCache Metadata Write"];
+	
 	// build path to the file and data to write into
 	url = [self.cacheUrl URLByAppendingPathComponent:@"TSRawCache.plist"
 										 isDirectory:NO];
@@ -425,6 +434,9 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 		// mark cache as clean
 		self.isCacheMetadataDirty = NO;
 	}
+	
+	// finish the activity
+	[[NSProcessInfo processInfo] endActivity:activity];
 }
 
 #pragma mark Compression
