@@ -10,6 +10,7 @@
 #import "TSCoreImagePipeline.h"
 #import "TSRawImage.h"
 #import "TSRawPipelineState.h"
+#import "TSRawCache.h"
 
 #import "TSPixelFormatConverter.h"
 #import "TSRawImageDataHelpers.h"
@@ -21,10 +22,7 @@
 
 #import "TSLibraryImage+CoreImagePipeline.h"
 
-#import "NSBlockOperation+AvocadoUtils.h"
 #import "NSColorSpace+ExtraColourSpaces.h"
-
-#import <compression.h>
 
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
@@ -106,8 +104,9 @@
 - (CIImage *) ciImageFromPixelConverter:(TSPixelConverterRef) converter andSize:(NSSize) outputSize;
 
 // caching
-/// URL to the raw cache folder
-@property (nonatomic, readonly, getter=rawCacheUrl) NSURL *cacheUrl;
+/// cache handler
+@property (nonatomic) TSRawCache *cache;
+
 /// raw stage cache; this holds a data object that contains each plane
 @property (nonatomic) NSMutableData *rawStageCache;
 /// half size raw stage cache; each plane, but at half size.
@@ -129,7 +128,6 @@
 
 - (NSBlockOperation *) opWriteCachesToDisk:(TSRawPipelineState *) state;
 - (void) writeCachesToDiskWithState:(TSRawPipelineState *) state;
-- (BOOL) compressData:(NSData *) data toFile:(NSURL *) url;
 
 // housekeeping
 - (NSBlockOperation *) opCleanUp:(TSRawPipelineState *) state;
@@ -163,19 +161,8 @@
 		self.moc = [NSManagedObjectContext MR_context];
 		self.moc.name = [NSString stringWithFormat:@"%@//%@//Shared", [self className], self];
 		
-		// create the cache directory
-		NSError *err = nil;
-		NSFileManager *fm = [NSFileManager defaultManager];
-		
-		[fm createDirectoryAtURL:self.cacheUrl withIntermediateDirectories:YES
-					  attributes:nil error:&err];
-		
-		if(err != nil) {
-			DDLogError(@"Could not create caches directory: %@, %@", self.cacheUrl, err);
-			[NSApp presentError:err];
-			
-			return nil;
-		}
+		// create the cache
+		self.cache = [TSRawCache new];
 	}
 	
 	return self;
@@ -1229,160 +1216,8 @@
  * @note If the files already exist, they are truncated.
  */
 - (void) writeCachesToDiskWithState:(TSRawPipelineState *) state {
-	NSURL *url;
-	NSString *name;
-	BOOL success;
-	
-	// write the full size cache
-	name = [NSString stringWithFormat:@"%@_planar", state.imageUuid];
-	name = [name stringByAppendingPathExtension:@"rawcache"];
-	url = [self.cacheUrl URLByAppendingPathComponent:name isDirectory:NO];
-	
-	success = [self compressData:self.rawStageCache toFile:url];
-	
-	if(!success) {
-		DDLogWarn(@"Couldn't write full size cache for UUID %@ to %@", self.rawCacheImageUuid, url);
-	}
-	
-	// write the half size cache
-	name = [NSString stringWithFormat:@"%@_planar", state.imageUuid];
-	name = [name stringByAppendingPathExtension:@"rawcache2"];
-	url = [self.cacheUrl URLByAppendingPathComponent:name isDirectory:NO];
-	
-	success = [self compressData:self.halfSizeRawStageCache toFile:url];
-	
-	if(!success) {
-		DDLogWarn(@"Couldn't write half size cache for UUID %@ to %@", self.rawCacheImageUuid, url);
-	}
-}
-
-/**
- * Uses libcompression to compress the given block of data using Apple's LZFSE
- * compression algorithm. The compressor will operate in stream mode, working
- * on fixed-size chunks of data at a time.
- */
-- (BOOL) compressData:(NSData *) data toFile:(NSURL *) url {
-	compression_status status;
-	compression_stream stream;
-	compression_stream_flags flags = (compression_stream_flags) 0;
-	
-	NSFileHandle *fd;
-	NSError *err = nil;
-	
-	NSUInteger totalBytesWritten = 0;
-	
-	DDLogVerbose(@"Compressing %lu bytes to %@", data.length, url);
-	
-	// create the file, if needed
-	NSFileManager *fm = [NSFileManager defaultManager];
-	
-	if([fm createFileAtPath:url.path contents:[NSData new] attributes:nil] == NO) {
-		DDLogError(@"Couldn't create file at %@", url.path);
-		return NO;
-	}
-	
-	// try to create a file descriptor
-	fd = [NSFileHandle fileHandleForWritingToURL:url error:&err];
-	
-	if(fd == nil || err != nil) {
-		DDLogError(@"Error creating output stream for url %@: %@", url, err);
-		return NO;
-	}
-	
-	[fd seekToFileOffset:0];
-	
-	// set up compression
-	status = compression_stream_init(&stream, COMPRESSION_STREAM_ENCODE, COMPRESSION_LZ4);
-	
-	if(status != COMPRESSION_STATUS_OK) {
-		DDLogError(@"Error initializing compression: %i", status);
-		return NO;
-	}
-	
-	// populate the input data pointers
-	stream.src_ptr = (const uint8_t *) data.bytes;
-	stream.src_size = data.length;
-
-	// allocate an output buffer and set its information
-	NSUInteger chunkSize = (512 * 1024);
-	NSMutableData *outChunk = [NSMutableData dataWithLength:chunkSize];
-	
-	stream.dst_ptr = (uint8_t *) outChunk.mutableBytes;
-	stream.dst_size = chunkSize;
-	
-	// actually compress the data
-	do {
-		// is the input buffer empty?
-		if(stream.src_size == 0) {
-			flags = COMPRESSION_STREAM_FINALIZE;
-			DDLogVerbose(@"Finalizing compression…");
-		}
-		
-		// perform an iteration of the compression algorithm
-		status = compression_stream_process(&stream, flags);
-		
-		switch(status) {
-			// if status is ok, write the block out
-			case COMPRESSION_STATUS_OK:
-				// the entire output chunk was written
-				if(stream.dst_size == 0) {
-					[fd writeData:outChunk];
-					totalBytesWritten += chunkSize;
-					
-					// Re-use output buffer
-					stream.dst_ptr = (uint8_t *) outChunk.mutableBytes;
-					stream.dst_size = chunkSize;
-				}
-				
-				break;
-				
-			// if status is end, calculate how many bytes to actually write
-			case COMPRESSION_STATUS_END: {
-				// some data were compressed, but less than the chunk size
-				if (stream.dst_ptr > outChunk.mutableBytes) {
-					// calculate how many bytes to write
-					NSUInteger bytesToWrite = stream.dst_ptr - ((uint8_t *) outChunk.mutableBytes);
-					outChunk.length = bytesToWrite;
-					
-					// write that much pls
-					[fd writeData:outChunk];
-					totalBytesWritten += bytesToWrite;
-				}
-				
-				break;
-			}
-				
-			// lastly, handle an error
-			default:
-				DDLogError(@"Error occurred while compressing");
-				return NO;
-		}
-	} while(status == COMPRESSION_STATUS_OK);
-	
-	// log some state
-	DDLogDebug(@"Wrote %lu bytes (uncompressed = %lu) to %@; compression factor = %3.4f", totalBytesWritten, data.length, url, ((float) data.length / (float) totalBytesWritten));
-	
-	// clean up output stream
-	[fd closeFile];
-	
-	// clean up compression
-	compression_stream_destroy(&stream);
-	return YES;
-}
-
-/**
- * Gets the URL to the raw cache.
- */
-- (NSURL *) rawCacheUrl {
-	NSError *err = nil;
-	NSFileManager *fm = [NSFileManager defaultManager];
-	
-	// query system for url
-	NSURL *cachesUrl = [[fm URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] lastObject];
-	cachesUrl = [cachesUrl URLByAppendingPathComponent:@"me.tseifert.Avocado" isDirectory:YES];
-	cachesUrl = [cachesUrl URLByAppendingPathComponent:@"TSRawPipeline" isDirectory:YES];
-
-	return cachesUrl;
+	// write just the full size data
+	[self.cache setData:self.rawStageCache forUuid:state.imageUuid];
 }
 
 #pragma mark Memory Management

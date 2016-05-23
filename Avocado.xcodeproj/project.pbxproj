@@ -33,6 +33,7 @@
 		6A6ED41B1CE4D239001EFA21 /* TSHSLAdjustmentFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A6ED41A1CE4D239001EFA21 /* TSHSLAdjustmentFilter.m */; };
 		6A6ED41D1CE4D30A001EFA21 /* TSHSLAdjustmentFilter.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = 6A6ED41C1CE4D30A001EFA21 /* TSHSLAdjustmentFilter.cikernel */; };
 		6A74F1E51CF26F0C0023B439 /* libcompression.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A74F1E41CF26F0C0023B439 /* libcompression.tbd */; };
+		6A74F1E91CF282740023B439 /* TSRawCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A74F1E81CF282740023B439 /* TSRawCache.m */; };
 		6A7987691CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7987681CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m */; };
 		6A79876B1CDD5CA200FB3A8E /* ahd_interpolate_mod.c in Sources */ = {isa = PBXBuildFile; fileRef = 6A79876A1CDD5CA200FB3A8E /* ahd_interpolate_mod.c */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive"; }; };
 		6A79876E1CDD60EB00FB3A8E /* TSRawPipelineTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A79876D1CDD60EB00FB3A8E /* TSRawPipelineTest.m */; };
@@ -171,6 +172,8 @@
 		6A6ED41A1CE4D239001EFA21 /* TSHSLAdjustmentFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSHSLAdjustmentFilter.m; path = "Avocado/Image Processing/Filters/Hue and Saturation/TSHSLAdjustmentFilter.m"; sourceTree = "<group>"; };
 		6A6ED41C1CE4D30A001EFA21 /* TSHSLAdjustmentFilter.cikernel */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; name = TSHSLAdjustmentFilter.cikernel; path = "Avocado/Image Processing/Filters/Hue and Saturation/TSHSLAdjustmentFilter.cikernel"; sourceTree = "<group>"; };
 		6A74F1E41CF26F0C0023B439 /* libcompression.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcompression.tbd; path = usr/lib/libcompression.tbd; sourceTree = SDKROOT; };
+		6A74F1E71CF282740023B439 /* TSRawCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSRawCache.h; path = "Avocado/RAW Processing/TSRawCache.h"; sourceTree = "<group>"; };
+		6A74F1E81CF282740023B439 /* TSRawCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSRawCache.m; path = "Avocado/RAW Processing/TSRawCache.m"; sourceTree = "<group>"; };
 		6A7987671CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSBlockOperation+AvocadoUtils.h"; path = "Avocado/Helpers/NSBlockOperation+AvocadoUtils.h"; sourceTree = "<group>"; };
 		6A7987681CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSBlockOperation+AvocadoUtils.m"; path = "Avocado/Helpers/NSBlockOperation+AvocadoUtils.m"; sourceTree = "<group>"; };
 		6A79876A1CDD5CA200FB3A8E /* ahd_interpolate_mod.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ahd_interpolate_mod.c; path = "Avocado/RAW Processing/ahd_interpolate_mod.c"; sourceTree = "<group>"; };
@@ -411,6 +414,7 @@
 				6A28F0621CD8190600228067 /* TSRawPipeline.mm */,
 				6A1307CA1CDA4A6E00FFC99A /* TSRawPipelineState.h */,
 				6A1307CB1CDA4A6E00FFC99A /* TSRawPipelineState.mm */,
+				6A74F1E61CF282450023B439 /* Cache Handling */,
 				6A28F0651CD940C400228067 /* Conversion Helpers */,
 				6A1307CD1CDA4A7D00FFC99A /* Dependencies */,
 			);
@@ -470,6 +474,15 @@
 				6A6ED41C1CE4D30A001EFA21 /* TSHSLAdjustmentFilter.cikernel */,
 			);
 			name = Hue/Saturation;
+			sourceTree = "<group>";
+		};
+		6A74F1E61CF282450023B439 /* Cache Handling */ = {
+			isa = PBXGroup;
+			children = (
+				6A74F1E71CF282740023B439 /* TSRawCache.h */,
+				6A74F1E81CF282740023B439 /* TSRawCache.m */,
+			);
+			name = "Cache Handling";
 			sourceTree = "<group>";
 		};
 		6A7EC3C81CD68595007E91E8 /* Thumb Handling */ = {
@@ -1123,6 +1136,7 @@
 				6AEC767B1CD516EF00870FAE /* TSLibraryOverviewLightTableController.m in Sources */,
 				6AEC766C1CD4FF2A00870FAE /* TSImportController.m in Sources */,
 				6A6ED4171CE4D0EE001EFA21 /* NSColor+AvocadoUtils.m in Sources */,
+				6A74F1E91CF282740023B439 /* TSRawCache.m in Sources */,
 				6AEC35191CD43F000033DE0A /* TSCoreDataStoreIB.m in Sources */,
 				6AEC76701CD5098F00870FAE /* NSDate+AvocadoUtils.m in Sources */,
 				6AA935921CE792E2004E9F9C /* TSVibrantView.m in Sources */,
