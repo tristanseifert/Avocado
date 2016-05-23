@@ -336,18 +336,13 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 	
 	
 	/*
-	 * Stores the loaded data in the in-memory cache. This is performed in a
-	 * synchronous barrier, such that later invocations of cachedDataForUuid:
+	 * Stores the loaded data in the in-memory cache. This is performed in an
+	 * asynchronous barrier, such that later invocations of cachedDataForUuid:
 	 * (or perhaps simultaneous invocations) will get correct data.
-	 *
-	 * A possible scenario is that another thread requests the same data while
-	 * it is being decompressed, which could lead to a race condition and
-	 * corruption, if this isn't synchronous. By wrapping it in a barrier, the
-	 * work will simply be duplicated, rather than the cache being corrupted.
 	 */
 	data = [outBuf copy];
 	
-	dispatch_barrier_sync(self.cacheAccessQueue, ^{
+	dispatch_barrier_async(self.cacheAccessQueue, ^{
 		self.cacheData[uuid] = data;
 	});
 	
@@ -373,7 +368,7 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 	 */
 	__block NSInteger stripes = 0;
 	
-	dispatch_barrier_sync(self.cacheAccessQueue, ^{
+	dispatch_barrier_async(self.cacheAccessQueue, ^{
 		// get stripe size
 		NSDictionary *info = self.cacheMetadata[uuid];
 		stripes = [info[TSRawCacheNumStripesKey] integerValue];
@@ -449,13 +444,13 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 	// the data _should_ be alright
 	NSSet *classes = [NSSet setWithObjects:[NSDictionary class], [NSMutableDictionary class], [NSDate class], [NSNumber class], nil];
 	
-	dispatch_barrier_sync(self.cacheAccessQueue, ^{
+	dispatch_barrier_async(self.cacheAccessQueue, ^{
 		self.cacheMetadata = [archiver decodeObjectOfClasses:classes forKey:TSRawCacheMetadataKeyData];
 		self.isCacheMetadataDirty = NO;
+		
+		// finish up (clear decoder)
+		[archiver finishDecoding];
 	});
-	
-	// finish up
-	[archiver finishDecoding];
 	
 	return YES;
 }
