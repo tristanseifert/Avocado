@@ -130,6 +130,7 @@
 
 @implementation TSRawPipeline
 
+#pragma mark - Initialization
 /**
  * Initializes the RAW pipeline.
  */
@@ -989,12 +990,20 @@
  * any structs that rely on the image's size are scaled.
  */
 - (void) restoreHalfSizeFloatDataCached:(TSRawPipelineState *) state {
-	/*NSUInteger offset, planeBytes;
+	NSUInteger offset, planeBytes;
+	vImage_Error err = kvImageNoError;
+	 
+	 // get the cached data
+	 NSData *cachedData = [self.cache cachedDataForUuid:state.imageUuid];
+	 
+	 if(cachedData == nil) {
+		DDLogError(@"Cache lost its data for this image since operation was started… this is bad.");
+	 }
 	
-	// check that the cache is intact
-	if(self.halfSizeRawStageCache == nil) {
-		DDLogError(@"Cache was freed from cache since operation started… this is bad.");
-	}
+	// calculate the size of a large, original-sized plane
+	vImage_Buffer planeIn = TSPixelConverterGetPlanevImageBufferBuffer(state.converter, 0);
+	planeBytes = planeIn.rowBytes * planeIn.height;
+	
 	
 	// update the raw (input pixel) size
 	NSSize newSize;
@@ -1012,23 +1021,48 @@
 	
 	DDLogVerbose(@"Resuming cached raw processing, size %@", NSStringFromSize(newSize));
 	
-	// resize the pixel converter
+	// resize the pixel converter to the half size
 	TSPixelConverterResize(state.converter, state.rawSize.width, state.rawSize.height);
 	
-	// get the plane size
+	
+	// calculate size of temporary vImage buffer and allocate it
 	vImage_Buffer planeOut = TSPixelConverterGetPlanevImageBufferBuffer(state.converter, 0);
-	planeBytes = planeOut.rowBytes * planeOut.height;
 	
-	// read out the buffer data from the cache
+	void *vImageTemp = NULL;
+	err = vImageScale_PlanarF(&planeIn, &planeOut, NULL, kvImageGetTempBufferSize);
+	
+	if(err > 0) {
+		vImageTemp = (void *) valloc(err);
+	} else {
+		DDLogError(@"Couldn't get size of temp buffer for scaling, error %lu", err);
+		return;
+	}
+	
+	
+	// read out full size data in, scale, copy into pixel converter's buffer
 	for(NSUInteger idx = 0; idx < 3; idx++) {
+		// get the output plane
 		planeOut = TSPixelConverterGetPlanevImageBufferBuffer(state.converter, idx);
-		offset = idx * planeBytes;
 		
-		[self.halfSizeRawStageCache getBytes:planeOut.data
-									   range:NSMakeRange(offset, planeBytes)];
-	}*/
+		// set the input plane up
+		offset = idx * planeBytes;
+		planeIn.data = ((uint8_t *) cachedData.bytes) + offset;
+		
+		// perform scale operation
+		err = vImageScale_PlanarF(&planeIn, &planeOut, vImageTemp, kvImageNoFlags);
+		
+		// check for error
+		if(err != kvImageNoError) {
+			DDLogError(@"Error during scaling operation: %lu", err);
+			
+			// clean up and exit
+			free(vImageTemp);
+			return;
+		}
+	}
 	
-	[self restoreFloatDataCached:state];
+	// clean up
+	free(vImageTemp);
 }
 
 #pragma mark Cache Operations
@@ -1083,7 +1117,7 @@
 	return op;
 }
 
-#pragma mark Memory Management
+#pragma mark - Memory Management and Housekeeping
 /**
  * Performs any needed cleanup on the pipeline, once complete.
  */
