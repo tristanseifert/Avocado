@@ -10,6 +10,18 @@
 
 #import <compression.h>
 
+/**
+ * Set this define to a nonzero value to print debugging information about
+ * the time taken to compress/decompress data.
+ */
+#define	LogTimings			0
+
+/**
+ * Log compression statistics, when set to a nonzero value.
+ */
+#define	LogCompressionInfo	0
+
+
 /// number of bytes of uncompressed data per 'stripe' file
 const NSInteger TSRawCacheStripeSize = (1024 * 1024) * 48;
 
@@ -151,7 +163,9 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 	}];
 	
 	// queue compression
+#if LogTimings
 	time_t __tBegin = clock();
+#endif
 	
 	for(NSUInteger i = 0; i < stripes; i++) {
 		// create a compression operation and add it to the queue
@@ -178,7 +192,9 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 				DDLogWarn(@"Couldn't compress %@", url);
 			}
 			
+#if LogTimings
 			DDLogDebug(@"Finished %fs", ((double)(clock() - __tBegin)) / CLOCKS_PER_SEC);
+#endif
 		}];
 	}
 }
@@ -224,15 +240,18 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 	
 	// create a buffer object to hold the full decompressed data
 	NSInteger totalSize = [info[TSRawCacheUncompressedSizeKey] integerValue];
-	NSMutableData *outBuf = [NSMutableData dataWithCapacity:totalSize];
+	NSMutableData *outBuf = [NSMutableData dataWithLength:totalSize];
 	
 	
 	// decompress each stripe in sequence
+#if LogTimings
 	time_t __tBegin = clock();
+#endif
 	
 	for(NSUInteger i = 0; i < stripes; i++) {
 		NSString *name;
 		NSURL *url;
+		NSUInteger offset, length;
 		
 		// create filename and url
 		name = [NSString stringWithFormat:@"%@-%lu.bin", uuid, i];
@@ -243,14 +262,22 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 		NSData *stripeData = [self decompressDataFromFile:url];
 		
 		if(stripeData != nil) {
-			[outBuf appendData:stripeData];
+			// copy it into the buffer
+			offset = (i * TSRawCacheStripeSize);
+			length = MIN(totalSize - offset, TSRawCacheStripeSize);
+			
+			[outBuf replaceBytesInRange:NSMakeRange(offset, length)
+							  withBytes:stripeData.bytes
+								 length:stripeData.length];
 		} else {
-			DDLogError(@"Couldn't decompress stripe file %@; aborting", url);
-			return nil;
+			DDLogError(@"Couldn't decompress stripe file %@; skipping", url);
 		}
 	}
 	
+	// wait for operations to complete
+#if LogTimings
 	DDLogDebug(@"Finished %fs", ((double)(clock() - __tBegin)) / CLOCKS_PER_SEC);
+#endif
 	
 	
 	// write the metadata to disk at some point in the future
@@ -414,9 +441,11 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 	NSFileHandle *fd;
 	NSError *err = nil;
 	
+#if LogCompressionInfo
 	NSUInteger totalBytesWritten = 0;
 	
-//	DDLogVerbose(@"Compressing %lu bytes to %@", data.length, url);
+	DDLogVerbose(@"Compressing %lu bytes to %@", data.length, url);
+#endif
 	
 	// create the file, if needed
 	NSFileManager *fm = [NSFileManager defaultManager];
@@ -460,7 +489,9 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 		// is the input buffer empty?
 		if(stream.src_size == 0) {
 			flags = COMPRESSION_STREAM_FINALIZE;
-//			DDLogVerbose(@"Finalizing compression…");
+#if LogCompressionInfo
+			DDLogVerbose(@"Finalizing compression…");
+#endif
 		}
 		
 		// perform an iteration of the compression algorithm
@@ -472,7 +503,9 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 				// the entire output chunk was written
 				if(stream.dst_size == 0) {
 					[fd writeData:outChunk];
+#if LogCompressionInfo
 					totalBytesWritten += chunkSize;
+#endif
 					
 					// Re-use output buffer
 					stream.dst_ptr = (uint8_t *) outChunk.mutableBytes;
@@ -491,7 +524,10 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 					
 					// write that much to the file
 					[fd writeData:outChunk];
+					
+#if LogCompressionInfo
 					totalBytesWritten += bytesToWrite;
+#endif
 				}
 				
 				break;
@@ -503,8 +539,10 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 				return NO;
 		}
 	} while(status == COMPRESSION_STATUS_OK);
-	
-//	DDLogDebug(@"Wrote %lu bytes (uncompressed = %lu) to %@; compression factor = %3.4f", totalBytesWritten, data.length, url, ((float) data.length / (float) totalBytesWritten));
+
+#if LogCompressionInfo
+	DDLogDebug(@"Wrote %lu bytes (uncompressed = %lu) to %@; compression factor = %3.4f", totalBytesWritten, data.length, url, ((float) data.length / (float) totalBytesWritten));
+#endif
 	
 	// clean up output stream
 	[fd closeFile];
