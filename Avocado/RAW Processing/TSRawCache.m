@@ -41,7 +41,7 @@ NSString * const TSRawCacheDateModifiedKey = @"TSRawCacheDateModified";
 /// key for number of stripes into which the data is split
 NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 
-// TODO: Ensure atomicity and thread safety when accessing data structures
+
 @interface TSRawCache ()
 
 /// compression and loading operation queue
@@ -55,6 +55,9 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 @property (nonatomic) BOOL isCacheMetadataDirty;
 /// dictionary containing in-memory caches
 @property (nonatomic) NSMutableDictionary<NSString *, NSData *> *cacheData;
+
+/// cache access queue; used to synchronize access
+@property (nonatomic, retain) dispatch_queue_t cacheAccessQueue;
 
 - (BOOL) attemptDecodeMetadata;
 - (void) encodeCacheMetadata;
@@ -88,6 +91,9 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 		
 		// the cache data map (uuid -> NSData) is always created anew
 		self.cacheData = [NSMutableDictionary new];
+		
+		// set up cache access queue
+		self.cacheAccessQueue = dispatch_queue_create("me.tseifert.Avocado.TSRawCache", DISPATCH_QUEUE_CONCURRENT);
 		
 		// set up queue
 		self.queue = [NSOperationQueue new];
@@ -129,7 +135,13 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
  * Checks whether the cache contains any data for the given image.
  */
 - (BOOL) hasDataForUuid:(NSString *) uuid {
-	return (self.cacheMetadata[uuid] != nil);
+	__block BOOL hasData;
+	
+	dispatch_sync(self.cacheAccessQueue, ^{
+		hasData = (self.cacheMetadata[uuid] != nil);
+	});
+	
+	return hasData;
 }
 
 /**
@@ -139,28 +151,36 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
  * pressure.
  */
 - (void) setData:(NSData *) data forUuid:(NSString *) uuid {
-	// plop it in the data dict
-	self.cacheData[uuid] = data;
-	
-	// determine how it should be compressed
+	// calculate number of stripes for compression
 	NSInteger stripes = ceil((float) data.length / (float) TSRawCacheStripeSize);
 	
-	// produce a data dictionary
-	NSDictionary *info = @{
-		TSRawCacheUncompressedSizeKey: @(data.length),
-		TSRawCacheDateAddedKey: [NSDate new],
-		TSRawCacheDateModifiedKey: [NSDate new],
+	/*
+	 * This call ensures that this code has exclusive access to the cache,
+	 * which is required to ensure the cache is not left in an inconsistent
+	 * state. Asynchronous invocation is acceptable, as the compression code
+	 * does not depend on any operations executed in the block.
+	 */
+	dispatch_barrier_async(self.cacheAccessQueue, ^{
+		// plop it in the data dict
+		self.cacheData[uuid] = data;
 		
-		TSRawCacheNumStripesKey: @(stripes)
-	};
-	
-	self.cacheMetadata[uuid] = info;
-	self.isCacheMetadataDirty =  YES;
-	
-	// save the metadata
-	[self.queue addOperationWithBlock:^{
-		[self encodeCacheMetadata];
-	}];
+		// produce a data dictionary
+		NSDictionary *info = @{
+			TSRawCacheUncompressedSizeKey: @(data.length),
+			TSRawCacheDateAddedKey: [NSDate new],
+			TSRawCacheDateModifiedKey: [NSDate new],
+							   
+			TSRawCacheNumStripesKey: @(stripes)
+		};
+		
+		self.cacheMetadata[uuid] = info;
+		self.isCacheMetadataDirty =  YES;
+		
+		// save the metadata dictionary at some point in the future
+		[self.queue addOperationWithBlock:^{
+			[self encodeCacheMetadata];
+		}];
+	});
 	
 	// queue compression
 #if LogTimings
@@ -228,24 +248,53 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 	}
 	
 	// check if the data exists in the in-memory data cache
-	if(self.cacheData[uuid] != nil) {
-		return self.cacheData[uuid];
+	__block NSData *data = nil;
+	
+	dispatch_sync(self.cacheAccessQueue, ^{
+		data = self.cacheData[uuid];
+	});
+	
+	if(data != nil) {
+		return data;
 	}
 	
+	// get metadata information for the image
+	__block NSDictionary *info = nil;
 	
-	// information for the image exists, but it's not in memory.
-	NSMutableDictionary *info = [self.cacheMetadata[uuid] mutableCopy];
-	info[TSRawCacheDateModifiedKey] = [NSDate new];
-	
-	self.cacheMetadata[uuid] = [info copy];
-	self.isCacheMetadataDirty = YES;
+	dispatch_sync(self.cacheAccessQueue, ^{
+		info = self.cacheMetadata[uuid];
+	});
 	
 	NSInteger stripes = [info[TSRawCacheNumStripesKey] integerValue];
+	NSInteger totalSize = [info[TSRawCacheUncompressedSizeKey] integerValue];
 	
 	DDLogVerbose(@"Reading on-disk cache for %@ (%li stripes)", uuid, stripes);
 	
+	/*
+	 * Update the 'last modified' date in the metadata cache. A barrier is
+	 * used such that the cache cannot be left in an inconsistent state, if
+	 * setdata:forUuid: or evictDataForUuid: is executed at the same time.
+	 * This operation is performed asynchronously, since the later code
+	 * does not depend on this changed data.
+	 */
+	dispatch_barrier_async(self.cacheAccessQueue, ^{
+		// create a mutable copy
+		NSMutableDictionary *mutableInfo = [info mutableCopy];
+		
+		// update lats accessed date
+		mutableInfo[TSRawCacheDateModifiedKey] = [NSDate new];
+		
+		// store it in the cache
+		self.cacheMetadata[uuid] = [mutableInfo copy];
+		self.isCacheMetadataDirty = YES;
+		
+		// write the metadata to disk at some point in the future
+		[self.queue addOperationWithBlock:^{
+			[self encodeCacheMetadata];
+		}];
+	});
+	
 	// create a buffer object to hold the full decompressed data
-	NSInteger totalSize = [info[TSRawCacheUncompressedSizeKey] integerValue];
 	NSMutableData *outBuf = [NSMutableData dataWithLength:totalSize];
 	
 	
@@ -286,15 +335,22 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 #endif
 	
 	
-	// write the metadata to disk at some point in the future
-	[self.queue addOperationWithBlock:^{
-		[self encodeCacheMetadata];
-	}];
+	/*
+	 * Stores the loaded data in the in-memory cache. This is performed in a
+	 * synchronous barrier, such that later invocations of cachedDataForUuid:
+	 * (or perhaps simultaneous invocations) will get correct data.
+	 *
+	 * A possible scenario is that another thread requests the same data while
+	 * it is being decompressed, which could lead to a race condition and
+	 * corruption, if this isn't synchronous. By wrapping it in a barrier, the
+	 * work will simply be duplicated, rather than the cache being corrupted.
+	 */
+	data = [outBuf copy];
 	
-	// stick it in the in-memory cache
-	NSData *data = [outBuf copy];
+	dispatch_barrier_sync(self.cacheAccessQueue, ^{
+		self.cacheData[uuid] = data;
+	});
 	
-	self.cacheData[uuid] = data;
 	return data;
 }
 
@@ -311,19 +367,31 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 		return;
 	}
 	
-	// delete any in-memory data
-	[self.cacheData removeObjectForKey:uuid];
+	/*
+	 * Synchronously remove any cached data and metadata, but read out some of
+	 * the relevant data beforehand.
+	 */
+	__block NSInteger stripes = 0;
+	
+	dispatch_barrier_sync(self.cacheAccessQueue, ^{
+		// get stripe size
+		NSDictionary *info = self.cacheMetadata[uuid];
+		stripes = [info[TSRawCacheNumStripesKey] integerValue];
+		
+		// delete cached data and its metadata
+		[self.cacheData removeObjectForKey:uuid];
+		[self.cacheMetadata removeObjectForKey:uuid];
+		
+		// mark metadata as dirty for later saving
+		self.isCacheMetadataDirty = YES;
+		
+		[self.queue addOperationWithBlock:^{
+			[self encodeCacheMetadata];
+		}];
+	});
 	
 	
-	// get info from the metadata, then delete it
-	NSDictionary *info = self.cacheMetadata[uuid];
-	NSInteger stripes = [info[TSRawCacheNumStripesKey] integerValue];
-	
-	[self.cacheMetadata removeObjectForKey:uuid];
-	self.isCacheMetadataDirty = YES;
-	
-	
-	// delete each of the stripes from disk
+	// delete each of the stripe files from disk
 	for(NSUInteger i = 0; i < stripes; i++) {
 		NSString *name;
 		NSURL *url;
@@ -338,11 +406,6 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 			DDLogError(@"Error deleting stripe %@: %@", url, err);
 		}
 	}
-	
-	// write the metadata to disk at some point in the future
-	[self.queue addOperationWithBlock:^{
-		[self encodeCacheMetadata];
-	}];
 }
 
 #pragma mark State Restoration
@@ -386,8 +449,10 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 	// the data _should_ be alright
 	NSSet *classes = [NSSet setWithObjects:[NSDictionary class], [NSMutableDictionary class], [NSDate class], [NSNumber class], nil];
 	
-	self.cacheMetadata = [archiver decodeObjectOfClasses:classes forKey:TSRawCacheMetadataKeyData];
-	self.isCacheMetadataDirty = NO;
+	dispatch_barrier_sync(self.cacheAccessQueue, ^{
+		self.cacheMetadata = [archiver decodeObjectOfClasses:classes forKey:TSRawCacheMetadataKeyData];
+		self.isCacheMetadataDirty = NO;
+	});
 	
 	// finish up
 	[archiver finishDecoding];
@@ -422,9 +487,11 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 					 forKey:TSRawCacheMetadataKeyVersion];
 	
 	// encode metadata dictionary
-	[archiver encodeObject:self.cacheMetadata
-					forKey:TSRawCacheMetadataKeyData];
-	
+	dispatch_sync(self.cacheAccessQueue, ^{
+		[archiver encodeObject:self.cacheMetadata
+						forKey:TSRawCacheMetadataKeyData];
+	});
+		
 	// finish, write to disk
 	[archiver finishEncoding];
 	

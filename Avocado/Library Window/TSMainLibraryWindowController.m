@@ -183,6 +183,9 @@
 		self.activeVC = 0;
 	else if(vc == self.vcEdit)
 		self.activeVC = 1;
+	
+	// save state
+	[self saveStateToDisk];
 }
 
 /**
