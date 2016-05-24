@@ -19,6 +19,9 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 
 
 NSString * const TSAdjustmentKeyExposureEV = @"tsAdjustmentExposureEV";
+NSString * const TSAdjustmentKeyExposureSaturation = @"tsAdjustmentExposureSaturation";
+NSString * const TSAdjustmentKeyExposureBrightness = @"tsAdjustmentExposureBrightness";
+NSString * const TSAdjustmentKeyExposureContrast = @"tsAdjustmentExposureContrast";
 
 NSString * _Nonnull const TSAdjustmentKeyNoiseReductionLevel = @"tsAdjustmentNRLevel";
 NSString * _Nonnull const TSAdjustmentKeyNoiseReductionSharpness = @"tsAdjustmentNRSharpness";

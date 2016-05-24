@@ -63,17 +63,18 @@
                 </textField>
                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="c0n-vc-mXl" userLabel="Contrast Slider">
                     <rect key="frame" x="80" y="184" width="188" height="20"/>
-                    <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-100" maxValue="100" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="0cR-gD-bYT"/>
+                    <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="2" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="0cR-gD-bYT"/>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="DzL-g5-d5l" id="k6k-D3-p3h"/>
+                        <binding destination="-2" name="value" keyPath="self.contrastAdjustment" id="rQq-DT-FOk"/>
                     </connections>
                 </slider>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DzL-g5-d5l" userLabel="Contrast Text Field">
                     <rect key="frame" x="271" y="190" width="46" height="14"/>
-                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0" id="kd9-f3-2Sz">
-                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0" negativeFormat="-##0" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="3" id="Wv0-LI-V6z">
-                            <real key="minimum" value="-100"/>
-                            <real key="maximum" value="100"/>
+                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="1.00" id="kd9-f3-2Sz">
+                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="Wv0-LI-V6z">
+                            <real key="minimum" value="0.0"/>
+                            <real key="maximum" value="2"/>
                         </numberFormatter>
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -81,6 +82,7 @@
                     </textFieldCell>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="c0n-vc-mXl" id="xcr-mz-57Y"/>
+                        <binding destination="-2" name="value" keyPath="self.contrastAdjustment" id="GSf-2g-TmQ"/>
                         <outlet property="nextKeyView" destination="kGV-ad-gN5" id="rm0-WO-Ykh"/>
                     </connections>
                 </textField>
@@ -230,17 +232,18 @@
                 </textField>
                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="f7B-1x-qbC" userLabel="Saturation Slider">
                     <rect key="frame" x="80" y="33" width="188" height="20"/>
-                    <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="100" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="MFg-gz-IKe"/>
+                    <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="2" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="MFg-gz-IKe"/>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="bj1-RP-22u" id="oV5-H3-5wy"/>
+                        <binding destination="-2" name="value" keyPath="self.saturationAdjustment" id="kGg-4z-Rdb"/>
                     </connections>
                 </slider>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bj1-RP-22u" userLabel="Saturation Text Field">
                     <rect key="frame" x="271" y="39" width="46" height="14"/>
-                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0" id="4qz-v6-dcY">
-                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0" negativeFormat="-##0" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="3" id="Fhz-ap-we7">
+                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="1" id="4qz-v6-dcY">
+                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="Fhz-ap-we7">
                             <real key="minimum" value="0.0"/>
-                            <real key="maximum" value="100"/>
+                            <real key="maximum" value="2"/>
                         </numberFormatter>
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -248,6 +251,7 @@
                     </textFieldCell>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="f7B-1x-qbC" id="ZIU-r3-Pul"/>
+                        <binding destination="-2" name="value" keyPath="self.saturationAdjustment" id="DK7-TD-LhZ"/>
                         <outlet property="nextKeyView" destination="OzR-OW-VAX" id="M2X-2T-evz"/>
                     </connections>
                 </textField>

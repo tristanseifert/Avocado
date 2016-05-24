@@ -12,6 +12,7 @@
 #import "TSCoreImagePipelineJob.h"
 
 #import "TSExposureAdjustmentFilter.h"
+#import "TSColourControlsFilter.h"
 #import "TSSharpeningAdjustmentFilter.h"
 #import "TSNoiseReductionAdjustmentFilter.h"
 #import "TSMedianAdjustmentFilter.h"
@@ -37,6 +38,7 @@
 - (void) TSCISetUpMedianFilter:(TSCoreImagePipelineJob *) job;
 
 - (void) TSCISetUpExposureAdjustment:(TSCoreImagePipelineJob *) job;
+- (void) TSCISetUpColourControls:(TSCoreImagePipelineJob *) job;
 
 @end
 
@@ -51,6 +53,7 @@
 	[self TSCISetUpSharpening:job];
 	
 	[self TSCISetUpExposureAdjustment:job];
+	[self TSCISetUpColourControls:job];
 }
 
 #pragma mark Sharpening/Noise Reduction
@@ -110,6 +113,23 @@
 	
 	// configure filter
 	filter.evAdjustment = TSAdjustmentXDbl(TSAdjustmentKeyExposureEV);
+	
+	// add to job
+	[job addFilter:filter];
+}
+
+/**
+ * Sets up the colour controls (contrast, etc) filter.
+ */
+- (void) TSCISetUpColourControls:(TSCoreImagePipelineJob *) job {
+	TSColourControlsFilter *filter = [TSColourControlsFilter new];
+	
+	// configure filter
+	filter.contrast = TSAdjustmentXDbl(TSAdjustmentKeyExposureContrast);
+	filter.saturation = TSAdjustmentXDbl(TSAdjustmentKeyExposureSaturation);
+	filter.brightness = TSAdjustmentXDbl(TSAdjustmentKeyExposureBrightness);
+	
+	DDLogVerbose(@"Contrast: %f (%@); Saturation: %f; Brightness: %f", filter.contrast, TSAdjustment(TSAdjustmentKeyExposureContrast), filter.saturation, filter.brightness);
 	
 	// add to job
 	[job addFilter:filter];

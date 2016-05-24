@@ -748,7 +748,7 @@
 		// produce a job object
 		job = [[TSCoreImagePipelineJob alloc] initWithInput:state.coreImageInput];
 		
-		// create the filter chain
+		// create the filter chain (run on image MOC's queue)
 		[state.mocCtx performBlockAndWait:^{
 			[state.image TSCIPipelineSetUpJob:job];
 		}];

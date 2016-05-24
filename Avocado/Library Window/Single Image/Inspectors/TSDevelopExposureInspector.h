@@ -15,4 +15,9 @@
 /// exposure adjustment, in EV
 @property (nonatomic) NSNumber *exposureAdjustment;
 
+/// contrast adjustment; [-1, 1]
+@property (nonatomic) NSNumber *contrastAdjustment;
+/// saturation adjustment; [-1, 1]
+@property (nonatomic) NSNumber *saturationAdjustment;
+
 @end

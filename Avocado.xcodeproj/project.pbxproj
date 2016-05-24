@@ -34,6 +34,7 @@
 		6A6ED41D1CE4D30A001EFA21 /* TSHSLAdjustmentFilter.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = 6A6ED41C1CE4D30A001EFA21 /* TSHSLAdjustmentFilter.cikernel */; };
 		6A74F1E51CF26F0C0023B439 /* libcompression.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A74F1E41CF26F0C0023B439 /* libcompression.tbd */; };
 		6A74F1E91CF282740023B439 /* TSRawCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A74F1E81CF282740023B439 /* TSRawCache.m */; };
+		6A773D8D1CF4A1C8002757C4 /* TSColourControlsFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A773D8C1CF4A1C8002757C4 /* TSColourControlsFilter.m */; };
 		6A7987691CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7987681CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m */; };
 		6A79876B1CDD5CA200FB3A8E /* ahd_interpolate_mod.c in Sources */ = {isa = PBXBuildFile; fileRef = 6A79876A1CDD5CA200FB3A8E /* ahd_interpolate_mod.c */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive"; }; };
 		6A79876E1CDD60EB00FB3A8E /* TSRawPipelineTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A79876D1CDD60EB00FB3A8E /* TSRawPipelineTest.m */; };
@@ -174,6 +175,8 @@
 		6A74F1E41CF26F0C0023B439 /* libcompression.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcompression.tbd; path = usr/lib/libcompression.tbd; sourceTree = SDKROOT; };
 		6A74F1E71CF282740023B439 /* TSRawCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSRawCache.h; path = "Avocado/RAW Processing/TSRawCache.h"; sourceTree = "<group>"; };
 		6A74F1E81CF282740023B439 /* TSRawCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSRawCache.m; path = "Avocado/RAW Processing/TSRawCache.m"; sourceTree = "<group>"; };
+		6A773D8B1CF4A1C8002757C4 /* TSColourControlsFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSColourControlsFilter.h; path = "Avocado/Image Processing/Filters/Exposure/TSColourControlsFilter.h"; sourceTree = "<group>"; };
+		6A773D8C1CF4A1C8002757C4 /* TSColourControlsFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSColourControlsFilter.m; path = "Avocado/Image Processing/Filters/Exposure/TSColourControlsFilter.m"; sourceTree = "<group>"; };
 		6A7987671CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSBlockOperation+AvocadoUtils.h"; path = "Avocado/Helpers/NSBlockOperation+AvocadoUtils.h"; sourceTree = "<group>"; };
 		6A7987681CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSBlockOperation+AvocadoUtils.m"; path = "Avocado/Helpers/NSBlockOperation+AvocadoUtils.m"; sourceTree = "<group>"; };
 		6A79876A1CDD5CA200FB3A8E /* ahd_interpolate_mod.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ahd_interpolate_mod.c; path = "Avocado/RAW Processing/ahd_interpolate_mod.c"; sourceTree = "<group>"; };
@@ -499,6 +502,8 @@
 			children = (
 				6A92242F1CEE192000EE6408 /* TSExposureAdjustmentFilter.h */,
 				6A9224301CEE192000EE6408 /* TSExposureAdjustmentFilter.m */,
+				6A773D8B1CF4A1C8002757C4 /* TSColourControlsFilter.h */,
+				6A773D8C1CF4A1C8002757C4 /* TSColourControlsFilter.m */,
 			);
 			name = Exposure;
 			sourceTree = "<group>";
@@ -1133,6 +1138,7 @@
 				6A79876B1CDD5CA200FB3A8E /* ahd_interpolate_mod.c in Sources */,
 				6AFDED3E1CF0B7B50015C181 /* TSLibraryImageAdjustmentsProxy.m in Sources */,
 				6AEC35411CD443460033DE0A /* TSLibraryOverviewController.m in Sources */,
+				6A773D8D1CF4A1C8002757C4 /* TSColourControlsFilter.m in Sources */,
 				6AEC767B1CD516EF00870FAE /* TSLibraryOverviewLightTableController.m in Sources */,
 				6AEC766C1CD4FF2A00870FAE /* TSImportController.m in Sources */,
 				6A6ED4171CE4D0EE001EFA21 /* NSColor+AvocadoUtils.m in Sources */,

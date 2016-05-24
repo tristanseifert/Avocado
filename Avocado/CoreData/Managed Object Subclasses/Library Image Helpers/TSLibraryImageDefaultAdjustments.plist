@@ -37,5 +37,20 @@
 		<key>x</key>
 		<false/>
 	</dict>
+	<key>TSAdjustmentKeyExposureSaturation</key>
+	<dict>
+		<key>x</key>
+		<integer>1</integer>
+	</dict>
+	<key>TSAdjustmentKeyExposureBrightness</key>
+	<dict>
+		<key>x</key>
+		<integer>0</integer>
+	</dict>
+	<key>TSAdjustmentKeyExposureContrast</key>
+	<dict>
+		<key>x</key>
+		<integer>1</integer>
+	</dict>
 </dict>
 </plist>

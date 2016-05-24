@@ -139,6 +139,10 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 	
 	// load exposure
 	self.exposureAdjustment = TSAdjustmentX(self.activeImage, TSAdjustmentKeyExposureEV);
+	// load contrast
+	self.contrastAdjustment = TSAdjustmentX(self.activeImage, TSAdjustmentKeyExposureContrast);
+	// load saturation
+	self.saturationAdjustment = TSAdjustmentX(self.activeImage, TSAdjustmentKeyExposureSaturation);
 	
 	// allow change handling again
 	self.ignoreChanges = NO;
@@ -150,13 +154,20 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 - (void) saveAdjustmentData:(TSLibraryImage *) im {
 	// save exposure
 	TSAdjustmentX(im, TSAdjustmentKeyExposureEV) = self.exposureAdjustment;
+	
+	// save contrast
+	TSAdjustmentX(im, TSAdjustmentKeyExposureContrast) = self.contrastAdjustment;
+	// save saturation
+	TSAdjustmentX(im, TSAdjustmentKeyExposureSaturation) = self.saturationAdjustment;
+	
+	DDLogVerbose(@"Exposure = %@; Contrast = %@; Saturation = %@", self.exposureAdjustment, self.contrastAdjustment, self.saturationAdjustment);
 }
 
 /**
  * Adds KVO observers to the mirror properties.
  */
 - (void) addAdjustmentKVO {
-	NSArray *keys = @[@"exposureAdjustment"];
+	NSArray *keys = @[@"exposureAdjustment", @"contrastAdjustment", @"saturationAdjustment"];
 	
 	for(NSString *key in keys) {
 		[self addObserver:self forKeyPath:key
@@ -168,7 +179,7 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
  * Removes any previously installed KVO listeners.
  */
 - (void) removeAdjustmentKVO {
-	NSArray *keys = @[@"exposureAdjustment"];
+	NSArray *keys = @[@"exposureAdjustment", @"contrastAdjustment", @"saturationAdjustment"];
 	
 	for(NSString *key in keys) {
 		@try {
