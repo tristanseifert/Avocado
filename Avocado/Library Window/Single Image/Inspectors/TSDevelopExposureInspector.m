@@ -157,10 +157,9 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 	
 	// save contrast
 	TSAdjustmentX(im, TSAdjustmentKeyExposureContrast) = self.contrastAdjustment;
+	
 	// save saturation
 	TSAdjustmentX(im, TSAdjustmentKeyExposureSaturation) = self.saturationAdjustment;
-	
-	DDLogVerbose(@"Exposure = %@; Contrast = %@; Saturation = %@", self.exposureAdjustment, self.contrastAdjustment, self.saturationAdjustment);
 }
 
 /**

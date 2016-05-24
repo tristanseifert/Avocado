@@ -32,7 +32,9 @@
 	// ensure key starts with that string
 	if([key rangeOfString:@"tsAdjustment"].length > 0) {
 		// if it does, try to find the adjustment
-		adj = [TSLibraryImageAdjustment MR_findFirstWithPredicate:predicate inContext:self.image.managedObjectContext];
+		adj = [TSLibraryImageAdjustment MR_findFirstWithPredicate:predicate
+														 sortedBy:@"dateAdded" ascending:NO
+														inContext:self.image.managedObjectContext];
 		
 		if(adj != nil) {
 			return adj;

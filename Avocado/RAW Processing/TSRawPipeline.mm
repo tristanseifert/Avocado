@@ -148,6 +148,8 @@
 		self.ciPipeline = [TSCoreImagePipeline new];
 		
 		// set up context
+//		NSManagedObjectContext *parent = [NSManagedObjectContext MR_defaultContext];
+//		self.moc = [NSManagedObjectContext MR_contextWithParent:parent];
 		self.moc = [NSManagedObjectContext MR_context];
 		self.moc.name = [NSString stringWithFormat:@"%@//%@//Shared", [self className], self];
 		

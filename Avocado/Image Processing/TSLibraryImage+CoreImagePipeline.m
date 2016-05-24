@@ -129,8 +129,6 @@
 	filter.saturation = TSAdjustmentXDbl(TSAdjustmentKeyExposureSaturation);
 	filter.brightness = TSAdjustmentXDbl(TSAdjustmentKeyExposureBrightness);
 	
-	DDLogVerbose(@"Contrast: %f (%@); Saturation: %f; Brightness: %f", filter.contrast, TSAdjustment(TSAdjustmentKeyExposureContrast), filter.saturation, filter.brightness);
-	
 	// add to job
 	[job addFilter:filter];
 }
