@@ -122,13 +122,14 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 			if(self.settingsChangeBlock) {
 				self.settingsChangeBlock();
 			}
-		} else {
+		} else if(err != nil) {
 			DDLogError(@"Error saving image: %@", err);
 			
 			[NSApp presentError:err modalForWindow:self.view.window
 					   delegate:nil didPresentSelector:nil
 					contextInfo:nil];
 		}
+		// if it wasn't saved, but there was no error, there were no changes to save
 	}];
 }
 
