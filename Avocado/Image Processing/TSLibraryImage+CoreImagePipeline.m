@@ -13,6 +13,7 @@
 
 #import "TSExposureAdjustmentFilter.h"
 #import "TSColourControlsFilter.h"
+#import "TSVibranceAdjustmentFilter.h"
 #import "TSSharpeningAdjustmentFilter.h"
 #import "TSNoiseReductionAdjustmentFilter.h"
 #import "TSMedianAdjustmentFilter.h"
@@ -122,15 +123,21 @@
  * Sets up the colour controls (contrast, etc) filter.
  */
 - (void) TSCISetUpColourControls:(TSCoreImagePipelineJob *) job {
+	// configure the colour controls filter
 	TSColourControlsFilter *filter = [TSColourControlsFilter new];
 	
-	// configure filter
-	filter.contrast = TSAdjustmentXDbl(TSAdjustmentKeyExposureContrast);
-	filter.saturation = TSAdjustmentXDbl(TSAdjustmentKeyExposureSaturation);
-	filter.brightness = TSAdjustmentXDbl(TSAdjustmentKeyExposureBrightness);
+	filter.contrast = TSAdjustmentXDbl(TSAdjustmentKeyToneContrast);
+	filter.saturation = TSAdjustmentXDbl(TSAdjustmentKeyToneSaturation);
+	filter.brightness = TSAdjustmentXDbl(TSAdjustmentKeyToneBrightness);
 	
-	// add to job
 	[job addFilter:filter];
+	
+	// configure the vibrance filter
+	TSVibranceAdjustmentFilter *filterVibe = [TSVibranceAdjustmentFilter new];
+	
+	filterVibe.vibrancy = TSAdjustmentXDbl(TSAdjustmentKeyToneVibrance);
+	
+	[job addFilter:filterVibe];
 }
 
 @end

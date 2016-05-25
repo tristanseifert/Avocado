@@ -20,4 +20,7 @@
 /// saturation adjustment; [-1, 1]
 @property (nonatomic) NSNumber *saturationAdjustment;
 
+/// vibrance adjustment; [-1, 1]
+@property (nonatomic) NSNumber *vibranceAdjustment;
+
 @end

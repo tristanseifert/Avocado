@@ -8,12 +8,15 @@ extern const NSUInteger TSLibraryImageVersion;
 /// adjustment of exposure, in EV [-5, 5]
 extern NSString  * _Nonnull const TSAdjustmentKeyExposureEV;
 
+#pragma mark Tone Adjustment
 /// saturation adjustment, [-1, 1]
-extern NSString  * _Nonnull const TSAdjustmentKeyExposureSaturation;
+extern NSString  * _Nonnull const TSAdjustmentKeyToneSaturation;
 /// brightness adjustment, [-1, 1]
-extern NSString  * _Nonnull const TSAdjustmentKeyExposureBrightness;
+extern NSString  * _Nonnull const TSAdjustmentKeyToneBrightness;
 /// contrast adjustment, [-1, 1]
-extern NSString  * _Nonnull const TSAdjustmentKeyExposureContrast;
+extern NSString  * _Nonnull const TSAdjustmentKeyToneContrast;
+/// vibrance adjustment, [-1, 1]
+extern NSString  * _Nonnull const TSAdjustmentKeyToneVibrance;
 
 #pragma mark Noise Reduction and Sharpening
 /// noise reduction level [0, 1]

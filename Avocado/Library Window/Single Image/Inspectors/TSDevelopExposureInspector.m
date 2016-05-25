@@ -141,9 +141,11 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 	// load exposure
 	self.exposureAdjustment = TSAdjustmentX(self.activeImage, TSAdjustmentKeyExposureEV);
 	// load contrast
-	self.contrastAdjustment = TSAdjustmentX(self.activeImage, TSAdjustmentKeyExposureContrast);
+	self.contrastAdjustment = TSAdjustmentX(self.activeImage, TSAdjustmentKeyToneContrast);
 	// load saturation
-	self.saturationAdjustment = TSAdjustmentX(self.activeImage, TSAdjustmentKeyExposureSaturation);
+	self.saturationAdjustment = TSAdjustmentX(self.activeImage, TSAdjustmentKeyToneSaturation);
+	// load vibrance
+	self.vibranceAdjustment = TSAdjustmentX(self.activeImage, TSAdjustmentKeyToneVibrance);
 	
 	// allow change handling again
 	self.ignoreChanges = NO;
@@ -157,17 +159,20 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 	TSAdjustmentX(im, TSAdjustmentKeyExposureEV) = self.exposureAdjustment;
 	
 	// save contrast
-	TSAdjustmentX(im, TSAdjustmentKeyExposureContrast) = self.contrastAdjustment;
+	TSAdjustmentX(im, TSAdjustmentKeyToneContrast) = self.contrastAdjustment;
 	
 	// save saturation
-	TSAdjustmentX(im, TSAdjustmentKeyExposureSaturation) = self.saturationAdjustment;
+	TSAdjustmentX(im, TSAdjustmentKeyToneSaturation) = self.saturationAdjustment;
+	
+	// save vibrancy
+	TSAdjustmentX(im, TSAdjustmentKeyToneVibrance) = self.vibranceAdjustment;
 }
 
 /**
  * Adds KVO observers to the mirror properties.
  */
 - (void) addAdjustmentKVO {
-	NSArray *keys = @[@"exposureAdjustment", @"contrastAdjustment", @"saturationAdjustment"];
+	NSArray *keys = @[@"exposureAdjustment", @"contrastAdjustment", @"saturationAdjustment", @"vibranceAdjustment"];
 	
 	for(NSString *key in keys) {
 		[self addObserver:self forKeyPath:key
@@ -179,7 +184,7 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
  * Removes any previously installed KVO listeners.
  */
 - (void) removeAdjustmentKVO {
-	NSArray *keys = @[@"exposureAdjustment", @"contrastAdjustment", @"saturationAdjustment"];
+	NSArray *keys = @[@"exposureAdjustment", @"contrastAdjustment", @"saturationAdjustment", @"vibranceAdjustment"];
 	
 	for(NSString *key in keys) {
 		@try {

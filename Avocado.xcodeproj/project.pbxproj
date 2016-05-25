@@ -39,6 +39,7 @@
 		6A7987691CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7987681CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m */; };
 		6A79876B1CDD5CA200FB3A8E /* ahd_interpolate_mod.c in Sources */ = {isa = PBXBuildFile; fileRef = 6A79876A1CDD5CA200FB3A8E /* ahd_interpolate_mod.c */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive"; }; };
 		6A79876E1CDD60EB00FB3A8E /* TSRawPipelineTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A79876D1CDD60EB00FB3A8E /* TSRawPipelineTest.m */; };
+		6A7E46E91CF65FF80056C048 /* TSVibranceAdjustmentFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7E46E81CF65FF80056C048 /* TSVibranceAdjustmentFilter.m */; };
 		6A7EC3CB1CD685AF007E91E8 /* TSThumbCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7EC3CA1CD685AF007E91E8 /* TSThumbCache.m */; };
 		6A9224271CECC6DE00EE6408 /* TSDevelopHueInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A9224251CECC6DE00EE6408 /* TSDevelopHueInspector.m */; };
 		6A9224281CECC6DE00EE6408 /* TSDevelopHueInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A9224261CECC6DE00EE6408 /* TSDevelopHueInspector.xib */; };
@@ -183,6 +184,8 @@
 		6A7987681CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSBlockOperation+AvocadoUtils.m"; path = "Avocado/Helpers/NSBlockOperation+AvocadoUtils.m"; sourceTree = "<group>"; };
 		6A79876A1CDD5CA200FB3A8E /* ahd_interpolate_mod.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ahd_interpolate_mod.c; path = "Avocado/RAW Processing/ahd_interpolate_mod.c"; sourceTree = "<group>"; };
 		6A79876D1CDD60EB00FB3A8E /* TSRawPipelineTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSRawPipelineTest.m; sourceTree = "<group>"; };
+		6A7E46E71CF65FF80056C048 /* TSVibranceAdjustmentFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSVibranceAdjustmentFilter.h; path = "Avocado/Image Processing/Filters/Exposure/TSVibranceAdjustmentFilter.h"; sourceTree = "<group>"; };
+		6A7E46E81CF65FF80056C048 /* TSVibranceAdjustmentFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSVibranceAdjustmentFilter.m; path = "Avocado/Image Processing/Filters/Exposure/TSVibranceAdjustmentFilter.m"; sourceTree = "<group>"; };
 		6A7EC3C91CD685AF007E91E8 /* TSThumbCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSThumbCache.h; path = "Avocado/Thumb Handling/TSThumbCache.h"; sourceTree = "<group>"; };
 		6A7EC3CA1CD685AF007E91E8 /* TSThumbCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSThumbCache.m; path = "Avocado/Thumb Handling/TSThumbCache.m"; sourceTree = "<group>"; };
 		6A9224241CECC6DE00EE6408 /* TSDevelopHueInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSDevelopHueInspector.h; path = "Library Window/Single Image/Inspectors/TSDevelopHueInspector.h"; sourceTree = "<group>"; };
@@ -506,6 +509,8 @@
 				6A9224301CEE192000EE6408 /* TSExposureAdjustmentFilter.m */,
 				6A773D8B1CF4A1C8002757C4 /* TSColourControlsFilter.h */,
 				6A773D8C1CF4A1C8002757C4 /* TSColourControlsFilter.m */,
+				6A7E46E71CF65FF80056C048 /* TSVibranceAdjustmentFilter.h */,
+				6A7E46E81CF65FF80056C048 /* TSVibranceAdjustmentFilter.m */,
 			);
 			name = Exposure;
 			sourceTree = "<group>";
@@ -1138,6 +1143,7 @@
 				6A92243F1CEEB67700EE6408 /* TSDevelopInspector.m in Sources */,
 				6A6ED4141CE205B6001EFA21 /* TSHistogramView.m in Sources */,
 				6A5C615F1CD67C5B00E3C3C9 /* TSImageIOHelper.m in Sources */,
+				6A7E46E91CF65FF80056C048 /* TSVibranceAdjustmentFilter.m in Sources */,
 				6A6ED4101CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.m in Sources */,
 				6A79876B1CDD5CA200FB3A8E /* ahd_interpolate_mod.c in Sources */,
 				6AFDED3E1CF0B7B50015C181 /* TSLibraryImageAdjustmentsProxy.m in Sources */,
