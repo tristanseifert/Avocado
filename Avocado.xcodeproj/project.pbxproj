@@ -35,6 +35,7 @@
 		6A74F1E51CF26F0C0023B439 /* libcompression.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A74F1E41CF26F0C0023B439 /* libcompression.tbd */; };
 		6A74F1E91CF282740023B439 /* TSRawCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A74F1E81CF282740023B439 /* TSRawCache.m */; };
 		6A773D8D1CF4A1C8002757C4 /* TSColourControlsFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A773D8C1CF4A1C8002757C4 /* TSColourControlsFilter.m */; };
+		6A77A2231CF554F600501FD8 /* TSDefaultSettings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6A77A2221CF554F600501FD8 /* TSDefaultSettings.plist */; };
 		6A7987691CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7987681CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m */; };
 		6A79876B1CDD5CA200FB3A8E /* ahd_interpolate_mod.c in Sources */ = {isa = PBXBuildFile; fileRef = 6A79876A1CDD5CA200FB3A8E /* ahd_interpolate_mod.c */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive"; }; };
 		6A79876E1CDD60EB00FB3A8E /* TSRawPipelineTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A79876D1CDD60EB00FB3A8E /* TSRawPipelineTest.m */; };
@@ -177,6 +178,7 @@
 		6A74F1E81CF282740023B439 /* TSRawCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSRawCache.m; path = "Avocado/RAW Processing/TSRawCache.m"; sourceTree = "<group>"; };
 		6A773D8B1CF4A1C8002757C4 /* TSColourControlsFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSColourControlsFilter.h; path = "Avocado/Image Processing/Filters/Exposure/TSColourControlsFilter.h"; sourceTree = "<group>"; };
 		6A773D8C1CF4A1C8002757C4 /* TSColourControlsFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSColourControlsFilter.m; path = "Avocado/Image Processing/Filters/Exposure/TSColourControlsFilter.m"; sourceTree = "<group>"; };
+		6A77A2221CF554F600501FD8 /* TSDefaultSettings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TSDefaultSettings.plist; sourceTree = "<group>"; };
 		6A7987671CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSBlockOperation+AvocadoUtils.h"; path = "Avocado/Helpers/NSBlockOperation+AvocadoUtils.h"; sourceTree = "<group>"; };
 		6A7987681CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSBlockOperation+AvocadoUtils.m"; path = "Avocado/Helpers/NSBlockOperation+AvocadoUtils.m"; sourceTree = "<group>"; };
 		6A79876A1CDD5CA200FB3A8E /* ahd_interpolate_mod.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ahd_interpolate_mod.c; path = "Avocado/RAW Processing/ahd_interpolate_mod.c"; sourceTree = "<group>"; };
@@ -608,6 +610,7 @@
 			children = (
 				6AE87BC71CD275C90053CD9D /* TSAppDelegate.h */,
 				6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */,
+				6A77A2221CF554F600501FD8 /* TSDefaultSettings.plist */,
 				6AE87BD21CD275C90053CD9D /* MainMenu.xib */,
 			);
 			name = "App Delegate";
@@ -993,6 +996,7 @@
 				6AEC35481CD443B90033DE0A /* TSLibraryDetail.xib in Resources */,
 				6AFDED401CF0BB0B0015C181 /* TSLibraryImageDefaultAdjustments.plist in Resources */,
 				6AE87BD41CD275C90053CD9D /* MainMenu.xib in Resources */,
+				6A77A2231CF554F600501FD8 /* TSDefaultSettings.plist in Resources */,
 				6AA637661CF1F10C00683F83 /* LensfunDB.bundle in Resources */,
 				6A6ED41D1CE4D30A001EFA21 /* TSHSLAdjustmentFilter.cikernel in Resources */,
 				6AA9359F1CE7AF43004E9F9C /* TSDevelopExposureInspector.xib in Resources */,

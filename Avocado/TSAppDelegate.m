@@ -21,7 +21,20 @@
 @implementation TSAppDelegate
 
 /**
- * Does some magic things when the app finishes launching.
+ * Sets up any initial app state, as the app is about to finish launching.
+ */
+- (void) applicationWillFinishLaunching:(NSNotification *) notification {
+	// register user defaults
+	NSURL *defaultsUrl = [[NSBundle mainBundle] URLForResource:@"TSDefaultSettings" withExtension:@"plist"];
+	NSDictionary *defaults = [NSDictionary dictionaryWithContentsOfURL:defaultsUrl];
+	DDAssert(defaults != nil, @"Defaults may not be nil; loaded from %@", defaultsUrl);
+	
+	[[NSUserDefaults standardUserDefaults] registerDefaults:defaults];
+}
+
+/**
+ * Does some magic things when the app finishes launching, then sets up the
+ * main window.
  */
 - (void) applicationDidFinishLaunching:(NSNotification *) aNotification {
 	// set up the coredata stack, via MagicalRecord™
