@@ -40,6 +40,7 @@
 		6A79876B1CDD5CA200FB3A8E /* ahd_interpolate_mod.c in Sources */ = {isa = PBXBuildFile; fileRef = 6A79876A1CDD5CA200FB3A8E /* ahd_interpolate_mod.c */; settings = {COMPILER_FLAGS = "-fslp-vectorize-aggressive"; }; };
 		6A79876E1CDD60EB00FB3A8E /* TSRawPipelineTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A79876D1CDD60EB00FB3A8E /* TSRawPipelineTest.m */; };
 		6A7E46E91CF65FF80056C048 /* TSVibranceAdjustmentFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7E46E81CF65FF80056C048 /* TSVibranceAdjustmentFilter.m */; };
+		6A7E46ED1CF688410056C048 /* TSLFDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6A7E46EC1CF688410056C048 /* TSLFDatabase.mm */; };
 		6A7EC3CB1CD685AF007E91E8 /* TSThumbCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7EC3CA1CD685AF007E91E8 /* TSThumbCache.m */; };
 		6A9224271CECC6DE00EE6408 /* TSDevelopHueInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A9224251CECC6DE00EE6408 /* TSDevelopHueInspector.m */; };
 		6A9224281CECC6DE00EE6408 /* TSDevelopHueInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A9224261CECC6DE00EE6408 /* TSDevelopHueInspector.xib */; };
@@ -186,6 +187,8 @@
 		6A79876D1CDD60EB00FB3A8E /* TSRawPipelineTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSRawPipelineTest.m; sourceTree = "<group>"; };
 		6A7E46E71CF65FF80056C048 /* TSVibranceAdjustmentFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSVibranceAdjustmentFilter.h; path = "Avocado/Image Processing/Filters/Exposure/TSVibranceAdjustmentFilter.h"; sourceTree = "<group>"; };
 		6A7E46E81CF65FF80056C048 /* TSVibranceAdjustmentFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSVibranceAdjustmentFilter.m; path = "Avocado/Image Processing/Filters/Exposure/TSVibranceAdjustmentFilter.m"; sourceTree = "<group>"; };
+		6A7E46EB1CF688410056C048 /* TSLFDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLFDatabase.h; path = "Avocado/RAW Processing/Lens Correction/TSLFDatabase.h"; sourceTree = "<group>"; };
+		6A7E46EC1CF688410056C048 /* TSLFDatabase.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = TSLFDatabase.mm; path = "Avocado/RAW Processing/Lens Correction/TSLFDatabase.mm"; sourceTree = "<group>"; };
 		6A7EC3C91CD685AF007E91E8 /* TSThumbCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSThumbCache.h; path = "Avocado/Thumb Handling/TSThumbCache.h"; sourceTree = "<group>"; };
 		6A7EC3CA1CD685AF007E91E8 /* TSThumbCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSThumbCache.m; path = "Avocado/Thumb Handling/TSThumbCache.m"; sourceTree = "<group>"; };
 		6A9224241CECC6DE00EE6408 /* TSDevelopHueInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSDevelopHueInspector.h; path = "Library Window/Single Image/Inspectors/TSDevelopHueInspector.h"; sourceTree = "<group>"; };
@@ -392,6 +395,7 @@
 			children = (
 				6AA637651CF1F10C00683F83 /* LensfunDB.bundle */,
 				6A28F0581CD7FEA400228067 /* liblensfun.0.3.2.dylib */,
+				6A7E46EA1CF688200056C048 /* ObjC Wrapper */,
 				6A28F0571CD7FE7E00228067 /* Headers */,
 			);
 			name = lensfun;
@@ -491,6 +495,15 @@
 				6A74F1E81CF282740023B439 /* TSRawCache.m */,
 			);
 			name = "Cache Handling";
+			sourceTree = "<group>";
+		};
+		6A7E46EA1CF688200056C048 /* ObjC Wrapper */ = {
+			isa = PBXGroup;
+			children = (
+				6A7E46EB1CF688410056C048 /* TSLFDatabase.h */,
+				6A7E46EC1CF688410056C048 /* TSLFDatabase.mm */,
+			);
+			name = "ObjC Wrapper";
 			sourceTree = "<group>";
 		};
 		6A7EC3C81CD68595007E91E8 /* Thumb Handling */ = {
@@ -1173,6 +1186,7 @@
 				6A9224381CEE39AD00EE6408 /* TSSharpeningAdjustmentFilter.m in Sources */,
 				6A92242C1CED242200EE6408 /* TSDevelopDetailInspector.m in Sources */,
 				6A06F4481CE01C3C001DFC4C /* TSCoreImagePipelineJob.m in Sources */,
+				6A7E46ED1CF688410056C048 /* TSLFDatabase.mm in Sources */,
 				6AA9359E1CE7AF43004E9F9C /* TSDevelopExposureInspector.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

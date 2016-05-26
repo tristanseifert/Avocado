@@ -2,9 +2,31 @@
 
 #import <CoreImage/CoreImage.h>
 
-@interface TSLibraryImageAdjustment ()
+NSString* const TSAdjustmentKeyExposureEV = @"tsAdjustmentExposureEV";
 
-// Private interface goes here.
+NSString* const TSAdjustmentKeyToneSaturation = @"tsAdjustmentToneSaturation";
+NSString* const TSAdjustmentKeyToneBrightness = @"tsAdjustmentToneBrightness";
+NSString* const TSAdjustmentKeyToneContrast = @"tsAdjustmentToneContrast";
+NSString* const TSAdjustmentKeyToneVibrance = @"tsAdjustmentToneVibrance";
+
+NSString* const TSAdjustmentKeyColourRed = @"tsAdjustmentColourRed";
+NSString* const TSAdjustmentKeyColourOrange = @"tsAdjustmentColourOrange";
+NSString* const TSAdjustmentKeyColourYellow = @"tsAdjustmentColourYellow";
+NSString* const TSAdjustmentKeyColourGreen = @"tsAdjustmentColourGreen";
+NSString* const TSAdjustmentKeyColourAqua = @"tsAdjustmentColourAqua";
+NSString* const TSAdjustmentKeyColourBlue = @"tsAdjustmentColourBlue";
+NSString* const TSAdjustmentKeyColourPurple = @"tsAdjustmentColourPurple";
+NSString* const TSAdjustmentKeyColourMagenta = @"tsAdjustmentColourMagenta";
+
+NSString* const TSAdjustmentKeyNoiseReductionLevel = @"tsAdjustmentNRLevel";
+NSString* const TSAdjustmentKeyNoiseReductionSharpness = @"tsAdjustmentNRSharpness";
+NSString* const TSAdjustmentKeySharpenLuminance = @"tsAdjustmentSharpenLuminance";
+NSString* const TSAdjustmentKeySharpenRadius = @"tsAdjustmentSharpenRadius";
+NSString* const TSAdjustmentKeySharpenIntensity = @"tsAdjustmentSharpenIntensity";
+NSString* const TSAdjustmentKeySharpenMedianFilter = @"tsAdjustmentSharpenMedianFilter";
+
+
+@interface TSLibraryImageAdjustment ()
 
 @end
 

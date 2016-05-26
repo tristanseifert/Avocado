@@ -9,6 +9,10 @@
 
 /**
  * Converts an RGB coordinate to HSV.
+ *
+ * @param c A three-component vector containing an RGB colour.
+ *
+ * @return A three-component vector, containing a HSL colour.
  */
 vec3 rgb2hsv(vec3 c) {
 	vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
@@ -22,6 +26,10 @@ vec3 rgb2hsv(vec3 c) {
 
 /**
  * Converts an HSV coordinate to RGB.
+ *
+ * @param c A three-component vector containing a HSL colour.
+ *
+ * @return A three-component vector, containing an RGB colour.
  */
 vec3 hsv2rgb(vec3 c) {
 	vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
@@ -31,6 +39,14 @@ vec3 hsv2rgb(vec3 c) {
 
 /**
  * Performs hue band adjustment.
+ *
+ * @param hsv HSL (mapped to XYZ components of vector) colour value
+ * @param hueEdge0 Lower bound of the hue range to operate on
+ * @param hueEdge1 Upper bound of the hue range to operate on
+ * @param shiftEdge0 Lower bound for shift
+ * @param shiftEdge1 Upper bound for shift
+ *
+ * @return Output colour, after applying hue band adjustment
  */
 vec3 smoothTreatment(vec3 hsv, float hueEdge0, float hueEdge1, vec3 shiftEdge0, vec3 shiftEdge1) {
 	// smoothen hue
@@ -71,6 +87,6 @@ kernel vec4 kernelFunc(__sample pixel, vec3 redShift, vec3 orangeShift, vec3 yel
 		hsv = smoothTreatment(hsv, magenta, 1.0, magentaShift, redShift);
 	}
 
-	// convert back into an RGB coordinate
+	// convert back into an RGB pixel value
 	return vec4(hsv2rgb(hsv), pixel.a);
 }

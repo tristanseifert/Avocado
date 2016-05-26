@@ -1,61 +1,37 @@
 #import "_TSLibraryImage.h"
 #import "TSLibraryImageAdjustmentsProxy.h"
 
-/// current adjustment dictionary version
-extern const NSUInteger TSLibraryImageVersion;
+#pragma mark Metadata Keys
+/// raw EXIF data
+extern NSString  * _Nonnull const TSLibraryImageMetadataKeyEXIF;
 
-#pragma mark Exposure Adjustment
-/// adjustment of exposure, in EV [-5, 5]
-extern NSString  * _Nonnull const TSAdjustmentKeyExposureEV;
+/// camera maker, as specified in the EXIF data
+extern NSString  * _Nonnull const TSLibraryImageMetadataKeyCameraMaker;
+/// camera model, as specified in the EXIF data
+extern NSString  * _Nonnull const TSLibraryImageMetadataKeyCameraModel;
 
-#pragma mark Tone Adjustment
-/// saturation adjustment, [-1, 1]
-extern NSString  * _Nonnull const TSAdjustmentKeyToneSaturation;
-/// brightness adjustment, [-1, 1]
-extern NSString  * _Nonnull const TSAdjustmentKeyToneBrightness;
-/// contrast adjustment, [-1, 1]
-extern NSString  * _Nonnull const TSAdjustmentKeyToneContrast;
-/// vibrance adjustment, [-1, 1]
-extern NSString  * _Nonnull const TSAdjustmentKeyToneVibrance;
+/// lens maker, as specified in the EXIF data
+extern NSString  * _Nonnull const TSLibraryImageMetadataKeyLensMaker;
+/// lens model, as specified in the EXIF data
+extern NSString  * _Nonnull const TSLibraryImageMetadataKeyLensModel;
+/// a human-readable lens specification
+extern NSString  * _Nonnull const TSLibraryImageMetadataKeyLensSpecification;
+/// focal length at which the lens was used
+extern NSString  * _Nonnull const TSLibraryImageMetadataKeyLensFocalLength;
 
-#pragma mark Colour Adjustment
-/*
- * Colour adjustments for eight different shifts; the X value is the additive
- * hue shift, whereas the Y and Z value are the saturation and lightness
- * multipliers, respectively.
- */
-/// adjustments to red components
-extern NSString  * _Nonnull const TSAdjustmentKeyColourRed;
-/// adjustments to orange components
-extern NSString  * _Nonnull const TSAdjustmentKeyColourOrange;
-/// adjustments to yellow components
-extern NSString  * _Nonnull const TSAdjustmentKeyColourYellow;
-/// adjustments to green components
-extern NSString  * _Nonnull const TSAdjustmentKeyColourGreen;
-/// adjustments to aqua components
-extern NSString  * _Nonnull const TSAdjustmentKeyColourAqua;
-/// adjustments to blue components
-extern NSString  * _Nonnull const TSAdjustmentKeyColourBlue;
-/// adjustments to purple components
-extern NSString  * _Nonnull const TSAdjustmentKeyColourPurple;
-/// adjustments to magenta components
-extern NSString  * _Nonnull const TSAdjustmentKeyColourMagenta;
+/// exposure compensation set for the shot
+extern NSString  * _Nonnull const TSLibraryImageMetadataKeyExposureCompensation;
+/// ISO used for the shot
+extern NSString  * _Nonnull const TSLibraryImageMetadataKeyISO;
+/// shutter speed used for the shot
+extern NSString  * _Nonnull const TSLibraryImageMetadataKeyShutter;
+/// aperture used for the shot
+extern NSString  * _Nonnull const TSLibraryImageMetadataKeyAperture;
 
-#pragma mark Noise Reduction and Sharpening
-/// noise reduction level [0, 1]
-extern NSString * _Nonnull const TSAdjustmentKeyNoiseReductionLevel;
-/// noise reduction sharpness [0, 1]
-extern NSString * _Nonnull const TSAdjustmentKeyNoiseReductionSharpness;
-
-/// Luminance sharpening amount [0, 1]
-extern NSString * _Nonnull const TSAdjustmentKeySharpenLuminance;
-/// Unsharp mask radius [0, 5]
-extern NSString * _Nonnull const TSAdjustmentKeySharpenRadius;
-/// Unsharp mask radius [0, 1]
-extern NSString * _Nonnull const TSAdjustmentKeySharpenIntensity;
-/// Median filter (bool)
-extern NSString * _Nonnull const TSAdjustmentKeySharpenMedianFilter;
-
+/// Camera-specified 'author' field
+extern NSString  * _Nonnull const TSLibraryImageMetadataKeyAuthor;
+/// Camera-specified description field
+extern NSString  * _Nonnull const TSLibraryImageMetadataKeyDescription;
 
 /**
  * Enum holding the 'type' of the image, as determined by which rendering

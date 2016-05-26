@@ -25,6 +25,9 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 
 - (NSURL *) copyFile:(NSURL *) file withError:(NSError **) outErr;
 
+- (NSDictionary *) metadataDictWithImageIOMetadata:(NSDictionary *) meta;
+- (NSDictionary *) metadataDictWithRawFile:(TSRawImage *) raw;
+
 @end
 
 @implementation TSImportController
@@ -77,7 +80,6 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 	NSError *err = nil;
 	TSRawImage *raw = nil;
 	
-	NSDictionary *meta = nil;
 	NSURL *actualImageUrl = url;
 	
 	// copy it to the library folder
@@ -99,8 +101,6 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		return NO;
 	}
 	
-	// extract some metadata from it
-	
 	// save it
 	[MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext *ctx) {
 		// create an image
@@ -110,7 +110,7 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		image.fileTypeValue = TSLibraryImageRaw;
 		image.fileUrl = actualImageUrl;
 		
-		image.metadata = meta;
+		image.metadata = [self metadataDictWithRawFile:raw];
 		
 		image.dateImported = [NSDate new];
 		image.dateModified = image.dateImported;
@@ -139,7 +139,6 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 - (BOOL) importOtherImage:(NSURL *) url withError:(NSError **) outErr {
 	NSError *err = nil;
 	
-	NSDictionary *meta = nil;
 	NSURL *actualImageUrl = url;
 	
 	// copy it to the library folder
@@ -153,7 +152,7 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 	}
 	
 	// extract some metadata from the image
-	meta = [[TSImageIOHelper sharedInstance] metadataForImageAtUrl:actualImageUrl];
+	NSDictionary *exif = [[TSImageIOHelper sharedInstance] metadataForImageAtUrl:actualImageUrl];
 	
 	// save it
 	[MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext *ctx) {
@@ -164,7 +163,7 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		image.fileTypeValue = TSLibraryImageCompressed;
 		image.fileUrl = actualImageUrl;
 		
-		image.metadata = meta;
+		image.metadata = [self metadataDictWithImageIOMetadata:exif];
 		
 		image.dateImported = [NSDate new];
 		image.dateModified = image.dateImported;
@@ -173,10 +172,10 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		
 		image.thumbUUID = [[NSUUID new].UUIDString stringByAppendingString:@"_compressed"];
 		
-		// extract a few keys from the metadata dictionary
-		NSDictionary *exif = meta[TSImageMetadataExifDictionary];
-		if(exif != nil) {
-			image.dateShot = exif[TSImageMetadataExifDateTimeOriginal];
+		// extract a few keys from the fixed-up EXIF dictionary dictionary
+		NSDictionary *exifFixed = exif[TSImageMetadataExifDictionary];
+		if(exifFixed != nil) {
+			image.dateShot = exifFixed[TSImageMetadataExifDateTimeOriginal];
 		}
 		
 		if(image.dateShot == nil) {
@@ -254,6 +253,77 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 	
 	// we're done.
 	return photoDir;
+}
+
+/**
+ * Creates a saveable metadata dictionary for an image, given a dictionary of
+ * ImageIO metadata. (This is usually used for non-RAW images.)
+ */
+- (NSDictionary *) metadataDictWithImageIOMetadata:(NSDictionary *) meta {
+	NSMutableDictionary *info = [NSMutableDictionary new];
+	NSDictionary *exif = meta[TSImageMetadataExifDictionary];
+	NSDictionary *tiff = meta[TSImageMetadataTiffDictionary];
+	
+	// camera info
+	info[TSLibraryImageMetadataKeyCameraMaker] = tiff[TSImageMetadataTiffCaptureDeviceMake];
+	info[TSLibraryImageMetadataKeyCameraModel] = tiff[TSImageMetadataTiffCaptureDeviceModel];
+	
+	// lens info
+	info[TSLibraryImageMetadataKeyLensMaker] = exif[TSImageMetadataExifLensMake];
+	info[TSLibraryImageMetadataKeyLensModel] = exif[TSImageMetadataExifLensModel];
+	info[TSLibraryImageMetadataKeyLensSpecification] = exif[TSImageMetadataExifLensSpec];
+	info[TSLibraryImageMetadataKeyLensFocalLength] = exif[TSImageMetadataExifFocalLength];
+	
+	// shot info
+	if([exif[TSImageMetadataExifISO] count] != 0) {
+		info[TSLibraryImageMetadataKeyISO] = [exif[TSImageMetadataExifISO] firstObject];
+	} else {
+		info[TSLibraryImageMetadataKeyISO] = @(0);
+	}
+	
+	info[TSLibraryImageMetadataKeyShutter] = exif[TSImageMetadataExifShutterSpeed];
+	info[TSLibraryImageMetadataKeyAperture] = exif[TSImageMetadataExifAperture];
+	info[TSLibraryImageMetadataKeyExposureCompensation] = exif[TSImageMetadataExifExposureCompensation];
+	
+	// miscellaneous metadata
+	info[TSLibraryImageMetadataKeyAuthor] = exif[TSImageMetadataExifCameraOwner]; // could be kCGImagePropertyTIFFArtist?
+	info[TSLibraryImageMetadataKeyDescription] = @""; // we have nothing good to put here
+	
+	// EXIF data
+	info[TSLibraryImageMetadataKeyEXIF] = exif;
+	
+	return [info copy];
+}
+
+/**
+ * Creates a saveable metadata dictionary, given a particular RAW file.
+ */
+- (NSDictionary *) metadataDictWithRawFile:(TSRawImage *) raw {
+	NSMutableDictionary *info = [NSMutableDictionary new];
+	
+	// camera info
+	info[TSLibraryImageMetadataKeyCameraMaker] = raw.cameraMake;
+	info[TSLibraryImageMetadataKeyCameraModel] = raw.cameraModel;
+	
+	// lens info
+	info[TSLibraryImageMetadataKeyLensMaker] = raw.lensMake;
+	info[TSLibraryImageMetadataKeyLensModel] = raw.lensName;
+	info[TSLibraryImageMetadataKeyLensSpecification] = raw.lensName; // best guess we have here?
+	info[TSLibraryImageMetadataKeyLensFocalLength] = @(raw.focalLength);
+	
+	// shot exposure info
+	info[TSLibraryImageMetadataKeyISO] = @(raw.isoSpeed);
+	info[TSLibraryImageMetadataKeyShutter] = @(raw.shutterSpeed);
+	info[TSLibraryImageMetadataKeyAperture] = @(raw.aperture);
+	
+	// miscellaneous metadata
+	info[TSLibraryImageMetadataKeyAuthor] = raw.artist;
+	info[TSLibraryImageMetadataKeyDescription] = raw.imageDescription;
+	
+	// copy any EXIF data, if we have it
+	info[TSLibraryImageMetadataKeyEXIF] = [NSNull null];
+	
+	return [info copy];
 }
 
 @end

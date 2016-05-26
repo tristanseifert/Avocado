@@ -11,35 +11,27 @@
 
 #include <dlfcn.h>
 
+// define the metadata keys
+NSString* const TSLibraryImageMetadataKeyEXIF = @"TSLibraryImageMetadataEXIF";
+NSString* const TSLibraryImageMetadataKeyCameraMaker = @"TSLibraryImageMetadataCameraMaker";
+NSString* const TSLibraryImageMetadataKeyCameraModel = @"TSLibraryImageMetadataCameraModel";
+NSString* const TSLibraryImageMetadataKeyLensMaker = @"TSLibraryImageMetadataLensMaker";
+NSString* const TSLibraryImageMetadataKeyLensModel = @"TSLibraryImageMetadataLensModel";
+NSString* const TSLibraryImageMetadataKeyLensSpecification = @"TSLibraryImageMetadataLensSpecification";
+NSString* const TSLibraryImageMetadataKeyLensFocalLength = @"TSLibraryImageMetadataLensFocalLength";
+NSString* const TSLibraryImageMetadataKeyExposureCompensation = @"TSLibraryImageMetadataExposureCompensation";
+NSString* const TSLibraryImageMetadataKeyISO = @"TSLibraryImageMetadataISO";
+NSString* const TSLibraryImageMetadataKeyShutter = @"TSLibraryImageMetadataShutter";
+NSString* const TSLibraryImageMetadataKeyAperture = @"TSLibraryImageMetadataAperture";
+NSString* const TSLibraryImageMetadataKeyAuthor = @"TSLibraryImageMetadataAuthor";
+NSString* const TSLibraryImageMetadataKeyDescription = @"TSLibraryImageMetadataDescription";
+
+
 /// default adjustments data; this is loaded once.
 static NSDictionary<NSString *, NSDictionary<NSString *, NSNumber *> *> *TSDefaultAdjustments = nil;
 
 /// context indicating that the date shot has changed
 static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
-
-
-NSString * const TSAdjustmentKeyExposureEV = @"tsAdjustmentExposureEV";
-
-NSString * const TSAdjustmentKeyToneSaturation = @"tsAdjustmentToneSaturation";
-NSString * const TSAdjustmentKeyToneBrightness = @"tsAdjustmentToneBrightness";
-NSString * const TSAdjustmentKeyToneContrast = @"tsAdjustmentToneContrast";
-NSString * const TSAdjustmentKeyToneVibrance = @"tsAdjustmentToneVibrance";
-
-NSString * const TSAdjustmentKeyColourRed = @"tsAdjustmentColourRed";
-NSString * const TSAdjustmentKeyColourOrange = @"tsAdjustmentColourOrange";
-NSString * const TSAdjustmentKeyColourYellow = @"tsAdjustmentColourYellow";
-NSString * const TSAdjustmentKeyColourGreen = @"tsAdjustmentColourGreen";
-NSString * const TSAdjustmentKeyColourAqua = @"tsAdjustmentColourAqua";
-NSString * const TSAdjustmentKeyColourBlue = @"tsAdjustmentColourBlue";
-NSString * const TSAdjustmentKeyColourPurple = @"tsAdjustmentColourPurple";
-NSString * const TSAdjustmentKeyColourMagenta = @"tsAdjustmentColourMagenta";
-
-NSString * _Nonnull const TSAdjustmentKeyNoiseReductionLevel = @"tsAdjustmentNRLevel";
-NSString * _Nonnull const TSAdjustmentKeyNoiseReductionSharpness = @"tsAdjustmentNRSharpness";
-NSString * _Nonnull const TSAdjustmentKeySharpenLuminance = @"tsAdjustmentSharpenLuminance";
-NSString * _Nonnull const TSAdjustmentKeySharpenRadius = @"tsAdjustmentSharpenRadius";
-NSString * _Nonnull const TSAdjustmentKeySharpenIntensity = @"tsAdjustmentSharpenIntensity";
-NSString * _Nonnull const TSAdjustmentKeySharpenMedianFilter = @"tsAdjustmentSharpenMedianFilter";
 
 @interface TSLibraryImage ()
 
@@ -182,7 +174,7 @@ NSString * _Nonnull const TSAdjustmentKeySharpenMedianFilter = @"tsAdjustmentSha
 			if([adjValue isKindOfClass:NSNumber.class]) {
 				[adj setValue:adjValue forKey:adjKey];
 			
-				DDLogDebug(@"Setting adjustment %@: %@ = %@", keyStr, adjKey, adjValue);
+//				DDLogDebug(@"Setting adjustment %@: %@ = %@", keyStr, adjKey, adjValue);
 			} else {
 				DDLogWarn(@"Cannot set key %@ to %@ (type %@) on %@", adjKey, adjValue, NSStringFromClass(adjValue.class), keyStr);
 			}

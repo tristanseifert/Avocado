@@ -121,6 +121,8 @@ static TSImageIOHelper *helper = nil;
 		exifProps[TSImageMetadataExifDateTimeOriginal] = date;
 	}
 	
+	finessedProps[TSImageMetadataExifDictionary] = [exifProps copy];
+	
 	// clean up and return metadata
 	CFRelease(imageSource);
 	

@@ -340,7 +340,7 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
  * Returns the lens' make.
  */
 - (NSString *) getExifLensMake {
-	return [NSString stringWithCString:self.libRaw->lens.Lens
+	return [NSString stringWithCString:self.libRaw->lens.LensMake
 							  encoding:NSUTF8StringEncoding];
 }
 
