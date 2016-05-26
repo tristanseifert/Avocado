@@ -29,5 +29,8 @@
 /// magenta adjustments
 @property (nonatomic) NSMutableDictionary *magentaAdjustments;
 
+/// index of the current tab
+@property (nonatomic) NSInteger selectedTab;
+
 @end
 

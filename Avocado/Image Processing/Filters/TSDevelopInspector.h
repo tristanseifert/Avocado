@@ -35,4 +35,7 @@
  */
 @property (nonatomic, copy) void (^settingsChangeBlock)(void);
 
+/// restorable state; set to restore state, read to get a dict.
+@property (nonatomic) NSDictionary *restorableState;
+
 @end

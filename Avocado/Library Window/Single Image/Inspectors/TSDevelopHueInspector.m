@@ -46,6 +46,9 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 				  options:0 context:TSActiveImageKVOCtx];
 		
 		self.ignoreChanges = YES;
+		
+		// set default state
+		self.selectedTab = 0;
 	}
 	
 	return self;
@@ -211,5 +214,24 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 	}
 }
 
+#pragma mark State Restoration
+/**
+ * Returns a restorable state object, which contains the index of the segmented
+ * control.
+ */
+- (NSDictionary *) restorableState {
+	return @{
+		@"SelectedTab": @(self.selectedTab)
+	};
+}
+
+/**
+ * Sets the selected tab from the state object.
+ */
+- (void) setRestorableState:(NSDictionary *) restorableState {
+	if(restorableState != nil) {
+		self.selectedTab = [restorableState[@"SelectedTab"] integerValue];
+	}
+}
 
 @end

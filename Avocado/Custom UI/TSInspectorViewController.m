@@ -136,6 +136,17 @@ NSString * const TSInspectorStateExpandedKey = @"TSInspectorStateExpanded";
 	[self.stackView removeView:controller.view];
 }
 
+/**
+ * Returns a non-mutable copy of the inspector panels array.
+ */
+- (NSArray<TSInspectorViewItem *> *) inspectorItems {
+	return [self.panels copy];
+}
+
++ (NSSet *) keyPathsForValuesAffectingInspectorItems {
+	return [NSSet setWithObject:@"panels"];
+}
+
 #pragma mark State Handling
 /**
  * Restores the inspector state (including that of its palettes) by parsing

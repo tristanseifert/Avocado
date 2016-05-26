@@ -27,7 +27,9 @@ static void *TSImageKVO = &TSImageKVO;
 @property (nonatomic) IBOutlet TSHistogramView *mrHistogram;
 
 @property (nonatomic) IBOutlet TSInspectorViewController *inspector;
+
 @property (nonatomic) NSDictionary *restoredInspectorState;
+@property (nonatomic) NSDictionary<NSString *, NSDictionary *> *restoredInspectorPanelState;
 
 @property (nonatomic) TSDevelopExposureInspector *inspectorExposure;
 @property (nonatomic) TSDevelopHueInspector *inspectorHue;
@@ -117,9 +119,14 @@ static void *TSImageKVO = &TSImageKVO;
 				  toObject:self withKeyPath:@"displayedImage"
 				   options:nil];
 	
-	// restore state
+	// restore state for inspector and its sub-panels
 	if(self.restoredInspectorState != nil) {
 		[self.inspector restoreWithState:self.restoredInspectorState];
+	}
+	
+	for(TSInspectorViewItem *item in self.inspector.inspectorItems) {
+		TSDevelopInspector *inspector = (TSDevelopInspector *) item.content;
+		inspector.restorableState = self.restoredInspectorPanelState[inspector.className];
 	}
 }
 
@@ -151,6 +158,14 @@ static void *TSImageKVO = &TSImageKVO;
 	// save inspector state
 	NSDictionary *inspectorState = self.inspector.stateDict;
 	[archiver encodeObject:inspectorState forKey:@"Develop.Sidebar.InspectorState"];
+	
+	// save each of the inspectors' state
+	for(TSInspectorViewItem *item in self.inspector.inspectorItems) {
+		TSDevelopInspector *inspector = (TSDevelopInspector *) item.content;
+		
+		NSString *key = [@"Develop.Sidebar.Inspector." stringByAppendingString:inspector.className];
+		[archiver encodeObject:inspector.restorableState forKey:key];
+	}
 }
 
 /**
@@ -159,6 +174,18 @@ static void *TSImageKVO = &TSImageKVO;
 - (void) restoreViewOptions:(NSKeyedUnarchiver *) unArchiver {
 	self.restoredInspectorState = [unArchiver decodeObjectOfClass:[NSDictionary class]
 														   forKey:@"Develop.Sidebar.InspectorState"];
+	
+	// decode inspector state
+	NSMutableDictionary *state = [NSMutableDictionary new];
+	NSArray *classNames = @[@"TSDevelopExposureInspector", @"TSDevelopHueInspector", @"TSDevelopDetailInspector"];
+	
+	for(NSString *className in classNames) {
+		NSString *key = [@"Develop.Sidebar.Inspector." stringByAppendingString:className];
+		state[className] = [unArchiver decodeObjectOfClass:[NSDictionary class] forKey:key];
+	}
+	
+	self.restoredInspectorPanelState = [state copy];
+	DDLogVerbose(@"Restored panel state: %@", state);
 }
 
 @end

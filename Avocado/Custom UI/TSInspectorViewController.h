@@ -34,6 +34,10 @@
  */
 - (void) removeInspectorView:(TSInspectorViewItem *) controller;
 
+/**
+ * All inspector panels currently added to this inspector.
+ */
+@property (nonatomic, readonly) NSArray<TSInspectorViewItem *> *inspectorItems;
 
 /**
  * Restores the inspector state (including that of its palettes) by parsing

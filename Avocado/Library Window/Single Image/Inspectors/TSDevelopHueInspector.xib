@@ -21,13 +21,14 @@
                     <segmentedCell key="cell" controlSize="small" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="LyC-Om-Lkb">
                         <font key="font" metaFont="smallSystem"/>
                         <segments>
-                            <segment label="Hue" width="74" selected="YES"/>
+                            <segment label="Hue" toolTip="Shift hue for all colours in a certain band" width="74" selected="YES"/>
                             <segment label="Saturation" toolTip="Adjust saturation for all colours in a certain band" width="74" tag="1"/>
                             <segment label="Lightness" toolTip="Adjust lightness for all colours in a certain band" width="74" tag="2"/>
                         </segments>
                     </segmentedCell>
                     <connections>
                         <action selector="takeSelectedTabViewItemFromSender:" target="wl4-Nn-7HR" id="KDn-mr-03n"/>
+                        <binding destination="-2" name="selectedTag" keyPath="self.selectedTab" id="Zdk-l1-yhl"/>
                     </connections>
                 </segmentedControl>
                 <tabView drawsBackground="NO" controlSize="small" type="noTabsNoBorder" translatesAutoresizingMaskIntoConstraints="NO" id="wl4-Nn-7HR">
