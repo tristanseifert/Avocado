@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+#import "TSLFLens.h"
+#import "TSLFCamera.h"
+
 @class TSLibraryImage;
 @interface TSLFDatabase : NSObject
 
@@ -17,10 +20,18 @@
  */
 + (instancetype) sharedInstance;
 
+
 /**
  * Attempts to find a camera object for the given image. If no camera could be
  * found, nil is returned.
  */
-- (void) cameraForImage:(TSLibraryImage *) image;
+- (TSLFCamera *) cameraForImage:(TSLibraryImage *) image;
+
+/**
+ * Attempts to find a lens object for the given image. If no suitable
+ * lens can be found, nil is returned. If suitable lenses are found, an
+ * array of lenses is returned.
+ */
+- (NSArray<TSLFLens *> *) lensForImage:(TSLibraryImage *) image;
 
 @end

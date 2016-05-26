@@ -82,9 +82,81 @@ static TSLFDatabase *sharedDatabase = nil;
 /**
  * Attempts to find a camera object for the given image. If no camera could be
  * found, nil is returned.
+ *
+ * @note Assume that this method is invoked on the queue of the context to which
+ * this image belongs.
  */
-- (void) cameraForImage:(TSLibraryImage *) image {
+- (TSLFCamera *) cameraForImage:(TSLibraryImage *) image {
+	// get some camera maker information
+	NSString *maker = image.metadata[TSLibraryImageMetadataKeyCameraMaker];
+	const char *makerCStr = [maker cStringUsingEncoding:NSASCIIStringEncoding];
 	
+	NSString *model = image.metadata[TSLibraryImageMetadataKeyCameraModel];
+	const char *modelCStr = [model cStringUsingEncoding:NSASCIIStringEncoding];
+	
+	// try to find a camera
+	const lfCamera** cameras = self.lensDb->FindCameras(makerCStr, modelCStr);
+	
+	// if the first entry is nil, we couldn't find a camera; that's bad.
+	if(cameras[0] == NULL) {
+		DDLogVerbose(@"Couldn't find camera for maker = %@, model = %@", maker, model);
+		
+		lf_free(cameras);
+		return nil;
+	} else {
+		// otherwise, use the FIRST entry in the list.
+		const lfCamera *camera = cameras[0];
+		TSLFCamera *obj = [[TSLFCamera alloc] initWithCamera:(void *) camera];
+		
+		// clean up
+		lf_free(cameras);
+		return obj;
+	}
+}
+
+/**
+ * Attempts to find a lens object for the given image. If no suitable
+ * lens can be found, nil is returned.
+ *
+ * @note Assume that this method is invoked on the queue of the context to which
+ * this image belongs.
+ */
+- (NSArray<TSLFLens *> *) lensForImage:(TSLibraryImage *) image {
+	// get lens maker and specification string
+	NSString *maker = image.metadata[TSLibraryImageMetadataKeyCameraMaker];
+	const char *makerCStr = [maker cStringUsingEncoding:NSASCIIStringEncoding];
+	
+	NSString *specification = image.metadata[TSLibraryImageMetadataKeyLensSpecification];
+	const char *specCStr = [specification cStringUsingEncoding:NSASCIIStringEncoding];
+	
+	// get a camera if working
+	TSLFCamera *cameraObj = [self cameraForImage:image];
+	if(cameraObj == nil) {
+		// no camera found
+		return nil;
+	}
+	
+	lfCamera *cam = (__bridge lfCamera *) [cameraObj valueForKey:@"camera"];
+	
+	// try to find the lens objects
+	NSMutableArray<TSLFLens *> *arr = [NSMutableArray new];
+	
+	const lfLens **lenses = self.lensDb->FindLenses(cam, makerCStr, specCStr);
+	
+	// for each lens, create an object wrapper
+	do {
+		// get lens and make object, then add to object
+		const lfLens *lens = lenses[0];
+		
+		TSLFLens *lensObj = [[TSLFLens alloc] initWithLens:(void *) lens];
+		[arr addObject:lensObj];
+		
+		// go to next lens
+		lenses++;
+	} while(*lenses != NULL);
+	
+	// copy thing
+	return [arr copy];
 }
 
 @end

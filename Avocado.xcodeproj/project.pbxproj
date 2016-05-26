@@ -32,6 +32,8 @@
 		6A6ED4171CE4D0EE001EFA21 /* NSColor+AvocadoUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A6ED4161CE4D0EE001EFA21 /* NSColor+AvocadoUtils.m */; };
 		6A6ED41B1CE4D239001EFA21 /* TSHSLAdjustmentFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A6ED41A1CE4D239001EFA21 /* TSHSLAdjustmentFilter.m */; };
 		6A6ED41D1CE4D30A001EFA21 /* TSHSLAdjustmentFilter.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = 6A6ED41C1CE4D30A001EFA21 /* TSHSLAdjustmentFilter.cikernel */; };
+		6A70B51E1CF7575F00597EB0 /* TSLFCamera.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6A70B51D1CF7575F00597EB0 /* TSLFCamera.mm */; };
+		6A70B5211CF75D0B00597EB0 /* TSLFLens.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6A70B5201CF75D0B00597EB0 /* TSLFLens.mm */; };
 		6A74F1E51CF26F0C0023B439 /* libcompression.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A74F1E41CF26F0C0023B439 /* libcompression.tbd */; };
 		6A74F1E91CF282740023B439 /* TSRawCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A74F1E81CF282740023B439 /* TSRawCache.m */; };
 		6A773D8D1CF4A1C8002757C4 /* TSColourControlsFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A773D8C1CF4A1C8002757C4 /* TSColourControlsFilter.m */; };
@@ -175,6 +177,10 @@
 		6A6ED4191CE4D239001EFA21 /* TSHSLAdjustmentFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSHSLAdjustmentFilter.h; path = "Avocado/Image Processing/Filters/Hue and Saturation/TSHSLAdjustmentFilter.h"; sourceTree = "<group>"; };
 		6A6ED41A1CE4D239001EFA21 /* TSHSLAdjustmentFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSHSLAdjustmentFilter.m; path = "Avocado/Image Processing/Filters/Hue and Saturation/TSHSLAdjustmentFilter.m"; sourceTree = "<group>"; };
 		6A6ED41C1CE4D30A001EFA21 /* TSHSLAdjustmentFilter.cikernel */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; name = TSHSLAdjustmentFilter.cikernel; path = "Avocado/Image Processing/Filters/Hue and Saturation/TSHSLAdjustmentFilter.cikernel"; sourceTree = "<group>"; };
+		6A70B51C1CF7575F00597EB0 /* TSLFCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLFCamera.h; path = "Avocado/RAW Processing/Lens Correction/TSLFCamera.h"; sourceTree = "<group>"; };
+		6A70B51D1CF7575F00597EB0 /* TSLFCamera.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = TSLFCamera.mm; path = "Avocado/RAW Processing/Lens Correction/TSLFCamera.mm"; sourceTree = "<group>"; };
+		6A70B51F1CF75D0B00597EB0 /* TSLFLens.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLFLens.h; path = "Avocado/RAW Processing/Lens Correction/TSLFLens.h"; sourceTree = "<group>"; };
+		6A70B5201CF75D0B00597EB0 /* TSLFLens.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = TSLFLens.mm; path = "Avocado/RAW Processing/Lens Correction/TSLFLens.mm"; sourceTree = "<group>"; };
 		6A74F1E41CF26F0C0023B439 /* libcompression.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcompression.tbd; path = usr/lib/libcompression.tbd; sourceTree = SDKROOT; };
 		6A74F1E71CF282740023B439 /* TSRawCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSRawCache.h; path = "Avocado/RAW Processing/TSRawCache.h"; sourceTree = "<group>"; };
 		6A74F1E81CF282740023B439 /* TSRawCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSRawCache.m; path = "Avocado/RAW Processing/TSRawCache.m"; sourceTree = "<group>"; };
@@ -502,6 +508,10 @@
 			children = (
 				6A7E46EB1CF688410056C048 /* TSLFDatabase.h */,
 				6A7E46EC1CF688410056C048 /* TSLFDatabase.mm */,
+				6A70B51C1CF7575F00597EB0 /* TSLFCamera.h */,
+				6A70B51D1CF7575F00597EB0 /* TSLFCamera.mm */,
+				6A70B51F1CF75D0B00597EB0 /* TSLFLens.h */,
+				6A70B5201CF75D0B00597EB0 /* TSLFLens.mm */,
 			);
 			name = "ObjC Wrapper";
 			sourceTree = "<group>";
@@ -1142,6 +1152,7 @@
 				6ABC2DAC1CD4357E006B959F /* TSLibraryAlbum.m in Sources */,
 				6AEC76771CD50E6E00870FAE /* TSImportOpenPanelAccessory.m in Sources */,
 				6AEC35471CD443B90033DE0A /* TSLibraryDetailController.m in Sources */,
+				6A70B5211CF75D0B00597EB0 /* TSLFLens.mm in Sources */,
 				6A06F44C1CE0205D001DFC4C /* TSCoreImageFilter.m in Sources */,
 				6ABC2D9C1CD42C4A006B959F /* _TSLibraryImage.m in Sources */,
 				6A1307CC1CDA4A6E00FFC99A /* TSRawPipelineState.mm in Sources */,
@@ -1182,6 +1193,7 @@
 				6A9224421CEEB89000EE6408 /* TSMedianAdjustmentFilter.m in Sources */,
 				6ABC2DBF1CD43586006B959F /* _TSLibraryAlbumCollection.m in Sources */,
 				6A28F0631CD8190600228067 /* TSRawPipeline.mm in Sources */,
+				6A70B51E1CF7575F00597EB0 /* TSLFCamera.mm in Sources */,
 				6A28F0681CD940E500228067 /* TSPixelFormatConverter.m in Sources */,
 				6A9224381CEE39AD00EE6408 /* TSSharpeningAdjustmentFilter.m in Sources */,
 				6A92242C1CED242200EE6408 /* TSDevelopDetailInspector.m in Sources */,
