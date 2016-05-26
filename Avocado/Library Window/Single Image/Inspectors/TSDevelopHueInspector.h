@@ -31,6 +31,8 @@
 
 /// index of the current tab
 @property (nonatomic) NSInteger selectedTab;
+/// tab view
+@property (nonatomic) IBOutlet NSTabView *tabView;
 
 @end
 

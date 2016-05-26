@@ -10,6 +10,7 @@
 
 NSString * const TSInspectorStateIndexKey = @"TSInspectorStateIndex";
 NSString * const TSInspectorStateExpandedKey = @"TSInspectorStateExpanded";
+NSString * const TSInspectorStateRestorableKey = @"TSInspectorStateRestorableKey";
 
 @interface TSInspectorViewController ()
 
@@ -175,6 +176,19 @@ NSString * const TSInspectorStateExpandedKey = @"TSInspectorStateExpanded";
 		// set whether it's expanded
 		BOOL expanded = [obj[TSInspectorStateExpandedKey] boolValue];
 		inspectorItem.expanded = expanded;
+		
+		// check if there's restorable state
+		NSData *restorable = obj[TSInspectorStateRestorableKey];
+		
+		if(restorable != nil) {
+			// if so, give the view controller the opportunity to decode it
+			NSKeyedUnarchiver *unArc = [[NSKeyedUnarchiver alloc] initForReadingWithData:restorable];
+			unArc.requiresSecureCoding = YES;
+			
+			[inspectorItem.content restoreStateWithCoder:unArc];
+			
+			[unArc finishDecoding];
+		}
 	}];
 }
 
@@ -193,6 +207,15 @@ NSString * const TSInspectorStateExpandedKey = @"TSInspectorStateExpanded";
 		info[TSInspectorStateExpandedKey] = @(item.expanded);
 		
 		// save any state the inspector may have
+		NSMutableData *data = [NSMutableData new];
+		
+		NSKeyedArchiver *arc = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
+		arc.requiresSecureCoding = YES;
+		
+		[item.content encodeRestorableStateWithCoder:arc];
+		
+		[arc finishEncoding];
+		info[TSInspectorStateRestorableKey] = [data copy];
 		
 		// insert it
 		NSString *key = item.content.className;

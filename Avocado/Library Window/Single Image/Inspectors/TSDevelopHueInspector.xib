@@ -7,6 +7,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="TSDevelopHueInspector">
             <connections>
+                <outlet property="tabView" destination="wl4-Nn-7HR" id="mmN-ut-ciS"/>
                 <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
             </connections>
         </customObject>

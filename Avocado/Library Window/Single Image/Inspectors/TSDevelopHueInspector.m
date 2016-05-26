@@ -55,6 +55,15 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 }
 
 /**
+ * Restores some state, when the view loads.
+ */
+- (void) viewDidLoad {
+	[super viewDidLoad];
+	
+	[self.tabView selectTabViewItemAtIndex:self.selectedTab];
+}
+
+/**
  * Performs some cleanup on deallocation.
  */
 - (void) dealloc {
@@ -219,19 +228,22 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
  * Returns a restorable state object, which contains the index of the segmented
  * control.
  */
-- (NSDictionary *) restorableState {
-	return @{
-		@"SelectedTab": @(self.selectedTab)
-	};
+- (void) encodeRestorableStateWithCoder:(NSCoder *) coder {
+	[super encodeRestorableStateWithCoder:coder];
+	
+	// set tab index
+	[coder encodeInteger:self.selectedTab forKey:@"SelectedTab"];
 }
 
 /**
  * Sets the selected tab from the state object.
  */
-- (void) setRestorableState:(NSDictionary *) restorableState {
-	if(restorableState != nil) {
-		self.selectedTab = [restorableState[@"SelectedTab"] integerValue];
-	}
+- (void) restoreStateWithCoder:(NSCoder *) coder {
+	[super restoreStateWithCoder:coder];
+	
+	// restore selected tab index
+	self.selectedTab = [coder decodeIntegerForKey:@"SelectedTab"];
+	[self.tabView selectTabViewItemAtIndex:self.selectedTab];
 }
 
 @end
