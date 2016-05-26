@@ -25,6 +25,15 @@ NSString * const TSAdjustmentKeyToneBrightness = @"tsAdjustmentToneBrightness";
 NSString * const TSAdjustmentKeyToneContrast = @"tsAdjustmentToneContrast";
 NSString * const TSAdjustmentKeyToneVibrance = @"tsAdjustmentToneVibrance";
 
+NSString * const TSAdjustmentKeyColourRed = @"tsAdjustmentColourRed";
+NSString * const TSAdjustmentKeyColourOrange = @"tsAdjustmentColourOrange";
+NSString * const TSAdjustmentKeyColourYellow = @"tsAdjustmentColourYellow";
+NSString * const TSAdjustmentKeyColourGreen = @"tsAdjustmentColourGreen";
+NSString * const TSAdjustmentKeyColourAqua = @"tsAdjustmentColourAqua";
+NSString * const TSAdjustmentKeyColourBlue = @"tsAdjustmentColourBlue";
+NSString * const TSAdjustmentKeyColourPurple = @"tsAdjustmentColourPurple";
+NSString * const TSAdjustmentKeyColourMagenta = @"tsAdjustmentColourMagenta";
+
 NSString * _Nonnull const TSAdjustmentKeyNoiseReductionLevel = @"tsAdjustmentNRLevel";
 NSString * _Nonnull const TSAdjustmentKeyNoiseReductionSharpness = @"tsAdjustmentNRSharpness";
 NSString * _Nonnull const TSAdjustmentKeySharpenLuminance = @"tsAdjustmentSharpenLuminance";

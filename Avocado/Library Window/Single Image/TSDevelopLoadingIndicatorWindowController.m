@@ -49,6 +49,7 @@ static const NSTimeInterval TSAnimationDuration = 0.33f;
 	// make window transparent
 	self.window.opaque = NO;
 	self.window.backgroundColor = [NSColor clearColor];
+	self.window.level = NSStatusWindowLevel;
 }
 
 /**

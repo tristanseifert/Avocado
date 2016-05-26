@@ -18,6 +18,29 @@ extern NSString  * _Nonnull const TSAdjustmentKeyToneContrast;
 /// vibrance adjustment, [-1, 1]
 extern NSString  * _Nonnull const TSAdjustmentKeyToneVibrance;
 
+#pragma mark Colour Adjustment
+/*
+ * Colour adjustments for eight different shifts; the X value is the additive
+ * hue shift, whereas the Y and Z value are the saturation and lightness
+ * multipliers, respectively.
+ */
+/// adjustments to red components
+extern NSString  * _Nonnull const TSAdjustmentKeyColourRed;
+/// adjustments to orange components
+extern NSString  * _Nonnull const TSAdjustmentKeyColourOrange;
+/// adjustments to yellow components
+extern NSString  * _Nonnull const TSAdjustmentKeyColourYellow;
+/// adjustments to green components
+extern NSString  * _Nonnull const TSAdjustmentKeyColourGreen;
+/// adjustments to aqua components
+extern NSString  * _Nonnull const TSAdjustmentKeyColourAqua;
+/// adjustments to blue components
+extern NSString  * _Nonnull const TSAdjustmentKeyColourBlue;
+/// adjustments to purple components
+extern NSString  * _Nonnull const TSAdjustmentKeyColourPurple;
+/// adjustments to magenta components
+extern NSString  * _Nonnull const TSAdjustmentKeyColourMagenta;
+
 #pragma mark Noise Reduction and Sharpening
 /// noise reduction level [0, 1]
 extern NSString * _Nonnull const TSAdjustmentKeyNoiseReductionLevel;

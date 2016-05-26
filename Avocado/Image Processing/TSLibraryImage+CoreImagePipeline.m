@@ -32,6 +32,9 @@
 /// evaluates to the W value of an adjustment, as a double
 #define TSAdjustmentWDbl(key) TSAdjustment(key).w.doubleValue
 
+/// evaluates to a three component vector, from the X, Y and Z values
+#define TSAdjustmentVec3(key) TSAdjustment(key).vector3
+
 @interface TSLibraryImage (CoreImagePipeline_Private)
 
 - (void) TSCISetUpNoiseReduction:(TSCoreImagePipelineJob *) job;
@@ -40,6 +43,7 @@
 
 - (void) TSCISetUpExposureAdjustment:(TSCoreImagePipelineJob *) job;
 - (void) TSCISetUpColourControls:(TSCoreImagePipelineJob *) job;
+- (void) TSCISetUpHSLAdjustment:(TSCoreImagePipelineJob *) job;
 
 @end
 
@@ -54,6 +58,7 @@
 	[self TSCISetUpSharpening:job];
 	
 	[self TSCISetUpExposureAdjustment:job];
+	[self TSCISetUpHSLAdjustment:job];
 	[self TSCISetUpColourControls:job];
 }
 
@@ -138,6 +143,26 @@
 	filterVibe.vibrancy = TSAdjustmentXDbl(TSAdjustmentKeyToneVibrance);
 	
 	[job addFilter:filterVibe];
+}
+
+/**
+ * Creates a HSL adjustment filter. This converts the X, Y and Z components to
+ * vectors, then sets them on the filter.
+ */
+- (void) TSCISetUpHSLAdjustment:(TSCoreImagePipelineJob *) job {
+	TSHSLAdjustmentFilter *filter = [TSHSLAdjustmentFilter new];
+	
+	filter.inputRedShift = TSAdjustmentVec3(TSAdjustmentKeyColourRed);
+	filter.inputOrangeShift = TSAdjustmentVec3(TSAdjustmentKeyColourOrange);
+	filter.inputYellowShift = TSAdjustmentVec3(TSAdjustmentKeyColourYellow);
+	filter.inputGreenShift = TSAdjustmentVec3(TSAdjustmentKeyColourGreen);
+	filter.inputAquaShift = TSAdjustmentVec3(TSAdjustmentKeyColourAqua);
+	filter.inputBlueShift = TSAdjustmentVec3(TSAdjustmentKeyColourBlue);
+	filter.inputPurpleShift = TSAdjustmentVec3(TSAdjustmentKeyColourPurple);
+	filter.inputMagentaShift = TSAdjustmentVec3(TSAdjustmentKeyColourMagenta);
+	
+	// add filter
+	[job addFilter:filter];
 }
 
 @end
