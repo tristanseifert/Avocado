@@ -25,8 +25,15 @@ static void TSConvertRGBToHSL(CGFloat r, CGFloat g, CGFloat b, CGFloat* outH, CG
 
 @interface TSHSLSliderCell ()
 
-- (void) commonInit;
+/// this is the shader used to draw the slider
+@property (nonatomic) CGShadingRef shader;
+/// drawing of the track is masked using this image
+@property (nonatomic) NSImage *imageMask;
 
+- (void) updateShader;
+- (void) updateMaskImageForRect:(NSRect) aRect;
+
+- (void) commonInit;
 - (NSBezierPath *) pathForTrackRect:(NSRect) rect;
 
 @end
@@ -78,48 +85,23 @@ static void TSConvertRGBToHSL(CGFloat r, CGFloat g, CGFloat b, CGFloat* outH, CG
  * Performs drawing of the track.
  */
 - (void) drawBarInside:(NSRect) aRect flipped:(BOOL) flipped {
-	CGColorSpaceRef cs;
-	CGFunctionRef shadeFunc;
-	CGShadingRef shade;
-	
 	// create a mask image to which the thingie is masked
-	NSImage *mask = [[NSImage alloc] initWithSize:self.controlView.bounds.size];
-	[mask lockFocus];
+	if(self.imageMask == nil) {
+		[self updateMaskImageForRect:aRect];
+	}
 	
-	[[NSColor colorWithCalibratedWhite:1.f alpha:0.f] setFill];
-	NSRectFill(self.controlView.bounds);
+	CGImageRef maskImage = [self.imageMask CGImageForProposedRect:NULL
+														  context:NULL
+															hints:nil];
 	
-	[[NSColor blackColor] setFill];
-	[[self pathForTrackRect:aRect] fill];
-	
-	[mask unlockFocus];
-	
-	CGImageRef maskImage = [mask CGImageForProposedRect:NULL context:NULL hints:nil];
-	
-	
-	// create the shading object
-	CGPoint start = CGPointMake(0.f, 0.5);
-	CGPoint end = CGPointMake(NSWidth(aRect), 0.5);
-	
-	cs = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-	shadeFunc = TSCreateHSLFunction(self.sliderCellType, self.fixedValue);
-	shade = CGShadingCreateAxial(cs, start, end, shadeFunc, NO, NO);
-	
-	
-	// get a copy of the graphics context and save state
+	// draw the contents of the track (i.e. the gradient)
 	[NSGraphicsContext saveGraphicsState];
 	CGContextRef ctx = [NSGraphicsContext currentContext].graphicsPort;
 	
-	// clip to the previously generated mask image, then draw
 	CGContextClipToMask(ctx, self.controlView.bounds, maskImage);
-	CGContextDrawShading(ctx, shade);
+	CGContextDrawShading(ctx, self.shader);
 	
-	// clean up
 	[NSGraphicsContext restoreGraphicsState];
-	
-	CGColorSpaceRelease(cs);
-	CGFunctionRelease(shadeFunc);
-	CGShadingRelease(shade);
 }
 
 /**
@@ -130,7 +112,6 @@ static void TSConvertRGBToHSL(CGFloat r, CGFloat g, CGFloat b, CGFloat* outH, CG
 	
 	// inset the rect verticall
 	NSRect newRect = NSInsetRect(rect, 0, 1.f);
-	newRect.size.width -= 1.f;
 	
 	// create path
 	NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:newRect
@@ -140,12 +121,57 @@ static void TSConvertRGBToHSL(CGFloat r, CGFloat g, CGFloat b, CGFloat* outH, CG
 	return path;
 }
 
+/**
+ * Allocates a new shader to use in drawing the gradient.
+ */
+- (void) updateShader {
+	CGColorSpaceRef cs;
+	CGFunctionRef shadeFunc;
+	
+	// is there a previous shader?
+	if(self.shader != nil) {
+		CGShadingRelease(self.shader);
+	}
+	
+	// create the shader
+	CGPoint start = CGPointMake(0.f, 0.5);
+	CGPoint end = CGPointMake(NSWidth(self.controlView.bounds), 0.5);
+	
+	cs = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+	shadeFunc = TSCreateHSLFunction(self.sliderCellType, self.fixedValue);
+	self.shader = CGShadingCreateAxial(cs, start, end, shadeFunc, NO, NO);
+	
+	// deallocate unneeded stuff
+	CGColorSpaceRelease(cs);
+	CGFunctionRelease(shadeFunc);
+}
+
+/**
+ * Updates the mask image for the given rect.
+ */
+- (void) updateMaskImageForRect:(NSRect) aRect {
+	self.imageMask = [[NSImage alloc] initWithSize:self.controlView.bounds.size];
+	[self.imageMask lockFocus];
+	
+	[[NSColor colorWithCalibratedWhite:1.f alpha:0.f] setFill];
+	NSRectFill(self.controlView.bounds);
+	
+	[[NSColor blackColor] setFill];
+	[[self pathForTrackRect:aRect] fill];
+	
+	[self.imageMask unlockFocus];
+}
+
 #pragma mark Properties
 /**
  * Implement the setter for the cell type.
  */
 - (void) setSliderCellType:(TSHSLSliderCellType) type {
 	_sliderCellType = type;
+	
+	// update display
+	[self updateShader];
+	self.imageMask = nil;
 	
 	[self.controlView setNeedsDisplay:YES];
 }
@@ -155,6 +181,10 @@ static void TSConvertRGBToHSL(CGFloat r, CGFloat g, CGFloat b, CGFloat* outH, CG
  */
 - (void) setFixedValue:(CGFloat) fixedValue {
 	_fixedValue = fixedValue;
+	
+	// update display
+	[self updateShader];
+	self.imageMask = nil;
 	
 	[self.controlView setNeedsDisplay:YES];
 }
@@ -207,22 +237,22 @@ static void TSHSLInterpolateFunc(void *inInfo, const CGFloat *in, CGFloat *out) 
 		// hue is interpolated
 		case TSHSLSliderCellTypeHue:
 			hsl[0] = (info->centre + (add / 2.f));
-			hsl[1] = 0.66;
+			hsl[1] = 0.74;
 			hsl[2] = 0.5;
 			break;
 			
 		// saturation is interpolated
 		case TSHSLSliderCellTypeSaturation:
 			hsl[0] = info->centre;
-			hsl[1] = position;
+			hsl[1] = MAX(0.05, position);
 			hsl[2] = 0.5;
 			break;
 			
 		// lightness is interpolated
 		case TSHSLSliderCellTypeLightness:
 			hsl[0] = info->centre;
-			hsl[1] = 0.66;
-			hsl[2] = position;
+			hsl[1] = 0.74;
+			hsl[2] = MAX(0.05, position);
 			break;
 			
 		default:
@@ -291,61 +321,4 @@ static void TSConvertHSLToRGB(CGFloat h, CGFloat s, CGFloat l, CGFloat* outR, CG
 	*outR = temp[0];
 	*outG = temp[1];
 	*outB = temp[2];
-}
-
-/**
- * Converts a RGB value to an HSL value.
- */
-static void TSConvertRGBToHSL(CGFloat r, CGFloat g, CGFloat b, CGFloat* outH, CGFloat* outS, CGFloat* outL) {
-	float h, s, l, v, m, vm, r2, g2, b2;
-	
-	h = s = l = 0;
-	
-	v = MAX(r, g);
-	v = MAX(v, b);
-	m = MIN(r, g);
-	m = MIN(m, b);
-	
-	l = (m+v) / 2.0f;
-	
-	if (l <= 0.0) {
-		*outH = h;
-		*outS = s;
-		*outL = l;
-		
-		return;
-	}
-	
-	vm = v - m;
-	s = vm;
-	
-	// check if saturation is nonzero
-	if (s > 0.0f) {
-		s /= (l <= 0.5f) ? (v + m) : (2.0 - v - m);
-	} else {
-		*outH = h;
-		*outS = s;
-		*outL = l;
-		
-		return;
-	}
-	
-	r2 = (v - r) / vm;
-	g2 = (v - g) / vm;
-	b2 = (v - b) / vm;
-	
-	if (r == v){
-		h = (g == m ? 5.0f + b2 : 1.0f - g2);
-	} else if (g == v) {
-		h = (b == m ? 1.0f + r2 : 3.0 - b2);
-	} else {
-		h = (r == m ? 3.0f + g2 : 5.0f - r2);
-	}
-	
-	h /= 6.0f;
-	
-	// output final HSL values
-	*outH = h;
-	*outS = s;
-	*outL = l;
 }
