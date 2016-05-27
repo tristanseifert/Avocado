@@ -15,6 +15,9 @@
  * Determines the manner in which the slider cell draws its track contents. The
  * fixed, user-specified value for each of these slider cells is specified in
  * the `fixedValue` property.
+ *
+ * Note that the sliders are configured with the ranges being [0, 2] but
+ * the HSL colour space is actually only [0, 1] in CoreGraphics.
  */
 typedef NS_ENUM(NSUInteger, TSHSLSliderCellType) {
 	/**

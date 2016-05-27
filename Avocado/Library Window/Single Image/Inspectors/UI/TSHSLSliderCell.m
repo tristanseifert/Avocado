@@ -8,9 +8,19 @@
 
 #import "TSHSLSliderCell.h"
 
+#import <CoreGraphics/CoreGraphics.h>
+
+typedef struct {
+	TSHSLSliderCellType type;
+	CGFloat centre;
+} TSGradientInfo;
+
 // drawing helpers
-static void TSConvertHSLToRGB(float h, float s, float l, float* outR, float* outG, float* outB);
-static void TSConvertRGBToHSL(float r, float g, float b, float* outH, float* outS, float* outL);
+static CGFunctionRef TSCreateHSLFunction(TSHSLSliderCellType type, CGFloat centre);
+static void TSHSLInterpolateFunc(void *inInfo, const CGFloat *in, CGFloat *out);
+
+static void TSConvertHSLToRGB(CGFloat h, CGFloat s, CGFloat l, CGFloat* outR, CGFloat* outG, CGFloat* outB);
+static void TSConvertRGBToHSL(CGFloat r, CGFloat g, CGFloat b, CGFloat* outH, CGFloat* outS, CGFloat* outL);
 
 @interface TSHSLSliderCell ()
 
@@ -69,15 +79,37 @@ static void TSConvertRGBToHSL(float r, float g, float b, float* outH, float* out
  * Performs drawing of the track.
  */
 - (void) drawBarInside:(NSRect) aRect flipped:(BOOL) flipped {
-	// run the proper drawing routine
-	switch(self.sliderCellType) {
-		case TSHSLSliderCellTypeHue:
-			[self drawHueVaryingBar:aRect flipped:flipped];
-			break;
-			
-		default:
-			[super drawBarInside:aRect flipped:flipped];
-	}
+	CGColorSpaceRef cs;
+	CGFunctionRef shadeFunc;
+	CGShadingRef shade;
+	
+	// get path
+	NSBezierPath *path = [self pathForTrackRect:aRect];
+	
+	CGPoint start = CGPointMake(0.f, 0.5);
+	CGPoint end = CGPointMake(NSWidth(aRect), 0.5);
+	
+	// create the shading object
+	cs = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+	shadeFunc = TSCreateHSLFunction(self.sliderCellType, self.fixedValue);
+	shade = CGShadingCreateAxial(cs, start, end, shadeFunc, NO, NO);
+	
+	// get a copy of the graphics context and save state
+	CGContextRef ctx = [NSGraphicsContext currentContext].graphicsPort;
+	CGContextSaveGState(ctx);
+	
+	// clip to the previously generated path
+	[path addClip];
+	
+	// draw
+	CGContextDrawShading(ctx, shade);
+	
+	// clean up
+	CGContextRestoreGState(ctx);
+	
+	CGColorSpaceRelease(cs);
+	CGFunctionRelease(shadeFunc);
+	CGShadingRelease(shade);
 }
 
 /**
@@ -95,32 +127,6 @@ static void TSConvertRGBToHSL(float r, float g, float b, float* outH, float* out
 														 yRadius:barRadius];
 
 	return path;
-}
-
-/**
- * Draws a slider bar with a varying hue.
- */
-- (void) drawHueVaryingBar:(NSRect) aRect flipped:(BOOL) flipped {
-	NSGradient *grad;
-	NSBezierPath *path = [self pathForTrackRect:aRect];
-	
-	// calculate the colours
-	NSColor *leftColour = [NSColor colorWithCalibratedHue:MAX((self.fixedValue - 0.5), 0.f)
-											   saturation:1.f
-											   brightness:1.f
-													alpha:1.f];
-	NSColor *centreColour = [NSColor colorWithCalibratedHue:self.fixedValue
-												 saturation:1.f
-												 brightness:1.f
-													  alpha:1.f];
-	NSColor *rightColour = [NSColor colorWithCalibratedHue:MIN((self.fixedValue + 0.5), 1.f)
-												saturation:1.f
-												brightness:1.f
-													 alpha:1.f];
-	
-	// make a gradient
-	grad = [[NSGradient alloc] initWithColorsAndLocations:leftColour, 0.f, centreColour, 0.5, rightColour, 1.f, nil];
-	[grad drawInBezierPath:path angle:0.f];
 }
 
 #pragma mark Properties
@@ -144,11 +150,84 @@ static void TSConvertRGBToHSL(float r, float g, float b, float* outH, float* out
 
 @end
 
+#pragma mark HSL Gradient Drawing
+/**
+ * Creates a CGFunction that is used for shading.
+ */
+static CGFunctionRef TSCreateHSLFunction(TSHSLSliderCellType type, CGFloat centre) {
+	// allocate a struct with drawing info
+	TSGradientInfo *info = malloc(sizeof(TSGradientInfo));
+	info->type = type;
+	info->centre = centre;
+	
+	// get colour space
+	CGColorSpaceRef cs = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+	
+	// actually make the function
+	size_t numComponents;
+	const CGFloat inRange[2] = { 0, 1 };
+	const CGFloat outRange[8] = { 0, 1, 0, 1, 0, 1, 0, 1 };
+	const CGFunctionCallbacks callbacks = { 0,
+		&TSHSLInterpolateFunc,
+		&free
+	};
+	
+	numComponents = 1 + CGColorSpaceGetNumberOfComponents(cs);
+	
+	return CGFunctionCreate(info, 1, inRange, numComponents, outRange,
+							&callbacks);
+}
+
+/**
+ * HSL gradient interpolation function
+ */
+static void TSHSLInterpolateFunc(void *inInfo, const CGFloat *in, CGFloat *out) {
+	// get the input position and data
+	CGFloat position = in[0];
+	TSGradientInfo *info = (TSGradientInfo *) inInfo;
+	
+	// HSL colour
+	CGFloat hsl[3];
+	
+	CGFloat add = ((position * 2.f) - 1.f) / 2.f;
+	
+	// determine how to interpolate
+	switch (info->type) {
+		// hue is interpolated
+		case TSHSLSliderCellTypeHue:
+			hsl[0] = (info->centre + add);
+			hsl[1] = 0.66;
+			hsl[2] = 0.5;
+			break;
+			
+		// saturation is interpolated
+		case TSHSLSliderCellTypeSaturation:
+			hsl[0] = info->centre;
+			hsl[1] = position;
+			hsl[2] = 0.5;
+			break;
+			
+		// lightness is interpolated
+		case TSHSLSliderCellTypeLightness:
+			hsl[0] = info->centre;
+			hsl[1] = 0.66;
+			hsl[2] = position;
+			break;
+			
+		default:
+			break;
+	}
+	
+	// convert HSL to RGB and output
+	TSConvertHSLToRGB(hsl[0], hsl[1], hsl[2], &out[0], &out[1], &out[2]);
+	out[3] = 0.85;
+}
+
 #pragma mark Helpers
 /**
  * Converts an HSL value to a RGB value.
  */
-static void TSConvertHSLToRGB(float h, float s, float l, float* outR, float* outG, float* outB) {
+static void TSConvertHSLToRGB(CGFloat h, CGFloat s, CGFloat l, CGFloat* outR, CGFloat* outG, CGFloat* outB) {
 	float temp1, temp2;
 	float temp[3];
 	NSInteger i;
@@ -206,7 +285,7 @@ static void TSConvertHSLToRGB(float h, float s, float l, float* outR, float* out
 /**
  * Converts a RGB value to an HSL value.
  */
-static void TSConvertRGBToHSL(float r, float g, float b, float* outH, float* outS, float* outL) {
+static void TSConvertRGBToHSL(CGFloat r, CGFloat g, CGFloat b, CGFloat* outH, CGFloat* outS, CGFloat* outL) {
 	float h, s, l, v, m, vm, r2, g2, b2;
 	
 	h = s = l = 0;
