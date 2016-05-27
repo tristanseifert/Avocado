@@ -7,6 +7,7 @@
 //
 
 #import "TSHSLSliderCell.h"
+#import "NSBezierPath+AvocadoUtils.h"
 
 #import <CoreGraphics/CoreGraphics.h>
 
@@ -81,29 +82,40 @@ static void TSConvertRGBToHSL(CGFloat r, CGFloat g, CGFloat b, CGFloat* outH, CG
 	CGFunctionRef shadeFunc;
 	CGShadingRef shade;
 	
-	// get path
-	NSBezierPath *path = [self pathForTrackRect:aRect];
+	// create a mask image to which the thingie is masked
+	NSImage *mask = [[NSImage alloc] initWithSize:self.controlView.bounds.size];
+	[mask lockFocus];
 	
+	[[NSColor colorWithCalibratedWhite:1.f alpha:0.f] setFill];
+	NSRectFill(self.controlView.bounds);
+	
+	[[NSColor blackColor] setFill];
+	[[self pathForTrackRect:aRect] fill];
+	
+	[mask unlockFocus];
+	
+	CGImageRef maskImage = [mask CGImageForProposedRect:NULL context:NULL hints:nil];
+	
+	
+	// create the shading object
 	CGPoint start = CGPointMake(0.f, 0.5);
 	CGPoint end = CGPointMake(NSWidth(aRect), 0.5);
 	
-	// create the shading object
 	cs = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
 	shadeFunc = TSCreateHSLFunction(self.sliderCellType, self.fixedValue);
 	shade = CGShadingCreateAxial(cs, start, end, shadeFunc, NO, NO);
 	
+	
 	// get a copy of the graphics context and save state
+	[NSGraphicsContext saveGraphicsState];
 	CGContextRef ctx = [NSGraphicsContext currentContext].graphicsPort;
-	CGContextSaveGState(ctx);
 	
-	// clip to the previously generated path
-	[path addClip];
-	
-	// draw
+	// clip to the previously generated mask image, then draw
+	CGContextClipToMask(ctx, self.controlView.bounds, maskImage);
 	CGContextDrawShading(ctx, shade);
 	
 	// clean up
-	CGContextRestoreGState(ctx);
+	[NSGraphicsContext restoreGraphicsState];
 	
 	CGColorSpaceRelease(cs);
 	CGFunctionRelease(shadeFunc);
@@ -118,6 +130,7 @@ static void TSConvertRGBToHSL(CGFloat r, CGFloat g, CGFloat b, CGFloat* outH, CG
 	
 	// inset the rect verticall
 	NSRect newRect = NSInsetRect(rect, 0, 1.f);
+	newRect.size.width -= 1.f;
 	
 	// create path
 	NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:newRect
