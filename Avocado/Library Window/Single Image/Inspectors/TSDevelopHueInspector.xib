@@ -53,7 +53,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Kmx-KE-GgM" userLabel="Red Slider">
                                         <rect key="frame" x="80" y="171" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Tw2-1O-SCX"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-1" maxValue="1" doubleValue="0.10468750000000004" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Tw2-1O-SCX" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="1"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.0"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="3kK-qk-VWG" id="Hdv-Eu-4uz"/>
                                             <binding destination="-2" name="value" keyPath="self.redAdjustments.x" id="VCB-hB-2iM"/>
@@ -88,7 +97,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ctx-Qc-8Ab" userLabel="Orange Slider">
                                         <rect key="frame" x="80" y="148" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Wct-HJ-cyf"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" doubleValue="0.42071428571428582" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Wct-HJ-cyf" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="1"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.083000000000000004"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="Hzo-Qf-JxW" id="iT3-pC-8B0"/>
                                             <binding destination="-2" name="value" keyPath="self.orangeAdjustments.x" id="Zt4-F4-U8Y"/>
@@ -120,7 +138,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="eIa-35-BYo" userLabel="Yellow Slider">
                                         <rect key="frame" x="80" y="125" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="fFG-Im-LgM"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="fFG-Im-LgM" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="1"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.16700000000000001"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="ln7-mj-HFS" id="gap-LM-8lK"/>
                                             <binding destination="-2" name="value" keyPath="self.yellowAdjustments.x" id="Eua-Uu-ky8"/>
@@ -152,7 +179,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="SuP-41-mMu" userLabel="Green Slider">
                                         <rect key="frame" x="80" y="102" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="LS8-EN-LnQ"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-1" maxValue="1" doubleValue="0.093794642857142785" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="LS8-EN-LnQ" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="1"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.33300000000000002"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="Myi-wf-KEe" id="eA3-mM-6Kz"/>
                                             <binding destination="-2" name="value" keyPath="self.greenAdjustments.x" id="Gq8-0o-gQq"/>
@@ -184,7 +220,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="spm-Yw-U9v" userLabel="Aqua Slider">
                                         <rect key="frame" x="80" y="79" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="YWD-19-kot"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-1" maxValue="1" doubleValue="-0.15995535714285714" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="YWD-19-kot" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="1"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.5"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="2nc-nw-Qlo" id="0fj-Kl-GYd"/>
                                             <binding destination="-2" name="value" keyPath="self.aquaAdjustments.x" id="HXZ-KI-PY4"/>
@@ -216,7 +261,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UyE-dH-dgg" userLabel="Blue Slider">
                                         <rect key="frame" x="80" y="56" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="7bh-Hl-LWi"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-1" maxValue="1" doubleValue="0.76316964285714284" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="7bh-Hl-LWi" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="1"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.66700000000000004"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="7PV-ZP-Hwp" id="Hf3-Ux-8lY"/>
                                             <binding destination="-2" name="value" keyPath="self.blueAdjustments.x" id="gjF-h7-WhE"/>
@@ -248,7 +302,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PFT-LY-qpq" userLabel="Purple Slider">
                                         <rect key="frame" x="80" y="33" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="8WP-69-bZf"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-1" maxValue="1" doubleValue="-0.34678571428571425" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="8WP-69-bZf" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="1"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.749"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="Stq-az-FIr" id="mmV-iE-43L"/>
                                             <binding destination="-2" name="value" keyPath="self.purpleAdjustments.x" id="PZs-v4-3uA"/>
@@ -280,7 +343,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YCO-Iz-lLl" userLabel="Magenta Slider">
                                         <rect key="frame" x="80" y="10" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Rlt-Tg-ruo"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-1" maxValue="1" doubleValue="0.59473214285714282" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Rlt-Tg-ruo" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="1"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.83299999999999996"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="AWz-XG-fmF" id="psT-pw-FAM"/>
                                             <binding destination="-2" name="value" keyPath="self.magentaAdjustments.x" id="zWp-4q-oz2"/>
@@ -395,7 +467,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ny7-f2-qRK" userLabel="Red Slider">
                                         <rect key="frame" x="80" y="171" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="2" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="MMG-ie-HHY"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="2" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="MMG-ie-HHY" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="2"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.0"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="1bw-FJ-Zhe" id="ZAL-iY-Gnq"/>
                                             <binding destination="-2" name="value" keyPath="self.redAdjustments.y" id="4sn-EC-ZeZ"/>
@@ -407,7 +488,7 @@
                                             <constraint firstAttribute="width" constant="42" id="Z3a-cq-hBN"/>
                                         </constraints>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="uPd-Ye-uLo">
-                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="EEM-aE-72u">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="EEM-aE-72u">
                                                 <real key="minimum" value="0.0"/>
                                                 <real key="maximum" value="2"/>
                                             </numberFormatter>
@@ -430,7 +511,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="owA-eL-4mG" userLabel="Orange Slider">
                                         <rect key="frame" x="80" y="148" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="2" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="IZ5-ND-U7H"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="2" doubleValue="1.5239732142857143" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="IZ5-ND-U7H" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="2"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.083000000000000004"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="Q6s-Hw-n5H" id="qHh-Ka-omI"/>
                                             <binding destination="-2" name="value" keyPath="self.orangeAdjustments.y" id="beU-2W-U91"/>
@@ -439,7 +529,7 @@
                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Q6s-Hw-n5H" userLabel="Orange Text Field">
                                         <rect key="frame" x="271" y="154" width="46" height="14"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="n3C-Mq-yXO">
-                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="Cuj-TC-pbb">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="Cuj-TC-pbb">
                                                 <real key="minimum" value="0.0"/>
                                                 <real key="maximum" value="2"/>
                                             </numberFormatter>
@@ -462,7 +552,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zkq-sI-w8k" userLabel="Yellow Slider">
                                         <rect key="frame" x="80" y="125" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="2" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="CAc-4G-kuj"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="2" doubleValue="0.3228125" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="CAc-4G-kuj" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="2"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.16700000000000001"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="OKo-k0-VEX" id="Y2W-05-WD9"/>
                                             <binding destination="-2" name="value" keyPath="self.yellowAdjustments.y" id="Qwz-UT-YjB"/>
@@ -471,7 +570,7 @@
                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="OKo-k0-VEX" userLabel="Yellow Text Field">
                                         <rect key="frame" x="271" y="131" width="46" height="14"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="aCW-1e-L1u">
-                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="kb1-jg-Lio">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="kb1-jg-Lio">
                                                 <real key="minimum" value="0.0"/>
                                                 <real key="maximum" value="2"/>
                                             </numberFormatter>
@@ -494,7 +593,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3Dz-kS-STr" userLabel="Green Slider">
                                         <rect key="frame" x="80" y="102" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="2" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="aWK-h3-LBC"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="2" doubleValue="1.3482142857142858" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="aWK-h3-LBC" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="2"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.33300000000000002"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="sNI-zL-PMS" id="U4u-N4-T0a"/>
                                             <binding destination="-2" name="value" keyPath="self.greenAdjustments.y" id="ray-oZ-mZy"/>
@@ -503,7 +611,7 @@
                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sNI-zL-PMS" userLabel="Green Text Field">
                                         <rect key="frame" x="271" y="108" width="46" height="14"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="EVb-Xx-CIe">
-                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="bxd-0G-qDd">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="bxd-0G-qDd">
                                                 <real key="minimum" value="0.0"/>
                                                 <real key="maximum" value="2"/>
                                             </numberFormatter>
@@ -526,7 +634,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NYj-HO-bfu" userLabel="Aqua Slider">
                                         <rect key="frame" x="80" y="79" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="2" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="x8j-rs-qyL"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="2" doubleValue="0.65031249999999996" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="x8j-rs-qyL" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="2"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.5"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="Rdm-yt-BgZ" id="IIR-jo-FgK"/>
                                             <binding destination="-2" name="value" keyPath="self.aquaAdjustments.y" id="ljB-Hs-Jij"/>
@@ -535,7 +652,7 @@
                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Rdm-yt-BgZ" userLabel="Aqua Text Field">
                                         <rect key="frame" x="271" y="85" width="46" height="14"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="321-s4-WyY">
-                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="VtZ-Tk-cuK">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="VtZ-Tk-cuK">
                                                 <real key="minimum" value="0.0"/>
                                                 <real key="maximum" value="2"/>
                                             </numberFormatter>
@@ -558,7 +675,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Y0v-hL-Rf6" userLabel="Blue Slider">
                                         <rect key="frame" x="80" y="56" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="2" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="U6I-Sx-z79"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="2" doubleValue="1.2625" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="U6I-Sx-z79" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="2"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.66700000000000004"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="pHg-hV-sQW" id="H8D-YK-p0y"/>
                                             <binding destination="-2" name="value" keyPath="self.blueAdjustments.y" id="ixo-DZ-txS"/>
@@ -567,7 +693,7 @@
                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pHg-hV-sQW" userLabel="Blue Text Field">
                                         <rect key="frame" x="271" y="62" width="46" height="14"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="TLR-Bi-Z6D">
-                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="8QA-v7-J23">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="8QA-v7-J23">
                                                 <real key="minimum" value="0.0"/>
                                                 <real key="maximum" value="2"/>
                                             </numberFormatter>
@@ -590,7 +716,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="MT4-oK-CxQ" userLabel="Purple Slider">
                                         <rect key="frame" x="80" y="33" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="2" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="G9t-tk-qvC"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="2" doubleValue="1.2733482142857142" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="G9t-tk-qvC" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="2"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.749"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="NBm-4L-993" id="2Qe-h7-VQV"/>
                                             <binding destination="-2" name="value" keyPath="self.purpleAdjustments.y" id="JE8-xP-ma8"/>
@@ -599,7 +734,7 @@
                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NBm-4L-993" userLabel="Purple Text Field">
                                         <rect key="frame" x="271" y="39" width="46" height="14"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="JAL-vT-YDI">
-                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="Lbt-pG-cFY">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="Lbt-pG-cFY">
                                                 <real key="minimum" value="0.0"/>
                                                 <real key="maximum" value="2"/>
                                             </numberFormatter>
@@ -622,7 +757,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TbR-Ve-oOH" userLabel="Magenta Slider">
                                         <rect key="frame" x="80" y="10" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="2" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="tl4-jI-K9O"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="2" doubleValue="0.66433035714285715" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="tl4-jI-K9O" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="2"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.83299999999999996"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="LdZ-eD-0Uk" id="nyr-4V-b1p"/>
                                             <binding destination="-2" name="value" keyPath="self.magentaAdjustments.y" id="b2r-MA-941"/>
@@ -631,7 +775,7 @@
                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="LdZ-eD-0Uk" userLabel="Magenta Text Field">
                                         <rect key="frame" x="271" y="16" width="46" height="14"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="xyw-zi-gLA">
-                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="NO3-GT-x12">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="NO3-GT-x12">
                                                 <real key="minimum" value="0.0"/>
                                                 <real key="maximum" value="2"/>
                                             </numberFormatter>
@@ -737,7 +881,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="42l-fQ-fv7" userLabel="Red Slider">
                                         <rect key="frame" x="80" y="171" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="2" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="xGj-uo-nyV"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="2" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="xGj-uo-nyV" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="3"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.0"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="cdE-fv-Uyn" id="DGR-uK-5nS"/>
                                             <binding destination="-2" name="value" keyPath="self.redAdjustments.z" id="cw0-2e-opJ"/>
@@ -749,7 +902,7 @@
                                             <constraint firstAttribute="width" constant="42" id="Kkf-ea-ha4"/>
                                         </constraints>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="eoM-Dq-mhv">
-                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="w4C-Q8-riq">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="w4C-Q8-riq">
                                                 <real key="minimum" value="0.0"/>
                                                 <real key="maximum" value="2"/>
                                             </numberFormatter>
@@ -772,7 +925,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="nda-EI-fY1" userLabel="Orange Slider">
                                         <rect key="frame" x="80" y="148" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="2" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Ju5-Ms-sMK"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="2" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Ju5-Ms-sMK" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="3"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.082816000000000001"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="CzL-ea-4qT" id="lpw-K0-Nc5"/>
                                             <binding destination="-2" name="value" keyPath="self.orangeAdjustments.z" id="jhr-tQ-QIc"/>
@@ -781,7 +943,7 @@
                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="CzL-ea-4qT" userLabel="Orange Text Field">
                                         <rect key="frame" x="271" y="154" width="46" height="14"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="Dz8-FJ-sOW">
-                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="gXZ-kN-911">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="gXZ-kN-911">
                                                 <real key="minimum" value="0.0"/>
                                                 <real key="maximum" value="2"/>
                                             </numberFormatter>
@@ -804,7 +966,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Tqk-K3-3r9" userLabel="Yellow Slider">
                                         <rect key="frame" x="80" y="125" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="2" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="PbQ-bu-gFc"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="2" doubleValue="1.3452678571428571" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="PbQ-bu-gFc" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="3"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.16666700000000001"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="3Df-xp-MGi" id="LSF-ac-5HS"/>
                                             <binding destination="-2" name="value" keyPath="self.yellowAdjustments.z" id="eEY-kS-aK2"/>
@@ -813,7 +984,7 @@
                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3Df-xp-MGi" userLabel="Yellow Text Field">
                                         <rect key="frame" x="271" y="131" width="46" height="14"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="rDl-6K-w2i">
-                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="tlL-HY-lmw">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="tlL-HY-lmw">
                                                 <real key="minimum" value="0.0"/>
                                                 <real key="maximum" value="2"/>
                                             </numberFormatter>
@@ -836,7 +1007,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="tdC-PP-YLq" userLabel="Green Slider">
                                         <rect key="frame" x="80" y="102" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="2" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="a4Z-Bf-0dL"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="2" doubleValue="0.79790178571428572" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="a4Z-Bf-0dL" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="3"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.33333299999999999"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="jyi-5Z-ulC" id="LUF-Ot-tLP"/>
                                             <binding destination="-2" name="value" keyPath="self.greenAdjustments.z" id="yIm-xl-i38"/>
@@ -845,7 +1025,7 @@
                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jyi-5Z-ulC" userLabel="Green Text Field">
                                         <rect key="frame" x="271" y="108" width="46" height="14"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="Dc1-sc-xYb">
-                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="7MR-hm-BT1">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="7MR-hm-BT1">
                                                 <real key="minimum" value="0.0"/>
                                                 <real key="maximum" value="2"/>
                                             </numberFormatter>
@@ -868,7 +1048,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2sv-q8-rS0" userLabel="Aqua Slider">
                                         <rect key="frame" x="80" y="79" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="2" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="YWj-q6-yOs"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="2" doubleValue="1.2541964285714287" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="YWj-q6-yOs" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="3"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.5"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="8w7-qs-LQc" id="AoT-Pt-fmy"/>
                                             <binding destination="-2" name="value" keyPath="self.aquaAdjustments.z" id="yTt-l1-r81"/>
@@ -877,7 +1066,7 @@
                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8w7-qs-LQc" userLabel="Aqua Text Field">
                                         <rect key="frame" x="271" y="85" width="46" height="14"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="kXS-Rj-tjN">
-                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="5p4-D7-zLB">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="5p4-D7-zLB">
                                                 <real key="minimum" value="0.0"/>
                                                 <real key="maximum" value="2"/>
                                             </numberFormatter>
@@ -900,7 +1089,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7nn-rz-Tft" userLabel="Blue Slider">
                                         <rect key="frame" x="80" y="56" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="2" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="DhJ-Wq-NdE"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="2" doubleValue="0.19299107142857144" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="DhJ-Wq-NdE" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="3"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.66666700000000001"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="j6s-Jm-DeI" id="aB4-V2-XaT"/>
                                             <binding destination="-2" name="value" keyPath="self.blueAdjustments.z" id="hFZ-6v-nD4"/>
@@ -909,7 +1107,7 @@
                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="j6s-Jm-DeI" userLabel="Blue Text Field">
                                         <rect key="frame" x="271" y="62" width="46" height="14"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="gbM-YB-RW6">
-                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="IAI-YM-AMf">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="IAI-YM-AMf">
                                                 <real key="minimum" value="0.0"/>
                                                 <real key="maximum" value="2"/>
                                             </numberFormatter>
@@ -932,7 +1130,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DLf-MD-Rxq" userLabel="Purple Slider">
                                         <rect key="frame" x="80" y="33" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="2" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="K6k-QZ-wGl"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="2" doubleValue="1.5434375" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="K6k-QZ-wGl" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="3"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.74948199999999998"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="cWX-bU-gxV" id="heC-Bf-Pqc"/>
                                             <binding destination="-2" name="value" keyPath="self.purpleAdjustments.z" id="sjm-zZ-tLc"/>
@@ -941,7 +1148,7 @@
                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cWX-bU-gxV" userLabel="Purple Text Field">
                                         <rect key="frame" x="271" y="39" width="46" height="14"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="aY5-Qg-XZ2">
-                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="Rxs-GA-Qer">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="Rxs-GA-Qer">
                                                 <real key="minimum" value="0.0"/>
                                                 <real key="maximum" value="2"/>
                                             </numberFormatter>
@@ -964,7 +1171,16 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="O0D-KH-oMD" userLabel="Magenta Slider">
                                         <rect key="frame" x="80" y="10" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="2" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="R6Y-f5-nbc"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="2" doubleValue="0.81825892857142857" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="R6Y-f5-nbc" customClass="TSHSLSliderCell">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
+                                                    <integer key="value" value="3"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fixedValue">
+                                                    <real key="value" value="0.83333299999999999"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </sliderCell>
                                         <connections>
                                             <action selector="takeDoubleValueFrom:" target="z2J-L3-vlR" id="Cp7-gn-EJg"/>
                                             <binding destination="-2" name="value" keyPath="self.magentaAdjustments.z" id="4XP-MH-LcO"/>
@@ -973,7 +1189,7 @@
                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="z2J-L3-vlR" userLabel="Magenta Text Field">
                                         <rect key="frame" x="271" y="16" width="46" height="14"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="kpp-Du-Vsf">
-                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="XFM-H7-VNG">
+                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="XFM-H7-VNG">
                                                 <real key="minimum" value="0.0"/>
                                                 <real key="maximum" value="2"/>
                                             </numberFormatter>

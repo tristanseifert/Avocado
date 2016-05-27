@@ -28,12 +28,13 @@
 		6A5C615C1CD64B7100E3C3C9 /* TSLibraryLightTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A5C615B1CD64B7100E3C3C9 /* TSLibraryLightTableCell.xib */; };
 		6A5C615F1CD67C5B00E3C3C9 /* TSImageIOHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A5C615E1CD67C5B00E3C3C9 /* TSImageIOHelper.m */; };
 		6A6ED4101CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A6ED40F1CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.m */; };
-		6A6ED4141CE205B6001EFA21 /* TSHistogramView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A6ED4131CE205B6001EFA21 /* TSHistogramView.m */; };
 		6A6ED4171CE4D0EE001EFA21 /* NSColor+AvocadoUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A6ED4161CE4D0EE001EFA21 /* NSColor+AvocadoUtils.m */; };
 		6A6ED41B1CE4D239001EFA21 /* TSHSLAdjustmentFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A6ED41A1CE4D239001EFA21 /* TSHSLAdjustmentFilter.m */; };
 		6A6ED41D1CE4D30A001EFA21 /* TSHSLAdjustmentFilter.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = 6A6ED41C1CE4D30A001EFA21 /* TSHSLAdjustmentFilter.cikernel */; };
 		6A70B51E1CF7575F00597EB0 /* TSLFCamera.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6A70B51D1CF7575F00597EB0 /* TSLFCamera.mm */; };
 		6A70B5211CF75D0B00597EB0 /* TSLFLens.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6A70B5201CF75D0B00597EB0 /* TSLFLens.mm */; };
+		6A70B5241CF7FD6200597EB0 /* TSHistogramView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A70B5231CF7FD6200597EB0 /* TSHistogramView.m */; };
+		6A70B5271CF7FD8700597EB0 /* TSHSLSliderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A70B5261CF7FD8700597EB0 /* TSHSLSliderCell.m */; };
 		6A74F1E51CF26F0C0023B439 /* libcompression.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A74F1E41CF26F0C0023B439 /* libcompression.tbd */; };
 		6A74F1E91CF282740023B439 /* TSRawCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A74F1E81CF282740023B439 /* TSRawCache.m */; };
 		6A773D8D1CF4A1C8002757C4 /* TSColourControlsFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A773D8C1CF4A1C8002757C4 /* TSColourControlsFilter.m */; };
@@ -170,8 +171,6 @@
 		6A5C615E1CD67C5B00E3C3C9 /* TSImageIOHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSImageIOHelper.m; path = Avocado/Helpers/TSImageIOHelper.m; sourceTree = "<group>"; };
 		6A6ED40E1CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSBezierPath+AvocadoUtils.h"; path = "Avocado/Helpers/NSBezierPath+AvocadoUtils.h"; sourceTree = "<group>"; };
 		6A6ED40F1CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSBezierPath+AvocadoUtils.m"; path = "Avocado/Helpers/NSBezierPath+AvocadoUtils.m"; sourceTree = "<group>"; };
-		6A6ED4121CE205B6001EFA21 /* TSHistogramView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSHistogramView.h; path = "Avocado/Image Editing UI/TSHistogramView.h"; sourceTree = "<group>"; };
-		6A6ED4131CE205B6001EFA21 /* TSHistogramView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSHistogramView.m; path = "Avocado/Image Editing UI/TSHistogramView.m"; sourceTree = "<group>"; };
 		6A6ED4151CE4D0EE001EFA21 /* NSColor+AvocadoUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSColor+AvocadoUtils.h"; path = "Avocado/Helpers/NSColor+AvocadoUtils.h"; sourceTree = "<group>"; };
 		6A6ED4161CE4D0EE001EFA21 /* NSColor+AvocadoUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSColor+AvocadoUtils.m"; path = "Avocado/Helpers/NSColor+AvocadoUtils.m"; sourceTree = "<group>"; };
 		6A6ED4191CE4D239001EFA21 /* TSHSLAdjustmentFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSHSLAdjustmentFilter.h; path = "Avocado/Image Processing/Filters/Hue and Saturation/TSHSLAdjustmentFilter.h"; sourceTree = "<group>"; };
@@ -181,6 +180,10 @@
 		6A70B51D1CF7575F00597EB0 /* TSLFCamera.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = TSLFCamera.mm; path = "Avocado/RAW Processing/Lens Correction/TSLFCamera.mm"; sourceTree = "<group>"; };
 		6A70B51F1CF75D0B00597EB0 /* TSLFLens.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSLFLens.h; path = "Avocado/RAW Processing/Lens Correction/TSLFLens.h"; sourceTree = "<group>"; };
 		6A70B5201CF75D0B00597EB0 /* TSLFLens.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = TSLFLens.mm; path = "Avocado/RAW Processing/Lens Correction/TSLFLens.mm"; sourceTree = "<group>"; };
+		6A70B5221CF7FD6200597EB0 /* TSHistogramView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSHistogramView.h; path = "Avocado/Library Window/Single Image/Inspectors/UI/TSHistogramView.h"; sourceTree = "<group>"; };
+		6A70B5231CF7FD6200597EB0 /* TSHistogramView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSHistogramView.m; path = "Avocado/Library Window/Single Image/Inspectors/UI/TSHistogramView.m"; sourceTree = "<group>"; };
+		6A70B5251CF7FD8700597EB0 /* TSHSLSliderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSHSLSliderCell.h; path = "Avocado/Library Window/Single Image/Inspectors/UI/TSHSLSliderCell.h"; sourceTree = "<group>"; };
+		6A70B5261CF7FD8700597EB0 /* TSHSLSliderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSHSLSliderCell.m; path = "Avocado/Library Window/Single Image/Inspectors/UI/TSHSLSliderCell.m"; sourceTree = "<group>"; };
 		6A74F1E41CF26F0C0023B439 /* libcompression.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcompression.tbd; path = usr/lib/libcompression.tbd; sourceTree = SDKROOT; };
 		6A74F1E71CF282740023B439 /* TSRawCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSRawCache.h; path = "Avocado/RAW Processing/TSRawCache.h"; sourceTree = "<group>"; };
 		6A74F1E81CF282740023B439 /* TSRawCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSRawCache.m; path = "Avocado/RAW Processing/TSRawCache.m"; sourceTree = "<group>"; };
@@ -476,9 +479,11 @@
 		6A6ED4111CE20595001EFA21 /* UI Components */ = {
 			isa = PBXGroup;
 			children = (
-				6A6ED4121CE205B6001EFA21 /* TSHistogramView.h */,
-				6A6ED4131CE205B6001EFA21 /* TSHistogramView.m */,
+				6A70B5221CF7FD6200597EB0 /* TSHistogramView.h */,
+				6A70B5231CF7FD6200597EB0 /* TSHistogramView.m */,
 				6AA935961CE7AA44004E9F9C /* Inspector */,
+				6A70B5251CF7FD8700597EB0 /* TSHSLSliderCell.h */,
+				6A70B5261CF7FD8700597EB0 /* TSHSLSliderCell.m */,
 			);
 			name = "UI Components";
 			path = ..;
@@ -1142,6 +1147,7 @@
 				6A9224351CEE394400EE6408 /* TSNoiseReductionAdjustmentFilter.m in Sources */,
 				6A9224271CECC6DE00EE6408 /* TSDevelopHueInspector.m in Sources */,
 				6AA935991CE7AA75004E9F9C /* TSInspectorViewItem.m in Sources */,
+				6A70B5271CF7FD8700597EB0 /* TSHSLSliderCell.m in Sources */,
 				6AB32EA11CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m in Sources */,
 				6AE87BEC1CD276E70053CD9D /* Avocado.xcdatamodeld in Sources */,
 				6A34B12A1CD5936200252288 /* TSLibraryImage.m in Sources */,
@@ -1149,6 +1155,7 @@
 				6ABC2DC31CD43586006B959F /* _TSLibraryTag.m in Sources */,
 				6AA9358E1CE787D9004E9F9C /* TSDevelopSidebarController.m in Sources */,
 				6AFDED3A1CF0B7350015C181 /* _TSLibraryImageAdjustment.m in Sources */,
+				6A70B5241CF7FD6200597EB0 /* TSHistogramView.m in Sources */,
 				6ABC2DAC1CD4357E006B959F /* TSLibraryAlbum.m in Sources */,
 				6AEC76771CD50E6E00870FAE /* TSImportOpenPanelAccessory.m in Sources */,
 				6AEC35471CD443B90033DE0A /* TSLibraryDetailController.m in Sources */,
@@ -1165,7 +1172,6 @@
 				6AA935C21CEA43FF004E9F9C /* TSLogFormatter.m in Sources */,
 				6A7987691CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m in Sources */,
 				6A92243F1CEEB67700EE6408 /* TSDevelopInspector.m in Sources */,
-				6A6ED4141CE205B6001EFA21 /* TSHistogramView.m in Sources */,
 				6A5C615F1CD67C5B00E3C3C9 /* TSImageIOHelper.m in Sources */,
 				6A7E46E91CF65FF80056C048 /* TSVibranceAdjustmentFilter.m in Sources */,
 				6A6ED4101CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.m in Sources */,
