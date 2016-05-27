@@ -53,7 +53,7 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Kmx-KE-GgM" userLabel="Red Slider">
                                         <rect key="frame" x="80" y="171" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-1" maxValue="1" doubleValue="0.10468750000000004" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Tw2-1O-SCX" customClass="TSHSLSliderCell">
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-0.5" maxValue="0.5" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Tw2-1O-SCX" customClass="TSHSLSliderCell">
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
                                                     <integer key="value" value="1"/>
@@ -75,8 +75,8 @@
                                         </constraints>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="jKl-DV-adu">
                                             <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="F9T-CY-uze">
-                                                <real key="minimum" value="-1"/>
-                                                <real key="maximum" value="1"/>
+                                                <real key="minimum" value="-0.5"/>
+                                                <real key="maximum" value="0.5"/>
                                             </numberFormatter>
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -97,7 +97,7 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ctx-Qc-8Ab" userLabel="Orange Slider">
                                         <rect key="frame" x="80" y="148" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-1" maxValue="1" doubleValue="0.42071428571428582" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Wct-HJ-cyf" customClass="TSHSLSliderCell">
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-0.5" maxValue="0.5" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Wct-HJ-cyf" customClass="TSHSLSliderCell">
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
                                                     <integer key="value" value="1"/>
@@ -116,8 +116,8 @@
                                         <rect key="frame" x="271" y="154" width="46" height="14"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="kFf-dJ-D8I">
                                             <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="xZC-Ct-ybi">
-                                                <real key="minimum" value="-1"/>
-                                                <real key="maximum" value="1"/>
+                                                <real key="minimum" value="-0.5"/>
+                                                <real key="maximum" value="0.5"/>
                                             </numberFormatter>
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -138,7 +138,7 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="eIa-35-BYo" userLabel="Yellow Slider">
                                         <rect key="frame" x="80" y="125" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-1" maxValue="1" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="fFG-Im-LgM" customClass="TSHSLSliderCell">
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-0.5" maxValue="0.5" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="fFG-Im-LgM" customClass="TSHSLSliderCell">
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
                                                     <integer key="value" value="1"/>
@@ -157,8 +157,8 @@
                                         <rect key="frame" x="271" y="131" width="46" height="14"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="IrN-bT-Uxm">
                                             <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="BMH-oC-oX6">
-                                                <real key="minimum" value="-1"/>
-                                                <real key="maximum" value="1"/>
+                                                <real key="minimum" value="-0.5"/>
+                                                <real key="maximum" value="0.5"/>
                                             </numberFormatter>
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -179,7 +179,7 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="SuP-41-mMu" userLabel="Green Slider">
                                         <rect key="frame" x="80" y="102" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-1" maxValue="1" doubleValue="0.093794642857142785" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="LS8-EN-LnQ" customClass="TSHSLSliderCell">
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-0.5" maxValue="0.5" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="LS8-EN-LnQ" customClass="TSHSLSliderCell">
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
                                                     <integer key="value" value="1"/>
@@ -198,8 +198,8 @@
                                         <rect key="frame" x="271" y="108" width="46" height="14"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="7jK-JF-XX0">
                                             <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="BLo-Pt-0md">
-                                                <real key="minimum" value="-1"/>
-                                                <real key="maximum" value="1"/>
+                                                <real key="minimum" value="-0.5"/>
+                                                <real key="maximum" value="0.5"/>
                                             </numberFormatter>
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -220,7 +220,7 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="spm-Yw-U9v" userLabel="Aqua Slider">
                                         <rect key="frame" x="80" y="79" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-1" maxValue="1" doubleValue="-0.15995535714285714" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="YWD-19-kot" customClass="TSHSLSliderCell">
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-0.5" maxValue="0.5" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="YWD-19-kot" customClass="TSHSLSliderCell">
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
                                                     <integer key="value" value="1"/>
@@ -239,8 +239,8 @@
                                         <rect key="frame" x="271" y="85" width="46" height="14"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="GQ7-GE-VBe">
                                             <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="LV0-KX-PY8">
-                                                <real key="minimum" value="-1"/>
-                                                <real key="maximum" value="1"/>
+                                                <real key="minimum" value="-0.5"/>
+                                                <real key="maximum" value="0.5"/>
                                             </numberFormatter>
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -261,7 +261,7 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UyE-dH-dgg" userLabel="Blue Slider">
                                         <rect key="frame" x="80" y="56" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-1" maxValue="1" doubleValue="0.76316964285714284" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="7bh-Hl-LWi" customClass="TSHSLSliderCell">
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-0.5" maxValue="0.5" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="7bh-Hl-LWi" customClass="TSHSLSliderCell">
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
                                                     <integer key="value" value="1"/>
@@ -280,8 +280,8 @@
                                         <rect key="frame" x="271" y="62" width="46" height="14"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="uFR-Uu-CfM">
                                             <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="6MA-RS-feO">
-                                                <real key="minimum" value="-1"/>
-                                                <real key="maximum" value="1"/>
+                                                <real key="minimum" value="-0.5"/>
+                                                <real key="maximum" value="0.5"/>
                                             </numberFormatter>
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -302,7 +302,7 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PFT-LY-qpq" userLabel="Purple Slider">
                                         <rect key="frame" x="80" y="33" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-1" maxValue="1" doubleValue="-0.34678571428571425" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="8WP-69-bZf" customClass="TSHSLSliderCell">
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-0.5" maxValue="0.5" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="8WP-69-bZf" customClass="TSHSLSliderCell">
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
                                                     <integer key="value" value="1"/>
@@ -321,8 +321,8 @@
                                         <rect key="frame" x="271" y="39" width="46" height="14"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="t03-Ub-85l">
                                             <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="4Ou-85-d1w">
-                                                <real key="minimum" value="-1"/>
-                                                <real key="maximum" value="1"/>
+                                                <real key="minimum" value="-0.5"/>
+                                                <real key="maximum" value="0.5"/>
                                             </numberFormatter>
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -343,7 +343,7 @@
                                     </textField>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YCO-Iz-lLl" userLabel="Magenta Slider">
                                         <rect key="frame" x="80" y="10" width="188" height="20"/>
-                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-1" maxValue="1" doubleValue="0.59473214285714282" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Rlt-Tg-ruo" customClass="TSHSLSliderCell">
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-0.5" maxValue="0.5" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Rlt-Tg-ruo" customClass="TSHSLSliderCell">
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="number" keyPath="sliderCellType">
                                                     <integer key="value" value="1"/>
@@ -362,8 +362,8 @@
                                         <rect key="frame" x="271" y="16" width="46" height="14"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0.00" id="0um-id-stk">
                                             <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="rjj-W2-dTl">
-                                                <real key="minimum" value="-1"/>
-                                                <real key="maximum" value="1"/>
+                                                <real key="minimum" value="-0.5"/>
+                                                <real key="maximum" value="0.5"/>
                                             </numberFormatter>
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>

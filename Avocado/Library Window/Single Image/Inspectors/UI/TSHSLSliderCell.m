@@ -28,8 +28,6 @@ static void TSConvertRGBToHSL(CGFloat r, CGFloat g, CGFloat b, CGFloat* outH, CG
 
 - (NSBezierPath *) pathForTrackRect:(NSRect) rect;
 
-- (void) drawHueVaryingBar:(NSRect) aRect flipped:(BOOL) flipped;
-
 @end
 
 @implementation TSHSLSliderCell
@@ -195,7 +193,7 @@ static void TSHSLInterpolateFunc(void *inInfo, const CGFloat *in, CGFloat *out) 
 	switch (info->type) {
 		// hue is interpolated
 		case TSHSLSliderCellTypeHue:
-			hsl[0] = (info->centre + add);
+			hsl[0] = (info->centre + (add / 2.f));
 			hsl[1] = 0.66;
 			hsl[2] = 0.5;
 			break;
