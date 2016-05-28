@@ -31,10 +31,9 @@
 - (BOOL) hasDataForUuid:(NSString *) uuid;
 
 /**
- * Stores the given data object in the cache for the specified UUID.
- * The data will immediately be compressed and written to disk, but
- * will also be kept around in memory until there is high memory
- * pressure.
+ * Stores the given data object in the cache for the specified UUID. The data
+ * will immediately be compressed and written to disk, but will also be kept
+ * around in memory until there is high memory pressure.
  */
 - (void) setData:(NSData *) data forUuid:(NSString *) uuid;
 
@@ -42,24 +41,25 @@
  * Returns a data object that was previously stored for an image with
  * the given uuid. This function will do one of three things:
  *
- *	 1. Return an in-memory copy of the cache. This is fastest, but
- *		this behaviour shouldn't be relied on, particularly if the
- *		system is under memory pressure.
- *	 2. Loads and decompresses data previously written to disk. This
- *		will take place if the cache contains metadata information
- *		for the given image. In this case, the method will be fully
- *		synchronous. Decompression could take a few seconds, and will
- *		block the calling thread.
- *	 3. Return nil, if no information about the given image could be
- *		found in the metadata cache. This is guaranteed to ocurr only
- *		when `hasDataForUuid:` returns NO.
+ *	 1. Return an in-memory copy of the cache. This is fastest, but this
+ *		behaviour shouldn't be relied on, particularly if the system is under
+ *		significant memory pressure.
+ *	 2. Loads and decompresses data previously written to disk. This will take
+ *		place if the cache contains metadata information for the given image. In
+ *		this case, the method will be fully synchronous. Decompression could
+ *		take a few seconds, and will block the calling thread.
+ *	 3. Return nil, if no information about the given image could be found in
+ *		the metadata cache. This is guaranteed to ocurr only when
+ *		`hasDataForUuid:` returns NO.
  */
 - (NSData *) cachedDataForUuid:(NSString *) uuid;
 
 /**
- * Evicts all data for a given UUID from the cache. Any compressed
- * data files will also be removed from disk.
+ * Evicts all data for a given UUID from the cache. Any compressed data files
+ * will also be removed from disk.
+ *
+ * @return Number of bytes deleted from disk.
  */
-- (void) evictDataForUuid:(NSString *) uuid;
+- (NSUInteger) evictDataForUuid:(NSString *) uuid;
 
 @end

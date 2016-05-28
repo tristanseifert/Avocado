@@ -85,6 +85,7 @@
 		6ABC2DBF1CD43586006B959F /* _TSLibraryAlbumCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DB51CD43586006B959F /* _TSLibraryAlbumCollection.m */; };
 		6ABC2DC01CD43586006B959F /* _TSLibraryExportService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DB71CD43586006B959F /* _TSLibraryExportService.m */; };
 		6ABC2DC31CD43586006B959F /* _TSLibraryTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DBD1CD43586006B959F /* _TSLibraryTag.m */; };
+		6AC4EC701CF95D43009EC46B /* NSFileManager+TSDirectorySizing.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4EC6F1CF95D43009EC46B /* NSFileManager+TSDirectorySizing.m */; };
 		6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */; };
 		6AE87BCC1CD275C90053CD9D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BCB1CD275C90053CD9D /* main.m */; };
 		6AE87BD11CD275C90053CD9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AE87BD01CD275C90053CD9D /* Assets.xcassets */; };
@@ -279,6 +280,8 @@
 		6ABC2DBC1CD43586006B959F /* _TSLibraryTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _TSLibraryTag.h; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryTag.h"; sourceTree = "<group>"; };
 		6ABC2DBD1CD43586006B959F /* _TSLibraryTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryTag.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryTag.m"; sourceTree = "<group>"; };
 		6AC3E7CF1CDD6A880099B932 /* TSRawImageDataHelpers.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = TSRawImageDataHelpers.h; path = "Avocado/RAW Processing/TSRawImageDataHelpers.h"; sourceTree = "<group>"; };
+		6AC4EC6E1CF95D43009EC46B /* NSFileManager+TSDirectorySizing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSFileManager+TSDirectorySizing.h"; path = "Avocado/Helpers/NSFileManager+TSDirectorySizing.h"; sourceTree = "<group>"; };
+		6AC4EC6F1CF95D43009EC46B /* NSFileManager+TSDirectorySizing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSFileManager+TSDirectorySizing.m"; path = "Avocado/Helpers/NSFileManager+TSDirectorySizing.m"; sourceTree = "<group>"; };
 		6AE87BC41CD275C90053CD9D /* Avocado.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Avocado.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AE87BC71CD275C90053CD9D /* TSAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TSAppDelegate.h; sourceTree = "<group>"; };
 		6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TSAppDelegate.m; sourceTree = "<group>"; };
@@ -858,6 +861,8 @@
 		6AEC766D1CD5097900870FAE /* Categories and Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				6AC4EC6E1CF95D43009EC46B /* NSFileManager+TSDirectorySizing.h */,
+				6AC4EC6F1CF95D43009EC46B /* NSFileManager+TSDirectorySizing.m */,
 				6AEC766E1CD5098F00870FAE /* NSDate+AvocadoUtils.h */,
 				6AEC766F1CD5098F00870FAE /* NSDate+AvocadoUtils.m */,
 				6A5C615D1CD67C5B00E3C3C9 /* TSImageIOHelper.h */,
@@ -1182,6 +1187,7 @@
 				6AEC767B1CD516EF00870FAE /* TSLibraryOverviewLightTableController.m in Sources */,
 				6AEC766C1CD4FF2A00870FAE /* TSImportController.m in Sources */,
 				6A6ED4171CE4D0EE001EFA21 /* NSColor+AvocadoUtils.m in Sources */,
+				6AC4EC701CF95D43009EC46B /* NSFileManager+TSDirectorySizing.m in Sources */,
 				6A74F1E91CF282740023B439 /* TSRawCache.m in Sources */,
 				6AEC35191CD43F000033DE0A /* TSCoreDataStoreIB.m in Sources */,
 				6AEC76701CD5098F00870FAE /* NSDate+AvocadoUtils.m in Sources */,

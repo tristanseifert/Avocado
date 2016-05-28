@@ -8,6 +8,8 @@
 
 #import "TSRawCache.h"
 
+#import "NSFileManager+TSDirectorySizing.h"
+
 #import <compression.h>
 
 /**
@@ -25,6 +27,9 @@
 /// number of bytes of uncompressed data per 'stripe' file
 const NSInteger TSRawCacheStripeSize = (1024 * 1024) * 48;
 
+/// the amount of bytes that the cache may be over the user-specified limit
+const NSInteger TSRawCachePruneMargin = (1024 * 1024) * 1;
+
 /// current version of the cache metadata; low word is minor version
 const NSInteger TSRawCacheVersion = 0x00010000;
 /// version of the stored cache data
@@ -32,7 +37,7 @@ NSString * const TSRawCacheMetadataKeyVersion = @"TSRawCacheVersion";
 /// actually stored cache data
 NSString * const TSRawCacheMetadataKeyData = @"TSRawCacheData";
 
-/// key for the uncompressed size
+/// key for the uncompressed size (i.e. how many bytes it takes up in memory)
 NSString * const TSRawCacheUncompressedSizeKey = @"TSRawCacheUncompressedSize";
 /// key for the date the object was added
 NSString * const TSRawCacheDateAddedKey = @"TSRawCacheDateAdded";
@@ -64,6 +69,8 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 
 - (BOOL) compressData:(NSData *) data toFile:(NSURL *) url;
 - (NSData *) decompressDataFromFile:(NSURL *) url;
+
+- (void) pruneCacheIfNeeded;
 
 @end
 
@@ -98,7 +105,7 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 		// set up queue
 		self.queue = [NSOperationQueue new];
 		self.queue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount;
-		self.queue.qualityOfService = NSQualityOfServiceUtility;
+		self.queue.qualityOfService = NSQualityOfServiceBackground;
 		
 		self.queue.name = @"TSRawCache";
 		
@@ -109,6 +116,9 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 				// if it couldn't be loaded, create an empty dictionary
 				self.cacheMetadata = [NSMutableDictionary new];
 				self.isCacheMetadataDirty = YES;
+			} else {
+				// if data was loaded, prune the cache, if needed
+				[self pruneCacheIfNeeded];
 			}
 		}];
 	}
@@ -145,10 +155,9 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 }
 
 /**
- * Stores the given data object in the cache for the specified UUID.
- * The data will immediately be compressed and written to disk, but
- * will also be kept around in memory until there is high memory
- * pressure.
+ * Stores the given data object in the cache for the specified UUID. The data
+ * will immediately be compressed and written to disk, but will also be kept 
+ * around in memory until there is high memory pressure.
  */
 - (void) setData:(NSData *) data forUuid:(NSString *) uuid {
 	// calculate number of stripes for compression
@@ -179,6 +188,11 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 		// save the metadata dictionary at some point in the future
 		[self.queue addOperationWithBlock:^{
 			[self encodeCacheMetadata];
+		}];
+		
+		// prune the cache at some point, if needed.
+		[self.queue addOperationWithBlock:^{
+			[self pruneCacheIfNeeded];
 		}];
 	});
 	
@@ -229,17 +243,16 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
  * Returns a data object that was previously stored for an image with
  * the given uuid. This function will do one of three things:
  *
- *	 1. Return an in-memory copy of the cache. This is fastest, but
- *		this behaviour shouldn't be relied on, particularly if the
- *		system is under memory pressure.
- *	 2. Loads and decompresses data previously written to disk. This
- *		will take place if the cache contains metadata information
- *		for the given image. In this case, the method will be fully
- *		synchronous. Decompression could take a few seconds, and will
- *		block the calling thread.
- *	 3. Return nil, if no information about the given image could be
- *		found in the metadata cache. This is guaranteed to ocurr only
- *		when `hasDataForUuid:` returns NO.
+ *	 1. Return an in-memory copy of the cache. This is fastest, but this
+ *		behaviour shouldn't be relied on, particularly if the system is under
+ *		significant memory pressure.
+ *	 2. Loads and decompresses data previously written to disk. This will take 
+ *		place if the cache contains metadata information for the given image. In 
+ *		this case, the method will be fully synchronous. Decompression could 
+ *		take a few seconds, and will block the calling thread.
+ *	 3. Return nil, if no information about the given image could be found in 
+ *		the metadata cache. This is guaranteed to ocurr only when 
+ *		`hasDataForUuid:` returns NO.
  */
 - (NSData *) cachedDataForUuid:(NSString *) uuid {
 	// is there any data for this image?
@@ -350,16 +363,20 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 }
 
 /**
- * Evicts all data for a given UUID from the cache. Any compressed
- * data files will also be removed from disk.
+ * Evicts all data for a given UUID from the cache. Any compressed data files 
+ * will also be removed from disk.
+ *
+ * @return Number of bytes deleted from disk.
  */
-- (void) evictDataForUuid:(NSString *) uuid {
+- (NSUInteger) evictDataForUuid:(NSString *) uuid {
 	NSError *err = nil;
 	NSFileManager *fm = [NSFileManager defaultManager];
 	
+	NSUInteger bytesDeleted = 0;
+	
 	// ensure there's even data for that uuid
 	if([self hasDataForUuid:uuid] == NO) {
-		return;
+		return bytesDeleted;
 	}
 	
 	/*
@@ -368,7 +385,7 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 	 */
 	__block NSInteger stripes = 0;
 	
-	dispatch_barrier_async(self.cacheAccessQueue, ^{
+	dispatch_barrier_sync(self.cacheAccessQueue, ^{
 		// get stripe size
 		NSDictionary *info = self.cacheMetadata[uuid];
 		stripes = [info[TSRawCacheNumStripesKey] integerValue];
@@ -385,9 +402,12 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 		}];
 	});
 	
+//	DDLogVerbose(@"Deleting %lu stripes for %@", stripes, uuid);
 	
 	// delete each of the stripe files from disk
 	for(NSUInteger i = 0; i < stripes; i++) {
+		err = nil;
+		
 		NSString *name;
 		NSURL *url;
 		
@@ -396,11 +416,24 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 		url = [self.cacheUrl URLByAppendingPathComponent:name
 											 isDirectory:NO];
 		
+//		DDLogVerbose(@"Deleting %@", url);
+		
+		// get its size
+		NSUInteger size = [fm TSFileSizeForUrl:url];
+		
+//		DDLogVerbose(@"Size of %@ = %lu", url, size);
+		
+		bytesDeleted = bytesDeleted + size;
+		
 		// attempt to delete it
-		if([fm removeItemAtURL:url error:&err] == NO) {
+		if([fm removeItemAtURL:url error:&err] == NO || err != nil) {
 			DDLogError(@"Error deleting stripe %@: %@", url, err);
 		}
 	}
+	
+//	DDLogVerbose(@"Total bytes deleted: %lu", bytesDeleted);
+	
+	return bytesDeleted;
 }
 
 #pragma mark State Restoration
@@ -458,7 +491,7 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 /**
  * Encodes the cache information, then stores it on disk.
  */
-- (void) encodeCacheMetadata {
+- (void) encodeCacheMetadata {	
 	NSError *err = nil;
 	NSURL *url;
 	NSMutableData *data;
@@ -730,6 +763,71 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 	// clean up compression
 	compression_stream_destroy(&stream);
 	return [decompressedData copy];
+}
+
+#pragma mark Cache Management
+/**
+ * Determines whether the combined size of all items in the cache exceeds the
+ * maximum permitted by the user.
+ *
+ * If the cache is too large, its contents are sorted by date last used, and the
+ * oldest item is deleted. The cache size is checked again: if it is still too
+ * large, the proccess repeats.
+ */
+- (void) pruneCacheIfNeeded {
+	NSFileManager *fm = [NSFileManager defaultManager];
+	
+	// get the user-specified max size (in bytes)
+	NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+	NSUInteger maxSize = [ud integerForKey:@"TSRawCacheMaxSize"];
+
+	/*
+	 * Calculate the size of the cache directory.
+	 *
+	 * This _does_ somewhat over-estimate the size of the cache, as the cache
+	 * database file is included in the byte count. This is of little importance
+	 * to the purpose of pruning the cache, as a single entry's data files would
+	 * not be any smaller than several megabytes. Thus, a small database file,
+	 * on the order of a few tens of kilobytes, would not distort the amount
+	 * of data stored by very much, though it has the potential to create an
+	 * edge case wherein the cache is a few kilobytes over.
+	 *
+	 * To handle the afforementioned edge cache, a specified margin of error is
+	 * included in the calculations.
+	 */
+	NSUInteger cacheSize = [fm TSFileSizeForFolderAtUrl:self.rawCacheUrl];
+	
+	while(cacheSize > maxSize && (cacheSize - maxSize) > TSRawCachePruneMargin) {
+		DDLogDebug(@"RAW cache is %lu bytes, max is %lu; pruning old data", cacheSize, maxSize);
+		
+		// find the oldest entry in the cache
+		__block NSDate *date = [NSDate new];
+		__block NSString *oldestKey = nil;
+		
+		dispatch_sync(self.cacheAccessQueue, ^{
+			[self.cacheMetadata enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSDictionary *data, BOOL *stop) {
+				NSDate *entryDate = data[TSRawCacheDateModifiedKey];
+				
+				if([date compare:entryDate] == NSOrderedDescending) {
+					oldestKey = key;
+					date = entryDate;
+				}
+			}];
+		});
+		
+		// if the key is nil, something went wrong…
+		if(oldestKey == nil) {
+			break;
+		}
+		
+		// delete the oldest entry
+		NSUInteger savedBytes = [self evictDataForUuid:oldestKey];
+		
+		DDLogDebug(@"Evicted data for %@ (last used %@, saved %lu bytes)", oldestKey, date, savedBytes);
+		
+		// subtract the saved bytes from the cache's actual size
+		cacheSize = cacheSize - savedBytes;
+	}
 }
 
 #pragma mark Convenience Properties
