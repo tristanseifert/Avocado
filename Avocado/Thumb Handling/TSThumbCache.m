@@ -79,7 +79,7 @@ static TSThumbCache *sharedInstance = nil;
 	NSBlockOperation *extractThumbOp, *createThumbOp;
 	
 	// get the string used as the key, and look up in the cache
-	NSString *key = [NSString stringWithFormat:@"%@_%@", inImage.thumbUUID, NSStringFromSize(size)];
+	__block NSString *key = [NSString stringWithFormat:@"%@_%@", inImage.thumbUUID, NSStringFromSize(size)];
 	
 //	DDLogInfo(@"Creating thumb sized %@ for image (fault = %i, url = %@, uuid = %@, key = %@)", NSStringFromSize(size), image.isFault, image.fileUrl, image.thumbUUID, key);
 	
@@ -89,7 +89,7 @@ static TSThumbCache *sharedInstance = nil;
 	}
 	
 	// get some info from the image (this way, we need not create a new queue)
-	NSURL *inUrl = inImage.fileUrl;
+	__block NSURL *inUrl = inImage.fileUrl;
 	BOOL isRaw = (inImage.fileTypeValue == TSLibraryImageRaw);
 	
 	// for non-RAW images, use ImageIO
@@ -98,7 +98,7 @@ static TSThumbCache *sharedInstance = nil;
 		extractThumbOp = [NSBlockOperation blockOperationWithBlock:^{
 			NSImage *extracted = [self extractThumbFromFile:inUrl];
 			
-			if(extracted){
+			if(extracted) {
 				callback(extracted);
 			} else {
 				DDLogWarn(@"Couldn't extract thumb from %@; deferring to thumb creation", inUrl);
@@ -113,7 +113,7 @@ static TSThumbCache *sharedInstance = nil;
 			// store it and execute callback
 			if(thumb) {
 				[self.imageCache setObject:thumb forKey:key];
-				
+
 				callback(thumb);
 			} else {
 				DDLogError(@"Couldn't create thumbnail for %@; is it a valid image?", inUrl);
@@ -142,13 +142,21 @@ static TSThumbCache *sharedInstance = nil;
 				// extract the thumbnail, and apply rotation if needed
 				NSImage *thumb = img.thumbnail;
 				
-				if(img.rotation != 0) {
-					thumb = [self rotateImage:thumb angle:img.rotation];
-				}
+				// if non-zero size, continue
+				if(NSEqualSizes(thumb.size, NSZeroSize) == NO) {
+					if(img.rotation != 0) {
+						thumb = [self rotateImage:thumb angle:img.rotation];
+					}
 				
-				// store the converted thumb and execute callback
-				[self.imageCache setObject:thumb forKey:key];
-				callback(thumb);
+					// store the converted thumb and execute callback
+					[self.imageCache setObject:thumb forKey:key];
+					callback(thumb);
+				} else {
+					// otherwise, show a caution icon
+					callback([NSImage imageNamed:NSImageNameCaution]);
+					
+					DDLogInfo(@"Got thumb with zero size for %@", inUrl);
+				}
 			}
 		}];
 		
@@ -210,7 +218,7 @@ static TSThumbCache *sharedInstance = nil;
 	imgSource = CGImageSourceCreateWithURL((__bridge CFURLRef) url, NULL);
 	
 	// Make sure the image source exists before continuing.
-	if (imgSource == NULL){
+	if (imgSource == NULL) {
 		DDLogError(@"Could not create image source for %@", url);
 		return nil;
 	}

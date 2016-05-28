@@ -91,7 +91,7 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
  * Returns the number of images that are in the image browser.
  */
 - (NSInteger) collectionView:(NSCollectionView *) collectionView numberOfItemsInSection:(NSInteger) section {
-	return self.imagesToShow.count * 100;
+	return self.imagesToShow.count;
 }
 
 /**
@@ -105,7 +105,7 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
 	// set the image
 	NSUInteger idx = [indexPath indexAtPosition:1];
 	
-	cell.representedObject = self.imagesToShow[idx % self.imagesToShow.count];
+	cell.representedObject = self.imagesToShow[idx];
 	cell.imageSequence = idx + 1;
 	
 	return cell;

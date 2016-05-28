@@ -21,7 +21,6 @@ static CGFunctionRef TSCreateHSLFunction(TSHSLSliderCellType type, CGFloat centr
 static void TSHSLInterpolateFunc(void *inInfo, const CGFloat *in, CGFloat *out);
 
 static void TSConvertHSLToRGB(CGFloat h, CGFloat s, CGFloat l, CGFloat* outR, CGFloat* outG, CGFloat* outB);
-static void TSConvertRGBToHSL(CGFloat r, CGFloat g, CGFloat b, CGFloat* outH, CGFloat* outS, CGFloat* outL);
 
 @interface TSHSLSliderCell ()
 
@@ -80,13 +79,24 @@ static void TSConvertRGBToHSL(CGFloat r, CGFloat g, CGFloat b, CGFloat* outH, CG
 	self.sliderCellType = TSHSLSliderCellTypeHue;
 }
 
+#pragma mark Sizing
+/**
+ * When the cell is resized, invalidate the mask image.
+ */
+- (void) calcDrawInfo:(NSRect) aRect {
+	[super calcDrawInfo:aRect];
+	
+	self.imageMask = nil;
+}
+
 #pragma mark Drawing
 /**
  * Performs drawing of the track.
  */
 - (void) drawBarInside:(NSRect) aRect flipped:(BOOL) flipped {
-	// create a mask image to which the thingie is masked
-	if(self.imageMask == nil) {
+	// create a mask image to which drawing the track is masked
+	if(self.imageMask == nil ||
+	   NSEqualSizes(self.imageMask.size, self.controlView.bounds.size) != YES) {
 		[self updateMaskImageForRect:aRect];
 	}
 	
@@ -99,6 +109,9 @@ static void TSConvertRGBToHSL(CGFloat r, CGFloat g, CGFloat b, CGFloat* outH, CG
 	CGContextRef ctx = [NSGraphicsContext currentContext].graphicsPort;
 	
 	CGContextClipToMask(ctx, self.controlView.bounds, maskImage);
+	
+	// scale coordinate system (shader needn't be recreated when width changes)
+	CGContextScaleCTM(ctx, NSWidth(self.controlView.bounds), 1.f);
 	CGContextDrawShading(ctx, self.shader);
 	
 	[NSGraphicsContext restoreGraphicsState];
@@ -110,7 +123,7 @@ static void TSConvertRGBToHSL(CGFloat r, CGFloat g, CGFloat b, CGFloat* outH, CG
 - (NSBezierPath *) pathForTrackRect:(NSRect) rect {
 	const CGFloat barRadius = 2.f;
 	
-	// inset the rect verticall
+	// inset the rect vertically
 	NSRect newRect = NSInsetRect(rect, 0, 1.f);
 	
 	// create path
@@ -135,7 +148,7 @@ static void TSConvertRGBToHSL(CGFloat r, CGFloat g, CGFloat b, CGFloat* outH, CG
 	
 	// create the shader
 	CGPoint start = CGPointMake(0.f, 0.5);
-	CGPoint end = CGPointMake(NSWidth(self.controlView.bounds), 0.5);
+	CGPoint end = CGPointMake(1.f, 0.5);
 	
 	cs = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
 	shadeFunc = TSCreateHSLFunction(self.sliderCellType, self.fixedValue);
