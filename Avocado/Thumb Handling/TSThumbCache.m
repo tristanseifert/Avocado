@@ -53,7 +53,7 @@ static TSThumbCache *sharedInstance = nil;
 		self.queue = [NSOperationQueue new];
 		
 		self.queue.qualityOfService = NSQualityOfServiceUtility;
-		self.queue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount;
+		self.queue.maxConcurrentOperationCount = 4;
 		
 		self.queue.name = @"TSThumbCache";
 		

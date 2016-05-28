@@ -317,6 +317,8 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 #endif
 	
 	for(NSUInteger i = 0; i < stripes; i++) {
+		DDLogVerbose(@"Reading stripe %lu…", i);
+		
 		NSString *name;
 		NSURL *url;
 		NSUInteger offset, length;
