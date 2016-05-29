@@ -4,10 +4,14 @@
         <attribute name="dateAdded" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="dateLastAccessed" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="directory" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="filename" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="imageUuid" optional="YES" attributeType="String" syncable="YES"/>
+        <compoundIndexes>
+            <compoundIndex>
+                <index value="imageUuid"/>
+            </compoundIndex>
+        </compoundIndexes>
     </entity>
     <elements>
-        <element name="Thumbnail" positionX="-63" positionY="-18" width="128" height="120"/>
+        <element name="Thumbnail" positionX="-63" positionY="-18" width="128" height="105"/>
     </elements>
 </model>

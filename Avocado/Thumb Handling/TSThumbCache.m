@@ -6,14 +6,13 @@
 //  Copyright © 2016 Tristan Seifert. All rights reserved.
 //
 
+#import <Cocoa/Cocoa.h>
+
 #import "TSThumbCache.h"
 
 #import "TSThumbHandlerProtocol.h"
 #import "TSHumanModels.h"
-#import "TSRawImage.h"
-
-#import <ImageIO/ImageIO.h>
-#import <Cocoa/Cocoa.h>
+#import "TSThumbImageProxy+AvocadoApp.h"
 
 static TSThumbCache *sharedInstance = nil;
 
@@ -21,16 +20,15 @@ static TSThumbCache *sharedInstance = nil;
 
 /// xpc connection to the thumb service
 @property (nonatomic) NSXPCConnection *xpcConnection;
-
-/// this queue gets thumb requests submitted on it
-@property (nonatomic) NSOperationQueue *queue;
-/// temporary in-memory cache
+/// temporary in-memory cache mapping image uuid to thumbnail urls
 @property (nonatomic) NSCache *imageCache;
 
-- (NSImage *) createThumb:(NSURL *) image forSize:(NSSize) size;
-- (NSImage *) extractThumbFromFile:(NSURL *) url;
-
-- (NSImage *) rotateImage:(NSImage *) image angle:(NSInteger) alpha;
+/// Maps a temporary invocation identifier to a callback
+@property (nonatomic) NSMutableDictionary <NSString *, TSThumbCacheCallback> *callbackMap;
+/// Maps a temporary invocation identifier to an image uuid
+@property (nonatomic) NSMutableDictionary <NSString *, NSString *> *imageUuidMap;
+/// Queue used to synchronize access to callbackMap
+@property (nonatomic, retain) dispatch_queue_t callbackAccessQueue;
 
 @end
 
@@ -53,19 +51,17 @@ static TSThumbCache *sharedInstance = nil;
  */
 - (instancetype) init {
 	if(self = [super init]) {
-		// set up queue (used for thumb requests)
-		self.queue = [NSOperationQueue new];
+		// allocate some in-memory collections
+		self.callbackMap = [NSMutableDictionary new];
+		self.imageUuidMap = [NSMutableDictionary new];
 		
-		self.queue.qualityOfService = NSQualityOfServiceUtility;
-		self.queue.maxConcurrentOperationCount = 4;
-		
-		self.queue.name = @"TSThumbCache";
-		
-		// set up cache
 		self.imageCache = [NSCache new];
 		
+		// Create a queue to synchronize access to the callback map
+		self.callbackAccessQueue = dispatch_queue_create("me.tseifert.Avocado.TSThumbCache", DISPATCH_QUEUE_CONCURRENT);
 		
-		// set up the xpc connection
+		
+		// allocate the XPC handle; it will be connected on the first invocation
 		NSXPCInterface *intf;
 		
 		self.xpcConnection = [[NSXPCConnection alloc] initWithServiceName:@"me.tseifert.avocado.ThumbHandler"];
@@ -108,231 +104,97 @@ static TSThumbCache *sharedInstance = nil;
  * thumbnail each time.
  */
 - (void) getThumbForImage:(TSLibraryImage *) inImage withSize:(NSSize) size andCallback:(TSThumbCacheCallback) callback {
-	NSBlockOperation *extractThumbOp, *createThumbOp;
+	__block NSString *inImageUuid = nil;
 	
-	// get the string used as the key, and look up in the cache
-	__block NSString *key = [NSString stringWithFormat:@"%@_%@", inImage.thumbUUID, NSStringFromSize(size)];
+	// get some information from the input image
+	[inImage.managedObjectContext performBlockAndWait:^{
+		inImageUuid = inImage.uuid;
+	}];
 	
-//	DDLogInfo(@"Creating thumb sized %@ for image (fault = %i, url = %@, uuid = %@, key = %@)", NSStringFromSize(size), image.isFault, image.fileUrl, image.thumbUUID, key);
-	
-	if([self.imageCache objectForKey:key] != nil) {
-		callback([self.imageCache objectForKey:key]);
+	// check if the image exists in the cache
+	if([self.imageCache objectForKey:inImageUuid] != nil) {
+		// if so, immediately return to the callback
+		NSImage *image = (NSImage *) [self.imageCache objectForKey:inImageUuid];
+		callback(image);
+		
 		return;
 	}
 	
-	// get some info from the image (this way, we need not create a new queue)
-	__block NSURL *inUrl = inImage.fileUrl;
-	BOOL isRaw = (inImage.fileTypeValue == TSLibraryImageRaw);
 	
-	// for non-RAW images, use ImageIO
-	if(isRaw == NO) {
-		// extract a thumbnail from the file
-		extractThumbOp = [NSBlockOperation blockOperationWithBlock:^{
-			NSImage *extracted = [self extractThumbFromFile:inUrl];
-			
-			if(extracted) {
-				callback(extracted);
-			} else {
-				DDLogWarn(@"Couldn't extract thumb from %@; deferring to thumb creation", inUrl);
-			}
-		}];
-		
-		// create an operation that will render a thumbnail
-		createThumbOp = [NSBlockOperation blockOperationWithBlock:^{
-			// make a thumbnail
-			NSImage *thumb = [self createThumb:inUrl forSize:size];
-			
-			// store it and execute callback
-			if(thumb) {
-				[self.imageCache setObject:thumb forKey:key];
-
-				callback(thumb);
-			} else {
-				DDLogError(@"Couldn't create thumbnail for %@; is it a valid image?", inUrl);
-				
-				callback([NSImage imageNamed:NSImageNameCaution]);
-			}
-		}];
-		
-		[createThumbOp addDependency:extractThumbOp];
-		
-		// queue these operations
-		[self.queue addOperation:extractThumbOp];
-		[self.queue addOperation:createThumbOp];
-	} else {
-		// otherwise, make use of LibRAW
-		extractThumbOp = [NSBlockOperation blockOperationWithBlock:^{
-			NSError *err = nil;
-			
-			// create a RAW parser
-			TSRawImage *img = [[TSRawImage alloc] initWithContentsOfUrl:inUrl error:&err];
-			
-			if(err) {
-				DDLogError(@"Couldn't create RAW handle for %@: %@", inUrl, err);
-				callback([NSImage imageNamed:NSImageNameCaution]);
-			} else {
-				// extract the thumbnail, and apply rotation if needed
-				NSImage *thumb = img.thumbnail;
-				
-				// if non-zero size, continue
-				if(NSEqualSizes(thumb.size, NSZeroSize) == NO) {
-					if(img.rotation != 0) {
-						thumb = [self rotateImage:thumb angle:img.rotation];
-					}
-				
-					// store the converted thumb and execute callback
-					[self.imageCache setObject:thumb forKey:key];
-					callback(thumb);
-				} else {
-					// otherwise, show a caution icon
-					callback([NSImage imageNamed:NSImageNameCaution]);
-					
-					DDLogInfo(@"Got thumb with zero size for %@", inUrl);
-				}
-			}
-		}];
-		
-		// queue operations
-		[self.queue addOperation:extractThumbOp];
-	}
+	// insert the callback into the callback map
+	NSString *identifier = [NSUUID new].UUIDString;
+	
+	dispatch_barrier_async(self.callbackAccessQueue, ^{
+		self.callbackMap[identifier] = [callback copy];
+		self.imageUuidMap[identifier] = inImageUuid;
+	});
+	
+	// request the XPC thumb generation
+	TSThumbImageProxy *proxy = [TSThumbImageProxy proxyForImage:inImage];
+	[self.xpcConnection.remoteObjectProxy fetchThumbForImage:proxy
+													isUrgent:NO
+											  withIdentifier:identifier];
 }
 
-#pragma mark Thumb Creation
+#pragma mark XPC Service Callbacks
 /**
- * Creates a thumb, using ImageIO; this creates thumbnails very quickly, at
- * the expense of some quality.
+ * When the thumbnail generation completes successfully for an image previously
+ * requested, this callback is executed.
+ *
+ * @param identifier Value passed to fetchThumbForImage:isUrgent:withIdentifier:
+ * @param url Url of the thumbnail image.
  */
-- (NSImage *) createThumb:(NSURL *) url forSize:(NSSize) size {
-	CGImageSourceRef imageSource = NULL;
-	CGImageRef thumb = NULL;
+- (void) thumbnailGeneratedForIdentifier:(NSString *) identifier atUrl:(NSURL *) url {
+	__block NSString *imageUuid = nil;
+	__block TSThumbCacheCallback callback;
 	
-	// create an image source
-	imageSource = CGImageSourceCreateWithURL((CFURLRef) url, NULL);
+	// get the uuid of the image, and the callback
+	dispatch_sync(self.callbackAccessQueue, ^{
+		callback = self.callbackMap[identifier];
+		imageUuid = self.imageUuidMap[identifier];
+	});
 	
-	if(imageSource == NULL) {
-		DDLogError(@"Couldn't create image source for %@", url);
-		return nil;
-	}
+	// read the image from the url and store in cache
+	NSImage *img = [[NSImage alloc] initWithContentsOfURL:url];
+	[self.imageCache setObject:img forKey:imageUuid];
 	
-	// set up thumbnail options, then generate the thumb
-	NSDictionary *thumbOptions = @{
-		// always create a new thumb
-		(NSString *) kCGImageSourceCreateThumbnailFromImageAlways: @YES,
-		// transform (rotate/scale according to pixel ratio)
-		(NSString *) kCGImageSourceCreateThumbnailWithTransform: @YES,
-		// take the longer value of the size
-		(NSString *) kCGImageSourceThumbnailMaxPixelSize: @((size.width > size.height) ? size.width : size.height)
-	};
+	// execute callback
+	callback(img);
 	
-	thumb = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, (CFDictionaryRef) thumbOptions);
-	
-	if(thumb == NULL) {
-		DDLogError(@"Couldn't create thumb for %@, settings %@", url, thumbOptions);
-		return nil;
-	}
-	
-	// create an NSImage
-	return [[NSImage alloc] initWithCGImage:thumb size:NSZeroSize];
+	// remove callback from the dictionary
+	dispatch_barrier_async(self.callbackAccessQueue, ^{
+		[self.callbackMap removeObjectForKey:identifier];
+		[self.imageUuidMap removeObjectForKey:identifier];
+	});
 }
 
 /**
- * Extracts an embedded thumbnail from an image file.
+ * If an unexpected error occurs during thumbnail processing (i.e. the file is
+ * unreadable, or the raw image does not contain a valid thumbnail) this method
+ * is called. If an error is available, it is passed in as well.
+ *
+ * @param identifier Value passed to fetchThumbForImage:isUrgent:withIdentifier:
+ * @param error An `NSError` object describing the error, if applicable.
  */
-- (NSImage *) extractThumbFromFile:(NSURL *) url {
-	CGImageRef        thumbImage = NULL;
-	CGImageSourceRef  imgSource;
-	CFDictionaryRef   thumbOpts = NULL;
-	
-	CFStringRef       myKeys[3];
-	CFTypeRef         myValues[3];
- 
-	// Create an image source from NSData; no options.
-	imgSource = CGImageSourceCreateWithURL((__bridge CFURLRef) url, NULL);
-	
-	// Make sure the image source exists before continuing.
-	if (imgSource == NULL) {
-		DDLogError(@"Could not create image source for %@", url);
-		return nil;
-	}
- 
-	// Set up the thumbnail options.
-	myKeys[0] = kCGImageSourceCreateThumbnailWithTransform;
-	myValues[0] = (CFTypeRef) kCFBooleanTrue;
-	myKeys[1] = kCGImageSourceCreateThumbnailFromImageIfAbsent;
-	myValues[1] = (CFTypeRef) kCFBooleanTrue;
-	
-	//	myKeys[2] = kCGImageSourceThumbnailMaxPixelSize;
-	//	myValues[2] = (CFTypeRef) CFNumberCreate(NULL, kCFNumberIntType, &imageSize);
- 
-	thumbOpts = CFDictionaryCreate(NULL, (const void **) myKeys,
-								   (const void **) myValues, 1,
-								   &kCFTypeDictionaryKeyCallBacks,
-								   & kCFTypeDictionaryValueCallBacks);
- 
-	// Create the thumbnail image using the specified options.
-	thumbImage = CGImageSourceCreateThumbnailAtIndex(imgSource, 0, thumbOpts);
-	
-	// release options and image source
-	CFRelease(thumbOpts);
-	CFRelease(imgSource);
- 
-	// Make sure the thumbnail image exists before continuing.
-	if(thumbImage == NULL){
-		DDLogError(@"Could not create thumbnail image for %@", url);
-		return nil;
-	}
-	
-	// convert thumb image
-	return [[NSImage alloc] initWithCGImage:thumbImage size:NSZeroSize];
-}
+- (void) thumbnailFailedForIdentifier:(NSString *) identifier withError:(NSError *) error {
+	// get the image completion callblack
+	__block TSThumbCacheCallback callback;
 
-#pragma mark Image Manipulation
-/**
- * Rotates the given image.
- */
-- (NSImage *) rotateImage:(NSImage *) image angle:(NSInteger) degrees {
-	degrees = fmod(degrees, 360);
+	dispatch_sync(self.callbackAccessQueue, ^{
+		callback = self.callbackMap[identifier];
+	});
 	
-	// exit if there is no rotation to actually do
-	if (0 == degrees) {
-		return image;
-	}
+	// execute callback
+	NSImage *img = [NSImage imageNamed:NSImageNameCaution];
+	callback(img);
 	
-	// calculate size of the new image
-	NSSize size = [image size];
-	NSSize maxSize;
-	if (90 == degrees || 270 == degrees || -90 == degrees || -270 == degrees) {
-		maxSize = NSMakeSize(size.height, size.width);
-	} else if (180. == degrees || -180. == degrees) {
-		maxSize = size;
-	}
+	DDLogError(@"Error getting thumbnail for %@: %@", identifier, error);
 	
-	// set up the rotation transform
-	NSAffineTransform *rot = [NSAffineTransform transform];
-	[rot rotateByDegrees:-degrees];
-	
-	// centering transform
-	NSAffineTransform *center = [NSAffineTransform transform];
-	[center translateXBy:maxSize.width / 2 yBy:maxSize.height / 2];
-	[rot appendTransform:center];
-	
-	// create the new image
-	NSImage *newImage = [[NSImage alloc] initWithSize:maxSize];
-	[newImage lockFocus];
-	
-	// do something with the transform pls
-	[rot concat];
-	
-	// draw old image
-	NSRect rect = NSMakeRect(0, 0, size.width, size.height);
-	NSPoint corner = NSMakePoint(-size.width / 2, -size.height / 2);
-	
-	[image drawAtPoint:corner fromRect:rect
-			 operation:NSCompositeCopy fraction:1.0];
-	
-	// done
-	[newImage unlockFocus];
-	return newImage;
+	// remove callback from the dictionary
+	dispatch_barrier_async(self.callbackAccessQueue, ^{
+		[self.callbackMap removeObjectForKey:identifier];
+		[self.imageUuidMap removeObjectForKey:identifier];
+	});
 }
 
 @end

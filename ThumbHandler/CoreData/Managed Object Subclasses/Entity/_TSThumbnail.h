@@ -26,8 +26,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, nullable) NSString* directory;
 
-@property (nonatomic, strong, nullable) NSString* filename;
-
 @property (nonatomic, strong, nullable) NSString* imageUuid;
 
 @end
@@ -43,9 +41,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString*)primitiveDirectory;
 - (void)setPrimitiveDirectory:(NSString*)value;
 
-- (NSString*)primitiveFilename;
-- (void)setPrimitiveFilename:(NSString*)value;
-
 - (NSString*)primitiveImageUuid;
 - (void)setPrimitiveImageUuid:(NSString*)value;
 
@@ -55,7 +50,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)dateAdded;
 + (NSString *)dateLastAccessed;
 + (NSString *)directory;
-+ (NSString *)filename;
 + (NSString *)imageUuid;
 @end
 

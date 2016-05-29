@@ -101,6 +101,8 @@
 		6AC4ECAA1CFB6EBC009EC46B /* TSThumbImageProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4ECA91CFB6EBC009EC46B /* TSThumbImageProxy.m */; };
 		6AC4ECAB1CFB6EBC009EC46B /* TSThumbImageProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4ECA91CFB6EBC009EC46B /* TSThumbImageProxy.m */; };
 		6AC4ECAE1CFB70E4009EC46B /* TSThumbImageProxy+AvocadoApp.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4ECAD1CFB70E4009EC46B /* TSThumbImageProxy+AvocadoApp.m */; };
+		6AC4ECB41CFB8B19009EC46B /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AC4ECB31CFB8B19009EC46B /* Security.framework */; };
+		6AC4ECB71CFB8C84009EC46B /* TSThumbXPCServiceDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4ECB61CFB8C84009EC46B /* TSThumbXPCServiceDelegate.m */; };
 		6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */; };
 		6AE87BCC1CD275C90053CD9D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BCB1CD275C90053CD9D /* main.m */; };
 		6AE87BD11CD275C90053CD9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AE87BD01CD275C90053CD9D /* Assets.xcassets */; };
@@ -337,6 +339,9 @@
 		6AC4ECAD1CFB70E4009EC46B /* TSThumbImageProxy+AvocadoApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TSThumbImageProxy+AvocadoApp.m"; sourceTree = "<group>"; };
 		6AC4ECB01CFB7405009EC46B /* ThumbHandler.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ThumbHandler.entitlements; sourceTree = "<group>"; };
 		6AC4ECB11CFB7623009EC46B /* Avocado.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Avocado.entitlements; sourceTree = "<group>"; };
+		6AC4ECB31CFB8B19009EC46B /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		6AC4ECB51CFB8C84009EC46B /* TSThumbXPCServiceDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSThumbXPCServiceDelegate.h; sourceTree = "<group>"; };
+		6AC4ECB61CFB8C84009EC46B /* TSThumbXPCServiceDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSThumbXPCServiceDelegate.m; sourceTree = "<group>"; };
 		6AE87BC41CD275C90053CD9D /* Avocado.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Avocado.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AE87BC71CD275C90053CD9D /* TSAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TSAppDelegate.h; sourceTree = "<group>"; };
 		6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TSAppDelegate.m; sourceTree = "<group>"; };
@@ -410,6 +415,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6AC4ECB41CFB8B19009EC46B /* Security.framework in Frameworks */,
 				6AC4EC861CFA547D009EC46B /* Pods_Avocado.framework in Frameworks */,
 				6AC4ECA51CFB6D3A009EC46B /* libraw_r.15.dylib in Frameworks */,
 			);
@@ -691,6 +697,8 @@
 				6AC4EC7B1CFA5194009EC46B /* main.m */,
 				6AC4EC7D1CFA5194009EC46B /* Info.plist */,
 				6AC4ECB01CFB7405009EC46B /* ThumbHandler.entitlements */,
+				6AC4ECB51CFB8C84009EC46B /* TSThumbXPCServiceDelegate.h */,
+				6AC4ECB61CFB8C84009EC46B /* TSThumbXPCServiceDelegate.m */,
 			);
 			name = Bootstrapping;
 			sourceTree = "<group>";
@@ -1074,6 +1082,7 @@
 		F4FC62D8D3C46EB93528ACF1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6AC4ECB31CFB8B19009EC46B /* Security.framework */,
 				6A74F1E41CF26F0C0023B439 /* libcompression.tbd */,
 				6A06F4381CE01767001DFC4C /* Quartz.framework */,
 				6A06F4391CE01767001DFC4C /* QuartzCore.framework */,
@@ -1368,6 +1377,7 @@
 				6AC4EC9D1CFB545F009EC46B /* TSLogFormatter.m in Sources */,
 				6AC4ECA61CFB6D3F009EC46B /* TSRawImage.m in Sources */,
 				6AC4ECA21CFB548C009EC46B /* NSFileManager+TSDirectorySizing.m in Sources */,
+				6AC4ECB71CFB8C84009EC46B /* TSThumbXPCServiceDelegate.m in Sources */,
 				6AC4EC7A1CFA5194009EC46B /* TSThumbHandler.m in Sources */,
 				6AC4ECAB1CFB6EBC009EC46B /* TSThumbImageProxy.m in Sources */,
 				6AC4ECA71CFB6D4E009EC46B /* TSRawImageDataHelpers.m in Sources */,

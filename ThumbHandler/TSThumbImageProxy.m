@@ -8,13 +8,6 @@
 
 #import "TSThumbImageProxy.h"
 
-@interface TSThumbImageProxy ()
-
-/// bookmark data for the url
-@property (nonatomic) NSData *originalUrlBookmark;
-
-@end
-
 @implementation TSThumbImageProxy
 
 #pragma NSCoding Support
@@ -30,8 +23,26 @@
 		
 		self.isRaw = [aDecoder decodeBoolForKey:@"isRaw"];
 		
-		// decode the url data; this automagically makes the url on access
-		self.originalUrlBookmark = [aDecoder decodeObjectOfClass:[NSData class] forKey:@"urlBookmark"];
+		// decode the url bookmark data previously generated
+		NSData *bookmark = [aDecoder decodeObjectOfClass:[NSData class] forKey:@"urlBookmark"];
+		
+		BOOL isStale = NO;
+		NSError *err = nil;
+		NSURL *url = nil;
+		
+		url = [NSURL URLByResolvingBookmarkData:bookmark
+										options:NSURLBookmarkResolutionWithoutUI
+								  relativeToURL:nil bookmarkDataIsStale:&isStale
+										  error:&err];
+		
+		if(err != nil) {
+			DDLogError(@"Could not decode url bookmark data: %@", err);
+			return nil;
+		} else if(isStale == YES) {
+			DDLogWarn(@"Decoded URL (%@) is stale (this should never happen)", url);
+		}
+		
+		self.originalUrl = url;
 	}
 	
 	return self;
@@ -45,67 +56,22 @@
 	[aCoder encodeObject:[NSValue valueWithSize:self.size] forKey:@"size"];
 	[aCoder encodeBool:self.isRaw forKey:@"isRaw"];
 	
-	[aCoder encodeObject:self.originalUrlBookmark forKey:@"urlBookmark"];
+	// create a bookmark for the url, and archive that instead of the raw url
+	NSData *bookmark;
+	NSError *err = nil;
+	
+	bookmark = [self.originalUrl bookmarkDataWithOptions:0
+						  includingResourceValuesForKeys:nil
+										   relativeToURL:nil error:&err];
+	
+	if(err != nil) {
+		DDLogError(@"Couldn't create bookmark for url %@: %@", self.originalUrl, err);
+	}
+	
+	[aCoder encodeObject:bookmark forKey:@"urlBookmark"];
 }
 
 + (BOOL) supportsSecureCoding {
 	return YES;
 }
-
-#pragma mark URL Handling
-/**
- * When setting the original URL, create an app-scoped bookmark, and set its
- * data.
- */
-- (void) setOriginalUrl:(NSURL *) inUrl {
-	NSError *err = nil;
-	
-	// create bookmark
-	self.originalUrlBookmark = [inUrl bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope | NSURLBookmarkCreationSecurityScopeAllowOnlyReadAccess
-									 includingResourceValuesForKeys:nil
-													  relativeToURL:nil error:&err];
-	
-	// check for error
-	if(err != nil) {
-		DDLogError(@"Couldn't create bookmark for url %@: %@", inUrl, err);
-	}
-}
-
-/**
- * Decodes the bookmark data to yield an URL.
- */
-- (NSURL *) originalUrl {
-	// check if we have bookmark data
-	if(self.originalUrlBookmark == nil) {
-		return nil;
-	}
-	
-	BOOL isStale = NO;
-	NSError *err = nil;
-	NSURL *url = nil;
-	
-	// try to re-create the url
-	url = [NSURL URLByResolvingBookmarkData:self.originalUrlBookmark
-									options:NSURLBookmarkResolutionWithoutUI | NSURLBookmarkResolutionWithSecurityScope
-							  relativeToURL:nil bookmarkDataIsStale:&isStale
-									  error:&err];
-	
-	if(err != nil) {
-		DDLogError(@"Could not decode url bookmark: %@", err);
-		return nil;
-	} else if(isStale == YES) {
-		DDLogWarn(@"Decoded URL (%@) is stale (this should never happen)", url);
-	}
-	
-	// returns the url
-	return url;
-}
-
-/**
- * Allow for KVO on the originalUrl key path.
- */
-+ (NSSet *) keyPathsForValuesAffectingOriginalUrl {
-	return [NSSet setWithObject:@"originalUrlBookmark"];
-}
-
 @end

@@ -38,8 +38,6 @@
 
 @dynamic directory;
 
-@dynamic filename;
-
 @dynamic imageUuid;
 
 @end
@@ -53,9 +51,6 @@
 }
 + (NSString *)directory {
 	return @"directory";
-}
-+ (NSString *)filename {
-	return @"filename";
 }
 + (NSString *)imageUuid {
 	return @"imageUuid";
