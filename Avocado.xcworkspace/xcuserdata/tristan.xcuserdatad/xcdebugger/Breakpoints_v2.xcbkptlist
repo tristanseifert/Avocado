@@ -90,12 +90,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Avocado/RAW Processing/TSRawImage.m"
-            timestampString = "486086346.9763"
+            timestampString = "486242426.582154"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "176"
-            endingLineNumber = "176"
-            landmarkName = "-convertEmbeddedThumbnail"
+            startingLineNumber = "171"
+            endingLineNumber = "171"
+            landmarkName = "-unpackRawData:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -122,12 +122,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Avocado/RAW Processing/TSRawImage.m"
-            timestampString = "486086346.9763"
+            timestampString = "486242426.582154"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "133"
-            endingLineNumber = "133"
-            landmarkName = "-unpackThumbs"
+            startingLineNumber = "128"
+            endingLineNumber = "128"
+            landmarkName = "-loadFile:withError:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -138,13 +138,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Avocado/RAW Processing/TSRawImage.m"
-            timestampString = "486086346.9763"
+            timestampString = "486242426.582154"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "100"
-            endingLineNumber = "100"
-            landmarkName = "-loadFile:withError:"
-            landmarkType = "5">
+            startingLineNumber = "95"
+            endingLineNumber = "95"
+            landmarkName = "@implementation TSRawImage"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

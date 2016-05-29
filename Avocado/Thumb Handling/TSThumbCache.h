@@ -7,11 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "TSThumbHandlerDelegate.h"
 
 typedef void (^TSThumbCacheCallback)(NSImage *);
 
 @class TSLibraryImage;
-@interface TSThumbCache : NSObject
+@interface TSThumbCache : NSObject <TSThumbHandlerDelegate>
 
 + (instancetype) sharedInstance;
 

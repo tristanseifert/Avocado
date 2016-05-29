@@ -493,7 +493,7 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 /**
  * Encodes the cache information, then stores it on disk.
  */
-- (void) encodeCacheMetadata {	
+- (void) encodeCacheMetadata {
 	NSError *err = nil;
 	NSURL *url;
 	NSMutableData *data;

@@ -8,6 +8,7 @@
 
 #import "TSThumbCache.h"
 
+#import "TSThumbHandlerProtocol.h"
 #import "TSHumanModels.h"
 #import "TSRawImage.h"
 
@@ -17,6 +18,9 @@
 static TSThumbCache *sharedInstance = nil;
 
 @interface TSThumbCache ()
+
+/// xpc connection to the thumb service
+@property (nonatomic) NSXPCConnection *xpcConnection;
 
 /// this queue gets thumb requests submitted on it
 @property (nonatomic) NSOperationQueue *queue;
@@ -59,9 +63,37 @@ static TSThumbCache *sharedInstance = nil;
 		
 		// set up cache
 		self.imageCache = [NSCache new];
+		
+		
+		// set up the xpc connection
+		NSXPCInterface *intf;
+		
+		self.xpcConnection = [[NSXPCConnection alloc] initWithServiceName:@"me.tseifert.avocado.ThumbHandler"];
+		
+		intf = [NSXPCInterface interfaceWithProtocol:@protocol(TSThumbHandlerProtocol)];
+		self.xpcConnection.remoteObjectInterface = intf;
+		intf = [NSXPCInterface interfaceWithProtocol:@protocol(TSThumbHandlerDelegate)];
+		self.xpcConnection.exportedInterface = intf;
+		self.xpcConnection.exportedObject = self;
+		
+		// set up some error handlers
+		self.xpcConnection.interruptionHandler = ^{
+			DDLogWarn(@"XPC connection to thumb handler invalidated");
+		};
+		
+		// allow the connection to be used
+		[self.xpcConnection resume];
 	}
 	
 	return self;
+}
+
+/**
+ * Clean up some data when deallocating.
+ */
+- (void) dealloc {
+	// invalidate XPC connection
+	[self.xpcConnection invalidate];
 }
 
 /**

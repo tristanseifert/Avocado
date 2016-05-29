@@ -22,6 +22,7 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 // internal properties
 @property (nonatomic, assign) libraw_data_t *libRaw;
 @property (nonatomic) NSURL *fileUrl;
+@property (nonatomic) NSData *fileData;
 
 // internal helpers
 - (BOOL) loadFile:(NSURL *) url withError:(NSError **) outErr;
@@ -67,6 +68,9 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 	// first, releases resources back to the OS
 	libraw_recycle(self.libRaw);
 	libraw_free_image(self.libRaw);
+	
+	// free the buffer of read data
+	self.fileData = nil;
 }
 
 /**
@@ -95,10 +99,24 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 	int err = 0;
 	NSError *nsErr = nil;
 	
-	// open the file on disk
-	const char *fsPath = url.path.fileSystemRepresentation;
+	// try to read the file (or map into memory, if safe)
+	self.fileData = [NSData dataWithContentsOfURL:url
+										  options:NSDataReadingMappedIfSafe
+											error:&nsErr];
 	
-	if((err = libraw_open_file(self.libRaw, fsPath)) != LIBRAW_SUCCESS) {
+	if(self.fileData == nil) {
+		DDLogError(@"Couldn't read RAW file from %@: %@", url, nsErr);
+		if(outErr) *outErr = nsErr;
+		
+		return NO;
+	}
+	
+	// open the file from the memory buffer
+	void *data = (void *) self.fileData.bytes;
+	size_t len = (size_t) self.fileData.length;
+	
+	
+	if((err = libraw_open_buffer(self.libRaw, data, len)) != LIBRAW_SUCCESS) {
 		nsErr = [self errorFromCode:err];
 		
 		DDLogError(@"Error opening RAW file: %i (%@)", err, nsErr);
