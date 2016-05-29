@@ -9,10 +9,20 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>ThumbHandler.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>4</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>6A28F06C1CD94A6400228067</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>6AC4EC741CFA5194009EC46B</key>
 		<dict>
 			<key>primary</key>
 			<true/>

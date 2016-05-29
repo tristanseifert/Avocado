@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
@@ -233,7 +233,7 @@
                 <outlet property="contentViewController" destination="ood-o3-Ngf" id="2S0-pF-NTE"/>
             </connections>
         </popover>
-        <customView id="hCh-aC-IQ0">
+        <customView id="hCh-aC-IQ0" userLabel="View Options">
             <rect key="frame" x="0.0" y="0.0" width="250" height="375"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
@@ -353,7 +353,7 @@
                 <constraint firstItem="sIM-Fq-wNM" firstAttribute="top" secondItem="e4c-bV-Jq5" secondAttribute="bottom" constant="6" id="wwp-G1-1uk"/>
                 <constraint firstItem="6N8-dh-M2s" firstAttribute="leading" secondItem="xlO-g9-6gJ" secondAttribute="leading" id="xRH-tI-mMx"/>
             </constraints>
-            <point key="canvasLocation" x="284" y="575.5"/>
+            <point key="canvasLocation" x="200" y="737.5"/>
         </customView>
         <toolbar implicitIdentifier="09D11707-F4A3-4FD5-970E-AC5832E91C2B" autosavesConfiguration="NO" displayMode="iconAndLabel" sizeMode="regular" id="9Ct-HC-0q3">
             <allowedToolbarItems>

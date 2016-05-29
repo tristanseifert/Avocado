@@ -86,6 +86,10 @@
 		6ABC2DC01CD43586006B959F /* _TSLibraryExportService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DB71CD43586006B959F /* _TSLibraryExportService.m */; };
 		6ABC2DC31CD43586006B959F /* _TSLibraryTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DBD1CD43586006B959F /* _TSLibraryTag.m */; };
 		6AC4EC701CF95D43009EC46B /* NSFileManager+TSDirectorySizing.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4EC6F1CF95D43009EC46B /* NSFileManager+TSDirectorySizing.m */; };
+		6AC4EC7A1CFA5194009EC46B /* TSThumbHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4EC791CFA5194009EC46B /* TSThumbHandler.m */; };
+		6AC4EC7C1CFA5194009EC46B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4EC7B1CFA5194009EC46B /* main.m */; };
+		6AC4EC801CFA5194009EC46B /* ThumbHandler.xpc in Embed XPC Services */ = {isa = PBXBuildFile; fileRef = 6AC4EC751CFA5194009EC46B /* ThumbHandler.xpc */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		6AC4EC861CFA547D009EC46B /* Pods_Avocado.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 819223217746015A3002C6D6 /* Pods_Avocado.framework */; };
 		6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */; };
 		6AE87BCC1CD275C90053CD9D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BCB1CD275C90053CD9D /* main.m */; };
 		6AE87BD11CD275C90053CD9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AE87BD01CD275C90053CD9D /* Assets.xcassets */; };
@@ -123,6 +127,13 @@
 			remoteGlobalIDString = 6AE87BC31CD275C90053CD9D;
 			remoteInfo = Avocado;
 		};
+		6AC4EC7E1CFA5194009EC46B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6AE87BBC1CD275C90053CD9D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6AC4EC741CFA5194009EC46B;
+			remoteInfo = ThumbHandler;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -138,6 +149,17 @@
 				6A1068891CD5BF14004BF216 /* libraw_r.15.dylib in Embed dylibs and frameworks */,
 			);
 			name = "Embed dylibs and frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6AC4EC841CFA5194009EC46B /* Embed XPC Services */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/XPCServices";
+			dstSubfolderSpec = 16;
+			files = (
+				6AC4EC801CFA5194009EC46B /* ThumbHandler.xpc in Embed XPC Services */,
+			);
+			name = "Embed XPC Services";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -282,6 +304,12 @@
 		6AC3E7CF1CDD6A880099B932 /* TSRawImageDataHelpers.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = TSRawImageDataHelpers.h; path = "Avocado/RAW Processing/TSRawImageDataHelpers.h"; sourceTree = "<group>"; };
 		6AC4EC6E1CF95D43009EC46B /* NSFileManager+TSDirectorySizing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSFileManager+TSDirectorySizing.h"; path = "Avocado/Helpers/NSFileManager+TSDirectorySizing.h"; sourceTree = "<group>"; };
 		6AC4EC6F1CF95D43009EC46B /* NSFileManager+TSDirectorySizing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSFileManager+TSDirectorySizing.m"; path = "Avocado/Helpers/NSFileManager+TSDirectorySizing.m"; sourceTree = "<group>"; };
+		6AC4EC751CFA5194009EC46B /* ThumbHandler.xpc */ = {isa = PBXFileReference; explicitFileType = "wrapper.xpc-service"; includeInIndex = 0; path = ThumbHandler.xpc; sourceTree = BUILT_PRODUCTS_DIR; };
+		6AC4EC771CFA5194009EC46B /* TSThumbHandlerProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TSThumbHandlerProtocol.h; sourceTree = "<group>"; };
+		6AC4EC781CFA5194009EC46B /* TSThumbHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TSThumbHandler.h; sourceTree = "<group>"; };
+		6AC4EC791CFA5194009EC46B /* TSThumbHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TSThumbHandler.m; sourceTree = "<group>"; };
+		6AC4EC7B1CFA5194009EC46B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		6AC4EC7D1CFA5194009EC46B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6AE87BC41CD275C90053CD9D /* Avocado.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Avocado.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AE87BC71CD275C90053CD9D /* TSAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TSAppDelegate.h; sourceTree = "<group>"; };
 		6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TSAppDelegate.m; sourceTree = "<group>"; };
@@ -348,6 +376,14 @@
 			files = (
 				6A28F0781CD94CD000228067 /* Accelerate.framework in Frameworks */,
 				6A28F0771CD94CCD00228067 /* CoreImage.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6AC4EC721CFA5194009EC46B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6AC4EC861CFA547D009EC46B /* Pods_Avocado.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -527,6 +563,7 @@
 		6A7EC3C81CD68595007E91E8 /* Thumb Handling */ = {
 			isa = PBXGroup;
 			children = (
+				6AC4EC761CFA5194009EC46B /* Thumbnail XPC Service */,
 				6A7EC3C91CD685AF007E91E8 /* TSThumbCache.h */,
 				6A7EC3CA1CD685AF007E91E8 /* TSThumbCache.m */,
 			);
@@ -621,6 +658,27 @@
 			name = Helpers;
 			sourceTree = "<group>";
 		};
+		6AC4EC761CFA5194009EC46B /* Thumbnail XPC Service */ = {
+			isa = PBXGroup;
+			children = (
+				6AC4EC771CFA5194009EC46B /* TSThumbHandlerProtocol.h */,
+				6AC4EC781CFA5194009EC46B /* TSThumbHandler.h */,
+				6AC4EC791CFA5194009EC46B /* TSThumbHandler.m */,
+				6AC4EC851CFA5468009EC46B /* Bootstrapping */,
+			);
+			name = "Thumbnail XPC Service";
+			path = ThumbHandler;
+			sourceTree = "<group>";
+		};
+		6AC4EC851CFA5468009EC46B /* Bootstrapping */ = {
+			isa = PBXGroup;
+			children = (
+				6AC4EC7B1CFA5194009EC46B /* main.m */,
+				6AC4EC7D1CFA5194009EC46B /* Info.plist */,
+			);
+			name = Bootstrapping;
+			sourceTree = "<group>";
+		};
 		6AE87BBB1CD275C90053CD9D = {
 			isa = PBXGroup;
 			children = (
@@ -637,6 +695,7 @@
 			children = (
 				6AE87BC41CD275C90053CD9D /* Avocado.app */,
 				6A28F06D1CD94A6400228067 /* AvocadoTests.xctest */,
+				6AC4EC751CFA5194009EC46B /* ThumbHandler.xpc */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -953,6 +1012,23 @@
 			productReference = 6A28F06D1CD94A6400228067 /* AvocadoTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		6AC4EC741CFA5194009EC46B /* ThumbHandler */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6AC4EC811CFA5194009EC46B /* Build configuration list for PBXNativeTarget "ThumbHandler" */;
+			buildPhases = (
+				6AC4EC711CFA5194009EC46B /* Sources */,
+				6AC4EC721CFA5194009EC46B /* Frameworks */,
+				6AC4EC731CFA5194009EC46B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ThumbHandler;
+			productName = ThumbHandler;
+			productReference = 6AC4EC751CFA5194009EC46B /* ThumbHandler.xpc */;
+			productType = "com.apple.product-type.xpc-service";
+		};
 		6AE87BC31CD275C90053CD9D /* Avocado */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6AE87BD81CD275C90053CD9D /* Build configuration list for PBXNativeTarget "Avocado" */;
@@ -966,10 +1042,12 @@
 				B0DFEA25DCDDB691FBC6651D /* Copy Pods Resources */,
 				6AEC35281CD4406D0033DE0A /* Set Build Version */,
 				6A1068881CD5BF07004BF216 /* Embed dylibs and frameworks */,
+				6AC4EC841CFA5194009EC46B /* Embed XPC Services */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				6AC4EC7F1CFA5194009EC46B /* PBXTargetDependency */,
 			);
 			name = Avocado;
 			productName = Avocado;
@@ -988,6 +1066,10 @@
 					6A28F06C1CD94A6400228067 = {
 						CreatedOnToolsVersion = 7.3;
 						TestTargetID = 6AE87BC31CD275C90053CD9D;
+					};
+					6AC4EC741CFA5194009EC46B = {
+						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = 8QDQ246B94;
 					};
 					6AE87BC31CD275C90053CD9D = {
 						CreatedOnToolsVersion = 7.3;
@@ -1010,12 +1092,20 @@
 			targets = (
 				6AE87BC31CD275C90053CD9D /* Avocado */,
 				6A28F06C1CD94A6400228067 /* AvocadoTests */,
+				6AC4EC741CFA5194009EC46B /* ThumbHandler */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		6A28F06B1CD94A6400228067 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6AC4EC731CFA5194009EC46B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1135,6 +1225,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6AC4EC711CFA5194009EC46B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6AC4EC7C1CFA5194009EC46B /* main.m in Sources */,
+				6AC4EC7A1CFA5194009EC46B /* TSThumbHandler.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6AE87BC01CD275C90053CD9D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1223,6 +1322,11 @@
 			target = 6AE87BC31CD275C90053CD9D /* Avocado */;
 			targetProxy = 6A28F0721CD94A6400228067 /* PBXContainerItemProxy */;
 		};
+		6AC4EC7F1CFA5194009EC46B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6AC4EC741CFA5194009EC46B /* ThumbHandler */;
+			targetProxy = 6AC4EC7E1CFA5194009EC46B /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -1264,6 +1368,36 @@
 				PRODUCT_BUNDLE_IDENTIFIER = me.tseifert.AvocadoTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Avocado.app/Contents/MacOS/Avocado";
+			};
+			name = Release;
+		};
+		6AC4EC821CFA5194009EC46B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Developer ID Application";
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "Avocado/Avocado-Prefix.pch";
+				INFOPLIST_FILE = ThumbHandler/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../../../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.tseifert.avocado.ThumbHandler;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		6AC4EC831CFA5194009EC46B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Developer ID Application";
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "Avocado/Avocado-Prefix.pch";
+				INFOPLIST_FILE = ThumbHandler/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../../../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.tseifert.avocado.ThumbHandler;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -1433,6 +1567,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		6AC4EC811CFA5194009EC46B /* Build configuration list for PBXNativeTarget "ThumbHandler" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6AC4EC821CFA5194009EC46B /* Debug */,
+				6AC4EC831CFA5194009EC46B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		6AE87BBF1CD275C90053CD9D /* Build configuration list for PBXProject "Avocado" */ = {
 			isa = XCConfigurationList;
