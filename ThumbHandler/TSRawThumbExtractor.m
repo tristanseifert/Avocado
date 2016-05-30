@@ -11,6 +11,10 @@
 #import "libraw.h"
 #import "TSImageTransformHelpers.h"
 
+#import <Accelerate/Accelerate.h>
+
+static void TSRawThumbExtractorReleaseDirect(void *info, const void *data, size_t size);
+
 @interface TSRawThumbExtractor ()
 
 /// Extracted main (largest) thumbnail
@@ -20,6 +24,8 @@
 
 /// LibRaw handle for this image
 @property (nonatomic, assign) libraw_data_t *libRaw;
+/// URL from which the image was loaded
+@property (nonatomic) NSURL *fileUrl;
 
 - (NSError *) errorFromCode:(int) code;
 
@@ -35,9 +41,10 @@
 - (instancetype) initWithRawFile:(NSURL *) url {
 	if(self = [super init]) {
 		int lrErr = 0;
+		self.fileUrl = url;
 		
 		// Attempt to load the image directly from disk (LibRaw does IO)
-		NSString *path = url.path;
+		NSString *path = self.fileUrl.path;
 		const char *fsPath = path.fileSystemRepresentation;
 		
 		self.libRaw = libraw_init(0);
@@ -94,20 +101,20 @@
 		return nil;
 	}
 	
-	// Calculate new size of the image
+	// Calculate new size of the image (use ceil to round up)
 	CGFloat oldWidth = CGImageGetWidth(self.extractedThumb);
 	CGFloat oldHeight = CGImageGetHeight(self.extractedThumb);
 	
 	CGFloat scaleFactor = (oldWidth > oldHeight) ? thumbSize / oldWidth : thumbSize / oldHeight;
 	
-	CGFloat newHeight = oldHeight * scaleFactor;
-	CGFloat newWidth = oldWidth * scaleFactor;
+	CGFloat newHeight = ceil(oldHeight * scaleFactor);
+	CGFloat newWidth = ceil(oldWidth * scaleFactor);
 	CGSize newSize = CGSizeMake(newWidth, newHeight);
 	
 	// Set up a bitmap context into which to draw the downscaled image
 	size_t bitsPerComponent = CGImageGetBitsPerComponent(self.extractedThumb);
 	size_t bitsPerPixel = CGImageGetBitsPerPixel(self.extractedThumb);
-	size_t bytesPerRow = (bitsPerPixel / 8) * newSize.width;
+	size_t bytesPerRow = (bitsPerPixel / 8) * newWidth;
 	CGColorSpaceRef colorSpace = CGImageGetColorSpace(self.extractedThumb);
 	CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(self.extractedThumb);
 	
@@ -153,19 +160,16 @@
 	// Pointer because this is way too fucking long to keep repeating
 	enum LibRaw_thumbnail_formats format = self.libRaw->thumbnail.tformat;
 	
-	// Create an NSData from the pointer to the thumb data w/o copying bytes
-	NSData *data = [NSData dataWithBytesNoCopy:self.libRaw->thumbnail.thumb
-										length:self.libRaw->thumbnail.tlength
-								  freeWhenDone:NO];
-	
-	
+	// Determine what to do for the given format.
 	switch(format) {
 		/// Embedded JPEG thumbnail
 		case LIBRAW_THUMBNAIL_JPEG: {
 			CGDataProviderRef provider;
 			
 			// Create a data provider, given the input data, then make an image
-			provider = CGDataProviderCreateWithCFData((__bridge CFDataRef) data);
+			provider = CGDataProviderCreateWithData(NULL, self.libRaw->thumbnail.thumb,
+													self.libRaw->thumbnail.tlength,
+													NULL);
 			self.extractedThumb = CGImageCreateWithJPEGDataProvider(provider, nil, YES, kCGRenderingIntentPerceptual);
 			
 			self.couldExtractValidThumb = YES;
@@ -177,9 +181,59 @@
 		}
 			
 		/// Raw bitmap data (currently unsupported)
-		case LIBRAW_THUMBNAIL_BITMAP:
-			DDLogWarn(@"Ignoring bitmap thumbnail, currently unsupported");
+		case LIBRAW_THUMBNAIL_BITMAP: {
+			vImage_Error err = kvImageNoError;
+			CGDataProviderRef provider;
+			CGColorSpaceRef cs;
+			
+			// Get some info for the image
+			NSUInteger width = self.libRaw->thumbnail.twidth;
+			NSUInteger height = self.libRaw->thumbnail.theight;
+			
+			
+			// Create vImage buffers for RGB888 -> RGBA8888 conversion
+			vImage_Buffer inBuf, outBuf;
+			
+			inBuf.data = self.libRaw->thumbnail.thumb;
+			inBuf.rowBytes = width * 3;
+			inBuf.width = width;
+			inBuf.height = height;
+			
+			err = vImageBuffer_Init(&outBuf, height, width, 32, kvImageNoFlags);
+			NSUInteger outBufSz = (outBuf.rowBytes * outBuf.height);
+			
+			if(err != kvImageNoError) {
+				DDLogError(@"vImageBuffer_Init failed: %zi", err);
+				return;
+			}
+			
+			// Convert RGB888 -> RGBA8888
+			err = vImageConvert_RGB888toRGBA8888(&inBuf, NULL, 0xFF, &outBuf, NO, kvImageNoFlags);
+			
+			if(err != kvImageNoError) {
+				DDLogError(@"vImageConvert_RGB888toRGBA8888 failed: %zi", err);
+				return;
+			}
+			
+			
+			// Create a bitmap image from the (converted) data.
+			provider = CGDataProviderCreateWithData(NULL, outBuf.data, outBufSz,
+													TSRawThumbExtractorReleaseDirect);
+			cs = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
+			
+			self.extractedThumb = CGImageCreate(width, height, 8, 32,
+												outBuf.rowBytes, cs,
+												(CGBitmapInfo) kCGImageAlphaNoneSkipLast,
+												provider, nil, true,
+												kCGRenderingIntentPerceptual);
+			self.couldExtractValidThumb = YES;
+			
+			// Clean up some state
+			CGDataProviderRelease(provider);
+			CGColorSpaceRelease(cs);
+			
 			break;
+		}
 			
 		default:
 			DDLogError(@"Unsupported thumbnail format: %u", format);
@@ -226,5 +280,11 @@
 	return err;
 }
 
-
 @end
+
+/**
+ * Releases directly accessed Quartz pixel data.
+ */
+static void TSRawThumbExtractorReleaseDirect(void *info, const void *data, size_t size) {
+	free((void *) data);
+}

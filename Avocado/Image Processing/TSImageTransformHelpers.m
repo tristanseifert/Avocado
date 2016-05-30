@@ -64,6 +64,10 @@ CGImageRef TSFliptateImageWithEXIFOrientation(CGImageRef inImage, NSUInteger ori
 		return inImage;
 	}
 	
+	// Read information about the transform
+	NSInteger rotation = TSEXIFTransformData[orientation][0];
+	NSInteger flip = TSEXIFTransformData[orientation][1];
+	
 	
 	/*
 	 * Create a temporary input buffer for the vImage transform functions from
@@ -100,7 +104,7 @@ CGImageRef TSFliptateImageWithEXIFOrientation(CGImageRef inImage, NSUInteger ori
 	vImagePixelCount width = CGImageGetWidth(inImage);
 	vImagePixelCount height = CGImageGetHeight(inImage);
 	
-	if(TSEXIFTransformData[orientation][0] != 0 && TSEXIFTransformData[orientation][0] != 180) {
+	if(rotation != 0 && rotation != 180) {
 		width = CGImageGetHeight(inImage);
 		height = CGImageGetWidth(inImage);
 	}
@@ -116,9 +120,9 @@ CGImageRef TSFliptateImageWithEXIFOrientation(CGImageRef inImage, NSUInteger ori
 	
 	
 	// Rotate image, if needed.
-	if(TSEXIFTransformData[orientation][0] != 0) {
+	if(rotation != 0) {
 		// Figure out the angle, in radians
-		CGFloat degrees = (CGFloat) TSEXIFTransformData[orientation][0];
+		CGFloat degrees = (CGFloat) rotation;
 		CGFloat angle = (degrees * M_PI / 180.0);
 		
 		// Perform rotation
@@ -128,11 +132,25 @@ CGImageRef TSFliptateImageWithEXIFOrientation(CGImageRef inImage, NSUInteger ori
 		
 		// Handle any errors vImage may have raised.
 		if(err != kvImageNoError) {
-			DDLogError(@"vImageRotate_ARGB8888 failed: %zi", err);
+			DDLogError(@"vImageRotate_ARGB8888 failed: %zi (orientation = %zi; rotate %zi°, flip %zi)", err, orientation, rotation, flip);
 			
 			free(inBuf.data);
 			free(outBuf.data);
 			return inImage;
+		}
+		
+		/*
+		 * Flip the height/width values on the input buffer (into which the
+		 * flipped data is rendered) if the rotation was not 0° and not 180°.
+		 * Otherwise, reflection will fail due to mismatched sizes.
+		 */
+		if(rotation != 0 && rotation != 180) {
+			inBuf.width = outBuf.width;
+			inBuf.height = outBuf.height;
+			
+			// Also, re-calculate the stride
+			NSUInteger bitsPerPixel = CGImageGetBitsPerPixel(inImage);
+			inBuf.rowBytes = (inBuf.width * (bitsPerPixel / 8));
 		}
 	}
 	/*
@@ -157,19 +175,19 @@ CGImageRef TSFliptateImageWithEXIFOrientation(CGImageRef inImage, NSUInteger ori
 	
 	
 	// Flip image, if needed.
-	if(TSEXIFTransformData[orientation][1] != 0) {
+	if(flip != 0) {
 		// Vertical flip
-		if(TSEXIFTransformData[orientation][1] == 1) {
+		if(flip == 1) {
 			err = vImageVerticalReflect_ARGB8888(&outBuf, &inBuf, kvImageNoFlags);
 		}
 		// Horizontal flip
-		if(TSEXIFTransformData[orientation][1] == 2) {
+		if(flip == 2) {
 			err = vImageHorizontalReflect_ARGB8888(&outBuf, &inBuf, kvImageNoFlags);
 		}
 		
 		// Handle any errors vImage may have raised.
 		if(err != kvImageNoError) {
-			DDLogError(@"vImage[Vertical/Horizontal]Reflect_ARGB8888 failed: %zi", err);
+			DDLogError(@"vImage[Vertical/Horizontal]Reflect_ARGB8888 failed: %zi  (orientation = %zi; rotate %zi°, flip %zi)", err, orientation, rotation, flip);
 			
 			free(inBuf.data);
 			free(outBuf.data);

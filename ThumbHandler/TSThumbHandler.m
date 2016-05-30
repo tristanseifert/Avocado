@@ -112,7 +112,7 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 	// Create a MOC with the specified parent
 	self.thumbMoc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
 	[self.thumbMoc setParentContext:parent];
-	[self.thumbMoc.undoManager disableUndoRegistration];
+	self.thumbMoc.undoManager = nil;
 	
 	self.thumbMoc.name = [NSString stringWithFormat:@"TSThumbHandlerMoc %p", self];
 }
@@ -258,12 +258,14 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 		// A thumbnail was found; update its last accessed date
 		thumb = results.firstObject;
 		
-		thumb.dateLastAccessed = [NSDate new];
-		
-		// Output the URL of the thumbnail image
-		if(outUrl != nil) {
-			*outUrl = [thumb.thumbUrl copy];
-		}
+		[thumb.managedObjectContext performBlockAndWait:^{
+			thumb.dateLastAccessed = [NSDate new];
+			
+			// Output the URL of the thumbnail image
+			if(outUrl != nil) {
+				*outUrl = [thumb.thumbUrl copy];
+			}
+		}];
 		
 		// It is possible outUrl was ignored, so return YES here
 		return YES;
@@ -318,8 +320,10 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 	moc.name = [NSString stringWithFormat:@"TSThumbHandler Temporary Context for %@", image];
 	moc.undoManager = nil;
 	
+	__block TSThumbnail *thumb;
+	
 	[moc performBlock:^{
-		TSThumbnail *thumb =  [NSEntityDescription insertNewObjectForEntityForName:@"Thumbnail" inManagedObjectContext:moc];
+		thumb =  [NSEntityDescription insertNewObjectForEntityForName:@"Thumbnail" inManagedObjectContext:moc];
 		
 		thumb.dateAdded = thumb.dateLastAccessed = [NSDate new];
 		
