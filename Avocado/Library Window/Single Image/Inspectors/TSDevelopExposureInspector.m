@@ -9,8 +9,7 @@
 #import "TSDevelopExposureInspector.h"
 
 #import "TSHumanModels.h"
-
-#import <MagicalRecord/MagicalRecord.h>
+#import "TSCoreDataStore.h"
 
 static void *TSActiveImageKVOCtx = &TSActiveImageKVOCtx;
 static void *TSSettingsKVOCtx = &TSSettingsKVOCtx;
@@ -112,8 +111,8 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
  */
 - (void) saveAfterSettingsChange {
 	// perform the request in a save block
-	[MagicalRecord saveWithBlock:^(NSManagedObjectContext *ctx) {
-		TSLibraryImage *im = [self.activeImage MR_inContext:ctx];
+	[TSCoreDataStore saveWithBlock:^(NSManagedObjectContext *ctx) {
+		TSLibraryImage *im = [self.activeImage TSInContext:ctx];
 		[self saveAdjustmentData:im];
 	} completion:^(BOOL saved, NSError *err) {
 		// if the context was saved, perform the "settings changed" block

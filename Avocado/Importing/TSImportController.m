@@ -8,11 +8,11 @@
 
 #import "TSImportController.h"
 #import "TSRawImage.h"
-#import "TSHumanModels.h"
 #import "TSImageIOHelper.h"
 #import "TSGroupContainerHelper.h"
 
-#import <MagicalRecord/MagicalRecord.h>
+#import "TSHumanModels.h"
+#import "TSCoreDataStore.h"
 
 NSString *const TSFileImportedNotificationName = @"TSFileImportedNotification";
 NSString *const TSFileImportedNotificationUrlKey = @"TSFileImportedNotificationUrl";
@@ -103,9 +103,9 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 	}
 	
 	// save it
-	[MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext *ctx) {
+	[TSCoreDataStore saveWithBlockAndWait:^(NSManagedObjectContext *ctx) {
 		// create an image
-		TSLibraryImage *image = [TSLibraryImage MR_createEntityInContext:ctx];
+		TSLibraryImage *image = [TSLibraryImage TSCreateEntityInContext:ctx];
 		
 		// set some basic metadata
 		image.fileTypeValue = TSLibraryImageRaw;
@@ -128,7 +128,7 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 			TSFileImportedNotificationImageKey: image
 		};
 		[[NSNotificationCenter defaultCenter] postNotificationName:TSFileImportedNotificationName object:self userInfo:info];
-	}];
+	} completion:nil];
 	
 	// the import has successed.
 	return YES;
@@ -156,9 +156,9 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 	NSDictionary *exif = [[TSImageIOHelper sharedInstance] metadataForImageAtUrl:actualImageUrl];
 	
 	// save it
-	[MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext *ctx) {
+	[TSCoreDataStore saveWithBlockAndWait:^(NSManagedObjectContext *ctx) {
 		// create an image
-		TSLibraryImage *image = [TSLibraryImage MR_createEntityInContext:ctx];
+		TSLibraryImage *image = [TSLibraryImage TSCreateEntityInContext:ctx];
 		
 		// set some basic metadata
 		image.fileTypeValue = TSLibraryImageCompressed;
@@ -190,7 +190,7 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		   TSFileImportedNotificationImageKey: image
 		};
 		[[NSNotificationCenter defaultCenter] postNotificationName:TSFileImportedNotificationName object:self userInfo:info];
-	}];
+	} completion:nil];
 	
 	// the import has successed.
 	return YES;

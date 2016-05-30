@@ -9,6 +9,8 @@
     #import <CoreData/CoreData.h>
 #endif
 
+#import "TSManagedObject.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
 @class TSLibraryImage;
@@ -16,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface TSLibraryTagID : NSManagedObjectID {}
 @end
 
-@interface _TSLibraryTag : NSManagedObject
+@interface _TSLibraryTag : TSManagedObject
 + (instancetype)insertInManagedObjectContext:(NSManagedObjectContext *)moc_;
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;

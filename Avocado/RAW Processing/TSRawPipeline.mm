@@ -18,6 +18,7 @@
 #import "ahd_interpolate_mod.h"
 #import "lmmse_interpolate.h"
 
+#import "TSCoreDataStore.h"
 #import "TSHumanModels.h"
 
 #import "TSLibraryImage+CoreImagePipeline.h"
@@ -30,7 +31,6 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import <CoreImage/CoreImage.h>
 #import <Accelerate/Accelerate.h>
-#import <MagicalRecord/MagicalRecord.h>
 
 /**
  * When set to a non-zero value, information about the time taken for each of
@@ -138,7 +138,7 @@
  */
 - (instancetype) init {
 	if(self = [super init]) {
-		// set up operation queue
+		// Set up operation queue
 		self.queue = [NSOperationQueue new];
 		
 		self.queue.qualityOfService = NSQualityOfServiceUserInitiated;
@@ -146,16 +146,14 @@
 		
 		self.queue.name = @"TSRawPipeline";
 		
-		// create CoreImage pipeline
+		// Create CoreImage pipeline
 		self.ciPipeline = [TSCoreImagePipeline new];
 		
-		// set up context
-//		NSManagedObjectContext *parent = [NSManagedObjectContext MR_defaultContext];
-//		self.moc = [NSManagedObjectContext MR_contextWithParent:parent];
-		self.moc = [NSManagedObjectContext MR_context];
-		self.moc.name = [NSString stringWithFormat:@"%@//%@//Shared", [self className], self];
+		// Set up a managed object context
+		NSString *name = [NSString stringWithFormat:@"%@//%@//Shared", [self className], self];
+		self.moc = [TSCoreDataStore temporaryWorkerContextWithName:name];
 		
-		// create the cache
+		// Create the cache
 		self.cache = [TSRawCache new];
 	}
 	
@@ -281,7 +279,7 @@
 	
 	// set up the context
 	state.mocCtx = self.moc;
-	state.image = [image MR_inContext:state.mocCtx];
+	state.image = [image TSInContext:state.mocCtx];
 	
 	// get some data out of the image data
 	[state.mocCtx performBlockAndWait:^{
@@ -929,7 +927,7 @@
  */
 - (void) clearCachesForImage:(nonnull TSLibraryImage *) inImage {
 	[self.moc performBlock:^{
-		TSLibraryImage *image = [inImage MR_inContext:self.moc];
+		TSLibraryImage *image = [inImage TSInContext:self.moc];
 		
 		// evict it from the cache
 		[self.cache evictDataForUuid:image.uuid];

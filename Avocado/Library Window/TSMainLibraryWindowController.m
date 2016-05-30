@@ -11,11 +11,12 @@
 #import "TSGroupContainerHelper.h"
 #import "TSLibraryOverviewController.h"
 #import "TSLibraryDetailController.h"
+
 #import "TSHumanModels.h"
+#import "TSCoreDataStore.h"
 
 #import "TSHistogramView.h"
 
-#import <MagicalRecord/MagicalRecord.h>
 #import <QuartzCore/QuartzCore.h>
 
 @interface TSMainLibraryWindowController ()
@@ -74,37 +75,21 @@
 		case 1:
 			if(self.lastDevelopImage != nil) {
 				dispatch_async(dispatch_get_main_queue(), ^{
-					NSError *err = nil;
-					NSPersistentStoreCoordinator *psc;
-					NSManagedObjectContext *ctx;
-					NSManagedObjectID *oid;
+					TSLibraryImage *im = [TSCoreDataStore findManagedObjectWithUrl:self.lastDevelopImage inContext:nil];
 					
-					// get an object from the url
-					ctx = [NSManagedObjectContext MR_defaultContext];
-					psc = ctx.persistentStoreCoordinator;
-					
-					oid = [psc managedObjectIDForURIRepresentation:self.lastDevelopImage];
-					
-					if(oid != nil) {
-						TSLibraryImage *im = [ctx existingObjectWithID:oid error:&err];
+					// set the image
+					if(im) {
+						[self activateViewController:self.vcEdit animated:NO];
 						
-						// set the image
-						if(im && err == nil) {
-							[self activateViewController:self.vcEdit animated:NO];
-							
-							self.vcEdit.image = im;
-						} else {
-							DDLogError(@"Couldn't unarchive image with URI %@: %@", self.lastDevelopImage, err);
-							
-							[self activateViewController:self.vcOverview animated:NO];
-						}
+						self.vcEdit.image = im;
 					} else {
-						DDLogWarn(@"Got invalid object id (null), going to light table view instead");
+						DDLogError(@"Couldn't get image with URI %@ from store", self.lastDevelopImage);
+						
 						[self activateViewController:self.vcOverview animated:NO];
 					}
 				});
 			} else {
-				DDLogWarn(@"Tried to switch to develop view, but have no last develop image…");
+				DDLogWarn(@"Tried to switch to develop view, but have no last develop image");
 				[self activateViewController:self.vcOverview animated:NO];
 			}
 			break;

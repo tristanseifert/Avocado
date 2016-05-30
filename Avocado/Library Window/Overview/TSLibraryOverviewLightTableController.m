@@ -6,14 +6,14 @@
 //  Copyright © 2016 Tristan Seifert. All rights reserved.
 //
 
-#import <MagicalRecord/MagicalRecord.h>
-
 #import "TSLibraryOverviewLightTableController.h"
 #import "TSImportController.h"
 #import "TSLibraryLightTableCell.h"
-#import "TSHumanModels.h"
 #import "TSLibraryOverviewController.h"
 #import "TSMainLibraryWindowController.h"
+
+#import "TSHumanModels.h"
+#import "TSCoreDataStore.h"
 
 static void *TSCellsPerRowKVO = &TSCellsPerRowKVO;
 static void *TSSortKeyKVO = &TSSortKeyKVO;
@@ -173,7 +173,8 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
 	if(self.fetchRequest == nil) return;
 	
 	// execute the request and reload data
-	self.imagesToShow = [TSLibraryImage MR_executeFetchRequest:self.fetchRequest];
+	NSManagedObjectContext *mainCtx = [TSCoreDataStore sharedInstance].mainThreadMoc;
+	self.imagesToShow = [TSLibraryImage TSExecuteFetchRequest:self.fetchRequest inContext:mainCtx];
 	
 	[self.gridView reloadData];
 }

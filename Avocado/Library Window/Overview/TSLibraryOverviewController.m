@@ -9,9 +9,9 @@
 #import "TSLibraryOverviewController.h"
 #import "TSImportUIController.h"
 #import "TSHumanModels.h"
-#import "TSLibraryOverviewLightTableController.h"
+#import "TSCoreDataStore.h"
 
-#import <MagicalRecord/MagicalRecord.h>
+#import "TSLibraryOverviewLightTableController.h"
 
 static void *TSThumbSizeKVO = &TSThumbSizeKVO;
 static void *TSSortKeyKVO = &TSSortKeyKVO;
@@ -61,7 +61,8 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
 	self.lightTableController = [[TSLibraryOverviewLightTableController alloc] initWithGridView:self.lightTableView];
 	self.lightTableController.overviewController = self;
 	
-	self.lightTableController.fetchRequest = [TSLibraryImage MR_createFetchRequest];
+	NSManagedObjectContext *mainCtx = [TSCoreDataStore sharedInstance].mainThreadMoc;
+	self.lightTableController.fetchRequest = [TSLibraryImage TSCreateFetchRequestInContext:mainCtx];
 	
 	// resize cells and update sort key
 	self.lightTableController.cellsPerRow = (NSUInteger) self.voThumbSize;

@@ -6,9 +6,8 @@
 //  Copyright © 2016 Tristan Seifert. All rights reserved.
 //
 
+#import "TSCoreDataStore.h"
 #import "TSCoreDataStoreIB.h"
-
-#import <MagicalRecord/MagicalRecord.h>
 
 @interface TSCoreDataStoreIB ()
 
@@ -35,16 +34,17 @@
  * Run the same method, but when run from a nib.
  */
 - (void) awakeFromNib {
-	[super awakeFromNib];
+//	[super awakeFromNib];
 	
 	[self createContext];
 }
 
 /**
- * Creates the context.
+ * Creates the context. (This doesn't actually make a new context, but instead
+ * just uses the shared main thread context. Hehe.)
  */
 - (void) createContext {
-	self.moc = [NSManagedObjectContext MR_newMainQueueContext];
+	self.moc = [TSCoreDataStore sharedInstance].mainThreadMoc;
 }
 
 @end

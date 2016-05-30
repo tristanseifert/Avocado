@@ -7,16 +7,11 @@ PODS:
     - CocoaLumberjack/Core
   - CocoaLumberjack/Extensions (2.2.0):
     - CocoaLumberjack/Default
-  - MagicalRecord (2.3.2):
-    - MagicalRecord/Core (= 2.3.2)
-  - MagicalRecord/Core (2.3.2)
 
 DEPENDENCIES:
   - CocoaLumberjack (~> 2.2)
-  - MagicalRecord (~> 2.3)
 
 SPEC CHECKSUMS:
   CocoaLumberjack: 17fe8581f84914d5d7e6360f7c70022b173c3ae0
-  MagicalRecord: 53bed74b4323b930992a725be713e53b37d19755
 
 COCOAPODS: 0.39.0

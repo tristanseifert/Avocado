@@ -13,9 +13,6 @@
 
 @interface TSAppDelegate ()
 
-// secret CoreData store
-@property (nonatomic) TSCoreDataStore *store;
-
 @end
 
 @implementation TSAppDelegate
@@ -24,7 +21,7 @@
  * Sets up any initial app state, as the app is about to finish launching.
  */
 - (void) applicationWillFinishLaunching:(NSNotification *) notification {
-	// register user defaults
+	// Register user defaults
 	NSURL *defaultsUrl = [[NSBundle mainBundle] URLForResource:@"TSDefaultSettings" withExtension:@"plist"];
 	NSDictionary *defaults = [NSDictionary dictionaryWithContentsOfURL:defaultsUrl];
 	DDAssert(defaults != nil, @"Defaults may not be nil; loaded from %@", defaultsUrl);
@@ -37,10 +34,10 @@
  * main window.
  */
 - (void) applicationDidFinishLaunching:(NSNotification *) aNotification {
-	// set up the coredata stack, via MagicalRecord™
-	self.store = [TSCoreDataStore new];
+	// Force the CoreData stack to be set up
+	[TSCoreDataStore sharedInstance];
 	
-	// create the window controller
+	// Create the window controller
 	self.mainWindow = [[TSMainLibraryWindowController alloc] initWithWindowNibName:@"TSMainLibraryWindow"];
 	[self.mainWindow showWindow:NSApp];
 }
@@ -49,8 +46,8 @@
  * Closes down any remaining resources.
  */
 - (void) applicationWillTerminate:(NSNotification *) aNotification {
-	// clean up stack
-	[self.store cleanUp];
+	// Clean up stack
+	[[TSCoreDataStore sharedInstance] cleanUp];
 }
 
 /**

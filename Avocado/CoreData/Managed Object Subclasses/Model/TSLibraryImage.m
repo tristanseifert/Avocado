@@ -1,10 +1,10 @@
 #import "TSLibraryImage.h"
 #import "TSHumanModels.h"
+#import "TSCoreDataStore.h"
 #import "TSRawImage.h"
 #import "NSDate+AvocadoUtils.h"
 #import "TSImageIOHelper.h"
 
-#import <MagicalRecord/MagicalRecord.h>
 #import <ImageIO/ImageIO.h>
 #import <Quartz/Quartz.h>
 #import <Cocoa/Cocoa.h>
@@ -162,7 +162,7 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 		DDAssert([keyStr isKindOfClass:NSString.class] == YES, @"KeyAddr %p is incorrect, doesn't point to an NSString; this shouldn't happen", keyAddr);
 		
 		// create an object
-		adj = [TSLibraryImageAdjustment MR_createEntityInContext:self.managedObjectContext];
+		adj = [TSLibraryImageAdjustment TSCreateEntityInContext:self.managedObjectContext];
 		DDAssert(adj != nil, @"Couldn't create adjustment object; this shouldn't happen");
 		
 		// set its key
