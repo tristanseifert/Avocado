@@ -61,6 +61,14 @@
 }
 
 /**
+ * When deallocating, attempt to save the managed object context.
+ */
+- (void) dealloc {
+	// Save the managed object context, ignoring any errors that may appear.
+	[self.moc save:nil];
+}
+
+/**
  * Determine whether the connection should be accepted, and if so, sets up the
  * connection and resumes it.
  */

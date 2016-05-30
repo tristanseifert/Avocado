@@ -9,7 +9,7 @@
 #import "TSThumbHandler.h"
 #import "TSThumbImageProxy.h"
 #import "TSThumbCacheHumanModels.h"
-
+#import "TSRawThumbExtractor.h"
 #import "TSGroupContainerHelper.h"
 
 #import <ImageIO/ImageIO.h>
@@ -18,7 +18,7 @@
 static void *TSKVOOpCountCtx = &TSKVOOpCountCtx;
 
 /// Default JPEG quality for saved thumb images.
-static const CGFloat TSThumbDefaultQuality = 0.74;
+static const CGFloat TSThumbDefaultQuality = 0.64;
 /// Maximum size of a thumbnail, on the long edge
 static const CGFloat TSThumbMaxSize = 1024.f;
 
@@ -275,6 +275,12 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 	if(image.isRaw == NO) {
 		thumbnailImg = [self createBitmapThumbnailForImage:image
 												 withError:outErr];
+	} else {
+		TSRawThumbExtractor *extract = nil;
+		
+		// Create the thumbnail extractor and
+		extract = [[TSRawThumbExtractor alloc] initWithRawFile:image.originalUrl];
+		thumbnailImg = [extract extractThumbWithSize:TSThumbMaxSize];
 	}
 	
 	// Ensure thumbnail was successfully created before continuing on

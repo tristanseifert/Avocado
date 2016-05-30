@@ -75,9 +75,6 @@ extern NSString *const TSRawImageErrorIsFatalKey;
 /// series number
 @property (nonatomic, readonly, getter=getMetaSeries) NSUInteger shotSeries;
 
-/// thumbnail image
-@property (nonatomic, readonly) NSImage *thumbnail;
-
 /// size of the final image
 @property (nonatomic, readonly, getter=getRawSize) NSSize size;
 

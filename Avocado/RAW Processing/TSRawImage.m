@@ -16,9 +16,6 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 
 @interface TSRawImage ()
 
-// redefine some properties as writeable
-@property (nonatomic, readwrite) NSImage *thumbnail;
-
 // internal properties
 @property (nonatomic, assign) libraw_data_t *libRaw;
 @property (nonatomic) NSURL *fileUrl;
@@ -27,10 +24,7 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 // internal helpers
 - (BOOL) loadFile:(NSURL *) url withError:(NSError **) outErr;
 
-- (BOOL) unpackThumbs;
 - (BOOL) unpackRaw;
-
-- (void) convertEmbeddedThumbnail;
 
 - (NSError *) errorFromCode:(int) code;
 
@@ -49,13 +43,10 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 		// init libraw
 		self.libRaw = libraw_init(0);
 		
-		// load file and parse the thumbnails
+		// load file
 		if([self loadFile:url withError:outErr] == NO) {
 			return nil;
 		}
-		
-		[self unpackThumbs];
-		[self convertEmbeddedThumbnail];
 	}
 	
 	return self;
@@ -65,11 +56,10 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
  * Releases LibRaw when the class is deallocated.
  */
 - (void) dealloc {
-	// first, releases resources back to the OS
-	libraw_recycle(self.libRaw);
-	libraw_free_image(self.libRaw);
+	// Releases resources back to the OS
+	libraw_close(self.libRaw);
 	
-	// free the buffer of read data
+	// Then, free the buffer of read data
 	self.fileData = nil;
 }
 
@@ -131,28 +121,6 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 
 #pragma mark File Parsing
 /**
- * Requests LibRaw to unpack the thumbnail images.
- */
-- (BOOL) unpackThumbs {
-	int err = 0;
-	
-	// unpack thumbnails
-	if((err = libraw_unpack_thumb(self.libRaw)) != LIBRAW_SUCCESS) {
-		NSError *nsErr = [self errorFromCode:err];
-		
-		if(LIBRAW_FATAL_ERROR(err)) {
-			DDLogError(@"Couldn't unpack thumb: %@", nsErr);
-			return NO;
-		} else {
-			DDLogWarn(@"Something happened trying to extract the thumb, but it was not a fatal error: %@", nsErr);
-		}
-	}
-
-	// done
-	return YES;
-}
-
-/**
  * Unpacks Bayer data from the raw file
  */
 - (BOOL) unpackRawData:(NSError **) outErr {
@@ -175,32 +143,6 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 	
 	// done
 	return YES;
-}
-
-/**
- * Converts the thumbnail from whatever format is stored within the RAW image
- * to an NSImage.
- */
-- (void) convertEmbeddedThumbnail {
-	// pointer because this is way too fucking long to keep repeating
-	enum LibRaw_thumbnail_formats format = self.libRaw->thumbnail.tformat;
-	
-	// create an NSData from the pointer to the thumb data w/o copying bytes
-	NSData *data = [NSData dataWithBytesNoCopy:self.libRaw->thumbnail.thumb
-										length:self.libRaw->thumbnail.tlength
-								  freeWhenDone:NO];
-	
-	// we can only handle JPEG and bitmap thumbnails
-	if(format == LIBRAW_THUMBNAIL_JPEG) {
-		self.thumbnail = [[NSImage alloc] initWithData:data];
-	} else if (format == LIBRAW_THUMBNAIL_BITMAP) {
-		// TODO: Implement this maybe
-	} else {
-		// lol we're fucked, we should do something sophisticated here
-		DDLogError(@"Unsupported thumbnail format: %u", format);
-		
-		self.thumbnail = nil;
-	}
 }
 
 /**
