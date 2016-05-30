@@ -43,24 +43,25 @@ static void *TSImageKVO = &TSImageKVO;
  */
 - (instancetype) init {
 	if(self = [super initWithNibName:@"TSDevelopSidebarController" bundle:nil]) {
-		// set up exposure inspector
+		// Set up exposure inspector
 		self.inspectorExposure = [[TSDevelopExposureInspector alloc] init];
-		// set up HSL inspector
+		// Set up HSL inspector
 		self.inspectorHue = [[TSDevelopHueInspector alloc] init];
-		// set up detail inspector
+		// Set up detail inspector
 		self.inspectorDetail = [[TSDevelopDetailInspector alloc] init];
 		
-		// assign the re-rendering block
+		// Assign the re-rendering block
 		void (^reRenderBlock)(void) = ^ {
-			// this just causes the image controller to re-process the image
-			[self.imageViewer processCurrentImage];
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[self.imageViewer processCurrentImage];
+			});
 		};
 		
 		self.inspectorExposure.settingsChangeBlock = reRenderBlock;
 		self.inspectorHue.settingsChangeBlock = reRenderBlock;
 		self.inspectorDetail.settingsChangeBlock = reRenderBlock;
 		
-		// add KVO
+		// Add KVO
 		[self addObserver:self forKeyPath:@"displayedImage"
 				  options:0 context:TSDisplayedImageKVO];
 		[self addObserver:self forKeyPath:@"image"
@@ -78,10 +79,10 @@ static void *TSImageKVO = &TSImageKVO;
 	
     [super viewDidLoad];
 	
-	// prepare Mr. Histogram
+	// Prepare Mr. Histogram
 	self.mrHistogram.quality = 4;
 	
-	// add the previously created views to the inspector
+	// Add the previously created views to the inspector
 	inspect = [TSInspectorViewItem itemWithContentController:self.inspectorExposure];
 	[self.inspector addInspectorView:inspect];
 	
@@ -91,7 +92,7 @@ static void *TSImageKVO = &TSImageKVO;
 	inspect = [TSInspectorViewItem itemWithContentController:self.inspectorDetail];
 	[self.inspector addInspectorView:inspect];
 	
-	// add bindings for input image to inspectors
+	// Add bindings for input image to inspectors
 	[self.inspectorExposure bind:@"activeImage"
 						toObject:self withKeyPath:@"image"
 						 options:nil];

@@ -26,6 +26,7 @@
 		6A28F0781CD94CD000228067 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEC351A1CD43FED0033DE0A /* Accelerate.framework */; };
 		6A34B12A1CD5936200252288 /* TSLibraryImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2D9E1CD42C56006B959F /* TSLibraryImage.m */; };
 		6A46B7461CFCB32C00DCD2CB /* TSManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A46B7451CFCB32C00DCD2CB /* TSManagedObject.m */; };
+		6A46B74B1CFCC3C300DCD2CB /* NSManagedObjectContext+TSCoreDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A46B74A1CFCC3C300DCD2CB /* NSManagedObjectContext+TSCoreDataStore.m */; };
 		6A5C615C1CD64B7100E3C3C9 /* TSLibraryLightTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A5C615B1CD64B7100E3C3C9 /* TSLibraryLightTableCell.xib */; };
 		6A5C615F1CD67C5B00E3C3C9 /* TSImageIOHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A5C615E1CD67C5B00E3C3C9 /* TSImageIOHelper.m */; };
 		6A6ED4101CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A6ED40F1CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.m */; };
@@ -212,6 +213,8 @@
 		6A28F0711CD94A6400228067 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6A46B7441CFCB32C00DCD2CB /* TSManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSManagedObject.h; path = Avocado/CoreData/TSManagedObject.h; sourceTree = "<group>"; };
 		6A46B7451CFCB32C00DCD2CB /* TSManagedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSManagedObject.m; path = Avocado/CoreData/TSManagedObject.m; sourceTree = "<group>"; };
+		6A46B7491CFCC3C300DCD2CB /* NSManagedObjectContext+TSCoreDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSManagedObjectContext+TSCoreDataStore.h"; path = "Avocado/CoreData/NSManagedObjectContext+TSCoreDataStore.h"; sourceTree = "<group>"; };
+		6A46B74A1CFCC3C300DCD2CB /* NSManagedObjectContext+TSCoreDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSManagedObjectContext+TSCoreDataStore.m"; path = "Avocado/CoreData/NSManagedObjectContext+TSCoreDataStore.m"; sourceTree = "<group>"; };
 		6A5C615B1CD64B7100E3C3C9 /* TSLibraryLightTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSLibraryLightTableCell.xib; path = "Library Window/Overview/TSLibraryLightTableCell.xib"; sourceTree = "<group>"; };
 		6A5C615D1CD67C5B00E3C3C9 /* TSImageIOHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSImageIOHelper.h; path = Avocado/Helpers/TSImageIOHelper.h; sourceTree = "<group>"; };
 		6A5C615E1CD67C5B00E3C3C9 /* TSImageIOHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSImageIOHelper.m; path = Avocado/Helpers/TSImageIOHelper.m; sourceTree = "<group>"; };
@@ -567,6 +570,29 @@
 				6A79876D1CDD60EB00FB3A8E /* TSRawPipelineTest.m */,
 			);
 			name = "RAW Processing";
+			sourceTree = "<group>";
+		};
+		6A46B7471CFCC38F00DCD2CB /* Wrapper */ = {
+			isa = PBXGroup;
+			children = (
+				6A46B7481CFCC3A100DCD2CB /* Categories */,
+				6AEC350A1CD437170033DE0A /* TSCoreDataStore.h */,
+				6AEC350B1CD437170033DE0A /* TSCoreDataStore.m */,
+				6AEC35171CD43F000033DE0A /* TSCoreDataStoreIB.h */,
+				6AEC35181CD43F000033DE0A /* TSCoreDataStoreIB.m */,
+				6A46B7441CFCB32C00DCD2CB /* TSManagedObject.h */,
+				6A46B7451CFCB32C00DCD2CB /* TSManagedObject.m */,
+			);
+			name = Wrapper;
+			sourceTree = "<group>";
+		};
+		6A46B7481CFCC3A100DCD2CB /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				6A46B7491CFCC3C300DCD2CB /* NSManagedObjectContext+TSCoreDataStore.h */,
+				6A46B74A1CFCC3C300DCD2CB /* NSManagedObjectContext+TSCoreDataStore.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 		6A6ED4111CE20595001EFA21 /* UI Components */ = {
@@ -932,12 +958,7 @@
 				6AE87BE81CD276AE0053CD9D /* Build Tools */,
 				6AE87BEE1CD2777E0053CD9D /* Managed Object Subclasses */,
 				6AE87BEA1CD276E70053CD9D /* Avocado.xcdatamodeld */,
-				6AEC350A1CD437170033DE0A /* TSCoreDataStore.h */,
-				6AEC350B1CD437170033DE0A /* TSCoreDataStore.m */,
-				6AEC35171CD43F000033DE0A /* TSCoreDataStoreIB.h */,
-				6AEC35181CD43F000033DE0A /* TSCoreDataStoreIB.m */,
-				6A46B7441CFCB32C00DCD2CB /* TSManagedObject.h */,
-				6A46B7451CFCB32C00DCD2CB /* TSManagedObject.m */,
+				6A46B7471CFCC38F00DCD2CB /* Wrapper */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -1531,6 +1552,7 @@
 				6AEC767B1CD516EF00870FAE /* TSLibraryOverviewLightTableController.m in Sources */,
 				6AEC766C1CD4FF2A00870FAE /* TSImportController.m in Sources */,
 				6A6ED4171CE4D0EE001EFA21 /* NSColor+AvocadoUtils.m in Sources */,
+				6A46B74B1CFCC3C300DCD2CB /* NSManagedObjectContext+TSCoreDataStore.m in Sources */,
 				6AC4EC701CF95D43009EC46B /* NSFileManager+TSDirectorySizing.m in Sources */,
 				6A74F1E91CF282740023B439 /* TSRawCache.m in Sources */,
 				6AEC35191CD43F000033DE0A /* TSCoreDataStoreIB.m in Sources */,

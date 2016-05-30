@@ -9,6 +9,8 @@
 #import "TSCoreDataStore.h"
 #import "TSGroupContainerHelper.h"
 
+#import "NSManagedObjectContext+TSCoreDataStore.h"
+
 #import <CoreData/CoreData.h>
 
 /// Shared instance of the CoreData store
@@ -162,29 +164,15 @@ static TSCoreDataStore *sharedInstance = nil;
  * @note The operations take place asynchronously; this method returns after the
  * operations have been submitted to the temporary context.
  */
-+ (void) saveWithBlock:(TSCoreDataStoreSaveBlock) saveBlock completion:(TSCoreDataStoreCompletionBlock) completion {
++ (void) saveWithBlock:(TSCoreDataStoreSaveBlock) saveBlock completion:(TSCoreDataStoreSaveCallback) completion {
 	NSManagedObjectContext *ctx = [[self class] temporaryWorkerContextWithName:@"Unnamed Temporary Context"];
 	
 	[ctx performBlock:^{
-		BOOL saved = NO;
-		NSError *err = nil;
-		
 		// Run the user-provided block
 		saveBlock(ctx);
 		
-		// Save the context
-		saved = [ctx save:&err];
-		
-		// Execute completion callback, if provided
-		if(completion) {
-			completion(saved, err);
-		}
-		// Otherwise, log the error state
-		else {
-			if(err != nil) {
-				DDLogError(@"Couldn't save temporary context: %@", err);
-			}
-		}
+		// Save the context and execute completion callback
+		[ctx TSSaveWithOptions:kTSSaveParentContexts andCallback:completion];
 	}];
 }
 
@@ -195,29 +183,15 @@ static TSCoreDataStore *sharedInstance = nil;
  *
  * @note The operations take place synchronously.
  */
-+ (void) saveWithBlockAndWait:(_Nonnull TSCoreDataStoreSaveBlock) saveBlock completion:(_Nullable TSCoreDataStoreCompletionBlock) completion {
++ (void) saveWithBlockAndWait:(TSCoreDataStoreSaveBlock) saveBlock completion:(TSCoreDataStoreSaveCallback) completion {
 	NSManagedObjectContext *ctx = [[self class] temporaryWorkerContextWithName:@"Unnamed Temporary Context"];
 	
 	[ctx performBlockAndWait:^{
-		BOOL saved = NO;
-		NSError *err = nil;
-		
 		// Run the user-provided block
 		saveBlock(ctx);
 		
-		// Save the context
-		saved = [ctx save:&err];
-		
-		// Execute completion callback, if provided
-		if(completion) {
-			completion(saved, err);
-		}
-		// Otherwise, log the error state
-		else {
-			if(err != nil) {
-				DDLogError(@"Couldn't save temporary context: %@", err);
-			}
-		}
+		// Save the context and execute completion callback
+		[ctx TSSaveWithOptions:kTSSaveParentContexts andCallback:completion];
 	}];
 }
 

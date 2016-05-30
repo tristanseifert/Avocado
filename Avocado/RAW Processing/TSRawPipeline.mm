@@ -78,9 +78,6 @@
 /// size (in bytes) of the interpolated colour buffer
 @property (nonatomic) size_t interpolatedColourBufSz;
 
-/// managed object context, for accessing image objects
-@property (nonatomic) NSManagedObjectContext *moc;
-
 /// CoreImage pipeline
 @property (nonatomic) TSCoreImagePipeline *ciPipeline;
 
@@ -148,10 +145,6 @@
 		
 		// Create CoreImage pipeline
 		self.ciPipeline = [TSCoreImagePipeline new];
-		
-		// Set up a managed object context
-		NSString *name = [NSString stringWithFormat:@"%@//%@//Shared", [self className], self];
-		self.moc = [TSCoreDataStore temporaryWorkerContextWithName:name];
 		
 		// Create the cache
 		self.cache = [TSRawCache new];
@@ -277,8 +270,10 @@
 	state.lcLens = nil;
 	state.lcModifier = nil;
 	
-	// set up the context
-	state.mocCtx = self.moc;
+	// Create a temporary managed object context
+	NSString *name = [NSString stringWithFormat:@"%@//%@//Image %p", [self className], self, image];
+	state.mocCtx = [TSCoreDataStore temporaryWorkerContextWithName:name];
+	
 	state.image = [image TSInContext:state.mocCtx];
 	
 	// get some data out of the image data
@@ -926,11 +921,8 @@
  * Invalidates the internal caches of an image.
  */
 - (void) clearCachesForImage:(nonnull TSLibraryImage *) inImage {
-	[self.moc performBlock:^{
-		TSLibraryImage *image = [inImage TSInContext:self.moc];
-		
-		// evict it from the cache
-		[self.cache evictDataForUuid:image.uuid];
+	[inImage.managedObjectContext performBlock:^{
+		[self.cache evictDataForUuid:inImage.uuid];
 	}];
 }
 

@@ -13,8 +13,8 @@
 
 /// Block for which all operations shall take place on the given context
 typedef void (^TSCoreDataStoreSaveBlock)(NSManagedObjectContext * _Nonnull);
-/// Completion block, indicating whether the context was saved, and any errors
-typedef void (^TSCoreDataStoreCompletionBlock)(BOOL, NSError * _Nonnull);
+/// Saving callback block
+typedef void (^TSCoreDataStoreSaveCallback)(BOOL, NSError * _Nullable);
 
 
 /**
@@ -62,7 +62,7 @@ typedef void (^TSCoreDataStoreCompletionBlock)(BOOL, NSError * _Nonnull);
  * @note The operations take place asynchronously; this method returns after the
  * operations have been submitted to the temporary context.
  */
-+ (void) saveWithBlock:(_Nonnull TSCoreDataStoreSaveBlock) saveBlock completion:(_Nullable TSCoreDataStoreCompletionBlock) completion;
++ (void) saveWithBlock:(_Nonnull TSCoreDataStoreSaveBlock) saveBlock completion:(_Nullable TSCoreDataStoreSaveCallback) completion;
 
 /**
  * Creates a new worker context, then executes the specified block on it. When
@@ -71,7 +71,7 @@ typedef void (^TSCoreDataStoreCompletionBlock)(BOOL, NSError * _Nonnull);
  *
  * @note The operations take place synchronously.
  */
-+ (void) saveWithBlockAndWait:(_Nonnull TSCoreDataStoreSaveBlock) saveBlock completion:(_Nullable TSCoreDataStoreCompletionBlock) completion;
++ (void) saveWithBlockAndWait:(_Nonnull TSCoreDataStoreSaveBlock) saveBlock completion:(_Nullable TSCoreDataStoreSaveCallback) completion;
 
 /**
  * Finds a managed object, given an URL representation of its ID.
