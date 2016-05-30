@@ -11,6 +11,8 @@
 #import "TSImageIOHelper.h"
 #import "TSGroupContainerHelper.h"
 
+#import "TSThumbCache.h"
+
 #import "TSHumanModels.h"
 #import "TSCoreDataStore.h"
 
@@ -51,7 +53,7 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 - (BOOL) importFile:(NSURL *) url withError:(NSError **) err {
 	NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
 	
-	// first, verify whether the file can be imported (it's an image)
+	// First, verify whether the file can be imported (it's an image)
 	NSString *uti;
 	[url getResourceValue:&uti forKey:NSURLTypeIdentifierKey error:nil];
 	
@@ -62,14 +64,14 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		return NO;
 	}
 	
-	// try to determine what type of image it is
+	// Try to determine what type of image it is
 	if([workspace type:uti conformsToType:@"public.camera-raw-image"]) {
 		return [self importRaw:url withError:err];
 	} else {
 		return [self importOtherImage:url withError:err];
 	}
 	
-	// we should never get here
+	// Should never get here…
 	return NO;
 }
 
@@ -83,7 +85,7 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 	
 	NSURL *actualImageUrl = url;
 	
-	// copy it to the library folder
+	// Copy it to the library folder
 	if(self.copyFiles) {
 		actualImageUrl = [self copyFile:url withError:&err];
 		
@@ -93,7 +95,7 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		}
 	}
 	
-	// try to create a RAW image
+	// Try to create a RAW image
 	raw = [[TSRawImage alloc] initWithContentsOfUrl:actualImageUrl
 											  error:&err];
 	if(!raw || err) {
@@ -102,12 +104,12 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		return NO;
 	}
 	
-	// save it
+	// Save the new image
 	[TSCoreDataStore saveWithBlockAndWait:^(NSManagedObjectContext *ctx) {
-		// create an image
+		// Create an image
 		TSLibraryImage *image = [TSLibraryImage TSCreateEntityInContext:ctx];
 		
-		// set some basic metadata
+		// Set some basic metadata
 		image.fileTypeValue = TSLibraryImageRaw;
 		image.fileUrl = actualImageUrl;
 		
@@ -119,18 +121,21 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		image.dateShot = raw.timestamp;
 		image.imageSize = raw.size;
 		
-		// save the thumb UUID
+		// Save the thumb UUID
 		image.thumbUUID = [[NSUUID new].UUIDString stringByAppendingString:@"_raw"];
 		
-		// post notification
+		// Post notification
 		NSDictionary *info = @{
 			TSFileImportedNotificationUrlKey: actualImageUrl,
 			TSFileImportedNotificationImageKey: image
 		};
 		[[NSNotificationCenter defaultCenter] postNotificationName:TSFileImportedNotificationName object:self userInfo:info];
+		
+		// Request a thumb be generated for this image
+		[[TSThumbCache sharedInstance] warmCacheWithThumbForImage:image];
 	} completion:nil];
 	
-	// the import has successed.
+	// Import has successed.
 	return YES;
 }
 
@@ -142,7 +147,7 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 	
 	NSURL *actualImageUrl = url;
 	
-	// copy it to the library folder
+	// Copy it to the library folder
 	if(self.copyFiles) {
 		actualImageUrl = [self copyFile:url withError:&err];
 		
@@ -152,15 +157,14 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		}
 	}
 	
-	// extract some metadata from the image
+	// Extract some metadata from the image
 	NSDictionary *exif = [[TSImageIOHelper sharedInstance] metadataForImageAtUrl:actualImageUrl];
 	
-	// save it
+	// Create a new image object and save it
 	[TSCoreDataStore saveWithBlockAndWait:^(NSManagedObjectContext *ctx) {
-		// create an image
 		TSLibraryImage *image = [TSLibraryImage TSCreateEntityInContext:ctx];
 		
-		// set some basic metadata
+		// Set some basic metadata
 		image.fileTypeValue = TSLibraryImageCompressed;
 		image.fileUrl = actualImageUrl;
 		
@@ -173,23 +177,26 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		
 		image.thumbUUID = [[NSUUID new].UUIDString stringByAppendingString:@"_compressed"];
 		
-		// extract a few keys from the fixed-up EXIF dictionary dictionary
+		// Extract a few keys from the fixed-up EXIF dictionary dictionary
 		NSDictionary *exifFixed = exif[TSImageMetadataExifDictionary];
 		if(exifFixed != nil) {
 			image.dateShot = exifFixed[TSImageMetadataExifDateTimeOriginal];
 		}
 		
 		if(image.dateShot == nil) {
-			// we can't get a decent value for the date shot, so use right now
+			// Can't get a decent value for the date shot, so use the current time
 			image.dateShot = image.dateImported;
 		}
 		
-		// post notification
+		// Post notification
 		NSDictionary *info = @{
 		   TSFileImportedNotificationUrlKey: actualImageUrl,
 		   TSFileImportedNotificationImageKey: image
 		};
 		[[NSNotificationCenter defaultCenter] postNotificationName:TSFileImportedNotificationName object:self userInfo:info];
+		
+		// Request a thumb be generated for this image
+		[[TSThumbCache sharedInstance] warmCacheWithThumbForImage:image];
 	} completion:nil];
 	
 	// the import has successed.

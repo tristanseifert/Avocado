@@ -12,13 +12,19 @@
 #import "TSRawThumbExtractor.h"
 #import "TSGroupContainerHelper.h"
 
+#import "NSFileManager+TSDirectorySizing.h"
+
 #import <ImageIO/ImageIO.h>
 
 /**
  * Set this define to 1 to prevent thumbnail data from being saved to the
  * CoreData store. This is useful for debugging.
  */
-#define	DO_NOT_SAVE_THUMBS	0
+#define	DO_NOT_SAVE_THUMBS		0
+/**
+ * Enables some debug logging about thumbnail generation when enabled.
+ */
+#define LOG_THUMB_GENERATION	0
 
 /// KVO context value for the operations count
 static void *TSKVOOpCountCtx = &TSKVOOpCountCtx;
@@ -32,10 +38,13 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 
 /// URL to the thumbnail cache directory
 @property (readonly, getter=thumbCacheUrl) NSURL *thumbCacheUrl;
-/// Thumb generation queue
-@property (nonatomic) NSOperationQueue *thumbQueue;
 /// Secret managed object context
 @property (nonatomic) NSManagedObjectContext *thumbMoc;
+
+/// Thumb generation queue
+@property (nonatomic) NSOperationQueue *thumbQueue;
+/// Queue for background thumb generation
+@property (nonatomic) NSOperationQueue *backgroundQueue;
 
 /// Remote object to receive callbacks
 @property (nonatomic, strong) id<TSThumbHandlerDelegate> remote;
@@ -87,6 +96,10 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 	@try {
 		[self.thumbQueue removeObserver:self forKeyPath:@"operationCount"];
 	} @catch (__unused NSException *exception) { /* lol fuck KVO */ }
+	
+	@try {
+		[self.backgroundQueue removeObserver:self forKeyPath:@"operationCount"];
+	} @catch (__unused NSException *exception) { /* lol fuck KVO */ }
 }
 
 /**
@@ -122,15 +135,25 @@ static const CGFloat TSThumbMaxSize = 1024.f;
  * executed.
  */
 - (void) initThumbQueue {
+	// Create thumbnail queue
 	self.thumbQueue = [NSOperationQueue new];
 	
 	self.thumbQueue.name = [NSString stringWithFormat:@"TSThumbHandlerQueue %p", self];
-	self.thumbQueue.qualityOfService = NSQualityOfServiceBackground;
+	self.thumbQueue.qualityOfService = NSQualityOfServiceUtility;
 	self.thumbQueue.maxConcurrentOperationCount = 2;
+	
+	// Create background thumbnail queue
+	self.backgroundQueue = [NSOperationQueue new];
+	
+	self.backgroundQueue.name = [NSString stringWithFormat:@"TSThumbHandlerQueue (BG) %p", self];
+	self.backgroundQueue.qualityOfService = NSQualityOfServiceBackground;
+	self.backgroundQueue.maxConcurrentOperationCount = 1;
 	
 	// Add observer for operation count
 	[self.thumbQueue addObserver:self forKeyPath:@"operationCount"
 						 options:0 context:TSKVOOpCountCtx];
+	[self.backgroundQueue addObserver:self forKeyPath:@"operationCount"
+							  options:0 context:TSKVOOpCountCtx];
 }
 
 #pragma mark KVO
@@ -143,8 +166,8 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 						 change:(NSDictionary<NSString *,id> *) change
 						context:(void *) context {
 	if(context == TSKVOOpCountCtx) {
-		// Save the MOC, if operation count is zero
-		if(self.thumbQueue.operationCount == 0) {
+		// Save the MOC, if operation count is zero on both queues
+		if(self.thumbQueue.operationCount == 0 && self.backgroundQueue.operationCount == 0) {
 			NSError *err = nil;
 			
 			if([self.thumbMoc save:&err] == NO) {
@@ -167,6 +190,71 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 	}
 }
 
+#pragma mark Cache Management
+/**
+ * Resets the contents of the cache. All objects are deleted from the persistent
+ * store, and the files are removed from disk.
+ *
+ * If an error occurred during the deletion of thumbnails, the reply block is
+ * called with a non-nil error object. Otherwise, it is nil.
+ */
+- (void) deleteAllThumbsWithReply:(void (^)(NSError *)) reply {
+	NSFetchRequest *request;
+	NSBatchDeleteRequest *deleteReq;
+	__block NSError *err = nil;
+	
+	// Lock the operation queues
+	
+	// Set up a fetch request and a delete request.
+	request = [NSFetchRequest fetchRequestWithEntityName:@"Thumbnail"];
+	
+	deleteReq = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
+	deleteReq.resultType = NSBatchDeleteResultTypeStatusOnly;
+	
+	// Execute the request against the main MOC.
+	[self.thumbMoc performBlockAndWait:^{
+		NSBatchDeleteResult *res;
+		BOOL saved = NO;
+		
+		// Execute the batch delete request request
+		res = [self.thumbMoc executeRequest:deleteReq error:&err];
+		
+		if(err != nil) {
+			DDLogError(@"Error deleting thumb objects: %@", err);
+			return;
+		}
+		
+		// Save the intermediate store
+		saved = [self.thumbMoc save:&err];
+		if(err != nil) {
+			DDLogError(@"Error saving thumb store: %@", err);
+			return;
+		}
+		
+		// Save its parent to persist changes to disk
+		NSManagedObjectContext *parent = self.thumbMoc.parentContext;
+		
+		saved = [parent save:&err];
+		if(err != nil) {
+			DDLogError(@"Error saving parent store: %@", err);
+			return;
+		}
+	}];
+	
+	// Return the produced error object, if any.
+	reply(err);
+}
+
+/**
+ * Calculates the size of the cache on disk.
+ */
+- (void) calculateCacheDiskSize:(void (^)(NSUInteger)) reply {
+	NSFileManager *fm = [NSFileManager defaultManager];
+	
+	NSUInteger size = [fm TSFileSizeForFolderAtUrl:self.thumbCacheUrl];
+	reply(size);
+}
+
 #pragma mark Thumb Creation
 /**
  * Requests that a thumbnail is generated for the given image. If the thumbnail
@@ -180,8 +268,8 @@ static const CGFloat TSThumbMaxSize = 1024.f;
  * @param completionIdentifier Passed as an argument to the delegate when the
  * thumbnail has been generated.
  */
-- (void) fetchThumbForImage:(TSThumbImageProxy *) image isUrgent:(BOOL) urgent
-			 withIdentifier:(NSString *) completionIdentifier {
+- (void) fetchThumbForImage:(TSThumbImageProxy *) image withPriority:(TSThumbHandlerUrgency) priority
+			 andIdentifier:(NSString *) completionIdentifier {
 	NSBlockOperation *op;
 	
 	// Set up an operation to check for a thumbnail, and create one if needed
@@ -200,7 +288,10 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 		}
 		
 		// Generate thumbnail
+#if LOG_THUMB_GENERATION
 		DDLogVerbose(@"Generating thumb for %@…", image.originalUrl);
+#endif
+		
 		url = [self generateThumbnailForImage:image withError:&err];
 		
 		if(url) {
@@ -215,11 +306,16 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 	}];
 	
 	// Set its quality of service to user initiated, if urgent
-	if(urgent) {
+	if(priority == kTSTHumbHandlerUrgent) {
 		op.qualityOfService = NSQualityOfServiceUserInitiated;
 	}
 	
-	[self.thumbQueue addOperation:op];
+	// Add it to the appropriate queue
+	if(priority > kTSThumbHandlerBackground) {
+		[self.thumbQueue addOperation:op];
+	} else {
+		[self.backgroundQueue addOperation:op];
+	}
 }
 
 /**
@@ -239,12 +335,17 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 	
 	__block NSArray *results = nil;
 	
-	// TODO: Figure out if this deserves its own temporary context or not
-	[self.thumbMoc performBlockAndWait:^{
+	// Create a temporary managed object context for checking the existence of the image in the cache
+	NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+	[moc setParentContext:self.thumbMoc];
+	moc.name = [NSString stringWithFormat:@"TSThumbHandler Temporary Context for %@ (hasThumbForImage:atUrl:)", image];
+	moc.undoManager = nil;
+	
+	[moc performBlockAndWait:^{
 		NSError *err = nil;
 		
 		// Execute fetch request on the context's queue
-		results = [self.thumbMoc executeFetchRequest:req error:&err];
+		results = [moc executeFetchRequest:req error:&err];
 		
 		// Check for errors during fetch
 		if(results == nil || err != nil) {
@@ -318,10 +419,10 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 	// Create a temporary managed object context
 	NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
 	[moc setParentContext:self.thumbMoc];
-	moc.name = [NSString stringWithFormat:@"TSThumbHandler Temporary Context for %@", image];
+	moc.name = [NSString stringWithFormat:@"TSThumbHandler Temporary Context for %@ (generateThumbnailForImage:withError:)", image];
 	moc.undoManager = nil;
 	
-	[moc performBlock:^{
+	[moc performBlockAndWait:^{
 		TSThumbnail *thumb =  [NSEntityDescription insertNewObjectForEntityForName:@"Thumbnail" inManagedObjectContext:moc];
 		
 		thumb.dateAdded = thumb.dateLastAccessed = [NSDate new];

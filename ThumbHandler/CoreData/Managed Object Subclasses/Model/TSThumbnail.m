@@ -22,6 +22,22 @@
 	return [NSSet setWithObjects:@"directory", @"imageUuid", nil];
 }
 
+/**
+ * Removes this thumbnail's on-disk representation before it is about to be
+ * torn down.
+ */
+- (void) prepareForDeletion {
+	NSFileManager *fm = [NSFileManager defaultManager];
+	NSError *err = nil;
+	
+	[super prepareForDeletion];
+	
+	// Try to delete the thumbnail's file from disk
+	if([fm removeItemAtURL:self.thumbUrl error:&err] == NO) {
+		DDLogError(@"Couldn't remove thumb file %@ from disk: %@", self.thumbUrl, err);
+	}
+}
+
 #pragma mark Helpers
 /**
  * Generates a directory name.
