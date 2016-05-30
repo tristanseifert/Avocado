@@ -14,6 +14,12 @@
 
 #import <ImageIO/ImageIO.h>
 
+/**
+ * Set this define to 1 to prevent thumbnail data from being saved to the
+ * CoreData store. This is useful for debugging.
+ */
+#define	DO_NOT_SAVE_THUMBS	0
+
 /// KVO context value for the operations count
 static void *TSKVOOpCountCtx = &TSKVOOpCountCtx;
 
@@ -300,6 +306,9 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 	}
 	
 	// Create a thumbnail object in the CoreData store
+#if DO_NOT_SAVE_THUMBS
+	// Do nothing
+#else
 	[self.thumbMoc performBlock:^{
 		TSThumbnail *thumb =  [NSEntityDescription insertNewObjectForEntityForName:@"Thumbnail" inManagedObjectContext:self.thumbMoc];
 		
@@ -308,6 +317,7 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 		thumb.directory = dir;
 		thumb.imageUuid = image.uuid;
 	}];
+#endif
 	
 	// Clean up
 	CGImageRelease(thumbnailImg);

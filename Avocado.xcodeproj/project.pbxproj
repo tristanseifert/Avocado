@@ -108,6 +108,8 @@
 		6AC4ECC61CFBD40C009EC46B /* CocoaLumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AC4ECC51CFBD40C009EC46B /* CocoaLumberjack.framework */; };
 		6AC4ECCA1CFBE2C1009EC46B /* TSRawThumbExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4ECC91CFBE2C1009EC46B /* TSRawThumbExtractor.m */; };
 		6AC4ECCB1CFBF334009EC46B /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEC351A1CD43FED0033DE0A /* Accelerate.framework */; };
+		6AC4ECCE1CFC077C009EC46B /* TSImageTransformHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4ECCC1CFC077C009EC46B /* TSImageTransformHelpers.m */; };
+		6AC4ECCF1CFC077C009EC46B /* TSImageTransformHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4ECCC1CFC077C009EC46B /* TSImageTransformHelpers.m */; };
 		6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */; };
 		6AE87BCC1CD275C90053CD9D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BCB1CD275C90053CD9D /* main.m */; };
 		6AE87BD11CD275C90053CD9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AE87BD01CD275C90053CD9D /* Assets.xcassets */; };
@@ -354,6 +356,8 @@
 		6AC4ECC51CFBD40C009EC46B /* CocoaLumberjack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaLumberjack.framework; path = "../../Library/Developer/Xcode/DerivedData/Avocado-hkvdboydipunrgbyovfuwhgdvclo/Build/Products/Debug/CocoaLumberjack.framework"; sourceTree = "<group>"; };
 		6AC4ECC81CFBE2C1009EC46B /* TSRawThumbExtractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSRawThumbExtractor.h; sourceTree = "<group>"; };
 		6AC4ECC91CFBE2C1009EC46B /* TSRawThumbExtractor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSRawThumbExtractor.m; sourceTree = "<group>"; };
+		6AC4ECCC1CFC077C009EC46B /* TSImageTransformHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSImageTransformHelpers.m; path = "Avocado/Image Processing/TSImageTransformHelpers.m"; sourceTree = "<group>"; };
+		6AC4ECCD1CFC077C009EC46B /* TSImageTransformHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSImageTransformHelpers.h; path = "Avocado/Image Processing/TSImageTransformHelpers.h"; sourceTree = "<group>"; };
 		6AE87BC41CD275C90053CD9D /* Avocado.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Avocado.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AE87BC71CD275C90053CD9D /* TSAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TSAppDelegate.h; sourceTree = "<group>"; };
 		6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TSAppDelegate.m; sourceTree = "<group>"; };
@@ -455,11 +459,11 @@
 		6A06F4341CE01541001DFC4C /* General Image Processing */ = {
 			isa = PBXGroup;
 			children = (
-				6AA935C31CEA4583004E9F9C /* Helpers */,
 				6A06F4351CE0169E001DFC4C /* TSCoreImagePipeline.h */,
 				6A06F4361CE0169E001DFC4C /* TSCoreImagePipeline.m */,
 				6A06F4461CE01C3C001DFC4C /* TSCoreImagePipelineJob.h */,
 				6A06F4471CE01C3C001DFC4C /* TSCoreImagePipelineJob.m */,
+				6AA935C31CEA4583004E9F9C /* Helpers */,
 				6A06F4491CE02048001DFC4C /* Filters */,
 			);
 			name = "General Image Processing";
@@ -688,6 +692,8 @@
 				6AA935C51CEA45CA004E9F9C /* TSBufferOwningBitmapRep.m */,
 				6A9224391CEEAE8300EE6408 /* TSLibraryImage+CoreImagePipeline.h */,
 				6A92243A1CEEAE8300EE6408 /* TSLibraryImage+CoreImagePipeline.m */,
+				6AC4ECCC1CFC077C009EC46B /* TSImageTransformHelpers.m */,
+				6AC4ECCD1CFC077C009EC46B /* TSImageTransformHelpers.h */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -1451,6 +1457,7 @@
 				6AC4EC7C1CFA5194009EC46B /* main.m in Sources */,
 				6AC4EC8F1CFB5386009EC46B /* TSThumbCache.xcdatamodeld in Sources */,
 				6AC4ECBE1CFBB63D009EC46B /* TSGroupContainerHelper.m in Sources */,
+				6AC4ECCF1CFC077C009EC46B /* TSImageTransformHelpers.m in Sources */,
 				6AC4EC9D1CFB545F009EC46B /* TSLogFormatter.m in Sources */,
 				6AC4ECA21CFB548C009EC46B /* NSFileManager+TSDirectorySizing.m in Sources */,
 				6AC4ECB71CFB8C84009EC46B /* TSThumbXPCServiceDelegate.m in Sources */,
@@ -1480,6 +1487,7 @@
 				6AEC76731CD50DDD00870FAE /* TSImportUIController.m in Sources */,
 				6AE87C211CD3D5460053CD9D /* TSRawImage.m in Sources */,
 				6A9224351CEE394400EE6408 /* TSNoiseReductionAdjustmentFilter.m in Sources */,
+				6AC4ECCE1CFC077C009EC46B /* TSImageTransformHelpers.m in Sources */,
 				6A9224271CECC6DE00EE6408 /* TSDevelopHueInspector.m in Sources */,
 				6AA935991CE7AA75004E9F9C /* TSInspectorViewItem.m in Sources */,
 				6A70B5271CF7FD8700597EB0 /* TSHSLSliderCell.m in Sources */,
