@@ -119,6 +119,7 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 	
 	self.thumbQueue.name = [NSString stringWithFormat:@"TSThumbHandlerQueue %p", self];
 	self.thumbQueue.qualityOfService = NSQualityOfServiceBackground;
+	self.thumbQueue.maxConcurrentOperationCount = 2;
 	
 	// Add observer for operation count
 	[self.thumbQueue addObserver:self forKeyPath:@"operationCount"
@@ -220,7 +221,6 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 - (BOOL) hasThumbForImage:(TSThumbImageProxy *) image atUrl:(NSURL **) outUrl {
 	TSThumbnail *thumb = nil;
 	NSPredicate *pred = nil;
-	NSError *err = nil;
 	
 	// Try to find a matching thumbnail
 	pred = [NSPredicate predicateWithFormat:@"imageUuid = %@", image.uuid];
@@ -229,16 +229,22 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 	req.predicate = pred;
 	req.fetchLimit = 1;
 	
-	NSArray *results = [self.thumbMoc executeFetchRequest:req error:&err];
+	__block NSArray *results = nil;
 	
-	// Check for errors
-	if(results == nil || err != nil) {
-		DDLogError(@"Couldn't run fetch request (%@): %@", pred, err);
-		return NO;
-	}
+	[self.thumbMoc performBlockAndWait:^{
+		NSError *err = nil;
+		
+		// Execute fetch request on the context's queue
+		results = [self.thumbMoc executeFetchRequest:req error:&err];
+		
+		// Check for errors during fetch
+		if(results == nil || err != nil) {
+			DDLogError(@"Couldn't run fetch request (%@): %@", pred, err);
+		}
+	}];
 	
 	// Thumbnail must be created, if count is zero (i.e. no matching thumb)
-	if(results.count == 0) {
+	if(results == nil || results.count == 0) {
 		return NO;
 	} else {
 		// A thumbnail was found; update its last accessed date
