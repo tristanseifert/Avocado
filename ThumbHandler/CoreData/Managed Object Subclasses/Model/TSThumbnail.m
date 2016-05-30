@@ -1,4 +1,5 @@
 #import "TSThumbnail.h"
+#import "TSGroupContainerHelper.h"
 
 #import <Security/Security.h>
 
@@ -29,7 +30,7 @@
 	uint8_t bytes[1];
 	SecRandomCopyBytes(kSecRandomDefault, 1, (uint8_t *) &bytes);
 	
-	return [NSString stringWithFormat:@"%08x", bytes[0]];
+	return [NSString stringWithFormat:@"thumb-%02x", bytes[0]];
 }
 
 /**
@@ -39,11 +40,8 @@
  * extension "jp2."
  */
 + (NSURL *) urlForImageInDirectory:(NSString *) dir andUuidString:(NSString *) uuid {
-	// get the url of the cache itself
-	NSFileManager *fm = [NSFileManager defaultManager];
-	
-	NSURL *cacheUrl = [[fm URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] lastObject];
-	cacheUrl = [cacheUrl URLByAppendingPathComponent:@"me.tseifert.Avocado" isDirectory:YES];
+	// get the url of the cache itself	
+	NSURL *cacheUrl = [TSGroupContainerHelper sharedInstance].caches;
 	cacheUrl = [cacheUrl URLByAppendingPathComponent:@"TSThumbCache" isDirectory:YES];
 	
 	// append the directory and filename

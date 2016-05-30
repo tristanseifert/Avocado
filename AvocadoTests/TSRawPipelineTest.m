@@ -64,7 +64,7 @@
 	// queue RAW thing
 	NSProgress *progress = nil;
 	
-	[self.pipeline queueRawFile:self.image shouldCache:NO
+	[self.pipeline queueRawFile:self.image shouldCache:NO renderingIntent:TSRawPipelineIntentOutput outputFormat:TSRawPipelineOutputFormatNSImage8Bit
 			 completionCallback:^(NSImage *img, NSError *err) {
 				 if(err) {
 					 DDLogError(@"Error processing RAW file: %@", err);
@@ -115,7 +115,7 @@
 		// queue RAW thing
 		NSProgress *progress = nil;
 		
-		[self.pipeline queueRawFile:self.image shouldCache:NO
+		[self.pipeline queueRawFile:self.image shouldCache:NO renderingIntent:TSRawPipelineIntentOutput outputFormat:TSRawPipelineOutputFormatNSImage8Bit
 				 completionCallback:^(NSImage *img, NSError *err) {
 					 if(err) {
 						 DDLogError(@"Error processing RAW file: %@", err);

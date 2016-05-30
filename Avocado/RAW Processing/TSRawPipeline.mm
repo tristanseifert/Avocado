@@ -24,6 +24,8 @@
 
 #import "NSColorSpace+ExtraColourSpaces.h"
 
+#import "TSGroupContainerHelper.h"
+
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
 #import <CoreImage/CoreImage.h>
@@ -403,8 +405,7 @@
 #if WriteDebugData
 		// save buffer to disk (debug testing)
 		NSFileManager *fm = [NSFileManager defaultManager];
-		NSURL *appSupportURL = [[fm URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
-		appSupportURL = [appSupportURL URLByAppendingPathComponent:@"me.tseifert.Avocado"];
+		NSURL *appSupportURL = [TSGroupContainerHelper sharedInstance].appSupport;
 		
 		NSData *rawData = [NSData dataWithBytesNoCopy:self.interpolatedColourBuf length:(state.rawImage.size.width * 3 * 2) * state.rawImage.size.height freeWhenDone:NO];
 		[rawData writeToURL:[appSupportURL URLByAppendingPathComponent:@"test_raw_data.raw"] atomically:NO];
@@ -1160,9 +1161,7 @@
  * TIFF file in the Application Support directory.
  */
 - (void) dumpImageBufferInterleaved:(TSRawPipelineState *) state {
-	NSFileManager *fm = [NSFileManager defaultManager];
-	NSURL *appSupportURL = [[fm URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
-	appSupportURL = [appSupportURL URLByAppendingPathComponent:@"me.tseifert.Avocado"];
+	NSURL *appSupportURL = [TSGroupContainerHelper sharedInstance].appSupport;
 	
 	void *buffer = TSPixelConverterGetRGBXPointer(state.converter);
 	
@@ -1197,9 +1196,7 @@
 	NSBitmapImageRep *rep;
 	NSData *tiff;
 	
-	NSFileManager *fm = [NSFileManager defaultManager];
-	NSURL *appSupportURL = [[fm URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
-	appSupportURL = [appSupportURL URLByAppendingPathComponent:@"me.tseifert.Avocado"];
+	NSURL *appSupportURL = [TSGroupContainerHelper sharedInstance].appSupport;
 	
 	// get the representation, TIFF data, and write it
 	rep = [[NSBitmapImageRep alloc] initWithCIImage:state.coreImageInput];

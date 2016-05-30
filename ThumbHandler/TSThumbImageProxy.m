@@ -38,8 +38,6 @@
 		if(err != nil) {
 			DDLogError(@"Could not decode url bookmark data: %@", err);
 			return nil;
-		} else if(isStale == YES) {
-			DDLogWarn(@"Decoded URL (%@) is stale (this should never happen)", url);
 		}
 		
 		self.originalUrl = url;

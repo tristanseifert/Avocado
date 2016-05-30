@@ -10,6 +10,8 @@
 #import "TSThumbImageProxy.h"
 #import "TSThumbCacheHumanModels.h"
 
+#import "TSGroupContainerHelper.h"
+
 #import <MagicalRecord/MagicalRecord.h>
 
 /// Default JPEG quality for saved thumb images.
@@ -131,6 +133,7 @@ static const CGFloat TSThumbDefaultQuality = 0.74;
 	op = [NSBlockOperation blockOperationWithBlock:^{
 		BOOL hasThumb = NO;
 		NSURL *url = nil;
+		NSError *err = nil;
 		
 		// check whther a thumbnail exists
 		hasThumb = [self hasThumbForImage:image atUrl:&url];
@@ -141,7 +144,18 @@ static const CGFloat TSThumbDefaultQuality = 0.74;
 			return;
 		}
 		
-		// a thumbnail must be generated.
+		// generate thumbnail
+		url = [self generateThumbnailForImage:image withError:&err];
+		
+		if(url) {
+			// thumbnail generated successfully
+			[self.remote thumbnailGeneratedForIdentifier:completionIdentifier
+												   atUrl:url];
+		} else {
+			// an error occurred
+			[self.remote thumbnailFailedForIdentifier:completionIdentifier
+											withError:err];
+		}
 	}];
 	
 	// set its quality of service to user initiated, if urgent
@@ -185,8 +199,9 @@ static const CGFloat TSThumbDefaultQuality = 0.74;
 	BOOL written = NO;
 	
 	// TODO: actually create thumbnail
-	NSImage *thumbnailImg = [NSImage imageNamed:NSImageNameCaution];
-	thumbnailImg.size = NSMakeSize(512, 512);
+	NSURL *testUrl = [[NSBundle mainBundle] URLForResource:@"UnknownImage"
+											 withExtension:@"png"];
+	NSImage *thumbnailImg = [[NSImage alloc] initWithContentsOfURL:testUrl];
 	
 	// ensure thumbnail was successfully created
 	if(thumbnailImg == nil) {
@@ -270,12 +285,9 @@ static const CGFloat TSThumbDefaultQuality = 0.74;
 /**
  * Returns the url of the thumbnail cache.
  */
-- (NSURL *) thumbCacheUrl {
-	NSFileManager *fm = [NSFileManager defaultManager];
-	
+- (NSURL *) thumbCacheUrl {	
 	// query system for url
-	NSURL *cachesUrl = [[fm URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] lastObject];
-	cachesUrl = [cachesUrl URLByAppendingPathComponent:@"me.tseifert.Avocado" isDirectory:YES];
+	NSURL *cachesUrl = [TSGroupContainerHelper sharedInstance].caches;
 	cachesUrl = [cachesUrl URLByAppendingPathComponent:@"TSThumbCache" isDirectory:YES];
 	
 	return cachesUrl;

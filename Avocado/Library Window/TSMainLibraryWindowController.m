@@ -8,6 +8,7 @@
 
 #import "TSMainLibraryWindowController.h"
 
+#import "TSGroupContainerHelper.h"
 #import "TSLibraryOverviewController.h"
 #import "TSLibraryDetailController.h"
 #import "TSHumanModels.h"
@@ -322,11 +323,8 @@
  * directory.
  */
 - (NSURL *) savedStateFileUrl {
-	NSFileManager *fm = [NSFileManager defaultManager];
-	
-	// get the directory pls
-	NSURL *appSupportURL = [[fm URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
-	appSupportURL = [appSupportURL URLByAppendingPathComponent:@"me.tseifert.Avocado"];
+	// get the directory and append filename
+	NSURL *appSupportURL = [TSGroupContainerHelper sharedInstance].appSupport;
 	
 	return [appSupportURL URLByAppendingPathComponent:@"ViewState.plist" isDirectory:NO];
 }

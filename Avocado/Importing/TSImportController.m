@@ -10,6 +10,7 @@
 #import "TSRawImage.h"
 #import "TSHumanModels.h"
 #import "TSImageIOHelper.h"
+#import "TSGroupContainerHelper.h"
 
 #import <MagicalRecord/MagicalRecord.h>
 
@@ -218,8 +219,7 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 	}
 	
 	// get the path to the photos directory
-	NSURL *photoDir = [[fm URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
-	photoDir = [photoDir URLByAppendingPathComponent:@"me.tseifert.Avocado" isDirectory:YES];
+	NSURL *photoDir = [TSGroupContainerHelper sharedInstance].appSupport;
 	photoDir = [photoDir URLByAppendingPathComponent:@"Photos" isDirectory:YES];
 	
 	// create the YYYY-MM-DD format directory

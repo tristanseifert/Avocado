@@ -7,8 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+
 #import "TSThumbXPCServiceDelegate.h"
 #import "TSLogFormatter.h"
+
+#import "TSGroupContainerHelper.h"
 
 static void TSCreateThumbDirectories();
 
@@ -54,13 +57,12 @@ static void TSCreateThumbDirectories() {
 	NSError *err = nil;
 	
 	// get the root cache url
-	NSURL *cacheUrl = [[fm URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] lastObject];
-	cacheUrl = [cacheUrl URLByAppendingPathComponent:@"me.tseifert.Avocado" isDirectory:YES];
+	NSURL *cacheUrl = [TSGroupContainerHelper sharedInstance].caches;
 	cacheUrl = [cacheUrl URLByAppendingPathComponent:@"TSThumbCache" isDirectory:YES];
 	
 	// iterate 256 times to create all of them
 	for(NSUInteger i = 0; i < 256; i++) {
-		NSString *dirName = [NSString stringWithFormat:@"%08lx", (unsigned long) i];
+		NSString *dirName = [NSString stringWithFormat:@"thumb-%02lx", (unsigned long) i];
 		
 		// create the directory
 		NSURL *dirUrl = [cacheUrl URLByAppendingPathComponent:dirName isDirectory:YES];

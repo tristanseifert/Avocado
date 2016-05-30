@@ -103,6 +103,9 @@
 		6AC4ECAE1CFB70E4009EC46B /* TSThumbImageProxy+AvocadoApp.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4ECAD1CFB70E4009EC46B /* TSThumbImageProxy+AvocadoApp.m */; };
 		6AC4ECB41CFB8B19009EC46B /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AC4ECB31CFB8B19009EC46B /* Security.framework */; };
 		6AC4ECB71CFB8C84009EC46B /* TSThumbXPCServiceDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4ECB61CFB8C84009EC46B /* TSThumbXPCServiceDelegate.m */; };
+		6AC4ECB91CFBB239009EC46B /* UnknownImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 6AC4ECB81CFBB239009EC46B /* UnknownImage.png */; };
+		6AC4ECBD1CFBB63D009EC46B /* TSGroupContainerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4ECBC1CFBB63D009EC46B /* TSGroupContainerHelper.m */; };
+		6AC4ECBE1CFBB63D009EC46B /* TSGroupContainerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4ECBC1CFBB63D009EC46B /* TSGroupContainerHelper.m */; };
 		6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */; };
 		6AE87BCC1CD275C90053CD9D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BCB1CD275C90053CD9D /* main.m */; };
 		6AE87BD11CD275C90053CD9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AE87BD01CD275C90053CD9D /* Assets.xcassets */; };
@@ -342,6 +345,9 @@
 		6AC4ECB31CFB8B19009EC46B /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		6AC4ECB51CFB8C84009EC46B /* TSThumbXPCServiceDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSThumbXPCServiceDelegate.h; sourceTree = "<group>"; };
 		6AC4ECB61CFB8C84009EC46B /* TSThumbXPCServiceDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSThumbXPCServiceDelegate.m; sourceTree = "<group>"; };
+		6AC4ECB81CFBB239009EC46B /* UnknownImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = UnknownImage.png; path = Assets/UnknownImage.png; sourceTree = SOURCE_ROOT; };
+		6AC4ECBB1CFBB63D009EC46B /* TSGroupContainerHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSGroupContainerHelper.h; path = Avocado/Helpers/TSGroupContainerHelper.h; sourceTree = "<group>"; };
+		6AC4ECBC1CFBB63D009EC46B /* TSGroupContainerHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSGroupContainerHelper.m; path = Avocado/Helpers/TSGroupContainerHelper.m; sourceTree = "<group>"; };
 		6AE87BC41CD275C90053CD9D /* Avocado.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Avocado.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AE87BC71CD275C90053CD9D /* TSAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TSAppDelegate.h; sourceTree = "<group>"; };
 		6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TSAppDelegate.m; sourceTree = "<group>"; };
@@ -686,6 +692,7 @@
 				6AC4EC9F1CFB5480009EC46B /* XPC */,
 				6AC4EC921CFB53F9009EC46B /* CoreData */,
 				6AC4EC851CFA5468009EC46B /* Bootstrapping */,
+				6AC4ECBA1CFBB23C009EC46B /* Resources */,
 			);
 			name = "Thumbnail XPC Service";
 			path = ThumbHandler;
@@ -695,8 +702,6 @@
 			isa = PBXGroup;
 			children = (
 				6AC4EC7B1CFA5194009EC46B /* main.m */,
-				6AC4EC7D1CFA5194009EC46B /* Info.plist */,
-				6AC4ECB01CFB7405009EC46B /* ThumbHandler.entitlements */,
 				6AC4ECB51CFB8C84009EC46B /* TSThumbXPCServiceDelegate.h */,
 				6AC4ECB61CFB8C84009EC46B /* TSThumbXPCServiceDelegate.m */,
 			);
@@ -778,6 +783,62 @@
 				6A28F0551CD7FDE100228067 /* lensfun */,
 			);
 			name = "Lens Corrections";
+			sourceTree = "<group>";
+		};
+		6AC4ECBA1CFBB23C009EC46B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				6AC4EC7D1CFA5194009EC46B /* Info.plist */,
+				6AC4ECB01CFB7405009EC46B /* ThumbHandler.entitlements */,
+				6AC4ECB81CFBB239009EC46B /* UnknownImage.png */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		6AC4ECBF1CFBB648009EC46B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				6AA935901CE792E2004E9F9C /* TSVibrantView.h */,
+				6AA935911CE792E2004E9F9C /* TSVibrantView.m */,
+				6AA935A61CE7DD68004E9F9C /* TSFlippedClipView.h */,
+				6AA935A71CE7DD68004E9F9C /* TSFlippedClipView.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		6AC4ECC01CFBB64F009EC46B /* UI/Drawing */ = {
+			isa = PBXGroup;
+			children = (
+				6AB32E9F1CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.h */,
+				6AB32EA01CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m */,
+				6A6ED40E1CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.h */,
+				6A6ED40F1CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.m */,
+				6A6ED4151CE4D0EE001EFA21 /* NSColor+AvocadoUtils.h */,
+				6A6ED4161CE4D0EE001EFA21 /* NSColor+AvocadoUtils.m */,
+			);
+			name = UI/Drawing;
+			sourceTree = "<group>";
+		};
+		6AC4ECC11CFBB65B009EC46B /* Filesystem */ = {
+			isa = PBXGroup;
+			children = (
+				6AC4ECBB1CFBB63D009EC46B /* TSGroupContainerHelper.h */,
+				6AC4ECBC1CFBB63D009EC46B /* TSGroupContainerHelper.m */,
+				6AC4EC6E1CF95D43009EC46B /* NSFileManager+TSDirectorySizing.h */,
+				6AC4EC6F1CF95D43009EC46B /* NSFileManager+TSDirectorySizing.m */,
+			);
+			name = Filesystem;
+			sourceTree = "<group>";
+		};
+		6AC4ECC21CFBB660009EC46B /* Miscellaneous AppKit */ = {
+			isa = PBXGroup;
+			children = (
+				6A7987671CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.h */,
+				6A7987681CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m */,
+				6AEC766E1CD5098F00870FAE /* NSDate+AvocadoUtils.h */,
+				6AEC766F1CD5098F00870FAE /* NSDate+AvocadoUtils.m */,
+			);
+			name = "Miscellaneous AppKit";
 			sourceTree = "<group>";
 		};
 		6AE87BBB1CD275C90053CD9D = {
@@ -1022,24 +1083,12 @@
 		6AEC766D1CD5097900870FAE /* Categories and Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				6AC4EC6E1CF95D43009EC46B /* NSFileManager+TSDirectorySizing.h */,
-				6AC4EC6F1CF95D43009EC46B /* NSFileManager+TSDirectorySizing.m */,
-				6AEC766E1CD5098F00870FAE /* NSDate+AvocadoUtils.h */,
-				6AEC766F1CD5098F00870FAE /* NSDate+AvocadoUtils.m */,
+				6AC4ECC21CFBB660009EC46B /* Miscellaneous AppKit */,
+				6AC4ECC11CFBB65B009EC46B /* Filesystem */,
+				6AC4ECC01CFBB64F009EC46B /* UI/Drawing */,
+				6AC4ECBF1CFBB648009EC46B /* Views */,
 				6A5C615D1CD67C5B00E3C3C9 /* TSImageIOHelper.h */,
 				6A5C615E1CD67C5B00E3C3C9 /* TSImageIOHelper.m */,
-				6A7987671CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.h */,
-				6A7987681CDCF6A300FB3A8E /* NSBlockOperation+AvocadoUtils.m */,
-				6AB32E9F1CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.h */,
-				6AB32EA01CDF0B46004FF7A3 /* NSColorSpace+ExtraColourSpaces.m */,
-				6A6ED40E1CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.h */,
-				6A6ED40F1CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.m */,
-				6A6ED4151CE4D0EE001EFA21 /* NSColor+AvocadoUtils.h */,
-				6A6ED4161CE4D0EE001EFA21 /* NSColor+AvocadoUtils.m */,
-				6AA935901CE792E2004E9F9C /* TSVibrantView.h */,
-				6AA935911CE792E2004E9F9C /* TSVibrantView.m */,
-				6AA935A61CE7DD68004E9F9C /* TSFlippedClipView.h */,
-				6AA935A71CE7DD68004E9F9C /* TSFlippedClipView.m */,
 			);
 			name = "Categories and Helpers";
 			sourceTree = "<group>";
@@ -1176,6 +1225,9 @@
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = 8QDQ246B94;
 						SystemCapabilities = {
+							com.apple.ApplicationGroups.Mac = {
+								enabled = 1;
+							};
 							com.apple.Sandbox = {
 								enabled = 1;
 							};
@@ -1185,6 +1237,9 @@
 						CreatedOnToolsVersion = 7.3;
 						DevelopmentTeam = 8QDQ246B94;
 						SystemCapabilities = {
+							com.apple.ApplicationGroups.Mac = {
+								enabled = 1;
+							};
 							com.apple.Sandbox = {
 								enabled = 1;
 							};
@@ -1224,6 +1279,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6AC4ECB91CFBB239009EC46B /* UnknownImage.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1374,6 +1430,7 @@
 			files = (
 				6AC4EC7C1CFA5194009EC46B /* main.m in Sources */,
 				6AC4EC8F1CFB5386009EC46B /* TSThumbCache.xcdatamodeld in Sources */,
+				6AC4ECBE1CFBB63D009EC46B /* TSGroupContainerHelper.m in Sources */,
 				6AC4EC9D1CFB545F009EC46B /* TSLogFormatter.m in Sources */,
 				6AC4ECA61CFB6D3F009EC46B /* TSRawImage.m in Sources */,
 				6AC4ECA21CFB548C009EC46B /* NSFileManager+TSDirectorySizing.m in Sources */,
@@ -1392,6 +1449,7 @@
 			files = (
 				6AE87BCC1CD275C90053CD9D /* main.m in Sources */,
 				6AEC35121CD43E070033DE0A /* TSMainLibraryWindowController.m in Sources */,
+				6AC4ECBD1CFBB63D009EC46B /* TSGroupContainerHelper.m in Sources */,
 				6A9224311CEE192000EE6408 /* TSExposureAdjustmentFilter.m in Sources */,
 				6AA9358C1CE787D9004E9F9C /* TSDevelopImageViewerController.m in Sources */,
 				6AEC350C1CD437170033DE0A /* TSCoreDataStore.m in Sources */,

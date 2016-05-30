@@ -7,6 +7,7 @@
 //
 
 #import "TSRawCache.h"
+#import "TSGroupContainerHelper.h"
 
 #import "NSFileManager+TSDirectorySizing.h"
 
@@ -837,11 +838,8 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
  * Gets the URL to the raw cache.
  */
 - (NSURL *) rawCacheUrl {
-	NSFileManager *fm = [NSFileManager defaultManager];
-	
 	// query system for url
-	NSURL *cachesUrl = [[fm URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] lastObject];
-	cachesUrl = [cachesUrl URLByAppendingPathComponent:@"me.tseifert.Avocado" isDirectory:YES];
+	NSURL *cachesUrl = [TSGroupContainerHelper sharedInstance].caches;
 	cachesUrl = [cachesUrl URLByAppendingPathComponent:@"TSRawPipeline" isDirectory:YES];
 	
 	return cachesUrl;
