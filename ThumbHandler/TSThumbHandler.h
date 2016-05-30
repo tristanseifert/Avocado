@@ -10,6 +10,7 @@
 #import "TSThumbHandlerProtocol.h"
 #import "TSThumbHandlerDelegate.h"
 
+@class NSManagedObjectContext;
 @interface TSThumbHandler : NSObject <TSThumbHandlerProtocol>
 
 /**
@@ -19,7 +20,9 @@
  *
  * @param remote Object exported by the remote end of the XPC connectionl; this
  * object receives all notifications about completed thumb operations.
+ * @param parentCtx Parent managed object context, associated with a persistent
+ * store on disk.
  */
-- (instancetype) initWithRemote:(id<TSThumbHandlerDelegate>) remote;
+- (instancetype) initWithRemote:(id<TSThumbHandlerDelegate>) remote andContext:(NSManagedObjectContext *) parentCtx;
 
 @end

@@ -188,7 +188,7 @@ static TSThumbCache *sharedInstance = nil;
 	NSImage *img = [NSImage imageNamed:NSImageNameCaution];
 	callback(img);
 	
-	DDLogError(@"Error getting thumbnail for %@: %@", identifier, error);
+//	DDLogError(@"Error getting thumbnail for %@: %@", identifier, error);
 	
 	// remove callback from the dictionary
 	dispatch_barrier_async(self.callbackAccessQueue, ^{

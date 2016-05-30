@@ -89,7 +89,6 @@
 		6AC4EC7A1CFA5194009EC46B /* TSThumbHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4EC791CFA5194009EC46B /* TSThumbHandler.m */; };
 		6AC4EC7C1CFA5194009EC46B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4EC7B1CFA5194009EC46B /* main.m */; };
 		6AC4EC801CFA5194009EC46B /* ThumbHandler.xpc in Embed XPC Services */ = {isa = PBXBuildFile; fileRef = 6AC4EC751CFA5194009EC46B /* ThumbHandler.xpc */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		6AC4EC861CFA547D009EC46B /* Pods_Avocado.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 819223217746015A3002C6D6 /* Pods_Avocado.framework */; };
 		6AC4EC8F1CFB5386009EC46B /* TSThumbCache.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4EC8D1CFB5386009EC46B /* TSThumbCache.xcdatamodeld */; };
 		6AC4EC9A1CFB5404009EC46B /* _TSThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4EC951CFB5404009EC46B /* _TSThumbnail.m */; };
 		6AC4EC9B1CFB5404009EC46B /* TSThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4EC981CFB5404009EC46B /* TSThumbnail.m */; };
@@ -106,6 +105,8 @@
 		6AC4ECB91CFBB239009EC46B /* UnknownImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 6AC4ECB81CFBB239009EC46B /* UnknownImage.png */; };
 		6AC4ECBD1CFBB63D009EC46B /* TSGroupContainerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4ECBC1CFBB63D009EC46B /* TSGroupContainerHelper.m */; };
 		6AC4ECBE1CFBB63D009EC46B /* TSGroupContainerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4ECBC1CFBB63D009EC46B /* TSGroupContainerHelper.m */; };
+		6AC4ECC41CFBC8A5009EC46B /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AC4ECC31CFBC8A5009EC46B /* ImageIO.framework */; };
+		6AC4ECC61CFBD40C009EC46B /* CocoaLumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AC4ECC51CFBD40C009EC46B /* CocoaLumberjack.framework */; };
 		6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */; };
 		6AE87BCC1CD275C90053CD9D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BCB1CD275C90053CD9D /* main.m */; };
 		6AE87BD11CD275C90053CD9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AE87BD01CD275C90053CD9D /* Assets.xcassets */; };
@@ -348,6 +349,8 @@
 		6AC4ECB81CFBB239009EC46B /* UnknownImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = UnknownImage.png; path = Assets/UnknownImage.png; sourceTree = SOURCE_ROOT; };
 		6AC4ECBB1CFBB63D009EC46B /* TSGroupContainerHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSGroupContainerHelper.h; path = Avocado/Helpers/TSGroupContainerHelper.h; sourceTree = "<group>"; };
 		6AC4ECBC1CFBB63D009EC46B /* TSGroupContainerHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSGroupContainerHelper.m; path = Avocado/Helpers/TSGroupContainerHelper.m; sourceTree = "<group>"; };
+		6AC4ECC31CFBC8A5009EC46B /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		6AC4ECC51CFBD40C009EC46B /* CocoaLumberjack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaLumberjack.framework; path = "../../Library/Developer/Xcode/DerivedData/Avocado-hkvdboydipunrgbyovfuwhgdvclo/Build/Products/Debug/CocoaLumberjack.framework"; sourceTree = "<group>"; };
 		6AE87BC41CD275C90053CD9D /* Avocado.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Avocado.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AE87BC71CD275C90053CD9D /* TSAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TSAppDelegate.h; sourceTree = "<group>"; };
 		6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TSAppDelegate.m; sourceTree = "<group>"; };
@@ -421,8 +424,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6AC4ECC61CFBD40C009EC46B /* CocoaLumberjack.framework in Frameworks */,
+				6AC4ECC41CFBC8A5009EC46B /* ImageIO.framework in Frameworks */,
 				6AC4ECB41CFB8B19009EC46B /* Security.framework in Frameworks */,
-				6AC4EC861CFA547D009EC46B /* Pods_Avocado.framework in Frameworks */,
 				6AC4ECA51CFB6D3A009EC46B /* libraw_r.15.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1131,6 +1135,8 @@
 		F4FC62D8D3C46EB93528ACF1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6AC4ECC51CFBD40C009EC46B /* CocoaLumberjack.framework */,
+				6AC4ECC31CFBC8A5009EC46B /* ImageIO.framework */,
 				6AC4ECB31CFB8B19009EC46B /* Security.framework */,
 				6A74F1E41CF26F0C0023B439 /* libcompression.tbd */,
 				6A06F4381CE01767001DFC4C /* Quartz.framework */,

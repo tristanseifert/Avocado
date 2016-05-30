@@ -34,7 +34,7 @@ static TSGroupContainerHelper *sharedInstance = nil;
 
 #pragma mark Initialization
 /**
- * Returns the singleton instance, creating it if neccesary.
+ * Returns the singleton instance, creating it if necessary.
  */
 + (instancetype) sharedInstance {
 	static dispatch_once_t onceToken;

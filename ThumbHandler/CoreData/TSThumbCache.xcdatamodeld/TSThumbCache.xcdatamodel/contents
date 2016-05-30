@@ -10,6 +10,11 @@
                 <index value="imageUuid"/>
             </compoundIndex>
         </compoundIndexes>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="imageUuid"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <elements>
         <element name="Thumbnail" positionX="-63" positionY="-18" width="128" height="105"/>

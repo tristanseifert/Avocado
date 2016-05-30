@@ -12,10 +12,15 @@
 
 #import "TSGroupContainerHelper.h"
 
-#import <MagicalRecord/MagicalRecord.h>
+#import <ImageIO/ImageIO.h>
+
+/// KVO context value for the operations count
+static void *TSKVOOpCountCtx = &TSKVOOpCountCtx;
 
 /// Default JPEG quality for saved thumb images.
 static const CGFloat TSThumbDefaultQuality = 0.74;
+/// Maximum size of a thumbnail, on the long edge
+static const CGFloat TSThumbMaxSize = 1024.f;
 
 @interface TSThumbHandler ()
 
@@ -30,13 +35,15 @@ static const CGFloat TSThumbDefaultQuality = 0.74;
 @property (nonatomic, strong) id<TSThumbHandlerDelegate> remote;
 
 - (void) initDiskCache;
-- (void) initCoreData;
+- (void) initCoreDataWithParent:(NSManagedObjectContext *) parent;
 - (void) initThumbQueue;
 
 - (BOOL) hasThumbForImage:(TSThumbImageProxy *) image atUrl:(NSURL **) outUrl;
 
 - (NSURL *) generateThumbnailForImage:(TSThumbImageProxy *) image withError:(NSError **) outErr;
-- (BOOL) writeImage:(NSImage *) image toDiskAtUrl:(NSURL *) url withError:(NSError **) outErr;
+- (BOOL) writeImage:(CGImageRef) image toDiskAtUrl:(NSURL *) url withError:(NSError **) outErr;
+
+- (CGImageRef) createBitmapThumbnailForImage:(TSThumbImageProxy *) image withError:(NSError **) outErr;
 
 @end
 
@@ -50,19 +57,30 @@ static const CGFloat TSThumbDefaultQuality = 0.74;
  *
  * @param remote Object exported by the remote end of the XPC connectionl; this
  * object receives all notifications about completed thumb operations.
+ * @param parentCtx Parent managed object context, associated with a persistent
+ * store on disk.
  */
-- (instancetype) initWithRemote:(id<TSThumbHandlerDelegate>) remote {
+- (instancetype) initWithRemote:(id<TSThumbHandlerDelegate>) remote andContext:(NSManagedObjectContext *) parentCtx {
 	if(self = [super init]) {
-		// store reference to remote
+		// Store reference to remote
 		self.remote = remote;
 		
-		// perform various initializations
+		// Perform various initializations
 		[self initDiskCache];
-		[self initCoreData];
+		[self initCoreDataWithParent:parentCtx];
 		[self initThumbQueue];
 	}
 	
 	return self;
+}
+
+/**
+ * Cleans up a few things upon deallocation.
+ */
+- (void) dealloc {
+	@try {
+		[self.thumbQueue removeObserver:self forKeyPath:@"operationCount"];
+	} @catch (__unused NSException *exception) { /* lol fuck KVO */ }
 }
 
 /**
@@ -72,7 +90,7 @@ static const CGFloat TSThumbDefaultQuality = 0.74;
 	NSError *err = nil;
 	NSFileManager *fm = [NSFileManager defaultManager];
 	
-	// create directory, if needed
+	// Create directory, if needed
 	[fm createDirectoryAtURL:self.thumbCacheUrl withIntermediateDirectories:YES
 				  attributes:nil error:&err];
 	
@@ -84,20 +102,11 @@ static const CGFloat TSThumbDefaultQuality = 0.74;
 /**
  * Initializes the CoreData store.
  */
-- (void) initCoreData {
-	// get url for store
-	NSURL *storeUrl = self.thumbCacheUrl;
-	storeUrl = [storeUrl URLByAppendingPathComponent:@"ThumbCache.sqlite"
-										 isDirectory:NO];
+- (void) initCoreDataWithParent:(NSManagedObjectContext *) parent {
+	// Create a MOC with the specified parent
+	self.thumbMoc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+	[self.thumbMoc setParentContext:parent];
 	
-	// create the store
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-		[MagicalRecord setupCoreDataStackWithAutoMigratingSqliteStoreAtURL:storeUrl];
-	});
-	
-	// create a context
-	self.thumbMoc = [NSManagedObjectContext MR_context];
 	self.thumbMoc.name = [NSString stringWithFormat:@"TSThumbHandlerMoc %p", self];
 }
 
@@ -110,6 +119,44 @@ static const CGFloat TSThumbDefaultQuality = 0.74;
 	
 	self.thumbQueue.name = [NSString stringWithFormat:@"TSThumbHandlerQueue %p", self];
 	self.thumbQueue.qualityOfService = NSQualityOfServiceBackground;
+	
+	// Add observer for operation count
+	[self.thumbQueue addObserver:self forKeyPath:@"operationCount"
+						 options:0 context:TSKVOOpCountCtx];
+}
+
+#pragma mark KVO
+/**
+ * Handles KVO changes. When the operation queue's current operation count has
+ * reached zero (i.e. it is idle, and there are no more thumbnails to be
+ * generated,) the managed object context will be saved.
+ */
+- (void) observeValueForKeyPath:(NSString *) keyPath ofObject:(id) object
+						 change:(NSDictionary<NSString *,id> *) change
+						context:(void *) context {
+	if(context == TSKVOOpCountCtx) {
+		// Save the MOC, if operation count is zero
+		if(self.thumbQueue.operationCount == 0) {
+			NSError *err = nil;
+			
+			if([self.thumbMoc save:&err] == NO) {
+				DDLogError(@"Couldn't save thumbnails: %@", err);
+				return;
+			}
+			
+			// Save the parent context (saves context to disk)
+			NSManagedObjectContext *parent = self.thumbMoc.parentContext;
+			
+			if([parent save:&err] == NO) {
+				DDLogError(@"Couldn't save parent context: %@", err);
+				return;
+			}
+		}
+	} else {
+		// Invoke super
+		[super observeValueForKeyPath:keyPath ofObject:object change:change
+							  context:context];
+	}
 }
 
 #pragma mark Thumb Creation
@@ -129,36 +176,36 @@ static const CGFloat TSThumbDefaultQuality = 0.74;
 			 withIdentifier:(NSString *) completionIdentifier {
 	NSBlockOperation *op;
 	
-	// set up an operation to check for a thumbnail, and create one if needed
+	// Set up an operation to check for a thumbnail, and create one if needed
 	op = [NSBlockOperation blockOperationWithBlock:^{
 		BOOL hasThumb = NO;
 		NSURL *url = nil;
 		NSError *err = nil;
 		
-		// check whther a thumbnail exists
+		// Check whther a thumbnail exists
 		hasThumb = [self hasThumbForImage:image atUrl:&url];
 		if(hasThumb == YES) {
-			// if so, run the completion callback
+			// If so, run the completion callback
 			[self.remote thumbnailGeneratedForIdentifier:completionIdentifier
 												   atUrl:url];
 			return;
 		}
 		
-		// generate thumbnail
+		// Generate thumbnail
 		url = [self generateThumbnailForImage:image withError:&err];
 		
 		if(url) {
-			// thumbnail generated successfully
+			// Thumbnail generated successfully
 			[self.remote thumbnailGeneratedForIdentifier:completionIdentifier
 												   atUrl:url];
 		} else {
-			// an error occurred
+			// An error occurred
 			[self.remote thumbnailFailedForIdentifier:completionIdentifier
 											withError:err];
 		}
 	}];
 	
-	// set its quality of service to user initiated, if urgent
+	// Set its quality of service to user initiated, if urgent
 	if(urgent) {
 		op.qualityOfService = NSQualityOfServiceUserInitiated;
 	}
@@ -173,21 +220,40 @@ static const CGFloat TSThumbDefaultQuality = 0.74;
 - (BOOL) hasThumbForImage:(TSThumbImageProxy *) image atUrl:(NSURL **) outUrl {
 	TSThumbnail *thumb = nil;
 	NSPredicate *pred = nil;
+	NSError *err = nil;
 	
-	// try to find a matching thumbnail
+	// Try to find a matching thumbnail
 	pred = [NSPredicate predicateWithFormat:@"imageUuid = %@", image.uuid];
-	thumb = [TSThumbnail MR_findFirstWithPredicate:pred
-										 inContext:self.thumbMoc];
 	
-	if(thumb != nil) {
-		if(outUrl != nil) {
-			*outUrl = [thumb.thumbUrl copy];
-			return YES;
-		}
+	NSFetchRequest *req = [NSFetchRequest fetchRequestWithEntityName:@"Thumbnail"];
+	req.predicate = pred;
+	req.fetchLimit = 1;
+	
+	NSArray *results = [self.thumbMoc executeFetchRequest:req error:&err];
+	
+	// Check for errors
+	if(results == nil || err != nil) {
+		DDLogError(@"Couldn't run fetch request (%@): %@", pred, err);
+		return NO;
 	}
 	
-	// a thumbnail must be created.
-	return NO;
+	// Thumbnail must be created, if count is zero (i.e. no matching thumb)
+	if(results.count == 0) {
+		return NO;
+	} else {
+		// A thumbnail was found; update its last accessed date
+		thumb = results.firstObject;
+		
+		thumb.dateLastAccessed = [NSDate new];
+		
+		// Output the URL of the thumbnail image
+		if(outUrl != nil) {
+			*outUrl = [thumb.thumbUrl copy];
+		}
+		
+		// It is possible outUrl was ignored, so return YES here
+		return YES;
+	}
 }
 
 /**
@@ -197,18 +263,20 @@ static const CGFloat TSThumbDefaultQuality = 0.74;
  */
 - (NSURL *) generateThumbnailForImage:(TSThumbImageProxy *) image withError:(NSError **) outErr {
 	BOOL written = NO;
+	CGImageRef thumbnailImg = nil;
 	
-	// TODO: actually create thumbnail
-	NSURL *testUrl = [[NSBundle mainBundle] URLForResource:@"UnknownImage"
-											 withExtension:@"png"];
-	NSImage *thumbnailImg = [[NSImage alloc] initWithContentsOfURL:testUrl];
+	// Create thumbnail, depending on if the image is a raw file or not
+	if(image.isRaw == NO) {
+		thumbnailImg = [self createBitmapThumbnailForImage:image
+												 withError:outErr];
+	}
 	
-	// ensure thumbnail was successfully created
+	// Ensure thumbnail was successfully created before continuing on
 	if(thumbnailImg == nil) {
 		return nil;
 	}
 	
-	// get a directory and url for the image, then write it to disk
+	// Get a directory and url for the image, then write it to disk
 	NSString *dir = [TSThumbnail generateRandomDirectory];
 	NSURL *url = [TSThumbnail urlForImageInDirectory:dir
 									   andUuidString:image.uuid];
@@ -219,18 +287,20 @@ static const CGFloat TSThumbDefaultQuality = 0.74;
 		return nil;
 	}
 	
-	// create a thumbnail entry
-	[MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext *ctx) {
-		TSThumbnail *thumb = [TSThumbnail MR_createEntityInContext:ctx];
+	// Create a thumbnail object in the CoreData store
+	[self.thumbMoc performBlock:^{
+		TSThumbnail *thumb =  [NSEntityDescription insertNewObjectForEntityForName:@"Thumbnail" inManagedObjectContext:self.thumbMoc];
 		
-		// populate its values
 		thumb.dateAdded = thumb.dateLastAccessed = [NSDate new];
 		
 		thumb.directory = dir;
 		thumb.imageUuid = image.uuid;
 	}];
 	
-	// the image was saved and written, so return the url
+	// Clean up
+	CGImageRelease(thumbnailImg);
+	
+	// The image was saved and written, so return the url
 	return url;
 }
 
@@ -239,54 +309,76 @@ static const CGFloat TSThumbDefaultQuality = 0.74;
  *
  * @return YES if the file was successfully written, NO otherwise.
  */
-- (BOOL) writeImage:(NSImage *) image toDiskAtUrl:(NSURL *) url withError:(NSError **) outErr {
-	__block NSBitmapImageRep *bitmapRep = nil;
+- (BOOL) writeImage:(CGImageRef) image toDiskAtUrl:(NSURL *) url withError:(NSError **) outErr {
+	CGImageDestinationRef destination = nil;
 	
-	// find the bitmap image representation
-	[image.representations enumerateObjectsUsingBlock:^(NSImageRep *rep, NSUInteger idx, BOOL *stop) {
-		// is this one a bitmap rep?
-		if([rep isKindOfClass:[NSBitmapImageRep class]]) {
-			bitmapRep = (NSBitmapImageRep *) rep;
-			
-			*stop = YES;
-		}
-	}];
+	// Set up some options for compression
+	CFMutableDictionaryRef options = CFDictionaryCreateMutable(nil, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 	
-	// ensure there's a bitmap rep
-	if(bitmapRep == nil) {
-		DDLogError(@"Couldn't get bitmap rep for image: %@", image);
+	CFNumberRef quality = (__bridge CFNumberRef) @(TSThumbDefaultQuality);
+	CFDictionarySetValue(options, kCGImageDestinationLossyCompressionQuality, quality);
+	
+	// Create the image destination
+	destination = CGImageDestinationCreateWithURL((__bridge CFURLRef) url, kUTTypeJPEG2000, 1, NULL);
+
+	if(destination == nil) {
+		DDLogError(@"CGImageDestinationCreateWithURL failed for url %@", url);
 		return NO;
 	}
 	
-	// try to get a JPEG representation
-	NSData *jpegData = nil;
-	NSDictionary *properties = nil;
+	// Add the image and write it
+	CGImageDestinationAddImage(destination, image, options);
+	CGImageDestinationFinalize(destination);
+
+	// Clean up
+	CFRelease(destination);
+	CFRelease(options);
 	
-	properties = @{
-		// use default compression factor
-		NSImageCompressionFactor: @(TSThumbDefaultQuality),
-		// fallback background colour is black
-		NSImageFallbackBackgroundColor: [NSColor blackColor]
+	return YES;
+}
+
+#pragma mark Bitmap Image Thumb Creation
+/**
+ * Uses ImageIO to generate a thumbnail for the specified file.
+ */
+- (CGImageRef) createBitmapThumbnailForImage:(TSThumbImageProxy *) image withError:(NSError **) outErr {
+	CGImageSourceRef source = NULL;
+	CGImageRef thumb = NULL;
+	
+	// Create an image source
+	source = CGImageSourceCreateWithURL((__bridge CFURLRef) image.originalUrl, nil);
+	
+	if(source == NULL) {
+		DDLogError(@"Couldn't create image source for %@", image.originalUrl);
+		return nil;
+	}
+	
+	// Set up thumbnail options, then generate the thumb
+	NSDictionary *thumbOptions = @{
+		// Always create a new thumb
+		(NSString *) kCGImageSourceCreateThumbnailFromImageAlways: @YES,
+		// Transform (rotate/scale according to pixel ratio)
+		(NSString *) kCGImageSourceCreateThumbnailWithTransform: @YES,
+		// Maximum size
+		(NSString *) kCGImageSourceThumbnailMaxPixelSize: @(TSThumbMaxSize)
 	};
 	
-	jpegData = [bitmapRep representationUsingType:NSJPEG2000FileType
-									   properties:properties];
+	thumb = CGImageSourceCreateThumbnailAtIndex(source, 0, (CFDictionaryRef) thumbOptions);
 	
-	if(jpegData == nil) {
-		DDLogError(@"Couldn't get jpeg data for image %@", image);
-		return NO;
+	if(thumb == NULL) {
+		DDLogError(@"Couldn't create thumb for %@, settings %@", image.originalUrl, thumbOptions);
+		return nil;
 	}
 	
-	// write the JPEG data out to disk
-	return [jpegData writeToURL:url options:NSDataWritingAtomic error:outErr];
+	// Done with thumb generation
+	return thumb;
 }
 
 #pragma mark Convenience Properties
 /**
  * Returns the url of the thumbnail cache.
  */
-- (NSURL *) thumbCacheUrl {	
-	// query system for url
+- (NSURL *) thumbCacheUrl {
 	NSURL *cachesUrl = [TSGroupContainerHelper sharedInstance].caches;
 	cachesUrl = [cachesUrl URLByAppendingPathComponent:@"TSThumbCache" isDirectory:YES];
 	
