@@ -200,6 +200,7 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 		}
 		
 		// Generate thumbnail
+		DDLogVerbose(@"Generating thumb for %@…", image.originalUrl);
 		url = [self generateThumbnailForImage:image withError:&err];
 		
 		if(url) {
@@ -320,25 +321,23 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 	moc.name = [NSString stringWithFormat:@"TSThumbHandler Temporary Context for %@", image];
 	moc.undoManager = nil;
 	
-	__block TSThumbnail *thumb;
-	
 	[moc performBlock:^{
-		thumb =  [NSEntityDescription insertNewObjectForEntityForName:@"Thumbnail" inManagedObjectContext:moc];
+		TSThumbnail *thumb =  [NSEntityDescription insertNewObjectForEntityForName:@"Thumbnail" inManagedObjectContext:moc];
 		
 		thumb.dateAdded = thumb.dateLastAccessed = [NSDate new];
 		
 		thumb.directory = dir;
 		thumb.imageUuid = image.uuid;
+		
+		// Save the temporary context to commit it to its parent
+		NSError *saveErr = nil;
+		[moc save:&saveErr];
+		
+		if(saveErr != nil) {
+			*outErr = saveErr;
+			DDLogError(@"Couldn't save temporary context: %@", saveErr);
+		}
 	}];
-	
-	// Save the temporary context to commit it to its parent
-	NSError *saveErr = nil;
-	[moc save:&saveErr];
-	
-	if(saveErr != nil) {
-		*outErr = saveErr;
-		DDLogError(@"Couldn't save temporary context: %@", saveErr);
-	}
 #endif
 	
 	// The image was saved and written, so return the url
