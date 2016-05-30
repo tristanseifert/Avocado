@@ -107,6 +107,19 @@ static void TSRawThumbExtractorReleaseDirect(void *info, const void *data, size_
 	
 	CGFloat scaleFactor = (oldWidth > oldHeight) ? thumbSize / oldWidth : thumbSize / oldHeight;
 	
+	// If the scale factor is GREATER than 1.0 (embiggenment) just return the image
+	if(scaleFactor > 1.f) {
+		NSUInteger flip = self.libRaw->sizes.flip;
+		CGImageRef extractedImg = CGImageRetain(self.extractedThumb);
+		
+		if(flip != 0) {
+			return TSFliptateImageWithEXIFOrientation(extractedImg, flip);
+		} else {
+			return extractedImg;
+		}
+	}
+	
+	// Calculate scaled size of the image
 	CGFloat newHeight = ceil(oldHeight * scaleFactor);
 	CGFloat newWidth = ceil(oldWidth * scaleFactor);
 	CGSize newSize = CGSizeMake(newWidth, newHeight);

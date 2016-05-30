@@ -73,6 +73,9 @@ static const CGFloat kThumbHMargin = 5.f;
 
 @property (nonatomic) NSTrackingArea *trackingArea;
 
+/// This is changed to something else every time the represented object changes
+@property (nonatomic) void *thumbToken;
+
 - (void) setUpMainLayersWithParent:(CALayer *) layer;
 - (void) setUpBordersWithParent:(CALayer *) layer;
 - (void) setUpTopInfoBoxWithParent:(CALayer *) layer;
@@ -468,11 +471,14 @@ shouldInheritContentsScale:(CGFloat) newScale
 - (void) setRepresentedObject:(TSLibraryImage *) image {
 	super.representedObject = image;
 	
-	// begin a transaction (disabling implicit animations)
+	// Change thumb token
+	self.thumbToken = (void *) random();
+	
+	// Begin a transaction (disabling implicit animations)
 	[CATransaction begin];
 	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 	
-	// exit if the property was cleared
+	// Exit if the property was cleared
 	if(image == nil) {
 		self.topInfoFileName.string = @"Empty Cell";
 		self.topInfoSubtitle.string = @"Empty Cell\nEmpty Cell";
@@ -483,7 +489,7 @@ shouldInheritContentsScale:(CGFloat) newScale
 		return;
 	}
 	
-	// set filename, etc. for top info box
+	// Set filename, etc. for top info box
 	self.topInfoFileName.string = image.fileUrl.lastPathComponent;
 	
 	NSString *sizeString = [NSString stringWithFormat:@"%.0f × %.0f", image.rotatedImageSize.width, image.rotatedImageSize.height];
@@ -491,10 +497,10 @@ shouldInheritContentsScale:(CGFloat) newScale
 	
 	self.topInfoSubtitle.string = [NSString stringWithFormat:@"%@\n%@", sizeString, shotDateString];
 	
-	// do thumbnail images
+	// Update thumbnail images
 	[self updateThumbnails];
 	
-	// commit the transaction
+	// Commit the transaction
 	[CATransaction commit];
 }
 
@@ -539,12 +545,24 @@ shouldInheritContentsScale:(CGFloat) newScale
 	// actually queue the request
 	[[TSThumbCache sharedInstance] getThumbForImage:self.representedObject
 										   withSize:thumbSz
-										andCallback:^(NSImage *thumb) {
-		// ensure we only access the image layer on the main thread
+										andCallback:^(NSImage *thumb, void *userData) {
+		// Ensure that same image as was previously requested is still being shown
+		if(userData != self.thumbToken) {
+			return;
+		}
+											
+		// Get the scale factor, and scaled layer contents
+		CGFloat desiredScaleFactor = [self.view.window backingScaleFactor];
+		CGFloat actualScaleFactor = [thumb recommendedLayerContentsScale:desiredScaleFactor];
+											
+		id layerContents = [thumb layerContentsForContentsScale:actualScaleFactor];
+											
+		// Ensure we only access the image layer on the main thread
 		dispatch_async(dispatch_get_main_queue(), ^{
-			self.imageLayer.contents = thumb;
+			self.imageLayer.contents = layerContents;
+			self.imageLayer.contentsScale = actualScaleFactor;
 		});
-	}];
+	} withUserData:self.thumbToken];
 }
 
 @end

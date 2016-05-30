@@ -9,7 +9,12 @@
 #import <Foundation/Foundation.h>
 #import "TSThumbHandlerDelegate.h"
 
-typedef void (^TSThumbCacheCallback)(NSImage *);
+/**
+ * Thumbnail completion callback: the first parameter is an NSImage if the
+ * conversion was successful, nil otherwise. The second parameter is the pointer
+ * passed as `userData` earlier.
+ */
+typedef void (^TSThumbCacheCallback)(NSImage *, void *);
 
 @class TSLibraryImage;
 @interface TSThumbCache : NSObject <TSThumbHandlerDelegate>
@@ -27,6 +32,6 @@ typedef void (^TSThumbCacheCallback)(NSImage *);
  * @note The callback may be called more than once, with a more fitting
  * thumbnail each time.
  */
-- (void) getThumbForImage:(TSLibraryImage *) inImage withSize:(NSSize) size andCallback:(TSThumbCacheCallback) callback;
+- (void) getThumbForImage:(TSLibraryImage *) inImage withSize:(NSSize) size andCallback:(TSThumbCacheCallback) callback withUserData:(void *) userData;
 
 @end

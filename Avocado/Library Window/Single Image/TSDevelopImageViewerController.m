@@ -114,9 +114,9 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 			// get a thumbnail
 			CGFloat s = MAX(NSWidth(self.view.bounds), NSHeight(self.view.bounds));
 			
-			[[TSThumbCache sharedInstance] getThumbForImage:self.image withSize:NSMakeSize(s, s) andCallback:^(NSImage *thumb) {
+			[[TSThumbCache sharedInstance] getThumbForImage:self.image withSize:NSMakeSize(s, s) andCallback:^(NSImage *thumb, __unused void *userData) {
 				self.displayedImage = thumb;
-			}];
+			} withUserData:nil];
 	
 			// process image
 			[self processCurrentImage];

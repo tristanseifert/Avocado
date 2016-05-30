@@ -16,6 +16,21 @@
 
 static TSThumbCache *sharedInstance = nil;
 
+@interface TSThumbCacheCallbackWrapper : NSObject
+
+/// Callback block to invoke
+@property (nonatomic) TSThumbCacheCallback callbackBlock;
+/// User data, if any
+@property (nonatomic) void *userData;
+
+@end
+
+@implementation TSThumbCacheCallbackWrapper
+
+@end
+
+
+
 @interface TSThumbCache ()
 
 /// XPC connection to the thumb service
@@ -24,7 +39,7 @@ static TSThumbCache *sharedInstance = nil;
 @property (nonatomic) NSCache *imageCache;
 
 /// Maps a temporary invocation identifier to a callback
-@property (nonatomic) NSMutableDictionary <NSString *, NSMutableArray<TSThumbCacheCallback> *> *callbackMap;
+@property (nonatomic) NSMutableDictionary <NSString *, NSMutableArray<TSThumbCacheCallbackWrapper *> *> *callbackMap;
 /// Maps a temporary invocation identifier to an image uuid
 @property (nonatomic) NSMutableDictionary <NSString *, NSString *> *imageUuidMap;
 /// Queue used to synchronize access to callbackMap
@@ -103,7 +118,7 @@ static TSThumbCache *sharedInstance = nil;
  * @note The callback may be called more than once, with a more fitting
  * thumbnail each time.
  */
-- (void) getThumbForImage:(TSLibraryImage *) inImage withSize:(NSSize) size andCallback:(TSThumbCacheCallback) callback {
+- (void) getThumbForImage:(TSLibraryImage *) inImage withSize:(NSSize) size andCallback:(TSThumbCacheCallback) callback withUserData:(void *) userData {
 	__block NSString *inImageUuid = nil;
 	
 	// Get some information from the input image
@@ -115,10 +130,11 @@ static TSThumbCache *sharedInstance = nil;
 	if([self.imageCache objectForKey:inImageUuid] != nil) {
 		// If so, immediately return to the callback
 		NSImage *image = (NSImage *) [self.imageCache objectForKey:inImageUuid];
-		callback(image);
+		callback(image, userData);
 		
 		return;
 	}
+	
 	
 	// Check whether there is an outstanding request for this image already
 	__block BOOL addedToExistingRequest = NO;
@@ -132,7 +148,11 @@ static TSThumbCache *sharedInstance = nil;
 			
 			// If the request already exists, just add the callback
 			dispatch_barrier_async(self.callbackAccessQueue, ^{
-				[self.callbackMap[keys.firstObject] addObject:[callback copy]];
+				TSThumbCacheCallbackWrapper *wrapper = [TSThumbCacheCallbackWrapper new];
+				wrapper.userData = userData;
+				wrapper.callbackBlock = [callback copy];
+				
+				[self.callbackMap[keys.firstObject] addObject:wrapper];
 			});
 		}
 	});
@@ -141,11 +161,16 @@ static TSThumbCache *sharedInstance = nil;
 		return;
 	}
 	
+	
 	// Otherwise, insert the callback into the callback map and queue an XPC request
 	NSString *identifier = [NSUUID new].UUIDString;
 	
 	dispatch_barrier_async(self.callbackAccessQueue, ^{
-		self.callbackMap[identifier] = [NSMutableArray arrayWithObject:[callback copy]];
+		TSThumbCacheCallbackWrapper *wrapper = [TSThumbCacheCallbackWrapper new];
+		wrapper.userData = userData;
+		wrapper.callbackBlock = [callback copy];
+		self.callbackMap[identifier] = [NSMutableArray arrayWithObject:wrapper];
+		
 		self.imageUuidMap[identifier] = inImageUuid;
 	});
 	
@@ -166,7 +191,7 @@ static TSThumbCache *sharedInstance = nil;
  */
 - (void) thumbnailGeneratedForIdentifier:(NSString *) identifier atUrl:(NSURL *) url {
 	__block NSString *imageUuid = nil;
-	__block NSArray<TSThumbCacheCallback> *callbacks;
+	__block NSArray<TSThumbCacheCallbackWrapper *> *callbacks;
 	
 	// Get the uuid of the image, and the callbacks
 	dispatch_sync(self.callbackAccessQueue, ^{
@@ -179,8 +204,8 @@ static TSThumbCache *sharedInstance = nil;
 	[self.imageCache setObject:img forKey:imageUuid];
 	
 	// Execute callbacks
-	[callbacks enumerateObjectsUsingBlock:^(TSThumbCacheCallback callback, NSUInteger idx, BOOL *stop) {
-		callback(img);
+	[callbacks enumerateObjectsUsingBlock:^(TSThumbCacheCallbackWrapper *wrapper, NSUInteger idx, BOOL *stop) {
+		wrapper.callbackBlock(img, wrapper.userData);
 	}];
 	
 	// Remove the state
@@ -200,7 +225,7 @@ static TSThumbCache *sharedInstance = nil;
  */
 - (void) thumbnailFailedForIdentifier:(NSString *) identifier withError:(NSError *) error {
 	// Get the image completion callblacks
-	__block NSArray<TSThumbCacheCallback> *callbacks;
+	__block NSArray<TSThumbCacheCallbackWrapper *> *callbacks;
 
 	dispatch_sync(self.callbackAccessQueue, ^{
 		callbacks = self.callbackMap[identifier];
@@ -210,8 +235,8 @@ static TSThumbCache *sharedInstance = nil;
 	NSImage *img = [NSImage imageNamed:NSImageNameCaution];
 	
 	// Execute callbacks
-	[callbacks enumerateObjectsUsingBlock:^(TSThumbCacheCallback callback, NSUInteger idx, BOOL *stop) {
-		callback(img);
+	[callbacks enumerateObjectsUsingBlock:^(TSThumbCacheCallbackWrapper *wrapper, NSUInteger idx, BOOL *stop) {
+		wrapper.callbackBlock(img, wrapper.userData);
 	}];
 	
 //	DDLogError(@"Error getting thumbnail for %@: %@", identifier, error);
