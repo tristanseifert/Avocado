@@ -43,7 +43,7 @@
 		// Set up a root parent context
 		self.moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
 		self.moc.persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.model];
-		
+		[self.moc.undoManager disableUndoRegistration];
 		
 		// Add the on-disk store
 		NSDictionary *options = @{

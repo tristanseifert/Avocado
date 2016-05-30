@@ -112,6 +112,7 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 	// Create a MOC with the specified parent
 	self.thumbMoc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
 	[self.thumbMoc setParentContext:parent];
+	[self.thumbMoc.undoManager disableUndoRegistration];
 	
 	self.thumbMoc.name = [NSString stringWithFormat:@"TSThumbHandlerMoc %p", self];
 }
@@ -206,7 +207,7 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 			[self.remote thumbnailGeneratedForIdentifier:completionIdentifier
 												   atUrl:url];
 		} else {
-			// An error occurred
+			// An error occurred generating the thumbnail
 			[self.remote thumbnailFailedForIdentifier:completionIdentifier
 											withError:err];
 		}
@@ -237,6 +238,7 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 	
 	__block NSArray *results = nil;
 	
+	// TODO: Figure out if this deserves its own temporary context or not
 	[self.thumbMoc performBlockAndWait:^{
 		NSError *err = nil;
 		
@@ -300,6 +302,7 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 									   andUuidString:image.uuid];
 	
 	written = [self writeImage:thumbnailImg toDiskAtUrl:url withError:outErr];
+	CGImageRelease(thumbnailImg);
 
 	if(written == NO) {
 		return nil;
@@ -309,18 +312,30 @@ static const CGFloat TSThumbMaxSize = 1024.f;
 #if DO_NOT_SAVE_THUMBS
 	// Do nothing
 #else
-	[self.thumbMoc performBlock:^{
-		TSThumbnail *thumb =  [NSEntityDescription insertNewObjectForEntityForName:@"Thumbnail" inManagedObjectContext:self.thumbMoc];
+	// Create a temporary managed object context
+	NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+	[moc setParentContext:self.thumbMoc];
+	moc.name = [NSString stringWithFormat:@"TSThumbHandler Temporary Context for %@", image];
+	moc.undoManager = nil;
+	
+	[moc performBlock:^{
+		TSThumbnail *thumb =  [NSEntityDescription insertNewObjectForEntityForName:@"Thumbnail" inManagedObjectContext:moc];
 		
 		thumb.dateAdded = thumb.dateLastAccessed = [NSDate new];
 		
 		thumb.directory = dir;
 		thumb.imageUuid = image.uuid;
 	}];
-#endif
 	
-	// Clean up
-	CGImageRelease(thumbnailImg);
+	// Save the temporary context to commit it to its parent
+	NSError *saveErr = nil;
+	[moc save:&saveErr];
+	
+	if(saveErr != nil) {
+		*outErr = saveErr;
+		DDLogError(@"Couldn't save temporary context: %@", saveErr);
+	}
+#endif
 	
 	// The image was saved and written, so return the url
 	return url;

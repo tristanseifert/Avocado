@@ -15,6 +15,8 @@
 
 /// Extracted main (largest) thumbnail
 @property (nonatomic) CGImageRef extractedThumb;
+/// Set if a thumbnail could be extracted; NO otherwise.
+@property (nonatomic) BOOL couldExtractValidThumb;
 
 /// LibRaw handle for this image
 @property (nonatomic, assign) libraw_data_t *libRaw;
@@ -87,6 +89,11 @@
 		[self convertEmbeddedThumbnail];
 	}
 	
+	// Was a valid thumbnail image extracted?
+	if(self.couldExtractValidThumb == NO) {
+		return nil;
+	}
+	
 	// Calculate new size of the image
 	CGFloat oldWidth = CGImageGetWidth(self.extractedThumb);
 	CGFloat oldHeight = CGImageGetHeight(self.extractedThumb);
@@ -157,13 +164,11 @@
 		case LIBRAW_THUMBNAIL_JPEG: {
 			CGDataProviderRef provider;
 			
-			// Create a data provider, given the input data
+			// Create a data provider, given the input data, then make an image
 			provider = CGDataProviderCreateWithCFData((__bridge CFDataRef) data);
-			
-			// Create an image from it, rotating it if necessary
 			self.extractedThumb = CGImageCreateWithJPEGDataProvider(provider, nil, YES, kCGRenderingIntentPerceptual);
 			
-			// TODO: Rotate image (self.libRaw->sizes.flip)
+			self.couldExtractValidThumb = YES;
 			
 			// Clean up
 			CGDataProviderRelease(provider);
@@ -172,8 +177,9 @@
 		}
 			
 		/// Raw bitmap data (currently unsupported)
-//		case LIBRAW_THUMBNAIL_BITMAP:
-//			break;
+		case LIBRAW_THUMBNAIL_BITMAP:
+			DDLogWarn(@"Ignoring bitmap thumbnail, currently unsupported");
+			break;
 			
 		default:
 			DDLogError(@"Unsupported thumbnail format: %u", format);
