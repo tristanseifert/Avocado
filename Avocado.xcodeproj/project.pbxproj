@@ -107,6 +107,7 @@
 		6AC4ECC41CFBC8A5009EC46B /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AC4ECC31CFBC8A5009EC46B /* ImageIO.framework */; };
 		6AC4ECC61CFBD40C009EC46B /* CocoaLumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AC4ECC51CFBD40C009EC46B /* CocoaLumberjack.framework */; };
 		6AC4ECCA1CFBE2C1009EC46B /* TSRawThumbExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4ECC91CFBE2C1009EC46B /* TSRawThumbExtractor.m */; };
+		6AC4ECCB1CFBF334009EC46B /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEC351A1CD43FED0033DE0A /* Accelerate.framework */; };
 		6AE87BC91CD275C90053CD9D /* TSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BC81CD275C90053CD9D /* TSAppDelegate.m */; };
 		6AE87BCC1CD275C90053CD9D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE87BCB1CD275C90053CD9D /* main.m */; };
 		6AE87BD11CD275C90053CD9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AE87BD01CD275C90053CD9D /* Assets.xcassets */; };
@@ -426,6 +427,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6AC4ECCB1CFBF334009EC46B /* Accelerate.framework in Frameworks */,
 				6AC4ECC61CFBD40C009EC46B /* CocoaLumberjack.framework in Frameworks */,
 				6AC4ECC41CFBC8A5009EC46B /* ImageIO.framework in Frameworks */,
 				6AC4ECB41CFB8B19009EC46B /* Security.framework in Frameworks */,
