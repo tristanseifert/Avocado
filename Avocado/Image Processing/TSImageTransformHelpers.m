@@ -64,6 +64,12 @@ CGImageRef TSFliptateImageWithEXIFOrientation(CGImageRef inImage, NSUInteger ori
 		return inImage;
 	}
 	
+	// Ensure input orientation isn't out of bounds
+	if(orientation > 7) {
+		DDLogError(@"TSFliptateImageWithEXIFOrientation called with out-of-bounds orientation %zi, returning input image", orientation);
+		return inImage;
+	}
+	
 	// Read information about the transform
 	NSInteger rotation = TSEXIFTransformData[orientation][0];
 	NSInteger flip = TSEXIFTransformData[orientation][1];
