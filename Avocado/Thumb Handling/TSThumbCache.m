@@ -7,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <math.h>
 
 #import "TSThumbCache.h"
 
@@ -14,7 +15,36 @@
 #import "TSHumanModels.h"
 
 #import "TSThumbImageProxy+AvocadoApp.h"
+
+#import "TSJPEG2000Parser.h"
 #import "NSImage+TSCachedDecoding.h"
+
+/**
+ * Enables logging of lots of information regarding the smart image cache (when
+ * it's resized, bag values, etc) is logged.
+ */
+#define	LOG_CACHE_DEBUG		0
+/**
+ * Enables logging of some thumbnail sizing calculations.
+ */
+#define	LOG_THUMB_SIZING	0
+/**
+ * Enables logging of thumbnail generation errors.
+ */
+#define	LOG_THUMB_ERRORS	1
+
+/// Maximum number of thumbnail URLs to cache at a time
+static const NSUInteger TSURLCacheMaxEntries = 250;
+
+/**
+ * Maximum number of images to store in the cache at scale level zero. Smaller
+ * scale levels will cause this value to be multiplied by 1.74^(scaleLevel).
+ */
+static const NSUInteger TSImageCacheMaxImagesAtFullSize = 50;
+/// Number of images that must be requested with a given scale before the cache is evicted
+static const NSUInteger TSImageCacheImageThreshold = 8;
+/// The lowest resolution scale value. By default, this is [0, 3] due to how the images are encoded.
+static const NSUInteger TSImageCacheMaxScale = 3;
 
 static TSThumbCache *sharedInstance = nil;
 
@@ -24,6 +54,8 @@ static TSThumbCache *sharedInstance = nil;
 @property (nonatomic) TSThumbCacheCallback callbackBlock;
 /// User data, if any
 @property (nonatomic) void *userData;
+/// Scale factor to use for the JPEG2000 data, based off the maximum thumbnail size.
+@property (nonatomic) NSUInteger scaleFactor;
 
 @end
 
@@ -37,8 +69,34 @@ static TSThumbCache *sharedInstance = nil;
 
 /// XPC connection to the thumb service
 @property (nonatomic) NSXPCConnection *xpcConnection;
-/// Temporary in-memory cache; maps an image UUID to an NSImage
+
+/// Temporary in-memory cache; maps an image UUID to its thumbnail URL
+@property (nonatomic) NSCache *imageURLCache;
+
+/*
+ * The way the image cache works is kind of interesting. All images inside it
+ * were loaded from a JPEG2000 image, using a specific 'scale' value; the larger
+ * the scale value, the lower resolution the thumbnail is.
+ *
+ * 1. If an image request with that scale value comes through, the image is
+ * simply retrieved from the cache.
+ * 2. If an image request with a different scale value comes through, the
+ * appropriate value in the `imageCacheRequestedSizes` value is set, adding to
+ * that entry, if needed. If the reqeusted scale is higher than what the cache's
+ * is, an image is returned anyways.
+ *
+ * Once any one value in `imageCacheRequestedSizes` has passed a threshold, the
+ * cache is evicted, and its current scale becomes that value.
+ */
+/// Maps an image's UUID (plus scale value) to a cached image value.
 @property (nonatomic) NSCache *imageCache;
+/// Scale value for this cache
+@property (atomic) NSInteger imageCacheScale;
+/// Bag containing NSNumber objects for each requested size.
+@property (atomic) CFMutableBagRef imageCacheRequestedSizes;
+
+- (NSImage *) getCachedThumbForImageUuid:(NSString *) uuid andScale:(NSUInteger) scale;
+- (void) storeThumbnail:(NSImage *) image withScale:(NSUInteger) scale forImageUuid:(NSString *) uuid;
 
 /// Maps a temporary invocation identifier to a callback
 @property (nonatomic) NSMutableDictionary <NSString *, NSMutableArray<TSThumbCacheCallbackWrapper *> *> *callbackMap;
@@ -75,8 +133,20 @@ static TSThumbCache *sharedInstance = nil;
 		self.callbackMap = [NSMutableDictionary new];
 		self.imageUuidMap = [NSMutableDictionary new];
 		
+		
+		// Set up the image URL cache
+		self.imageURLCache = [NSCache new];
+		self.imageURLCache.evictsObjectsWithDiscardedContent = YES;
+		self.imageURLCache.countLimit = TSURLCacheMaxEntries;
+		
+		// Set up the image cache
 		self.imageCache = [NSCache new];
 		self.imageCache.evictsObjectsWithDiscardedContent = YES;
+		self.imageCache.countLimit = TSImageCacheMaxImagesAtFullSize;
+		
+		self.imageCacheScale = 0; // default scale value
+		self.imageCacheRequestedSizes = CFBagCreateMutable(kCFAllocatorDefault, 0, &kCFTypeBagCallBacks);
+		
 		
 		// Create a queue to synchronize access to the callback map
 		self.callbackAccessQueue = dispatch_queue_create("me.tseifert.Avocado.TSThumbCache", DISPATCH_QUEUE_CONCURRENT);
@@ -149,17 +219,32 @@ static TSThumbCache *sharedInstance = nil;
  */
 - (void) getThumbForImage:(TSLibraryImage *) inImage withSize:(NSSize) size andCallback:(TSThumbCacheCallback) callback withUserData:(void *) userData andPriority:(TSThumbHandlerUrgency) priority {
 	__block NSString *inImageUuid = nil;
+	__block NSSize imageSize;
 	
 	// Get some information from the input image
 	[inImage.managedObjectContext performBlockAndWait:^{
 		inImageUuid = inImage.uuid;
+		imageSize = inImage.rotatedImageSize;
 	}];
 	
-	// Check if the image exists in the cache
-	if([self.imageCache objectForKey:inImageUuid] != nil) {
-		// If so, immediately return to the callback
-		NSImage *image = (NSImage *) [self.imageCache objectForKey:inImageUuid];
-		callback(image, userData);
+	// Figure out the JPEG2000 scale factor to use in this image.
+	BOOL horizontalLongEdge = (imageSize.width > imageSize.height);
+	CGFloat maxDimension = horizontalLongEdge ? size.width : size.height;
+	
+	CGFloat desiredFactor = log2(TSThumbMaxSize / maxDimension);
+	NSUInteger scaleFactor = MIN(round(desiredFactor), TSImageCacheMaxScale);
+	
+#if LOG_THUMB_SIZING
+	DDLogVerbose(@"Scale factor for size %@: %zi (max dimension = %f; factor = %f)", NSStringFromSize(size), scaleFactor, maxDimension, desiredFactor);
+#endif
+	
+	// Check if a suitable image exists in the cache.
+	NSImage *cachedImage = [self getCachedThumbForImageUuid:inImageUuid
+												   andScale:scaleFactor];
+	
+	if(cachedImage) {
+		// Run the callback right away and return, since a suitable image exists.
+		callback(cachedImage, userData);
 		
 		return;
 	}
@@ -181,6 +266,7 @@ static TSThumbCache *sharedInstance = nil;
 					TSThumbCacheCallbackWrapper *wrapper = [TSThumbCacheCallbackWrapper new];
 					wrapper.userData = userData;
 					wrapper.callbackBlock = [callback copy];
+					wrapper.scaleFactor = scaleFactor;
 					
 					[self.callbackMap[keys.firstObject] addObject:wrapper];
 				});
@@ -201,6 +287,7 @@ static TSThumbCache *sharedInstance = nil;
 			TSThumbCacheCallbackWrapper *wrapper = [TSThumbCacheCallbackWrapper new];
 			wrapper.userData = userData;
 			wrapper.callbackBlock = [callback copy];
+			wrapper.scaleFactor = scaleFactor;
 			self.callbackMap[identifier] = [NSMutableArray arrayWithObject:wrapper];
 		} else {
 			self.callbackMap[identifier] = [NSMutableArray new];
@@ -245,32 +332,34 @@ static TSThumbCache *sharedInstance = nil;
 		imageUuid = self.imageUuidMap[identifier];
 	});
 	
+	// Save the URL in the cache
+	[self.imageURLCache setObject:url forKey:imageUuid];
+	
 	// Check that there's callbacks to run
 	if(callbacks.count > 0) {
 		// Run on a background queue, so the image loading won't hang the UI thread
 		[self.imageLoadingQueue addOperationWithBlock:^{
-			// Read image from an URL and force it to be decoded now
-			NSImage *img = [[NSImage alloc] initWithContentsOfURL:url];
-		
-			[img TSForceDecoding];
-			
-			// Store the image in the cache
-			[self.imageCache setObject:img forKey:imageUuid];
-
-			
 			// Execute callbacks
 			[callbacks enumerateObjectsUsingBlock:^(TSThumbCacheCallbackWrapper *wrapper, NSUInteger idx, BOOL *stop) {
+				// Decode the image at the requested scale factor, then run the callback
+				NSImage *img = [TSJPEG2000Parser jpeg2kFromUrl:url
+											  withQualityLayer:wrapper.scaleFactor];
+				
 				wrapper.callbackBlock(img, wrapper.userData);
+				
+				// Store it in the cache
+				[self storeThumbnail:img withScale:wrapper.scaleFactor
+						forImageUuid:imageUuid];
 			}];
 			
-			// Remove the state
+			// Remove the state objects
 			dispatch_barrier_async(self.callbackAccessQueue, ^{
 				[self.callbackMap removeObjectForKey:identifier];
 				[self.imageUuidMap removeObjectForKey:identifier];
 			});
 		}];
 	} else {
-		// Remove the state
+		// Remove the state objects
 		dispatch_barrier_async(self.callbackAccessQueue, ^{
 			[self.callbackMap removeObjectForKey:identifier];
 			[self.imageUuidMap removeObjectForKey:identifier];
@@ -305,13 +394,96 @@ static TSThumbCache *sharedInstance = nil;
 		}];
 	}
 	
-//	DDLogError(@"Error getting thumbnail for %@: %@", identifier, error);
+#if LOG_THUMB_ERRORS
+	DDLogError(@"Error getting thumbnail for %@: %@", identifier, error);
+#endif
 	
 	// Remove state for this image
 	dispatch_barrier_async(self.callbackAccessQueue, ^{
 		[self.callbackMap removeObjectForKey:identifier];
 		[self.imageUuidMap removeObjectForKey:identifier];
 	});
+}
+
+#pragma mark Image Cache Handling
+/**
+ * Checks whether the cache contains a thumbnail for the given image's UUID at
+ * the specified scale level.
+ *
+ * If a suitable image is found, it will be returned. Nil is returned otherwise.
+ */
+- (NSImage *) getCachedThumbForImageUuid:(NSString *) uuid andScale:(NSUInteger) scale {
+	// Is the scale for the image different?
+	if(scale != self.imageCacheScale) {
+		// If so, insert it into the bag of scales
+		CFNumberRef number = CFNumberCreate(kCFAllocatorDefault, kCFNumberNSIntegerType, &scale);
+		CFBagAddValue(self.imageCacheRequestedSizes, number);
+		
+		// Did this bring the count past the threshold?
+		NSUInteger count = CFBagGetCountOfValue(self.imageCacheRequestedSizes, number);
+	
+		if(count > TSImageCacheImageThreshold) {
+			// If so, clear the cache, and set this as the new scale
+			self.imageCacheScale = scale;
+			[self.imageCache removeAllObjects];
+			
+			// Also update the cache's maximum count
+			CGFloat multiply = pow(1.74f, (CGFloat) self.imageCacheScale);
+			CGFloat newCacheValue = (TSImageCacheMaxImagesAtFullSize * multiply);
+			
+			self.imageCache.countLimit = (NSUInteger) newCacheValue;
+			
+#if LOG_CACHE_DEBUG
+			// Print debug info
+			NSMutableString *str = [NSMutableString new];
+			
+			for(NSInteger i = 0; i <= TSImageCacheMaxScale; i++) {
+				CFNumberRef number = CFNumberCreate(kCFAllocatorDefault, kCFNumberNSIntegerType, &i);
+				NSUInteger count = CFBagGetCountOfValue(self.imageCacheRequestedSizes, number);
+				
+				NSString *subStr = [NSString stringWithFormat:@"Scale %02zi: %zi\n", i, count];
+				[str appendString:subStr];
+			}
+			
+			DDLogVerbose(@"TSThumbCache changing to scale factor %zi (count = %zi), statistics:\n%@", scale, self.imageCache.countLimit, str);
+#endif
+			
+			// Empty the bag (reset cache state)
+			CFBagRemoveAllValues(self.imageCacheRequestedSizes);
+			
+			// Since the cache was emptied, do not use it.
+			return nil;
+		}
+		
+		// If the requested scale is smaller than the image scale, no suitable image is in the cache.
+		if(scale < self.imageCacheScale) {
+			return nil;
+		}
+	}
+	
+	// The scale is the same (or smaller than) what's in the cache; return an object, if it exists.
+	return [self.imageCache objectForKey:uuid];
+}
+
+/**
+ * Stores an image of the given scale factor in the cache. If the cache is for
+ * images of a different scale, nothing happens.
+ *
+ * @note This does _not_ add the scale factor to the scale factor bag. This is
+ * done when the presence of an image in the cache is checked. While that
+ * approach may result in over-counting (multiple requests for the same image
+ * will trigger the cache reading multiple times, whereas the cache set method
+ * is only executed once) that is desireable, as it provides are more accurate
+ * view of how the cache is used.
+ */
+- (void) storeThumbnail:(NSImage *) image withScale:(NSUInteger) scale forImageUuid:(NSString *) uuid {
+	// Is the image's scale factor the same as that of the cache?
+	if(scale == self.imageCacheScale) {
+		// If so, stick it in the cache.
+		[self.imageCache setObject:image forKey:uuid];
+	}
+	
+	// Otherwise, ignore the request.
 }
 
 @end

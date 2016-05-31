@@ -31,8 +31,6 @@ static void *TSKVOOpCountCtx = &TSKVOOpCountCtx;
 
 /// Default JPEG quality for saved thumb images.
 static const CGFloat TSThumbDefaultQuality = 0.64;
-/// Maximum size of a thumbnail, on the long edge
-static const CGFloat TSThumbMaxSize = 1024.f;
 
 @interface TSThumbHandler ()
 

@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+/// Maximum size of a thumbnail, on the long edge
+static const CGFloat TSThumbMaxSize = 1024.f;
+
 /**
  * Defines varying levels of urgency for thumbnail generation.
  */

@@ -90,6 +90,7 @@
 		6ABC2DC31CD43586006B959F /* _TSLibraryTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DBD1CD43586006B959F /* _TSLibraryTag.m */; };
 		6ABCD8E41CFDD62500AA9539 /* libopenjp2.2.1.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ABCD8E31CFDD62500AA9539 /* libopenjp2.2.1.1.dylib */; };
 		6ABCD8E51CFDD63200AA9539 /* libopenjp2.2.1.1.dylib in Embed dylibs and frameworks */ = {isa = PBXBuildFile; fileRef = 6ABCD8E31CFDD62500AA9539 /* libopenjp2.2.1.1.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		6ABCD8EA1CFDF3FD00AA9539 /* TSJPEG2000Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABCD8E91CFDF3FD00AA9539 /* TSJPEG2000Parser.m */; };
 		6AC4EC701CF95D43009EC46B /* NSFileManager+TSDirectorySizing.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4EC6F1CF95D43009EC46B /* NSFileManager+TSDirectorySizing.m */; };
 		6AC4EC7A1CFA5194009EC46B /* TSThumbHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4EC791CFA5194009EC46B /* TSThumbHandler.m */; };
 		6AC4EC7C1CFA5194009EC46B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4EC7B1CFA5194009EC46B /* main.m */; };
@@ -335,6 +336,10 @@
 		6ABC2DBD1CD43586006B959F /* _TSLibraryTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryTag.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryTag.m"; sourceTree = "<group>"; };
 		6ABCD8E31CFDD62500AA9539 /* libopenjp2.2.1.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopenjp2.2.1.1.dylib; path = Dependencies/openjpeg/bin/libopenjp2.2.1.1.dylib; sourceTree = "<group>"; };
 		6ABCD8E71CFDD80100AA9539 /* j2k.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = j2k.h; path = Dependencies/openjpeg/src/lib/openjp2/j2k.h; sourceTree = "<group>"; };
+		6ABCD8E81CFDF3FD00AA9539 /* TSJPEG2000Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSJPEG2000Parser.h; path = "Avocado/Image Processing/TSJPEG2000Parser.h"; sourceTree = "<group>"; };
+		6ABCD8E91CFDF3FD00AA9539 /* TSJPEG2000Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSJPEG2000Parser.m; path = "Avocado/Image Processing/TSJPEG2000Parser.m"; sourceTree = "<group>"; };
+		6ABCD8EB1CFDF4DA00AA9539 /* jp2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = jp2.h; path = Dependencies/openjpeg/src/lib/openjp2/jp2.h; sourceTree = "<group>"; };
+		6ABCD8EC1CFDF4FE00AA9539 /* openjpeg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = openjpeg.h; path = Dependencies/openjpeg/src/lib/openjp2/openjpeg.h; sourceTree = "<group>"; };
 		6AC3E7CF1CDD6A880099B932 /* TSRawImageDataHelpers.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = TSRawImageDataHelpers.h; path = "Avocado/RAW Processing/TSRawImageDataHelpers.h"; sourceTree = "<group>"; };
 		6AC4EC6E1CF95D43009EC46B /* NSFileManager+TSDirectorySizing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSFileManager+TSDirectorySizing.h"; path = "Avocado/Helpers/NSFileManager+TSDirectorySizing.h"; sourceTree = "<group>"; };
 		6AC4EC6F1CF95D43009EC46B /* NSFileManager+TSDirectorySizing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSFileManager+TSDirectorySizing.m"; path = "Avocado/Helpers/NSFileManager+TSDirectorySizing.m"; sourceTree = "<group>"; };
@@ -740,6 +745,8 @@
 		6ABCD8E21CFDD60A00AA9539 /* JPEG2000 Parser */ = {
 			isa = PBXGroup;
 			children = (
+				6ABCD8E81CFDF3FD00AA9539 /* TSJPEG2000Parser.h */,
+				6ABCD8E91CFDF3FD00AA9539 /* TSJPEG2000Parser.m */,
 				6ABCD8E61CFDD72700AA9539 /* Headers */,
 				6ABCD8E31CFDD62500AA9539 /* libopenjp2.2.1.1.dylib */,
 			);
@@ -749,6 +756,8 @@
 		6ABCD8E61CFDD72700AA9539 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
+				6ABCD8EC1CFDF4FE00AA9539 /* openjpeg.h */,
+				6ABCD8EB1CFDF4DA00AA9539 /* jp2.h */,
 				6ABCD8E71CFDD80100AA9539 /* j2k.h */,
 			);
 			name = Headers;
@@ -1605,6 +1614,7 @@
 				6A70B51E1CF7575F00597EB0 /* TSLFCamera.mm in Sources */,
 				6A28F0681CD940E500228067 /* TSPixelFormatConverter.m in Sources */,
 				6A9224381CEE39AD00EE6408 /* TSSharpeningAdjustmentFilter.m in Sources */,
+				6ABCD8EA1CFDF3FD00AA9539 /* TSJPEG2000Parser.m in Sources */,
 				6A92242C1CED242200EE6408 /* TSDevelopDetailInspector.m in Sources */,
 				6A06F4481CE01C3C001DFC4C /* TSCoreImagePipelineJob.m in Sources */,
 				6A7E46ED1CF688410056C048 /* TSLFDatabase.mm in Sources */,
