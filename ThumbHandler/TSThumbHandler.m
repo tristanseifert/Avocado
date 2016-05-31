@@ -389,7 +389,7 @@ static const CGFloat TSThumbDefaultQuality = 0.64;
 		TSRawThumbExtractor *extract = nil;
 		
 		// Create the thumbnail extractor and
-		extract = [[TSRawThumbExtractor alloc] initWithRawFile:image.originalUrl];
+		extract = [[TSRawThumbExtractor alloc] initWithRawFile:image.originalUrl andError:outErr];
 		thumbnailImg = [extract extractThumbWithSize:TSThumbMaxSize];
 	}
 	

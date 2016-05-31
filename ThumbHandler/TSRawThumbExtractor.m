@@ -13,6 +13,9 @@
 
 #import <Accelerate/Accelerate.h>
 
+NSString *const TSRawImageErrorDomain = @"TSRawImageErrorDomain";
+NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
+
 static void TSRawThumbExtractorReleaseDirect(void *info, const void *data, size_t size);
 
 @interface TSRawThumbExtractor ()
@@ -38,7 +41,7 @@ static void TSRawThumbExtractorReleaseDirect(void *info, const void *data, size_
  * Initializes the thumb extractor, given the url to the input file. Returns
  * nil if the file could not be loaded.
  */
-- (instancetype) initWithRawFile:(NSURL *) url {
+- (instancetype) initWithRawFile:(NSURL *) url andError:(NSError **) outErr {
 	if(self = [super init]) {
 		int lrErr = 0;
 		self.fileUrl = url;
@@ -52,7 +55,9 @@ static void TSRawThumbExtractorReleaseDirect(void *info, const void *data, size_
 		if((lrErr = libraw_open_file(self.libRaw, fsPath)) != LIBRAW_SUCCESS) {
 			NSError *nsErr = [self errorFromCode:lrErr];
 			
-			DDLogError(@"Couldn't open raw file at %@: %@", url, nsErr);
+			if(outErr) *outErr = nsErr;
+			else  DDLogError(@"Couldn't open raw file at %@: %@", url, nsErr);
+			
 			return nil;
 		}
 		
@@ -60,7 +65,9 @@ static void TSRawThumbExtractorReleaseDirect(void *info, const void *data, size_
 		if((lrErr = libraw_unpack_thumb(self.libRaw)) != LIBRAW_SUCCESS) {
 			NSError *nsErr = [self errorFromCode:lrErr];
 			
-			DDLogError(@"Couldn't unpack thumb: %@", nsErr);
+			if(outErr) *outErr = nsErr;
+			else DDLogError(@"Couldn't unpack thumb: %@", nsErr);
+			
 			return nil;
 		}
 	}
@@ -273,7 +280,8 @@ static void TSRawThumbExtractorReleaseDirect(void *info, const void *data, size_
 									  encoding:NSUTF8StringEncoding];
 		
 		info = @{
-			NSLocalizedDescriptionKey: codeInfo
+			NSLocalizedDescriptionKey: codeInfo,
+			TSRawImageErrorIsFatalKey: @(LIBRAW_FATAL_ERROR(code))
 		};
 		err = [NSError errorWithDomain:NSPOSIXErrorDomain code:code
 							  userInfo:info];
@@ -283,9 +291,10 @@ static void TSRawThumbExtractorReleaseDirect(void *info, const void *data, size_
 									  encoding:NSUTF8StringEncoding];
 		
 		info = @{
-			NSLocalizedDescriptionKey: codeInfo
+			NSLocalizedDescriptionKey: codeInfo,
+			TSRawImageErrorIsFatalKey: @(LIBRAW_FATAL_ERROR(code))
 		};
-		err = [NSError errorWithDomain:NSPOSIXErrorDomain code:code
+		err = [NSError errorWithDomain:TSRawImageErrorDomain code:code
 							  userInfo:info];
 	}
 	

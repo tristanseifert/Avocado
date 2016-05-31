@@ -225,7 +225,7 @@ NSString *const TSRawImageErrorIsFatalKey = @"TSRawImageErrorIsFatal";
 			TSRawImageErrorIsFatalKey: @(LIBRAW_FATAL_ERROR(code))
 			
 		};
-		err = [NSError errorWithDomain:NSPOSIXErrorDomain code:code
+		err = [NSError errorWithDomain:TSRawImageErrorDomain code:code
 							  userInfo:info];
 	}
 	

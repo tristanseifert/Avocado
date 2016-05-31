@@ -46,7 +46,7 @@ static const NSUInteger TSImageCacheImageThreshold = 8;
 /// The lowest resolution scale value. By default, this is [0, 3] due to how the images are encoded.
 static const NSUInteger TSImageCacheMaxScale = 3;
 
-static TSThumbCache *sharedInstance = nil;
+
 
 @interface TSThumbCacheCallbackWrapper : NSObject
 
@@ -60,10 +60,12 @@ static TSThumbCache *sharedInstance = nil;
 @end
 
 @implementation TSThumbCacheCallbackWrapper
-
 @end
 
 
+
+/// Singleton thumb cache instance; created on first invocation of sharedInstance
+static TSThumbCache *sharedInstance = nil;
 
 @interface TSThumbCache ()
 
@@ -232,7 +234,7 @@ static TSThumbCache *sharedInstance = nil;
 	CGFloat maxDimension = horizontalLongEdge ? size.width : size.height;
 	
 	CGFloat desiredFactor = log2(TSThumbMaxSize / maxDimension);
-	NSUInteger scaleFactor = MIN(round(desiredFactor), TSImageCacheMaxScale);
+	NSUInteger scaleFactor = MAX(MIN(round(desiredFactor), TSImageCacheMaxScale), 0);
 	
 #if LOG_THUMB_SIZING
 	DDLogVerbose(@"Scale factor for size %@: %zi (max dimension = %f; factor = %f)", NSStringFromSize(size), scaleFactor, maxDimension, desiredFactor);
