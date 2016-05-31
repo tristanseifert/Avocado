@@ -45,6 +45,9 @@ static TSThumbCache *sharedInstance = nil;
 /// Queue used to synchronize access to callbackMap
 @property (nonatomic, retain) dispatch_queue_t callbackAccessQueue;
 
+/// Operation queue for loading images from disk.
+@property (nonatomic) NSOperationQueue *imageLoadingQueue;
+
 @end
 
 @implementation TSThumbCache
@@ -66,7 +69,7 @@ static TSThumbCache *sharedInstance = nil;
  */
 - (instancetype) init {
 	if(self = [super init]) {
-		// Qllocate some in-memory collections
+		// Allocate some in-memory collections
 		self.callbackMap = [NSMutableDictionary new];
 		self.imageUuidMap = [NSMutableDictionary new];
 		
@@ -75,6 +78,11 @@ static TSThumbCache *sharedInstance = nil;
 		// Create a queue to synchronize access to the callback map
 		self.callbackAccessQueue = dispatch_queue_create("me.tseifert.Avocado.TSThumbCache", DISPATCH_QUEUE_CONCURRENT);
 		
+		// Allocate an operation queue for loading images
+		self.imageLoadingQueue = [NSOperationQueue new];
+		
+		self.imageLoadingQueue.qualityOfService = NSQualityOfServiceUserInitiated;
+		self.imageLoadingQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount;
 		
 		// Allocate the XPC handle; it will be connected on the first invocation
 		NSXPCInterface *intf;
@@ -236,21 +244,39 @@ static TSThumbCache *sharedInstance = nil;
 	
 	// Check that there's callbacks to run
 	if(callbacks.count > 0) {
-		// Read the image from the url and store in cache
-		NSImage *img = [[NSImage alloc] initWithContentsOfURL:url];
-		[self.imageCache setObject:img forKey:imageUuid];
-		
-		// Execute callbacks
-		[callbacks enumerateObjectsUsingBlock:^(TSThumbCacheCallbackWrapper *wrapper, NSUInteger idx, BOOL *stop) {
-			wrapper.callbackBlock(img, wrapper.userData);
+		// Run on a background queue, so the image loading won't hang the UI thread
+		[self.imageLoadingQueue addOperationWithBlock:^{
+			// Read image from an URL
+			NSImage *img = [[NSImage alloc] initWithContentsOfURL:url];
+			
+			// XXXX HACK ALERT XXXX: Force the image to be decoded
+			NSBitmapImageRep *rep = (NSBitmapImageRep *) img.representations.firstObject;
+			
+			NSUInteger pixel[4];
+			[rep getPixel:pixel atX:0 y:5];
+			
+			// Store the image in cache
+			[self.imageCache setObject:img forKey:imageUuid];
+			
+			
+			// Execute callbacks
+			[callbacks enumerateObjectsUsingBlock:^(TSThumbCacheCallbackWrapper *wrapper, NSUInteger idx, BOOL *stop) {
+				wrapper.callbackBlock(img, wrapper.userData);
+			}];
+			
+			// Remove the state
+			dispatch_barrier_async(self.callbackAccessQueue, ^{
+				[self.callbackMap removeObjectForKey:identifier];
+				[self.imageUuidMap removeObjectForKey:identifier];
+			});
 		}];
+	} else {
+		// Remove the state
+		dispatch_barrier_async(self.callbackAccessQueue, ^{
+			[self.callbackMap removeObjectForKey:identifier];
+			[self.imageUuidMap removeObjectForKey:identifier];
+		});
 	}
-	
-	// Remove the state
-	dispatch_barrier_async(self.callbackAccessQueue, ^{
-		[self.callbackMap removeObjectForKey:identifier];
-		[self.imageUuidMap removeObjectForKey:identifier];
-	});
 }
 
 /**

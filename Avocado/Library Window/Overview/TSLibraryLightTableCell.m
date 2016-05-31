@@ -75,6 +75,8 @@ static const CGFloat kThumbHMargin = 5.f;
 
 /// This is changed to something else every time the represented object changes
 @property (nonatomic) void *thumbToken;
+/// When set, the view is currently visible, and thumbnails should be generated.
+@property (nonatomic) BOOL shouldGenerateThumbs;
 
 - (void) setUpMainLayersWithParent:(CALayer *) layer;
 - (void) setUpBordersWithParent:(CALayer *) layer;
@@ -159,6 +161,17 @@ static const CGFloat kThumbHMargin = 5.f;
  */
 - (void) viewWillAppear {
 	[super viewWillAppear];
+	
+	self.shouldGenerateThumbs = YES;
+}
+
+/**
+ * Sets a flag to inhibit thumbnail loading when the view has been hidden.
+ */
+- (void) viewDidDisappear {
+	[super viewDidDisappear];
+	
+	self.shouldGenerateThumbs = NO;
 }
 
 #pragma mark Mouse Tracking
@@ -525,7 +538,12 @@ shouldInheritContentsScale:(CGFloat) newScale
  * Updates the thumbnail image.
  */
 - (void) updateThumbnails {
-	// request thumbnails
+	// Return if thumbnails shaln't be generated.
+	if(self.shouldGenerateThumbs == NO) {
+		return;
+	}
+	
+	// Calculate the size of the cell, and thus, the thumbnails
 	NSCollectionViewFlowLayout *layout = (NSCollectionViewFlowLayout *) self.collectionView.collectionViewLayout;
 	NSSize cellSize = layout.itemSize;
 	
@@ -534,15 +552,12 @@ shouldInheritContentsScale:(CGFloat) newScale
 		.height = cellSize.height - (kImageVInset),
 	};
 	
-	// ensure no component is negative
+	// Ensure no component of the size is negative
 	if(thumbSz.width < 0 || thumbSz.height < 0) {
-//		DDLogVerbose(@"Ignoring invalid size for %@", self.representedObject.fileUrl);
 		return;
 	}
 	
-//	DDLogVerbose(@"Sz = %@ for %@", NSStringFromSize(thumbSz), self.representedObject.fileUrl);
-	
-	// actually queue the request
+	// Actually queue the request	
 	[[TSThumbCache sharedInstance] getThumbForImage:self.representedObject
 										   withSize:thumbSz
 										andCallback:^(NSImage *thumb, void *userData) {
