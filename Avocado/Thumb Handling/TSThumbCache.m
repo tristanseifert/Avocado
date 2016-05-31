@@ -76,6 +76,7 @@ static TSThumbCache *sharedInstance = nil;
 		self.imageUuidMap = [NSMutableDictionary new];
 		
 		self.imageCache = [NSCache new];
+		self.imageCache.evictsObjectsWithDiscardedContent = YES;
 		
 		// Create a queue to synchronize access to the callback map
 		self.callbackAccessQueue = dispatch_queue_create("me.tseifert.Avocado.TSThumbCache", DISPATCH_QUEUE_CONCURRENT);

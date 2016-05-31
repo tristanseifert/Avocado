@@ -20,6 +20,9 @@ Because building glib is a _huge_ pain in the ass, a binary copy is provided, as
 ### Lensfun
 Create a directory named cmake_build, change into it, then execute `cmake ..` to create Makefiles. Build as you normally would. The CMakeList file may need to be patched to use `@rpath` for the install name, and to modify the library search path to use our copy of gettext and glib — see the `lensfun-patches` directory.
 
+### OpenJPEG
+This library is used for reading JPEG2000 thumbnail files in a way that thumbnails can be generated from the bitstream. Change into the directory, execute `cmake .` and build using Make.
+
 ### After all dependencies
 Do not forget to execute the `fix_dependencies_rpath.sh` script in the Dependencies folder, after compiling and building any dependencies. This will fix up paths in these libraries so that they can be properly linked, and will not cause a dylib error at runtime.
 

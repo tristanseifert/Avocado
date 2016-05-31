@@ -88,6 +88,8 @@
 		6ABC2DBF1CD43586006B959F /* _TSLibraryAlbumCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DB51CD43586006B959F /* _TSLibraryAlbumCollection.m */; };
 		6ABC2DC01CD43586006B959F /* _TSLibraryExportService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DB71CD43586006B959F /* _TSLibraryExportService.m */; };
 		6ABC2DC31CD43586006B959F /* _TSLibraryTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DBD1CD43586006B959F /* _TSLibraryTag.m */; };
+		6ABCD8E41CFDD62500AA9539 /* libopenjp2.2.1.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ABCD8E31CFDD62500AA9539 /* libopenjp2.2.1.1.dylib */; };
+		6ABCD8E51CFDD63200AA9539 /* libopenjp2.2.1.1.dylib in Embed dylibs and frameworks */ = {isa = PBXBuildFile; fileRef = 6ABCD8E31CFDD62500AA9539 /* libopenjp2.2.1.1.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		6AC4EC701CF95D43009EC46B /* NSFileManager+TSDirectorySizing.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4EC6F1CF95D43009EC46B /* NSFileManager+TSDirectorySizing.m */; };
 		6AC4EC7A1CFA5194009EC46B /* TSThumbHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4EC791CFA5194009EC46B /* TSThumbHandler.m */; };
 		6AC4EC7C1CFA5194009EC46B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4EC7B1CFA5194009EC46B /* main.m */; };
@@ -166,6 +168,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				6ABCD8E51CFDD63200AA9539 /* libopenjp2.2.1.1.dylib in Embed dylibs and frameworks */,
 				6A28F05E1CD810E200228067 /* libglib-2.0.0.dylib in Embed dylibs and frameworks */,
 				6A28F05A1CD7FEB000228067 /* liblensfun.0.3.2.dylib in Embed dylibs and frameworks */,
 				6A28F0541CD7FD2D00228067 /* libintl.8.dylib in Embed dylibs and frameworks */,
@@ -330,6 +333,8 @@
 		6ABC2DB91CD43586006B959F /* _TSLibraryImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryImage.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImage.m"; sourceTree = "<group>"; };
 		6ABC2DBC1CD43586006B959F /* _TSLibraryTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _TSLibraryTag.h; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryTag.h"; sourceTree = "<group>"; };
 		6ABC2DBD1CD43586006B959F /* _TSLibraryTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryTag.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryTag.m"; sourceTree = "<group>"; };
+		6ABCD8E31CFDD62500AA9539 /* libopenjp2.2.1.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopenjp2.2.1.1.dylib; path = Dependencies/openjpeg/bin/libopenjp2.2.1.1.dylib; sourceTree = "<group>"; };
+		6ABCD8E71CFDD80100AA9539 /* j2k.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = j2k.h; path = Dependencies/openjpeg/src/lib/openjp2/j2k.h; sourceTree = "<group>"; };
 		6AC3E7CF1CDD6A880099B932 /* TSRawImageDataHelpers.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = TSRawImageDataHelpers.h; path = "Avocado/RAW Processing/TSRawImageDataHelpers.h"; sourceTree = "<group>"; };
 		6AC4EC6E1CF95D43009EC46B /* NSFileManager+TSDirectorySizing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSFileManager+TSDirectorySizing.h"; path = "Avocado/Helpers/NSFileManager+TSDirectorySizing.h"; sourceTree = "<group>"; };
 		6AC4EC6F1CF95D43009EC46B /* NSFileManager+TSDirectorySizing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSFileManager+TSDirectorySizing.m"; path = "Avocado/Helpers/NSFileManager+TSDirectorySizing.m"; sourceTree = "<group>"; };
@@ -455,6 +460,7 @@
 				6A74F1E51CF26F0C0023B439 /* libcompression.tbd in Frameworks */,
 				6A06F43A1CE01767001DFC4C /* Quartz.framework in Frameworks */,
 				6A06F43B1CE01767001DFC4C /* QuartzCore.framework in Frameworks */,
+				6ABCD8E41CFDD62500AA9539 /* libopenjp2.2.1.1.dylib in Frameworks */,
 				6AEC351B1CD43FED0033DE0A /* Accelerate.framework in Frameworks */,
 				90D8F3504CA87BC8DFD0DDE7 /* Pods_Avocado.framework in Frameworks */,
 				6A1068871CD5BF00004BF216 /* libraw_r.15.dylib in Frameworks */,
@@ -474,6 +480,7 @@
 				6A06F4471CE01C3C001DFC4C /* TSCoreImagePipelineJob.m */,
 				6AA935C31CEA4583004E9F9C /* Helpers */,
 				6A06F4491CE02048001DFC4C /* Filters */,
+				6ABCD8E21CFDD60A00AA9539 /* JPEG2000 Parser */,
 			);
 			name = "General Image Processing";
 			sourceTree = "<group>";
@@ -728,6 +735,23 @@
 				6AC4ECCD1CFC077C009EC46B /* TSImageTransformHelpers.h */,
 			);
 			name = Helpers;
+			sourceTree = "<group>";
+		};
+		6ABCD8E21CFDD60A00AA9539 /* JPEG2000 Parser */ = {
+			isa = PBXGroup;
+			children = (
+				6ABCD8E61CFDD72700AA9539 /* Headers */,
+				6ABCD8E31CFDD62500AA9539 /* libopenjp2.2.1.1.dylib */,
+			);
+			name = "JPEG2000 Parser";
+			sourceTree = "<group>";
+		};
+		6ABCD8E61CFDD72700AA9539 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				6ABCD8E71CFDD80100AA9539 /* j2k.h */,
+			);
+			name = Headers;
 			sourceTree = "<group>";
 		};
 		6AC4EC761CFA5194009EC46B /* Thumbnail XPC Service */ = {
@@ -1791,6 +1815,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Dependencies/LibRaw/lib/.libs",
 					"$(PROJECT_DIR)/Dependencies/lensfun-code/cmake_build/libs/lensfun",
+					"$(PROJECT_DIR)/Dependencies/openjpeg/bin",
 				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
@@ -1829,6 +1854,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Dependencies/LibRaw/lib/.libs",
 					"$(PROJECT_DIR)/Dependencies/lensfun-code/cmake_build/libs/lensfun",
+					"$(PROJECT_DIR)/Dependencies/openjpeg/bin",
 				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;

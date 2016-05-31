@@ -4,15 +4,17 @@
 
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
-    "FD20869EDA851F60430302C1413AAE5CB043C00D" : 0,
+    "6BEFAB3BB130345C190F12C07BC483F253E59D5C" : 0,
     "075158AB966662F9FA32B9EDBE6C0C2C513BAE2F" : 0,
-    "6BEFAB3BB130345C190F12C07BC483F253E59D5C" : 0
+    "FD20869EDA851F60430302C1413AAE5CB043C00D" : 0,
+    "18BF9BB0B2D0C46FE0EC9B3E09D0DAA90770CE28" : 0
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "4A838C44-F924-4171-A26B-D00EE2C8CE90",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "FD20869EDA851F60430302C1413AAE5CB043C00D" : "Avocado\/Dependencies\/LibRaw\/",
+    "6BEFAB3BB130345C190F12C07BC483F253E59D5C" : "Avocado\/",
     "075158AB966662F9FA32B9EDBE6C0C2C513BAE2F" : "Avocado\/Dependencies\/lensfun-code\/",
-    "6BEFAB3BB130345C190F12C07BC483F253E59D5C" : "Avocado\/"
+    "FD20869EDA851F60430302C1413AAE5CB043C00D" : "Avocado\/Dependencies\/LibRaw\/",
+    "18BF9BB0B2D0C46FE0EC9B3E09D0DAA90770CE28" : "Avocado\/Dependencies\/openjpeg\/"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "Avocado",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
@@ -22,6 +24,11 @@
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/git.code.sf.net\/p\/lensfun\/code",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "075158AB966662F9FA32B9EDBE6C0C2C513BAE2F"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/uclouvain\/openjpeg.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "18BF9BB0B2D0C46FE0EC9B3E09D0DAA90770CE28"
     },
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "gitlab.com:tristanseifert\/avocado.git",

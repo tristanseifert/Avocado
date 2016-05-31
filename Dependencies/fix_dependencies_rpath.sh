@@ -19,3 +19,6 @@ install_name_tool gettext-0.19.7/gettext-runtime/intl/.libs/libintl.8.dylib -id 
 install_name_tool libglib-2.0.0.dylib -id @rpath/libglib-2.0.0.dylib
 
 install_name_tool libglib-2.0.0.dylib -change /usr/local/opt/gettext/lib/libintl.8.dylib @rpath/libintl.8.dylib
+
+# openjpeg
+install_name_tool openjpeg/bin/libopenjp2.2.1.1.dylib -id @rpath/libopenjp2.2.1.1.dylib
