@@ -27,6 +27,7 @@
 		6A34B12A1CD5936200252288 /* TSLibraryImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2D9E1CD42C56006B959F /* TSLibraryImage.m */; };
 		6A46B7461CFCB32C00DCD2CB /* TSManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A46B7451CFCB32C00DCD2CB /* TSManagedObject.m */; };
 		6A46B74B1CFCC3C300DCD2CB /* NSManagedObjectContext+TSCoreDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A46B74A1CFCC3C300DCD2CB /* NSManagedObjectContext+TSCoreDataStore.m */; };
+		6A46B74E1CFD164900DCD2CB /* NSImage+TSCachedDecoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A46B74D1CFD164900DCD2CB /* NSImage+TSCachedDecoding.m */; };
 		6A5C615C1CD64B7100E3C3C9 /* TSLibraryLightTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A5C615B1CD64B7100E3C3C9 /* TSLibraryLightTableCell.xib */; };
 		6A5C615F1CD67C5B00E3C3C9 /* TSImageIOHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A5C615E1CD67C5B00E3C3C9 /* TSImageIOHelper.m */; };
 		6A6ED4101CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A6ED40F1CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.m */; };
@@ -215,6 +216,8 @@
 		6A46B7451CFCB32C00DCD2CB /* TSManagedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSManagedObject.m; path = Avocado/CoreData/TSManagedObject.m; sourceTree = "<group>"; };
 		6A46B7491CFCC3C300DCD2CB /* NSManagedObjectContext+TSCoreDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSManagedObjectContext+TSCoreDataStore.h"; path = "Avocado/CoreData/NSManagedObjectContext+TSCoreDataStore.h"; sourceTree = "<group>"; };
 		6A46B74A1CFCC3C300DCD2CB /* NSManagedObjectContext+TSCoreDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSManagedObjectContext+TSCoreDataStore.m"; path = "Avocado/CoreData/NSManagedObjectContext+TSCoreDataStore.m"; sourceTree = "<group>"; };
+		6A46B74C1CFD164900DCD2CB /* NSImage+TSCachedDecoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSImage+TSCachedDecoding.h"; path = "Avocado/Helpers/NSImage+TSCachedDecoding.h"; sourceTree = "<group>"; };
+		6A46B74D1CFD164900DCD2CB /* NSImage+TSCachedDecoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSImage+TSCachedDecoding.m"; path = "Avocado/Helpers/NSImage+TSCachedDecoding.m"; sourceTree = "<group>"; };
 		6A5C615B1CD64B7100E3C3C9 /* TSLibraryLightTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TSLibraryLightTableCell.xib; path = "Library Window/Overview/TSLibraryLightTableCell.xib"; sourceTree = "<group>"; };
 		6A5C615D1CD67C5B00E3C3C9 /* TSImageIOHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSImageIOHelper.h; path = Avocado/Helpers/TSImageIOHelper.h; sourceTree = "<group>"; };
 		6A5C615E1CD67C5B00E3C3C9 /* TSImageIOHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TSImageIOHelper.m; path = Avocado/Helpers/TSImageIOHelper.m; sourceTree = "<group>"; };
@@ -859,6 +862,8 @@
 				6A6ED40F1CE132C0001EFA21 /* NSBezierPath+AvocadoUtils.m */,
 				6A6ED4151CE4D0EE001EFA21 /* NSColor+AvocadoUtils.h */,
 				6A6ED4161CE4D0EE001EFA21 /* NSColor+AvocadoUtils.m */,
+				6A46B74C1CFD164900DCD2CB /* NSImage+TSCachedDecoding.h */,
+				6A46B74D1CFD164900DCD2CB /* NSImage+TSCachedDecoding.m */,
 			);
 			name = UI/Drawing;
 			sourceTree = "<group>";
@@ -1532,6 +1537,7 @@
 				6A06F44C1CE0205D001DFC4C /* TSCoreImageFilter.m in Sources */,
 				6ABC2D9C1CD42C4A006B959F /* _TSLibraryImage.m in Sources */,
 				6A1307CC1CDA4A6E00FFC99A /* TSRawPipelineState.mm in Sources */,
+				6A46B74E1CFD164900DCD2CB /* NSImage+TSCachedDecoding.m in Sources */,
 				6AA935A81CE7DD68004E9F9C /* TSFlippedClipView.m in Sources */,
 				6AA935951CE7A6A4004E9F9C /* TSInspectorViewController.m in Sources */,
 				6A9224471CEEBC5300EE6408 /* TSDevelopLoadingIndicatorWindowController.m in Sources */,

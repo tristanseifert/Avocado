@@ -12,7 +12,9 @@
 
 #import "TSThumbHandlerProtocol.h"
 #import "TSHumanModels.h"
+
 #import "TSThumbImageProxy+AvocadoApp.h"
+#import "NSImage+TSCachedDecoding.h"
 
 static TSThumbCache *sharedInstance = nil;
 
@@ -246,18 +248,14 @@ static TSThumbCache *sharedInstance = nil;
 	if(callbacks.count > 0) {
 		// Run on a background queue, so the image loading won't hang the UI thread
 		[self.imageLoadingQueue addOperationWithBlock:^{
-			// Read image from an URL
+			// Read image from an URL and force it to be decoded now
 			NSImage *img = [[NSImage alloc] initWithContentsOfURL:url];
+		
+			[img TSForceDecoding];
 			
-			// XXXX HACK ALERT XXXX: Force the image to be decoded
-			NSBitmapImageRep *rep = (NSBitmapImageRep *) img.representations.firstObject;
-			
-			NSUInteger pixel[4];
-			[rep getPixel:pixel atX:0 y:5];
-			
-			// Store the image in cache
+			// Store the image in the cache
 			[self.imageCache setObject:img forKey:imageUuid];
-			
+
 			
 			// Execute callbacks
 			[callbacks enumerateObjectsUsingBlock:^(TSThumbCacheCallbackWrapper *wrapper, NSUInteger idx, BOOL *stop) {
