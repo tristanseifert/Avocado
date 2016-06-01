@@ -4,8 +4,13 @@ A native OS X image catalog manager and editor, with support for RAW file proces
 ## Building
 The app can be built as normally via Xcode. All dependencies (installed via CocoaPods, and git submodules) must be installed beforehand, however. Several dependencies must also be built, in the following order:
 
+### LibJPEG-Turbo
+Execute `autoreconf -fiv` followed by `./configure` and `make all` in the libjpeg-turbo directory. The library will be automagically built.
+
+On some systems, the configure step may throw an error about NASM not supporting the format `macho64.` This is because Apple ships an ancient version of nasm with the operating system; install the latest version, then make sure that it can be found first in the `$PATH` of the shell you're building in.
+
 ### LibRaw
-Execute `./configure --disable-lcms --disable-openmp --disable-static` followed by `make all` in the LibRaw directory. The library is automagically built, and Xcode will link with the dylib.
+Execute `./configure --disable-lcms --disable-openmp --disable-static` followed by `make all LDFLAGS=-L../libjpeg-turbo/.libs CFLAGS="-g -Ofast -fslp-vectorize-aggressive" CXXFLAGS="-g -Ofast -fslp-vectorize-aggressive"` in the LibRaw directory. The library is automagically built, and Xcode will link with the dylib. These additional linker and compiler flags force it to first search for the copy of LibJPEG-Turbo we're using, and also enables a plethora of optimizations for speed.
 
 Note that the `--disable-lcms` flag will disable colour management support in LibRaw; this is not a problem, since we do our own colour management using Cocoa APIs, but this means that all RGB data coming out of LibRaw will be in the sensor colour space.
 
@@ -21,7 +26,7 @@ Because building glib is a _huge_ pain in the ass, a binary copy is provided, as
 Create a directory named cmake_build, change into it, then execute `cmake ..` to create Makefiles. Build as you normally would. The CMakeList file may need to be patched to use `@rpath` for the install name, and to modify the library search path to use our copy of gettext and glib — see the `lensfun-patches` directory.
 
 ### OpenJPEG
-This library is used for reading JPEG2000 thumbnail files in a way that thumbnails can be generated from the bitstream. Change into the directory, execute `cmake .` and build using Make.
+This library is used for reading JPEG2000 thumbnail files in a way that thumbnails can be generated from the bitstream. Change into the directory, execute `cmake .` and build as normal using Make.
 
 ### After all dependencies
 Do not forget to execute the `fix_dependencies_rpath.sh` script in the Dependencies folder, after compiling and building any dependencies. This will fix up paths in these libraries so that they can be properly linked, and will not cause a dylib error at runtime.

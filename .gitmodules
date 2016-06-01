@@ -16,3 +16,6 @@
 [submodule "Dependencies/openjpeg"]
 	path = Dependencies/openjpeg
 	url = https://github.com/uclouvain/openjpeg.git
+[submodule "Dependencies/libjpeg-turbo"]
+	path = Dependencies/libjpeg-turbo
+	url = https://github.com/libjpeg-turbo/libjpeg-turbo.git

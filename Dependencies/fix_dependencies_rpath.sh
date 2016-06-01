@@ -2,7 +2,10 @@
 # Fixes the install names of the dependencies' dylibs. This should be executed
 # every time any of them are re-built.
 
-# fix libraw, and the libraries it depends on
+# fix libjpeg-turbo
+install_name_tool libjpeg-turbo/.libs/libjpeg.62.dylib -id @rpath/libjpeg.62.dylib
+
+# fix libraw
 install_name_tool LibRaw/lib/.libs/libraw_r.15.dylib -id @rpath/libraw_r.15.dylib
 
 # fix LensFun, and the libraries it depends on

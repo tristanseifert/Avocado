@@ -88,6 +88,7 @@
 		6ABC2DBF1CD43586006B959F /* _TSLibraryAlbumCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DB51CD43586006B959F /* _TSLibraryAlbumCollection.m */; };
 		6ABC2DC01CD43586006B959F /* _TSLibraryExportService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DB71CD43586006B959F /* _TSLibraryExportService.m */; };
 		6ABC2DC31CD43586006B959F /* _TSLibraryTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC2DBD1CD43586006B959F /* _TSLibraryTag.m */; };
+		6ABC3A431CFF2D7B00AC73CD /* libjpeg.62.dylib in Embed dylibs and frameworks */ = {isa = PBXBuildFile; fileRef = 6ABC3A411CFF2D7100AC73CD /* libjpeg.62.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		6ABCD8E41CFDD62500AA9539 /* libopenjp2.2.1.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ABCD8E31CFDD62500AA9539 /* libopenjp2.2.1.1.dylib */; };
 		6ABCD8E51CFDD63200AA9539 /* libopenjp2.2.1.1.dylib in Embed dylibs and frameworks */ = {isa = PBXBuildFile; fileRef = 6ABCD8E31CFDD62500AA9539 /* libopenjp2.2.1.1.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		6ABCD8EA1CFDF3FD00AA9539 /* TSJPEG2000Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABCD8E91CFDF3FD00AA9539 /* TSJPEG2000Parser.m */; };
@@ -169,6 +170,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				6ABC3A431CFF2D7B00AC73CD /* libjpeg.62.dylib in Embed dylibs and frameworks */,
 				6ABCD8E51CFDD63200AA9539 /* libopenjp2.2.1.1.dylib in Embed dylibs and frameworks */,
 				6A28F05E1CD810E200228067 /* libglib-2.0.0.dylib in Embed dylibs and frameworks */,
 				6A28F05A1CD7FEB000228067 /* liblensfun.0.3.2.dylib in Embed dylibs and frameworks */,
@@ -334,6 +336,7 @@
 		6ABC2DB91CD43586006B959F /* _TSLibraryImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryImage.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryImage.m"; sourceTree = "<group>"; };
 		6ABC2DBC1CD43586006B959F /* _TSLibraryTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _TSLibraryTag.h; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryTag.h"; sourceTree = "<group>"; };
 		6ABC2DBD1CD43586006B959F /* _TSLibraryTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _TSLibraryTag.m; path = "Avocado/CoreData/Managed Object Subclasses/Entity/_TSLibraryTag.m"; sourceTree = "<group>"; };
+		6ABC3A411CFF2D7100AC73CD /* libjpeg.62.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libjpeg.62.dylib; path = "Dependencies/libjpeg-turbo/.libs/libjpeg.62.dylib"; sourceTree = "<group>"; };
 		6ABCD8E31CFDD62500AA9539 /* libopenjp2.2.1.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopenjp2.2.1.1.dylib; path = Dependencies/openjpeg/bin/libopenjp2.2.1.1.dylib; sourceTree = "<group>"; };
 		6ABCD8E71CFDD80100AA9539 /* j2k.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = j2k.h; path = Dependencies/openjpeg/src/lib/openjp2/j2k.h; sourceTree = "<group>"; };
 		6ABCD8E81CFDF3FD00AA9539 /* TSJPEG2000Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TSJPEG2000Parser.h; path = "Avocado/Image Processing/TSJPEG2000Parser.h"; sourceTree = "<group>"; };
@@ -523,6 +526,7 @@
 		6A28F0561CD7FE2000228067 /* Other Dependencies (Not Linked) */ = {
 			isa = PBXGroup;
 			children = (
+				6ABC3A411CFF2D7100AC73CD /* libjpeg.62.dylib */,
 				6A28F05C1CD810D300228067 /* libglib-2.0.0.dylib */,
 				6A28F0531CD7FD1E00228067 /* libintl.8.dylib */,
 			);
@@ -1826,6 +1830,7 @@
 					"$(PROJECT_DIR)/Dependencies/LibRaw/lib/.libs",
 					"$(PROJECT_DIR)/Dependencies/lensfun-code/cmake_build/libs/lensfun",
 					"$(PROJECT_DIR)/Dependencies/openjpeg/bin",
+					"$(PROJECT_DIR)/Dependencies/libjpeg-turbo/.libs",
 				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
@@ -1865,6 +1870,7 @@
 					"$(PROJECT_DIR)/Dependencies/LibRaw/lib/.libs",
 					"$(PROJECT_DIR)/Dependencies/lensfun-code/cmake_build/libs/lensfun",
 					"$(PROJECT_DIR)/Dependencies/openjpeg/bin",
+					"$(PROJECT_DIR)/Dependencies/libjpeg-turbo/.libs",
 				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
