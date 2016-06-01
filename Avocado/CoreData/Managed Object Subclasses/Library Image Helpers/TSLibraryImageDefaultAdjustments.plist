@@ -129,5 +129,25 @@
 		<key>z</key>
 		<integer>1</integer>
 	</dict>
+	<key>TSAdjustmentKeyExposureHighlights</key>
+	<dict>
+		<key>x</key>
+		<integer>0</integer>
+	</dict>
+	<key>TSAdjustmentKeyExposureShadows</key>
+	<dict>
+		<key>x</key>
+		<integer>0</integer>
+	</dict>
+	<key>TSAdjustmentKeyExposureWhites</key>
+	<dict>
+		<key>x</key>
+		<integer>0</integer>
+	</dict>
+	<key>TSAdjustmentKeyExposureBlacks</key>
+	<dict>
+		<key>x</key>
+		<integer>0</integer>
+	</dict>
 </dict>
 </plist>

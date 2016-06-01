@@ -603,7 +603,7 @@
 		  samplesPerPixel:4
 		  hasAlpha:YES
 		  isPlanar:NO
-		  colorSpaceName:NSCustomColorSpace
+		  colorSpaceName:NSCalibratedRGBColorSpace
 		  bitmapFormat:NSFloatingPointSamplesBitmapFormat
 		  bytesPerRow:bytesPerRow
 		  bitsPerPixel:128];
@@ -741,40 +741,40 @@
 		
 		state.stage = TSRawPipelineStageCoreImageFilter;
 		
-		// produce a job object
+		// Produce a job object
 		job = [[TSCoreImagePipelineJob alloc] initWithInput:state.coreImageInput];
 		
-		// create the filter chain (run on image MOC's queue)
+		// Create the filter chain (run on image MOC's queue)
 		[state.mocCtx performBlockAndWait:^{
 			[state.image TSCIPipelineSetUpJob:job];
 		}];
 		
-		// render the image as appropriate
+		// Render the image as appropriate
 		TSCoreImagePixelFormat fmt = TSCIPixelFormatRGBA8;
 		
 		switch(state.outFormat) {
-			// use 16-bit RGBA
+			// Use 16-bit RGBA
 			case TSRawPipelineOutputFormatNSImage16Bit:
 				fmt = TSCIPixelFormatRGBA16;
 			
-			// use 8-bit RGBA
+			// Use 8-bit RGBA
 			case TSRawPipelineOutputFormatNSImage8Bit: {
 				// determine output colour space
 				NSColorSpace *space = [NSColorSpace sRGBColorSpace];
 				
-				// process image
+				// Process image
 				im = [self.ciPipeline produceNSImageFromJob:job
 											withPixelFormat:fmt
 											 andColourSpace:space];
 				state.cpuResult = im;
 				
-				// execute success callback
+				// Execute success callback
 				[state completeWithImage:state.cpuResult];
 				
 				break;
 			}
 			
-			// handle any unknown formats; this shouldn't happen
+			// Handle any unknown formats; this shouldn't happen
 			default:
 				DDLogError(@"Unsupported output format: %lu", state.outFormat);
 		}
@@ -797,7 +797,7 @@
 	NSBlockOperation *opConvertInterleaved, *opCoreImage, *opConvertRGBGamma;
 	NSBlockOperation *opUpdateCache, *opCleanUp;
 	
-	// set up the various operations
+	// Set up the various operations
 	opDebayer = [self opDebayer:state];
 	opDemosaic = [self opDemosaic:state];
 	opLensCorrect = [self opLensCorrect:state];
@@ -816,12 +816,12 @@
 	
 	opCleanUp = [self opCleanUp:state];
 	
-	// if caching is enabled, create the cache updating operations
+	// If caching is enabled, create the cache updating operations
 	if(cache) {
 		opUpdateCache = [self opStorePlanarInCache:state];
 	}
 	
-	// set up interdependencies between the operations
+	// Set up interdependencies between the operations
 	[opDemosaic addDependency:opDebayer];
 	[opLensCorrect addDependency:opDemosaic];
 	[opConvertRGBGamma addDependency:opLensCorrect];
@@ -845,7 +845,7 @@
 	
 	[opCleanUp addDependency:opCoreImage];
 	
-	// add them to the queue to vamenos the operations
+	// Add them to the queue to vamenos the operations
 	TSAddOperation(opDebayer, state);
 	TSAddOperation(opDemosaic, state);
 	TSAddOperation(opLensCorrect, state);
@@ -877,7 +877,7 @@
 	NSBlockOperation *opConvertInterleaved, *opCoreImage,  *opRestoreCache;
 	NSBlockOperation *opCleanUp;
 	
-	// set up the various operations
+	// Set up the various operations
 	opRestoreCache = [self opRestorePlanarFromCache:state];
 	
 	opRotate = [self opRotateFlip:state];
@@ -902,7 +902,7 @@
 	[opCoreImage addDependency:opConvertInterleaved];
 	[opCleanUp addDependency:opCoreImage];
 	
-	// add them to the queue to vamenos the operations
+	// Add them to the queue to vamenos the operations
 	TSAddOperation(opRestoreCache, state);
 	
 	TSAddOperation(opRotate, state);

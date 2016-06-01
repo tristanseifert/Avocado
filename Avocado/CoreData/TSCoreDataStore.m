@@ -120,20 +120,13 @@ static TSCoreDataStore *sharedInstance = nil;
  */
 - (void) cleanUp {
 	// Save main thread MOC
-	[self.mainThreadMoc performBlockAndWait:^{
-		NSError *err = nil;
-		
-		if([self.mainThreadMoc save:&err] == NO) {
-			DDLogError(@"Error saving main thread context: %@", err);
-		}
-	}];
-	
-	// Save root context (this saves data to disk)
-	[self.rootMoc performBlockAndWait:^{
-		NSError *err = nil;
-		
-		if([self.rootMoc save:&err] == NO) {
-			DDLogError(@"Error saving root context: %@", err);
+	[self.mainThreadMoc TSSaveWithOptions:kTSSaveParentContexts | kTSSaveContextSynchronously andCallback:^(BOOL saved, NSError *err) {
+		if(saved && err == nil) {
+			DDLogVerbose(@"Saved main context and parent context");
+		} else if(!saved && err == nil) {
+			DDLogVerbose(@"No changes to save in main context");
+		} else {
+			DDLogError(@"Couldn't save CoreData context to disk: %@", err);
 		}
 	}];
 }

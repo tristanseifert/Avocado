@@ -38,7 +38,7 @@ void *TSStageKVOCtx = &TSStageKVOCtx;
 - (void) dealloc {
 	@try {
 		[self removeObserver:self forKeyPath:@"stage"];
-	} @catch (NSException __unused *exception) { }
+	} @catch (NSException* __unused) { }
 }
 
 /**

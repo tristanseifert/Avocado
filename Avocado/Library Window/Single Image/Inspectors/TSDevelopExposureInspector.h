@@ -15,6 +15,15 @@
 /// exposure adjustment, in EV
 @property (nonatomic) NSNumber *exposureAdjustment;
 
+/// highlights adjustment, in EV
+@property (nonatomic) NSNumber *highlightsAdjustment;
+/// shadows adjustment, in EV
+@property (nonatomic) NSNumber *shadowsAdjustment;
+/// whites adjustment, in EV
+@property (nonatomic) NSNumber *whitesAdjustment;
+/// blacks adjustment, in EV
+@property (nonatomic) NSNumber *blacksAdjustment;
+
 /// contrast adjustment; [-1, 1]
 @property (nonatomic) NSNumber *contrastAdjustment;
 /// saturation adjustment; [-1, 1]

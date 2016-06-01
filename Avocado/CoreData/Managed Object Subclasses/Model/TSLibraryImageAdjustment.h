@@ -5,6 +5,15 @@
 /// adjustment of exposure, in EV [-5, 5]
 extern NSString  * _Nonnull const TSAdjustmentKeyExposureEV;
 
+/// adjustment of highlights, in EV [-5, 5]
+extern NSString  * _Nonnull const TSAdjustmentKeyExposureHighlights;
+/// adjustment of shadows, in EV [-5, 5]
+extern NSString  * _Nonnull const TSAdjustmentKeyExposureShadows;
+/// adjustment of whites, in EV [-5, 5]
+extern NSString  * _Nonnull const TSAdjustmentKeyExposureWhites;
+/// adjustment of blacks, in EV [-5, 5]
+extern NSString  * _Nonnull const TSAdjustmentKeyExposureBlacks;
+
 #pragma mark Tone Adjustment
 /// saturation adjustment, [-1, 1]
 extern NSString  * _Nonnull const TSAdjustmentKeyToneSaturation;

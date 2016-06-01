@@ -3,6 +3,10 @@
 #import <CoreImage/CoreImage.h>
 
 NSString* const TSAdjustmentKeyExposureEV = @"tsAdjustmentExposureEV";
+NSString* const TSAdjustmentKeyExposureHighlights = @"tsAdjustmentExposureHighlights";
+NSString* const TSAdjustmentKeyExposureShadows = @"tsAdjustmentExposureShadows";
+NSString* const TSAdjustmentKeyExposureWhites = @"tsAdjustmentExposureWhites";
+NSString* const TSAdjustmentKeyExposureBlacks = @"tsAdjustmentExposureBlacks";
 
 NSString* const TSAdjustmentKeyToneSaturation = @"tsAdjustmentToneSaturation";
 NSString* const TSAdjustmentKeyToneBrightness = @"tsAdjustmentToneBrightness";

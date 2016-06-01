@@ -201,7 +201,7 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 - (void) removeKVO {
 	@try {
 		[self removeObserver:self forKeyPath:@"dateShot"];
-	} @catch (NSException __unused *exception) { }
+	} @catch (NSException* __unused) { }
 }
 
 /**

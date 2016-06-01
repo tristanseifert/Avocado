@@ -153,7 +153,7 @@ static const CGFloat kThumbHMargin = 5.f;
 	
 	@try {
 		[self removeObserver:self forKeyPath:@"selected"];
-	} @catch (NSException __unused *exception) { }
+	} @catch (NSException* __unused) { }
 }
 
 /**

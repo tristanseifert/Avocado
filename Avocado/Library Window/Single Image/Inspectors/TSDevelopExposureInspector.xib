@@ -102,17 +102,18 @@
                 </textField>
                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Jdm-aB-xqr" userLabel="Highlights Slider">
                     <rect key="frame" x="80" y="143" width="188" height="20"/>
-                    <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-100" maxValue="100" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="HiW-Po-J5r"/>
+                    <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-5" maxValue="5" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="HiW-Po-J5r"/>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="kGV-ad-gN5" id="UFf-Iw-r9L"/>
+                        <binding destination="-2" name="value" keyPath="self.highlightsAdjustment" id="UQM-eC-Fnj"/>
                     </connections>
                 </slider>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kGV-ad-gN5" userLabel="Highlights Text Field">
                     <rect key="frame" x="271" y="149" width="46" height="14"/>
                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0" id="124-2z-gD4">
-                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0" negativeFormat="-##0" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="3" id="UOA-f3-m5g">
-                            <real key="minimum" value="-100"/>
-                            <real key="maximum" value="100"/>
+                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="UOA-f3-m5g">
+                            <real key="minimum" value="-5"/>
+                            <real key="maximum" value="5"/>
                         </numberFormatter>
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -120,6 +121,7 @@
                     </textFieldCell>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="Jdm-aB-xqr" id="ruE-2S-jpk"/>
+                        <binding destination="-2" name="value" keyPath="self.highlightsAdjustment" id="Bhg-41-2Ru"/>
                         <outlet property="nextKeyView" destination="hwS-L2-yEx" id="brq-jx-OgW"/>
                     </connections>
                 </textField>
@@ -133,17 +135,18 @@
                 </textField>
                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="je0-d4-KHW" userLabel="Shadows Slider">
                     <rect key="frame" x="80" y="120" width="188" height="20"/>
-                    <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-100" maxValue="100" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Gbf-bf-ckD"/>
+                    <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-5" maxValue="5" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Gbf-bf-ckD"/>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="hwS-L2-yEx" id="Gq7-r9-c1K"/>
+                        <binding destination="-2" name="value" keyPath="self.shadowsAdjustment" id="0CT-OO-F99"/>
                     </connections>
                 </slider>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hwS-L2-yEx" userLabel="Shadows Text Field">
                     <rect key="frame" x="271" y="126" width="46" height="14"/>
                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0" id="aXy-gM-8um">
-                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0" negativeFormat="-##0" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="3" id="Pkf-eP-5VP">
-                            <real key="minimum" value="-100"/>
-                            <real key="maximum" value="100"/>
+                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="Pkf-eP-5VP">
+                            <real key="minimum" value="-5"/>
+                            <real key="maximum" value="5"/>
                         </numberFormatter>
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -151,6 +154,7 @@
                     </textFieldCell>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="je0-d4-KHW" id="vhh-xk-CQ7"/>
+                        <binding destination="-2" name="value" keyPath="self.shadowsAdjustment" id="t0i-0O-KXP"/>
                         <outlet property="nextKeyView" destination="bAS-WQ-mYV" id="OwC-kN-tIa"/>
                     </connections>
                 </textField>
@@ -164,17 +168,18 @@
                 </textField>
                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bOx-97-Cu0" userLabel="Whites Slider">
                     <rect key="frame" x="80" y="97" width="188" height="20"/>
-                    <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-100" maxValue="100" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Rb9-3T-45t"/>
+                    <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-5" maxValue="5" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="Rb9-3T-45t"/>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="bAS-WQ-mYV" id="Viv-f9-fGd"/>
+                        <binding destination="-2" name="value" keyPath="self.whitesAdjustment" id="VLP-Rn-asa"/>
                     </connections>
                 </slider>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bAS-WQ-mYV" userLabel="Whites Text Field">
                     <rect key="frame" x="271" y="103" width="46" height="14"/>
                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0" id="nBA-Gf-5TQ">
-                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0" negativeFormat="-##0" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="3" id="obe-0G-s87">
-                            <real key="minimum" value="-100"/>
-                            <real key="maximum" value="100"/>
+                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="obe-0G-s87">
+                            <real key="minimum" value="-5"/>
+                            <real key="maximum" value="5"/>
                         </numberFormatter>
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -182,6 +187,7 @@
                     </textFieldCell>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="bOx-97-Cu0" id="h0H-EB-cV0"/>
+                        <binding destination="-2" name="value" keyPath="self.whitesAdjustment" id="RNa-pk-Qon"/>
                         <outlet property="nextKeyView" destination="AhU-HY-Gbd" id="FjV-5F-fGw"/>
                     </connections>
                 </textField>
@@ -195,17 +201,18 @@
                 </textField>
                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="nHS-v3-48F" userLabel="Blacks Slider">
                     <rect key="frame" x="80" y="74" width="188" height="20"/>
-                    <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-100" maxValue="100" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="uAO-Iu-huw"/>
+                    <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="-5" maxValue="5" tickMarkPosition="below" numberOfTickMarks="11" sliderType="linear" id="uAO-Iu-huw"/>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="AhU-HY-Gbd" id="2IY-v0-fcF"/>
+                        <binding destination="-2" name="value" keyPath="self.blacksAdjustment" id="Rsx-0F-3MW"/>
                     </connections>
                 </slider>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="AhU-HY-Gbd" userLabel="Blacks Text Field">
                     <rect key="frame" x="271" y="80" width="46" height="14"/>
                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" title="0" id="PkP-rD-pkP">
-                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="+##0" negativeFormat="-##0" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="3" id="02u-mB-VDQ">
-                            <real key="minimum" value="-100"/>
-                            <real key="maximum" value="100"/>
+                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="##0.###" negativeFormat="-##0.###" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" id="02u-mB-VDQ">
+                            <real key="minimum" value="-5"/>
+                            <real key="maximum" value="5"/>
                         </numberFormatter>
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -213,6 +220,7 @@
                     </textFieldCell>
                     <connections>
                         <action selector="takeDoubleValueFrom:" target="nHS-v3-48F" id="jqd-Rw-cz4"/>
+                        <binding destination="-2" name="value" keyPath="self.blacksAdjustment" id="CQZ-eE-9UL"/>
                         <outlet property="nextKeyView" destination="bj1-RP-22u" id="ges-Ms-ujM"/>
                     </connections>
                 </textField>

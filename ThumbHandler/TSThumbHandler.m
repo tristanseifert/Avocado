@@ -93,11 +93,11 @@ static const CGFloat TSThumbDefaultQuality = 0.64;
 - (void) dealloc {
 	@try {
 		[self.thumbQueue removeObserver:self forKeyPath:@"operationCount"];
-	} @catch (__unused NSException *exception) { /* lol fuck KVO */ }
+	} @catch (NSException* __unused) { /* lol fuck KVO */ }
 	
 	@try {
 		[self.backgroundQueue removeObserver:self forKeyPath:@"operationCount"];
-	} @catch (__unused NSException *exception) { /* lol fuck KVO */ }
+	} @catch (NSException* __unused) { /* lol fuck KVO */ }
 }
 
 /**

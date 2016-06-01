@@ -43,7 +43,8 @@
 }
 
 /**
- * Closes down any remaining resources.
+ * Closes down any remaining resources; this saves the CoreData stack one last
+ * time.
  */
 - (void) applicationWillTerminate:(NSNotification *) aNotification {
 	// Clean up stack

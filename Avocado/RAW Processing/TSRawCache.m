@@ -318,7 +318,9 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 #endif
 	
 	for(NSUInteger i = 0; i < stripes; i++) {
+#if LogCompressionInfo
 		DDLogVerbose(@"Reading stripe %lu…", i);
+#endif
 		
 		NSString *name;
 		NSURL *url;
@@ -450,21 +452,21 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 	NSData *data;
 	NSKeyedUnarchiver *archiver;
 	
-	// build path to the file
+	// Build path to the file, and read the data
 	url = [self.cacheUrl URLByAppendingPathComponent:@"TSRawCache.plist"
 										 isDirectory:NO];
 	data = [NSData dataWithContentsOfURL:url];
 	
 	if(data == nil) {
-		DDLogDebug(@"Couldn't load cache metadata from %@", url);
+		DDLogInfo(@"Couldn't load cache metadata from %@", url);
 		return NO;
 	}
 	
-	// create the unarchiver from the data
+	// Create the unarchiver from the data
 	archiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
 	archiver.requiresSecureCoding = YES;
 	
-	// check version
+	// Check version
 	NSInteger version = [archiver decodeIntegerForKey:TSRawCacheMetadataKeyVersion];
 	
 	if((version & 0xFFFF0000) != (TSRawCacheVersion & 0xFFFF0000)) {
@@ -477,14 +479,14 @@ NSString * const TSRawCacheNumStripesKey = @"TSRawCacheNumStripes";
 		DDLogDebug(@"Loading cache with version 0x%08lx…", version);
 	}
 	
-	// the data _should_ be alright
+	// The data _should_ be alright, so decode it
 	NSSet *classes = [NSSet setWithObjects:[NSDictionary class], [NSMutableDictionary class], [NSDate class], [NSNumber class], nil];
 	
 	dispatch_barrier_async(self.cacheAccessQueue, ^{
 		self.cacheMetadata = [archiver decodeObjectOfClasses:classes forKey:TSRawCacheMetadataKeyData];
 		self.isCacheMetadataDirty = NO;
 		
-		// finish up (clear decoder)
+		// Finish up (clear decoder)
 		[archiver finishDecoding];
 	});
 	
