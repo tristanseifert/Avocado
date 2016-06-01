@@ -9,12 +9,13 @@
 #import <Cocoa/Cocoa.h>
 #import <Accelerate/Accelerate.h>
 
-#import "TSJPEG2000Parser.h"
+#include <x86intrin.h>
 
+#import "TSJPEG2000Parser.h"
 #import "openjpeg.h"
 
-static inline void TSConvertOpenJPEGTo8BitInPlace(uint32_t *inBuf, NSUInteger width, NSUInteger height);
-static inline void TSConvertOpenJPEGTo16BitInPlace(uint32_t *inBuf, NSUInteger width, NSUInteger height);
+static void TSConvertOpenJPEGTo8BitInPlaceSSE(uint32_t *inBuf, NSUInteger width, NSUInteger height);
+static void TSConvertOpenJPEGTo16BitInPlace(uint32_t *inBuf, NSUInteger width, NSUInteger height);
 
 @interface TSJPEG2000Parser ()
 
@@ -168,7 +169,7 @@ static inline void TSConvertOpenJPEGTo16BitInPlace(uint32_t *inBuf, NSUInteger w
 		
 		// Do the in-place conversion of the buffer
 		if(bps == 8) {
-			TSConvertOpenJPEGTo8BitInPlace(inPlane[i].data, inPlane[i].width, inPlane[i].height);
+			TSConvertOpenJPEGTo8BitInPlaceSSE(inPlane[i].data, inPlane[i].width, inPlane[i].height);
 		} else if(bps == 16) {
 			TSConvertOpenJPEGTo16BitInPlace(inPlane[i].data, inPlane[i].width, inPlane[i].height);
 		}
@@ -252,32 +253,50 @@ static inline void TSConvertOpenJPEGTo16BitInPlace(uint32_t *inBuf, NSUInteger w
 @end
 
 /**
- * Converts an OpenJPEG 32-bit pixel buffer to 8-bit, in place.
+ * Converts an OpenJPEG 32-bit pixel buffer to 8-bit, in place. This uses the
+ * SSE intrinsics, so it should be considerably faster.
  *
  * @note Makes the assumption that pixel data is tightly packed in memory, i.e.
  * the row stride is (width * bytesPerComponent)
  *
  * (Who the fuck thought it was a bright idea to allocate memory as if every
  * component were 32-bit, but then only shove an 8-bit value in it? Ugh.)
+ *
+ * This function operates on 16 pixels at once.
  */
-static inline void TSConvertOpenJPEGTo8BitInPlace(uint32_t *inBuf, NSUInteger width, NSUInteger height) {
-	uint8_t *outBuf = (uint8_t *) inBuf;
-	
+static void TSConvertOpenJPEGTo8BitInPlaceSSE(uint32_t *inBuf, NSUInteger width, NSUInteger height) {
 	// Calculate total number of pixels in multiples of four
 	NSUInteger totalPixels = (width * height);
 	
-	NSUInteger fastPixels = totalPixels / 4;
+	NSUInteger fastPixels = totalPixels / 16;
 	NSUInteger remainder = totalPixels - fastPixels;
 	
-	// Process four pixels at once (hopefully this gets vectorized)
+	// Process the pixels
+	__m128i *sseIn = (__m128i *) inBuf;
+	__m128i *sseOut = (__m128i *) inBuf;
+	
 	while(fastPixels-- != 0) {
-		*outBuf++ = (uint8_t) *inBuf++;
-		*outBuf++ = (uint8_t) *inBuf++;
-		*outBuf++ = (uint8_t) *inBuf++;
-		*outBuf++ = (uint8_t) *inBuf++;
+		__m128i in_high1, in_high2, in_low1, in_low2, pixels_high, pixels_low, out;
+		
+		// Read 16 of the 32-bit pixels
+		in_high2 = _mm_load_si128(sseIn++);
+		in_high1 = _mm_load_si128(sseIn++);
+		in_low2 = _mm_load_si128(sseIn++);
+		in_low1 = _mm_load_si128(sseIn++);
+		
+		// Convert these 32-bit pixels to 16-bit
+		pixels_high = _mm_packs_epi32(in_high2, in_high1);
+		pixels_low = _mm_packs_epi32(in_low2, in_low1);
+		
+		// Convert 16-bit -> 8-bit and write to memory
+		out = _mm_packus_epi16(pixels_high, pixels_low);
+		_mm_store_si128(sseOut++, out);
 	}
 	
-	// If any pixels remain, copy them individually
+	// If any pixels remain, copy them one by one
+	uint8_t *outBuf = (uint8_t *) sseOut;
+	inBuf = (uint32_t *) sseIn;
+	
 	if(remainder != 0) {
 		for(NSUInteger i = 0; i > remainder; i++) {
 			*outBuf++ = (uint8_t) *inBuf++;
