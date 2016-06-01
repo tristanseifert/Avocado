@@ -726,7 +726,7 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 - (void) produceScaledVersionForHistogram {
 	CGContextRef ctx;
 	
-	// short-circuit if quality == 1
+	// Short-circuit if quality == 1
 	if(self.quality <= 1) {
 		self.imgBufImageRef = [self.image CGImageForProposedRect:nil
 														 context:nil
@@ -736,36 +736,28 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 		return;
 	}
 	
-	// calculate scale factor
+	// Calculate scale factor
 	CGFloat factor = 1.f / ((CGFloat) self.quality);
 	
 	CGSize newSize = CGSizeApplyAffineTransform(self.image.size, CGAffineTransformMakeScale(factor, factor));
 	newSize.width = floor(newSize.width);
 	newSize.height = floor(newSize.height);
 	
-	// get information from the image
+	// Get information from the image
 	CGImageRef cgImage = [self.image CGImageForProposedRect:nil context:nil
 													  hints:nil];
-	
-	//	DDLogVerbose(@"input image representation: %@", self.image.representations.firstObject);
-	
-	size_t bitsPerComponent = CGImageGetBitsPerComponent(cgImage);
-	size_t bitsPerPixel = CGImageGetBitsPerPixel(cgImage);
-	size_t bytesPerRow = (bitsPerPixel / 8) * newSize.width;
 	CGColorSpaceRef colorSpace = CGImageGetColorSpace(cgImage);
-	CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(cgImage);
 	
-	//	DDLogVerbose(@"scaled size = %@, bits/component = %zu, bits/pixel = %zu, bytes/row = %zu", NSStringFromSize(newSize), bitsPerComponent, bitsPerPixel, bytesPerRow);
-	
-	// set up bitmap context
-	ctx = CGBitmapContextCreate(nil, newSize.width, newSize.height,
-								bitsPerComponent, bytesPerRow, colorSpace,
-								bitmapInfo);
-	CGContextSetInterpolationQuality(ctx, kCGInterpolationMedium);
+	// Set up bitmap context
+	ctx = CGBitmapContextCreate(nil, newSize.width, newSize.height, 8,
+								(4 * newSize.width), colorSpace,
+								(CGBitmapInfo) kCGImageAlphaNoneSkipLast);
+	CGContextSetInterpolationQuality(ctx, kCGInterpolationHigh);
+	CGContextSetAllowsAntialiasing(ctx, YES);
 	
 	CGColorSpaceRelease(colorSpace);
 	
-	// draw the image pls
+	// Draw the image in the newly created bitmap context
 	CGRect destRect = {
 		.size = newSize,
 		.origin = CGPointZero
@@ -773,12 +765,11 @@ static void *TSQualityKVOCtx = &TSQualityKVOCtx;
 	
 	CGContextDrawImage(ctx, destRect, cgImage);
 	
-	// create a CGImage from the context, then clean up
+	// Create a CGImage from the context, then clean up
 	CGImageRef scaledImage = CGBitmapContextCreateImage(ctx);
-
 	CGContextRelease(ctx);
 	
-	// done.
+	// Done.
 	self.imgBufImageRef = CGImageRetain(scaledImage);
 }
 

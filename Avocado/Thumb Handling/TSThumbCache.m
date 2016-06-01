@@ -100,12 +100,14 @@ static TSThumbCache *sharedInstance = nil;
 - (NSImage *) getCachedThumbForImageUuid:(NSString *) uuid andScale:(NSUInteger) scale;
 - (void) storeThumbnail:(NSImage *) image withScale:(NSUInteger) scale forImageUuid:(NSString *) uuid;
 
+
+/// Queue used to synchronize access to callbackMap
+@property (nonatomic, retain) dispatch_queue_t callbackAccessQueue;
 /// Maps a temporary invocation identifier to a callback
 @property (nonatomic) NSMutableDictionary <NSString *, NSMutableArray<TSThumbCacheCallbackWrapper *> *> *callbackMap;
 /// Maps a temporary invocation identifier to an image uuid
 @property (nonatomic) NSMutableDictionary <NSString *, NSString *> *imageUuidMap;
-/// Queue used to synchronize access to callbackMap
-@property (nonatomic, retain) dispatch_queue_t callbackAccessQueue;
+
 
 /// Operation queue for loading images from disk.
 @property (nonatomic) NSOperationQueue *imageLoadingQueue;
@@ -157,7 +159,7 @@ static TSThumbCache *sharedInstance = nil;
 		self.imageLoadingQueue = [NSOperationQueue new];
 		
 		self.imageLoadingQueue.qualityOfService = NSQualityOfServiceUserInitiated;
-		self.imageLoadingQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount;
+		self.imageLoadingQueue.maxConcurrentOperationCount = 2;
 		
 		// Allocate the XPC handle; it will be connected on the first invocation
 		NSXPCInterface *intf;
@@ -453,7 +455,7 @@ static TSThumbCache *sharedInstance = nil;
 			// Empty the bag (reset cache state)
 			CFBagRemoveAllValues(self.imageCacheRequestedSizes);
 			
-			// Since the cache was emptied, do not use it.
+			// Since the cache was emptied, there definitely isn't a suitable image in it.
 			return nil;
 		}
 		
