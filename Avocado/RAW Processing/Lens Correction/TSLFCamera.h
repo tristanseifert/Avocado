@@ -14,4 +14,9 @@
 
 - (instancetype) initWithCamera:(void *) camera;
 
+/// Maker string
+@property (nonatomic, readonly) NSString *maker;
+/// Model string
+@property (nonatomic, readonly) NSString *model;
+
 @end

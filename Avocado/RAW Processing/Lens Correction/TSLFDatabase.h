@@ -34,4 +34,11 @@
  */
 - (NSArray<TSLFLens *> *) lensForImage:(TSLibraryImage *) image;
 
+
+/**
+ * Searches a LensFun-foramtted "localized string" for the given locale; if no
+ * string for that locale cane be found, the unlocalized string is returned.
+ */
++ (NSString *) stringForLocale:(NSLocale *) locale inLFString:(char *) lfString;
+
 @end

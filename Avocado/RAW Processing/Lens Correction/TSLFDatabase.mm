@@ -159,4 +159,50 @@ static TSLFDatabase *sharedDatabase = nil;
 	return [arr copy];
 }
 
+#pragma mark Helpers
+/**
+ * Searches a LensFun-foramtted "localized string" for the given locale; if no
+ * string for that locale cane be found, the unlocalized string is returned.
+ */
++ (NSString *) stringForLocale:(NSLocale *) locale inLFString:(char *) lfString {
+	// Get the two-chracter language code
+	NSString *langCodeNSStr = [locale objectForKey:NSLocaleLanguageCode];
+	const char *langCode = langCodeNSStr.UTF8String;
+	
+	// Ensure input string is non-nill
+	if (!lfString) {
+		return nil;
+	}
+	
+	// Default string
+	const char *def = lfString;
+	
+	// Find the corresponding string
+	const char *cur = strchr(lfString, 0) + 1;
+	while (*cur) {
+		// Go to the next string
+		const char *next = strchr(cur, 0) + 1;
+		
+		// Do the language codes match?
+		if (!strcmp (cur, langCode)) {
+			def = next;
+			break;
+		}
+		
+		// Found the English string; that's the default string to output
+		if (!strcmp (cur, "en")) {
+			def = next;
+		}
+		
+		// Find the next string
+		if (*(cur = next)) {
+			cur = strchr(cur, 0) + 1;
+		}
+	}
+	
+	// Done; return the correct string.
+	NSString *str = [NSString stringWithUTF8String:def];
+	return str;
+}
+
 @end
