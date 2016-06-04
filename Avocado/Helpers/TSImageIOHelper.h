@@ -26,6 +26,8 @@
 #define TSImageMetadataExifDictionary ((NSString *) kCGImagePropertyExifDictionary)
 /// EXIF: original date/time captured (as NSDate)
 #define TSImageMetadataExifDateTimeOriginal ((NSString *) kCGImagePropertyExifDateTimeOriginal)
+/// EXIF: Date/time digitized (as NSDate)
+#define TSImageMetadataExifDateTimeDigitized ((NSString *) kCGImagePropertyExifDateTimeDigitized)
 /// EXIF: Gain control
 #define TSImageMetadataExifGainControl ((NSString *) kCGImagePropertyExifGainControl)
 /// EXIF: Focal length used to take the shot

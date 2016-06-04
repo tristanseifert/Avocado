@@ -29,7 +29,7 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 - (NSURL *) copyFile:(NSURL *) file withError:(NSError **) outErr;
 
 - (NSDictionary *) metadataDictWithImageIOMetadata:(NSDictionary *) meta;
-- (NSDictionary *) metadataDictWithRawFile:(TSRawImage *) raw;
+- (NSDictionary *) metadataDictWithRawFile:(TSRawImage *) raw andImageIOData:(NSDictionary *) exif;
 
 @end
 
@@ -104,6 +104,9 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		return NO;
 	}
 	
+	// Extract some metadata from the image
+	NSDictionary *exif = [[TSImageIOHelper sharedInstance] metadataForImageAtUrl:actualImageUrl];
+	
 	// Save the new image
 	[TSCoreDataStore saveWithBlockAndWait:^(NSManagedObjectContext *ctx) {
 		// Create an image
@@ -113,7 +116,7 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		image.fileTypeValue = TSLibraryImageRaw;
 		image.fileUrl = actualImageUrl;
 		
-		image.metadata = [self metadataDictWithRawFile:raw];
+		image.metadata = [self metadataDictWithRawFile:raw andImageIOData:exif];
 		
 		image.dateImported = [NSDate new];
 		image.dateModified = image.dateImported;
@@ -121,8 +124,17 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		image.dateShot = raw.timestamp;
 		image.imageSize = raw.size;
 		
-		// Save the thumb UUID
-		image.thumbUUID = [[NSUUID new].UUIDString stringByAppendingString:@"_raw"];
+		
+		// Extract a few keys from the fixed-up EXIF dictionary dictionary
+		NSDictionary *exifFixed = exif[TSImageMetadataExifDictionary];
+		if(exifFixed != nil) {
+			image.dateDigitized = exifFixed[TSImageMetadataExifDateTimeDigitized];
+			
+			if(image.dateDigitized == nil) {
+				image.dateDigitized = image.dateImported;
+			}
+		}
+		
 		
 		// Post notification
 		NSDictionary *info = @{
@@ -175,18 +187,17 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		
 		image.imageSize = [[TSImageIOHelper sharedInstance] sizeOfImageAtUrl:actualImageUrl];
 		
-		image.thumbUUID = [[NSUUID new].UUIDString stringByAppendingString:@"_compressed"];
 		
 		// Extract a few keys from the fixed-up EXIF dictionary dictionary
 		NSDictionary *exifFixed = exif[TSImageMetadataExifDictionary];
 		if(exifFixed != nil) {
 			image.dateShot = exifFixed[TSImageMetadataExifDateTimeOriginal];
+			image.dateDigitized = exifFixed[TSImageMetadataExifDateTimeDigitized];
+			
+			if(image.dateShot == nil) image.dateShot = image.dateImported;
+			if(image.dateDigitized == nil) image.dateDigitized = image.dateImported;
 		}
-		
-		if(image.dateShot == nil) {
-			// Can't get a decent value for the date shot, so use the current time
-			image.dateShot = image.dateImported;
-		}
+
 		
 		// Post notification
 		NSDictionary *info = @{
@@ -303,14 +314,18 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 }
 
 /**
- * Creates a saveable metadata dictionary, given a particular RAW file.
+ * Creates a saveable metadata dictionary, given a particular RAW file, and the
+ * EXIF data provided by ImageIO.
  */
-- (NSDictionary *) metadataDictWithRawFile:(TSRawImage *) raw {
+- (NSDictionary *) metadataDictWithRawFile:(TSRawImage *) raw andImageIOData:(NSDictionary *) meta {
 	NSMutableDictionary *info = [NSMutableDictionary new];
 	
+	NSDictionary *exif = meta[TSImageMetadataExifDictionary];
+	NSDictionary *tiff = meta[TSImageMetadataTiffDictionary];
+	
 	// camera info
-	info[TSLibraryImageMetadataKeyCameraMaker] = raw.cameraMake;
-	info[TSLibraryImageMetadataKeyCameraModel] = raw.cameraModel;
+	info[TSLibraryImageMetadataKeyCameraMaker] = tiff[TSImageMetadataTiffCaptureDeviceMake];
+	info[TSLibraryImageMetadataKeyCameraModel] = tiff[TSImageMetadataTiffCaptureDeviceModel];
 	
 	// lens info
 	info[TSLibraryImageMetadataKeyLensMaker] = raw.lensMake;
@@ -328,7 +343,7 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 	info[TSLibraryImageMetadataKeyDescription] = raw.imageDescription;
 	
 	// copy any EXIF data, if we have it
-	info[TSLibraryImageMetadataKeyEXIF] = [NSNull null];
+	info[TSLibraryImageMetadataKeyEXIF] = exif;
 	
 	return [info copy];
 }

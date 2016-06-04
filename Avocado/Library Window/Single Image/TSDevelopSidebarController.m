@@ -16,6 +16,7 @@
 #import "TSDevelopExposureInspector.h"
 #import "TSDevelopHueInspector.h"
 #import "TSDevelopDetailInspector.h"
+#import "TSLensCorrectionInspector.h"
 
 // KVO context for the displayedImage property
 static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
@@ -33,6 +34,7 @@ static void *TSImageKVO = &TSImageKVO;
 @property (nonatomic) TSDevelopExposureInspector *inspectorExposure;
 @property (nonatomic) TSDevelopHueInspector *inspectorHue;
 @property (nonatomic) TSDevelopDetailInspector *inspectorDetail;
+@property (nonatomic) TSLensCorrectionInspector *inspectorLensCorrect;
 
 @end
 
@@ -49,6 +51,8 @@ static void *TSImageKVO = &TSImageKVO;
 		self.inspectorHue = [[TSDevelopHueInspector alloc] init];
 		// Set up detail inspector
 		self.inspectorDetail = [[TSDevelopDetailInspector alloc] init];
+		// Set up lens correction inspector
+		self.inspectorLensCorrect = [[TSLensCorrectionInspector alloc] init];
 		
 		// Assign the re-rendering block
 		void (^reRenderBlock)(void) = ^ {
@@ -60,6 +64,7 @@ static void *TSImageKVO = &TSImageKVO;
 		self.inspectorExposure.settingsChangeBlock = reRenderBlock;
 		self.inspectorHue.settingsChangeBlock = reRenderBlock;
 		self.inspectorDetail.settingsChangeBlock = reRenderBlock;
+		self.inspectorLensCorrect.settingsChangeBlock = reRenderBlock;
 		
 		// Add KVO
 		[self addObserver:self forKeyPath:@"displayedImage"
@@ -92,6 +97,9 @@ static void *TSImageKVO = &TSImageKVO;
 	inspect = [TSInspectorViewItem itemWithContentController:self.inspectorDetail];
 	[self.inspector addInspectorView:inspect];
 	
+	inspect = [TSInspectorViewItem itemWithContentController:self.inspectorLensCorrect];
+	[self.inspector addInspectorView:inspect];
+	
 	// Add bindings for input image to inspectors
 	[self.inspectorExposure bind:@"activeImage"
 						toObject:self withKeyPath:@"image"
@@ -102,6 +110,9 @@ static void *TSImageKVO = &TSImageKVO;
 	[self.inspectorDetail bind:@"activeImage"
 					  toObject:self withKeyPath:@"image"
 					   options:nil];
+	[self.inspectorLensCorrect bind:@"activeImage"
+						   toObject:self withKeyPath:@"image"
+							options:nil];
 	
 	// add bindings for displayed image to inspectors
 	[self.inspectorExposure bind:@"renderedImage"
@@ -113,6 +124,9 @@ static void *TSImageKVO = &TSImageKVO;
 	[self.inspectorDetail bind:@"renderedImage"
 					  toObject:self withKeyPath:@"displayedImage"
 					   options:nil];
+	[self.inspectorLensCorrect bind:@"renderedImage"
+						   toObject:self withKeyPath:@"displayedImage"
+							options:nil];
 	
 	// add bindings to Mr. Histogram
 	[self.mrHistogram bind:@"image"

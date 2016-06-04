@@ -30,6 +30,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 @property (nonatomic, readonly, strong) TSLibraryImageID *objectID;
 
+@property (nonatomic, strong, nullable) NSDate* dateDigitized;
+
 @property (nonatomic, strong, nullable) NSDate* dateImported;
 
 @property (nonatomic, strong, nullable) NSDate* dateModified;
@@ -53,8 +55,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) id metadata;
 
 @property (nonatomic, strong, nullable) NSString* pvtImageSize;
-
-@property (nonatomic, strong, nullable) NSString* thumbUUID;
 
 @property (nonatomic, strong, nullable) NSString* uuid;
 
@@ -95,6 +95,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface _TSLibraryImage (CoreDataGeneratedPrimitiveAccessors)
 
+- (NSDate*)primitiveDateDigitized;
+- (void)setPrimitiveDateDigitized:(NSDate*)value;
+
 - (NSDate*)primitiveDateImported;
 - (void)setPrimitiveDateImported:(NSDate*)value;
 
@@ -125,9 +128,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString*)primitivePvtImageSize;
 - (void)setPrimitivePvtImageSize:(NSString*)value;
 
-- (NSString*)primitiveThumbUUID;
-- (void)setPrimitiveThumbUUID:(NSString*)value;
-
 - (NSString*)primitiveUuid;
 - (void)setPrimitiveUuid:(NSString*)value;
 
@@ -143,6 +143,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface TSLibraryImageAttributes: NSObject 
++ (NSString *)dateDigitized;
 + (NSString *)dateImported;
 + (NSString *)dateModified;
 + (NSString *)dateShot;
@@ -151,7 +152,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)fileUrl;
 + (NSString *)metadata;
 + (NSString *)pvtImageSize;
-+ (NSString *)thumbUUID;
 + (NSString *)uuid;
 @end
 

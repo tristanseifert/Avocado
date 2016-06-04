@@ -46,4 +46,11 @@
 	return [TSLFDatabase stringForLocale:loc inLFString:self.camera->Model];
 }
 
+/**
+ * Returns a description for this camera, consisting of its address,
+ */
+- (NSString *) description {
+	return [NSString stringWithFormat:@"TSLFCamera<%p> maker = %@, model = %@", self, self.maker, self.model];
+}
+
 @end

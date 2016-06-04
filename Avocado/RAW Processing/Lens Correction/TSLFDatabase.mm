@@ -13,6 +13,11 @@
 
 static TSLFDatabase *sharedDatabase = nil;
 
+// TODO: Find a better way to expose this
+@interface TSLFCamera ()
+@property (nonatomic) lfCamera *camera;
+@end
+
 @interface TSLFDatabase ()
 
 - (void) loadLFDatabase;
@@ -87,18 +92,23 @@ static TSLFDatabase *sharedDatabase = nil;
  * this image belongs.
  */
 - (TSLFCamera *) cameraForImage:(TSLibraryImage *) image {
-	// get some camera maker information
+	// Get some camera maker information
 	NSString *maker = image.metadata[TSLibraryImageMetadataKeyCameraMaker];
 	const char *makerCStr = [maker cStringUsingEncoding:NSASCIIStringEncoding];
 	
 	NSString *model = image.metadata[TSLibraryImageMetadataKeyCameraModel];
 	const char *modelCStr = [model cStringUsingEncoding:NSASCIIStringEncoding];
 	
-	// try to find a camera
+	// Try to find a camera
 	const lfCamera** cameras = self.lensDb->FindCameras(makerCStr, modelCStr);
 	
-	// if the first entry is nil, we couldn't find a camera; that's bad.
-	if(cameras[0] == NULL) {
+	// If NULL is returned, no camera was found
+	if(cameras == nil) {
+		return nil;
+	}
+	
+	// If the first entry is nil, we couldn't find a camera; that's bad.
+	if(cameras[0] == nil) {
 		DDLogVerbose(@"Couldn't find camera for maker = %@, model = %@", maker, model);
 		
 		lf_free(cameras);
@@ -121,7 +131,7 @@ static TSLFDatabase *sharedDatabase = nil;
  * @note Assume that this method is invoked on the queue of the context to which
  * this image belongs.
  */
-- (NSArray<TSLFLens *> *) lensForImage:(TSLibraryImage *) image {
+- (NSArray<TSLFLens *> *) lensesForImage:(TSLibraryImage *) image {
 	// get lens maker and specification string
 	NSString *maker = image.metadata[TSLibraryImageMetadataKeyCameraMaker];
 	const char *makerCStr = [maker cStringUsingEncoding:NSASCIIStringEncoding];
@@ -136,7 +146,7 @@ static TSLFDatabase *sharedDatabase = nil;
 		return nil;
 	}
 	
-	lfCamera *cam = (__bridge lfCamera *) [cameraObj valueForKey:@"camera"];
+	lfCamera *cam = cameraObj.camera;
 	
 	// try to find the lens objects
 	NSMutableArray<TSLFLens *> *arr = [NSMutableArray new];

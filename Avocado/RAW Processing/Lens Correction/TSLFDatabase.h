@@ -32,7 +32,7 @@
  * lens can be found, nil is returned. If suitable lenses are found, an
  * array of lenses is returned.
  */
-- (NSArray<TSLFLens *> *) lensForImage:(TSLibraryImage *) image;
+- (NSArray<TSLFLens *> *) lensesForImage:(TSLibraryImage *) image;
 
 
 /**

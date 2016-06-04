@@ -94,7 +94,7 @@ static TSImageIOHelper *helper = nil;
 - (NSDictionary *) metadataForImageAtUrl:(NSURL *) url {
 	NSDictionary *props = nil;
 	
-	// create an image source (used to read properties)
+	// Create an image source (used to read properties)
 	CGImageSourceRef imageSource = CGImageSourceCreateWithURL((CFURLRef) url, NULL);
 	
 	if(imageSource == NULL) {
@@ -106,24 +106,30 @@ static TSImageIOHelper *helper = nil;
 		(NSString *) kCGImageSourceShouldCache: @NO
 	};
 	
-	// extract metadata
+	// Extract metadata
 	props = CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(imageSource, 0, (CFDictionaryRef) options));
 	
-	// convert some metadatas pls
+	// Convert some metadatas pls
 	NSMutableDictionary *finessedProps = [props mutableCopy];
 	
-	// do stuff to EXIF fields
+	// Do stuff to EXIF fields
 	NSMutableDictionary *exifProps = finessedProps[TSImageMetadataExifDictionary];
 	
 	if(exifProps) {
-		// convert original date/time captured to NSDate
-		NSDate *date = [self.exifDateFormatter dateFromString:exifProps[TSImageMetadataExifDateTimeOriginal]];
+		NSDate *date = nil;
+		
+		// Convert Original date/time captured to NSDate
+		date = [self.exifDateFormatter dateFromString:exifProps[TSImageMetadataExifDateTimeOriginal]];
 		exifProps[TSImageMetadataExifDateTimeOriginal] = date;
+		
+		// Convert date digitized date/time captured to NSDate
+		date = [self.exifDateFormatter dateFromString:exifProps[TSImageMetadataExifDateTimeDigitized]];
+		exifProps[TSImageMetadataExifDateTimeDigitized] = date;
 	}
 	
 	finessedProps[TSImageMetadataExifDictionary] = [exifProps copy];
 	
-	// clean up and return metadata
+	// Clean up and return metadata
 	CFRelease(imageSource);
 	
 	return [finessedProps copy];

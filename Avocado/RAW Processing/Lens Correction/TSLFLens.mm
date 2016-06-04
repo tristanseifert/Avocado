@@ -49,10 +49,17 @@
 /**
  * Puts together a lens display name (shown in the UI) from a variety of other
  * parameters.
+ *
+ * A display name might be "Canon 50mm ƒ/1.8" or "Canon 70-200mm ƒ/2.8 III"
  */
 - (NSString *) displayName {
-	// TODO: Implement this
-	return nil;
+	if(self.focalMin == self.focalMax) {
+		NSString *localizedString = NSLocalizedString(@"%@ %.0fmm ƒ/%2.1f %@", nil);
+		return [NSString localizedStringWithFormat:localizedString, self.maker, self.focalMin, self.apertureMin, self.model];
+	} else {
+		NSString *localizedString = NSLocalizedString(@"%@ %.0f-%.0fmm ƒ/%2.1f %@", nil);
+		return [NSString localizedStringWithFormat:localizedString, self.maker, self.focalMin, self.focalMax, self.apertureMin, self.model];
+	}
 }
 
 /**
@@ -89,6 +96,15 @@
  */
 - (CGFloat) apertureMax {
 	return self.lens->MaxAperture;
+}
+
+
+
+/**
+ * Returns a description for this camera, consisting of its address,
+ */
+- (NSString *) description {
+	return [NSString stringWithFormat:@"TSLFLens<%p> maker = %@, model = %@, displayName = %@, score = %zi; focal range = %f - %f, aperture range = %f - %f", self, self.maker, self.model, self.displayName, self.sortingScore, self.focalMin, self.focalMax, self.apertureMin, self.apertureMax];
 }
 
 @end

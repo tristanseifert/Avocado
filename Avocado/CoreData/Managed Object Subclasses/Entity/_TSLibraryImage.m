@@ -43,6 +43,8 @@
 	return keyPaths;
 }
 
+@dynamic dateDigitized;
+
 @dynamic dateImported;
 
 @dynamic dateModified;
@@ -95,8 +97,6 @@
 
 @dynamic pvtImageSize;
 
-@dynamic thumbUUID;
-
 @dynamic uuid;
 
 @dynamic parentAlbums;
@@ -135,6 +135,9 @@
 @end
 
 @implementation TSLibraryImageAttributes 
++ (NSString *)dateDigitized {
+	return @"dateDigitized";
+}
 + (NSString *)dateImported {
 	return @"dateImported";
 }
@@ -158,9 +161,6 @@
 }
 + (NSString *)pvtImageSize {
 	return @"pvtImageSize";
-}
-+ (NSString *)thumbUUID {
-	return @"thumbUUID";
 }
 + (NSString *)uuid {
 	return @"uuid";

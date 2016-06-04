@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10174" systemVersion="15E65" minimumToolsVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10174" systemVersion="15F34" minimumToolsVersion="Automatic">
     <entity name="Album" representedClassName="TSLibraryAlbum" syncable="YES">
         <attribute name="created" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="summary" optional="YES" attributeType="String" syncable="YES"/>
@@ -41,6 +41,7 @@
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="Image" representedClassName="TSLibraryImage" syncable="YES">
+        <attribute name="dateDigitized" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="dateImported" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="dateModified" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="dateShot" optional="YES" attributeType="Date" syncable="YES"/>
@@ -49,7 +50,6 @@
         <attribute name="fileUrl" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="metadata" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="pvtImageSize" optional="YES" attributeType="String" valueTransformerName="NSUnarchiveFromData" syncable="YES"/>
-        <attribute name="thumbUUID" optional="YES" attributeType="String" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="parentAlbums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Album" inverseName="images" inverseEntity="Album" syncable="YES"/>
         <relationship name="pvtAdjustments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ImageAdjustment" inverseName="image" inverseEntity="ImageAdjustment" syncable="YES"/>
