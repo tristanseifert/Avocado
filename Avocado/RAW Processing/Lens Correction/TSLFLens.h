@@ -14,4 +14,23 @@
 
 - (instancetype) initWithLens:(void *) lens;
 
+/// Maker string
+@property (nonatomic, readonly) NSString *maker;
+/// Model string
+@property (nonatomic, readonly) NSString *model;
+/// Display name (combined from a variety of parameters)
+@property (nonatomic, readonly) NSString *displayName;
+/// Sorting score (may be zero)
+@property (nonatomic, readonly) NSInteger sortingScore;
+
+/// Minimum focal length
+@property (nonatomic, readonly) CGFloat focalMin;
+/// Maximum focal length
+@property (nonatomic, readonly) CGFloat focalMax;
+/// Minimum aperture value (ex ƒ/2.0)
+@property (nonatomic, readonly) CGFloat apertureMin;
+/// Maximum aperture value (ex ƒ/22)
+@property (nonatomic, readonly) CGFloat apertureMax;
+
+
 @end

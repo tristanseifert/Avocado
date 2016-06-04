@@ -7,6 +7,7 @@
 //
 
 #import "TSLFCamera.h"
+#import "TSLFDatabase.h"
 
 #import "lensfun.h"
 
@@ -27,6 +28,22 @@
 	}
 	
 	return self;
+}
+
+/**
+ * Reads the maker string from the camera object.
+ */
+- (NSString *) maker {
+	NSLocale *loc = [NSLocale currentLocale];
+	return [TSLFDatabase stringForLocale:loc inLFString:self.camera->Maker];
+}
+
+/**
+ * Reads the model string from the camera object.
+ */
+- (NSString *) model {
+	NSLocale *loc = [NSLocale currentLocale];
+	return [TSLFDatabase stringForLocale:loc inLFString:self.camera->Model];
 }
 
 @end
