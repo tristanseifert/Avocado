@@ -245,6 +245,10 @@ static TSLFDatabase *sharedDatabase = nil;
  *  @return A camera object, or nil if one could not be found.
  */
 - (TSLFCamera *) findCameraWithPersistentData:(NSData *) data {
+	if(data == nil) {
+		return nil;
+	}
+	
 	// Unarchive the data
 	NSKeyedUnarchiver *archiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
 	archiver.requiresSecureCoding = YES;
@@ -293,6 +297,10 @@ static TSLFDatabase *sharedDatabase = nil;
  *  @return A lens object, or nil if one could not be found.
  */
 - (TSLFLens *) findLensWithPersistentData:(NSData *) data andCamera:(TSLFCamera *) camera {
+	if(data == nil || camera == nil) {
+		return nil;
+	}
+	
 	// Unarchive the data
 	NSKeyedUnarchiver *archiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
 	archiver.requiresSecureCoding = YES;

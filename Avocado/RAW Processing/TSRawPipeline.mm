@@ -11,6 +11,7 @@
 #import "TSRawImage.h"
 #import "TSRawPipelineState.h"
 #import "TSRawCache.h"
+#import "TSLFDatabase.h"
 
 #import "TSPixelFormatConverter.h"
 #import "TSRawImageDataHelpers.h"
@@ -60,31 +61,36 @@
 	#define TSEndOperation()
 #endif
 
-// TODO: figure out a way to more better expose this from a header?
+// TODO: Figure out a way to more better expose this from a header?
 @interface TSLibraryImage ()
 @property (nonatomic, readonly) TSRawImage *libRawHandle;
+@end
+// TODO: Figure out a better way to expose this
+@interface TSLFLens ()
+@property (nonatomic) lfLens *lens;
 @end
 
 @interface TSRawPipeline ()
 
-/// operation queue for RAW processing; a TSRawPipelineJob is queued on it.
+/// Operation queue for RAW processing; a TSRawPipelineJob is queued on it.
 @property (nonatomic) NSOperationQueue *queue;
 
-/// pixel format converter
+/// Pixel format converter
 @property (nonatomic) TSPixelConverterRef pixelConverter;
 
-/// internal buffer for the temporary storage of interpolated RGB data
+/// Internal buffer for the temporary storage of interpolated RGB data
 @property (nonatomic) void *interpolatedColourBuf;
-/// size (in bytes) of the interpolated colour buffer
+/// Size (in bytes) of the interpolated colour buffer
 @property (nonatomic) size_t interpolatedColourBufSz;
 
 /// CoreImage pipeline
 @property (nonatomic) TSCoreImagePipeline *ciPipeline;
 
-// helpers
+// Helpers
 - (NSBlockOperation *) opDebayer:(TSRawPipelineState *) state;
 - (NSBlockOperation *) opDemosaic:(TSRawPipelineState *) state;
 
+- (void) setUpLensCorrectionsWithState:(TSRawPipelineState *) state;
 - (NSBlockOperation *) opLensCorrect:(TSRawPipelineState *) state;
 - (NSBlockOperation *) opGammaColourSpaceCorrect:(TSRawPipelineState *) state;
 
@@ -99,11 +105,11 @@
 
 - (NSBlockOperation *) opCoreImageFilters:(TSRawPipelineState *) state;
 
-// conversion
+// Conversion
 - (CIImage *) ciImageFromPixelConverter:(TSPixelConverterRef) converter andSize:(NSSize) outputSize;
 
-// caching
-/// cache handler
+// Caching
+/// Cache handler
 @property (nonatomic) TSRawCache *cache;
 
 - (void) beginFullPipelineRunWithState:(TSRawPipelineState *) state shouldCacheResults:(BOOL) cache;
@@ -117,11 +123,11 @@
 - (NSBlockOperation *) opStorePlanarInCache:(TSRawPipelineState *) state;
 - (NSBlockOperation *) opRestorePlanarFromCache:(TSRawPipelineState *) state;
 
-// housekeeping
+// Housekeeping
 - (NSBlockOperation *) opCleanUp:(TSRawPipelineState *) state;
 - (void) cleanUpState:(TSRawPipelineState *) state;
 
-// debugging
+// Debugging
 - (void) dumpImageBufferInterleaved:(TSRawPipelineState *) state;
 - (void) dumpImageBufferCoreImage:(TSRawPipelineState *) state;
 
@@ -157,7 +163,7 @@
  * Cleans up various buffers.
  */
 - (void) dealloc {
-	// clear allocated memory
+	// Clear allocated memory
 	TSPixelConverterFree(self.pixelConverter);
 	free(self.interpolatedColourBuf);
 }
@@ -174,6 +180,12 @@
  * stored at various steps, so that later adjustments need not cause
  * everything to be recomputed. This should only be used if the user is
  * in the interactive editing mode for that particular image.
+ *
+ * @param inhibitCacheResume Prevents the pipeline to resume the processing with
+ * cached data; instead, it will restart with the RAW file. This can be handy
+ * if caching is still desired behaviour, but some underlying data (for example,
+ * lens corrections) changed, which come before cache resumption in the
+ * processing chain.
  *
  * @param intent Final rendering intent of the image; i.e. what the image will
  * be used for. This gives the pipeline hints to change the way the image is
@@ -195,46 +207,50 @@
  */
 - (void) queueRawFile:(nonnull TSLibraryImage *) image
 		  shouldCache:(BOOL) cache
+  inhibitCachedResume:(BOOL) inhibitCacheResume
 	  renderingIntent:(TSRawPipelineIntent) intent
 		 outputFormat:(TSRawPipelineOutputFormat) outFormat
    completionCallback:(nonnull TSRawPipelineCompletionCallback) complete
 	 progressCallback:(nullable TSRawPipelineProgressCallback) progress
    conversionProgress:(NSProgress * _Nonnull * _Nullable) outProgress {
-	// debugging info about the file
+	// Debugging info about the file
 	DDLogDebug(@"Image size: %@", NSStringFromSize(image.imageSize));
+	if(inhibitCacheResume) {
+		DDLogDebug(@"Inhibiting resuming from cached data for image %p", image);
+	}
 	
-	// initialize some variables
+	// Initialize some variables
 	TSRawPipelineState *state;
 	
-	// reset file
+	// Reset RAW handle
 	if([image.libRawHandle recycle] != YES) {
 		DDLogWarn(@"Couldn't recycle raw file: this might cause issues later on, but continuing anyways.");
 	}
 	
-	// figure out whether we can use the existing converter
+	// Figure out whether we can use the existing converter
 	if(self.pixelConverter != nil) {
 		NSUInteger w, h;
 		TSPixelConverterGetSize(self.pixelConverter, &w, &h);
 		
-		// resize if the size isn't identical
+		// Resize if the size isn't identical
 		if(w != image.imageSize.width || h != image.imageSize.height) {
 			TSPixelConverterResize(self.pixelConverter, image.imageSize.width, image.imageSize.height);
 		}
 	} else {
-		// there is no pixel converter; create one
+		// There is no pixel converter; create one
 		self.pixelConverter = TSPixelConverterCreate(NULL, image.imageSize.width, image.imageSize.height);
 	}
 	
-	// allocate the temporary buffer for interpolated colour
+	// Allocate the temporary buffer for interpolated colour
 	size_t newColourBufSz = (image.imageSize.width * image.imageSize.height) * 4 * sizeof(uint16_t);
 	
 	if(self.interpolatedColourBuf != nil) {
-		// is the buffer large enough?
+		// Is the buffer large enough?
 		if(self.interpolatedColourBufSz < newColourBufSz) {
-			// free old buffer
+			// Free old buffer
 			free(self.interpolatedColourBuf);
 			
-			// allocate new buffer
+			// Allocate new buffer
 			self.interpolatedColourBuf = valloc(newColourBufSz);
 			self.interpolatedColourBufSz = newColourBufSz;
 			
@@ -247,7 +263,8 @@
 		DDLogDebug(@"Allocated %lu bytes for interpolated colour buffer", self.interpolatedColourBufSz);
 	}
 	
-	// create the pipeline state
+	
+	// Create the pipeline state
 	state = [TSRawPipelineState new];
 	
 	state.stage = TSRawPipelineStageInitializing;
@@ -266,17 +283,13 @@
 	state.histogramBuf = (int *) valloc(sizeof(int) * 4 * 0x2000);
 	state.gammaCurveBuf = (uint16_t *) valloc(sizeof(uint16_t) * 0x10000);
 	
-	state.applyLensCorrections = NO;
-	state.lcLens = nil;
-	state.lcModifier = nil;
-	
 	// Create a temporary managed object context
 	NSString *name = [NSString stringWithFormat:@"%@//%@//Image %p", [self className], self, image];
 	state.mocCtx = [TSCoreDataStore temporaryWorkerContextWithName:name];
 	
 	state.image = [image TSInContext:state.mocCtx];
 	
-	// get some data out of the image data
+	// Get some data out of the image data
 	[state.mocCtx performBlockAndWait:^{
 		state.imageUuid = state.image.uuid;
 		state.rawImage = state.image.libRawHandle;
@@ -285,18 +298,24 @@
 		state.rawSize = state.image.imageSize;
 	}];
 	
-	// check if we can resume the processing operation
-	if(cache && [self.cache hasDataForUuid:state.imageUuid] == YES) {
+	// Check if we can resume the processing operation
+	if(cache && [self.cache hasDataForUuid:state.imageUuid] == YES && (inhibitCacheResume == NO)) {
 		DDLogVerbose(@"Resuming RAW processing for %@ from stage 5", image.uuid);
 		
 		state.progress = [NSProgress progressWithTotalUnitCount:6];
 		if(outProgress) *outProgress = state.progress;
 		
 		[self resumePipelineRunWithCachedData:state shouldCacheResults:cache];
-	} else {
+	}
+	// No cached data (or cache resumption is inhibited) so start a full run
+	else {
 		state.progress = [NSProgress progressWithTotalUnitCount:11];
 		if(outProgress) *outProgress = state.progress;
 		
+		// Set up for lens corrections
+		[self setUpLensCorrectionsWithState:state];
+		
+		// Begin the pipeline run
 		[self beginFullPipelineRunWithState:state shouldCacheResults:cache];
 	}
 }
@@ -431,6 +450,68 @@
 
 #pragma mark Lens Corrections
 /**
+ * Loads the required data, and initializes the modifier object, if lens
+ * corrections are desired.
+ */
+- (void) setUpLensCorrectionsWithState:(TSRawPipelineState *) state {
+	__block NSDictionary *metadata = nil;
+	__block TSLFCamera *cam = nil;
+	__block TSLFLens *lens = nil;
+	__block BOOL willApplyLensCorrections = NO;
+	
+	int outModFlags = 0;
+	
+	// Fetch some data from the context
+	[state.mocCtx performBlockAndWait:^{
+		if(state.image.correctionData.enabled.boolValue == YES) {
+			// Decode camera
+			NSData *camData = state.image.correctionData.cameraData;
+			cam = [[TSLFDatabase sharedInstance] findCameraWithPersistentData:camData];
+			
+			// Decode lens
+			NSData *lensData = state.image.correctionData.lensData;
+			lens = [[TSLFDatabase sharedInstance] findLensWithPersistentData:lensData andCamera:cam];
+			
+			// Get some metadata
+			metadata = [state.image.metadata copy];
+			
+			willApplyLensCorrections = YES;
+		} else {
+			// No lens correction data/lens correction is not enabled
+			state.applyLensCorrections = NO;
+			state.lcLens = nil;
+			state.lcModifier = nil;
+		}
+	}];
+	
+	// Return immediately if the previous code disallows lens corrections
+	if(willApplyLensCorrections == NO) {
+		return;
+	}
+	
+	
+	// Check that the lens data is valid
+	if(lens != nil) {
+		state.lcLens = lens.lens;
+	}
+	
+	// Create a modifier object
+	state.lcModifier = new lfModifier(state.lcLens, cam.cropFactor,
+									  (int) state.rawSize.width,
+									  (int) state.rawSize.height);
+	state.applyLensCorrections = YES;
+	
+	// Initialize the modifier with image data
+	CGFloat focal = [metadata[TSLibraryImageMetadataKeyLensFocalLength] floatValue];
+	CGFloat aperture = [metadata[TSLibraryImageMetadataKeyAperture] floatValue];
+	CGFloat distance = 1000.f; // We don't have distance available; tell LensFun to ignore it
+	
+	outModFlags = state.lcModifier->Initialize(state.lcLens, LF_PF_U16, focal, aperture, distance, 0.f, LF_RECTILINEAR, LF_MODIFY_ALL, NO);
+	
+	DDLogDebug(@"Initialized lens corrector %p with focal = %f mm, ƒ/%.1f, distance = %f m; converting to rectilinear, modifying all", state.lcModifier, focal, aperture, distance);
+}
+
+/**
  * Performs lens correction.
  */
 - (NSBlockOperation *) opLensCorrect:(TSRawPipelineState *) state {
@@ -445,6 +526,12 @@
 			
 			lfModifier *m = state.lcModifier;
 			
+			// Allocate the coordinate buffer for subpixel coordinates
+			size_t subPixelCoordsSz = sizeof(float) * 3 * 2 * state.rawSize.width;
+			
+			float *subPixelCoords = (float *) valloc(subPixelCoordsSz);
+			memset(subPixelCoords, 0, subPixelCoordsSz);
+			
 			/**
 			 * Lens corrections consist of two steps: First, vignetting removal,
 			 * then geometry/distortion and TCA correction. Each step operates
@@ -453,62 +540,67 @@
 			 * be operated on.
 			 */
 			for(step = 0; step < 2; step++) {
-				// set up some variables
+				// Set up some variables
 				BOOL ok = YES;
 				
 				// dst will be filled by 48bpp RGB data
 				uint16_t *dst = (uint16_t *) TSPixelConverterGetRGBXPointer(state.converter);
 				// imgData is the original 48bpp RGB data
 				uint16_t *imgData = (uint16_t *) self.interpolatedColourBuf;
-				int imgDataStride = state.rawSize.width * 3 * sizeof(uint16_t);
 				
-				// allocate the coordinate buffer for subpixel coordinates
-				size_t subPixelCoordsSz = sizeof(float) * 3 * 2 * state.rawSize.width;
-
-				float *subPixelCoords = (float *) valloc(subPixelCoordsSz);
-				memset(subPixelCoords, 0, subPixelCoordsSz);
-				
-				
-				// perform the step for each scanline separately
+				// Perform the step for each scanline separately
 				for(y = 0; (ok && (y < state.rawSize.height)); y++) {
 					// remove vignetting
 					if(step == 0) {
+						// Calculate image stride, in BYTES
+						int imgDataStride = state.rawSize.width * 3 * sizeof(uint16_t);
+						
+						// Perform colour modifications
 						ok = m->ApplyColorModification(imgData, 0, y,
 													   state.rawSize.width, 1,
 													   LF_CR_3(RED,BLUE,GREEN), imgDataStride);
+						
+						// Advance to the next row in the input pointer
+						imgData += ((size_t) (3 * state.rawSize.width));
 					}
 					
-					// correct geometry and TCA
+					// Correct geometry and TCA
 					else if(step == 1) {
+						// Calculate image stride, in ELEMENTS
+						int imgDataStride = state.rawSize.width * 3;
+						
+						// Perform subpixel distortion correction
 						ok = m->ApplySubpixelGeometryDistortion(0, y,
 																state.rawSize.width,
 																1, subPixelCoords);
-						// interpolate the pixels into output buffer
+						// Interpolate the pixels into output buffer
 						if(ok) {
 							float *src = subPixelCoords;
 							
 							for(x = 0; x < state.rawSize.width; x++) {
-								// copy the RGB pixels individually
+								// Copy the RGB pixels individually
 								*dst++ = TSInterpolatePixelBilinear(imgData, imgDataStride, src[0], src[1]);
 								*dst++ = TSInterpolatePixelBilinear(imgData, imgDataStride, src[2], src[3]);
 								*dst++ = TSInterpolatePixelBilinear(imgData, imgDataStride, src[4], src[5]);
 								
-								// increment the src pointer
+								// Increment the src pointer
 								src += (2 * 3);
 							}
 						}
+						
+						// Advance to the next row in the output pointer
+						dst += ((size_t) (3 * state.rawSize.width));
 					}
 					
-					// unknown step
+					// Unknown step
 					else {
 						DDLogWarn(@"Invalid lens correction step: %lu", (unsigned long) step);
 					}
-					
-					// increment the input and output pointers
-					imgData += ((size_t) (3 * state.rawSize.width));
-					dst += ((size_t) (3 * state.rawSize.width));
 				}
 			}
+			
+			// Free the buffers previously allocated
+			free(subPixelCoords);
 		}
 		
 		TSEndOperation();

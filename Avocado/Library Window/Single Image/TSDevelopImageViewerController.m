@@ -15,9 +15,9 @@
 #import "TSHumanModels.h"
 #import "TSRawPipeline.h"
 
-// library image changed
+// Library image changed
 static void *TSImageKVO = &TSImageKVO;
-// display image changed
+// Display image changed
 static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 
 @interface TSDevelopImageViewerController ()
@@ -31,7 +31,7 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 
 @property (nonatomic) BOOL shouldAdjustImageSize;
 
-// loading controller
+// Loading controller
 @property (nonatomic) TSDevelopLoadingIndicatorWindowController *loadController;
 
 - (void) updateImageView;
@@ -45,15 +45,15 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
  */
 - (instancetype) init {
 	if(self = [super initWithNibName:@"TSDevelopImageViewerController" bundle:nil]) {
-		// add KVO for the image
+		// Add KVO for the image
 		[self addObserver:self forKeyPath:@"image" options:0 context:TSImageKVO];
 		[self addObserver:self forKeyPath:@"displayedImage"
 				  options:0 context:TSDisplayedImageKVO];
 		
-		// set up rendering pipelines
+		// Set up rendering pipelines
 		self.pipelineRaw = [TSRawPipeline new];
 		
-		// set up load controller
+		// Set up load controller
 		self.loadController = [TSDevelopLoadingIndicatorWindowController new];
 	}
 	
@@ -119,7 +119,7 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 			} withUserData:nil];
 	
 			// process image
-			[self processCurrentImage];
+			[self processCurrentImageIgnoreCache:NO];
 		}
 	}
 	// the display image was changed
@@ -167,15 +167,15 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 /**
  * Runs the current image through the processing pipeline.
  */
-- (void) processCurrentImage {
+- (void) processCurrentImageIgnoreCache:(BOOL) ignoreCache {
 	DDAssert(self.image != nil, @"Image cannot be nil");
 	
-	// show loading indicator
+	// Show loading indicator
 	[self.loadController showLoadingWindowInView:self.view withAnimation:YES];
 	
-	// deallocate previous image
+	// Deallocate previous image
 	if(self.displayedImage != nil) {
-		// get reps
+		// Get representations in this buffer, and free whatever ones can be freed
 		[self.displayedImage.representations enumerateObjectsUsingBlock:^(NSImageRep *rep, NSUInteger idx, BOOL *stop) {
 			if([rep isKindOfClass:[TSBufferOwningBitmapRep class]]) {
 				DDLogDebug(@"Found %@ in image %@", rep, self.displayedImage);
@@ -187,12 +187,12 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 		}];
 	}
 	
-	// fetch a thumb?
+	// Fetch a thumb?
 	
-	// actually process the image
+	// Actually process the image
 	if(self.image.fileTypeValue == TSLibraryImageRaw) {
-		// submit the RAW image to the rendering pipeline
-		[self.pipelineRaw queueRawFile:self.image shouldCache:YES renderingIntent:TSRawPipelineIntentDisplayFast outputFormat:TSRawPipelineOutputFormatNSImage completionCallback:^(NSImage *img, NSError *err) {
+		// Submit the RAW image to the rendering pipeline
+		[self.pipelineRaw queueRawFile:self.image shouldCache:YES inhibitCachedResume:ignoreCache renderingIntent:TSRawPipelineIntentDisplayFast outputFormat:TSRawPipelineOutputFormatNSImage completionCallback:^(NSImage *img, NSError *err) {
 			// display it
 			if(img) {
 				self.displayedImage = img;
@@ -200,7 +200,7 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 				DDLogError(@"Error processing image: %@", err);
 			}
 			
-			// hide and disallow further view resizing
+			// Hide and disallow further view resizing
 			self.shouldAdjustImageSize = NO;
 			
 			[self.loadController hideLoadingWindowWithAnimation:YES];

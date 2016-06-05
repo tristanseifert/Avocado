@@ -129,7 +129,7 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 		// if the context was saved, perform the "settings changed" block
 		if(saved) {
 			if(self.settingsChangeBlock) {
-				self.settingsChangeBlock();
+				self.settingsChangeBlock(NO);
 			}
 		} else if(err != nil) {
 			DDLogError(@"Error saving image: %@", err);

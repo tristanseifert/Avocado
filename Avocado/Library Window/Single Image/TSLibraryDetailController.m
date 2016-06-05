@@ -168,7 +168,7 @@ static void *TSImageKVO = &TSImageKVO;
 - (IBAction) developRefreshImage:(id) sender {
 	DDLogVerbose(@"Refreshing image view");
 	
-	[self.imageController processCurrentImage];
+	[self.imageController processCurrentImageIgnoreCache:NO];
 }
 
 @end

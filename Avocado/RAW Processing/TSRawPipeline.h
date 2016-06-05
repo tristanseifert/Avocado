@@ -187,6 +187,24 @@ typedef void (^TSRawPipelineProgressCallback)(TSRawPipelineStage);
  * everything to be recomputed. This should only be used if the user is
  * in the interactive editing mode for that particular image.
  *
+ * @param inhibitCacheResume Prevents the pipeline to resume the processing with
+ * cached data; instead, it will restart with the RAW file. This can be handy
+ * if caching is still desired behaviour, but some underlying data (for example,
+ * lens corrections) changed, which come before cache resumption in the
+ * processing chain.
+ *
+ * @param intent Final rendering intent of the image; i.e. what the image will
+ * be used for. This gives the pipeline hints to change the way the image is
+ * processed, balancing speed and quality for the given use case. Note that
+ * some intents may produce images smaller than the full image.
+ *
+ * @param outFormat Output format of the image; since the final pass of the
+ * pipeline involves using CoreImage on the GPU, it is much faster to instead
+ * render the image into a GPU texture, and use a bit of Metal magic to render
+ * it in a view. If the image should be written to a file, it is of course
+ * necessary to copy the image to the CPU, in which case an NSImage will be
+ * produced.
+ *
  * @param progressCallback This optional callback is invoked every time the
  * pipeline moves on to a later stage.
  *
@@ -195,6 +213,7 @@ typedef void (^TSRawPipelineProgressCallback)(TSRawPipelineStage);
  */
 - (void) queueRawFile:(nonnull TSLibraryImage *) image
 		  shouldCache:(BOOL) cache
+  inhibitCachedResume:(BOOL) inhibitCacheResume
 	  renderingIntent:(TSRawPipelineIntent) intent
 		 outputFormat:(TSRawPipelineOutputFormat) outFormat
    completionCallback:(nonnull TSRawPipelineCompletionCallback) complete

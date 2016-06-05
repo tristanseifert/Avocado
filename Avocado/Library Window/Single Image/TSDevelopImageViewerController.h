@@ -21,7 +21,10 @@
 
 /**
  * Runs the current image through the processing pipeline.
+ *
+ * @param ignoreCache Set to YES to ignore any caches that may have been used
+ * in the processing chain otherwise.
  */
-- (void) processCurrentImage;
+- (void) processCurrentImageIgnoreCache:(BOOL) ignoreCache;
 
 @end

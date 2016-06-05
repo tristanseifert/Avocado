@@ -55,9 +55,9 @@ static void *TSImageKVO = &TSImageKVO;
 		self.inspectorLensCorrect = [[TSLensCorrectionInspector alloc] init];
 		
 		// Assign the re-rendering block
-		void (^reRenderBlock)(void) = ^ {
+		void (^reRenderBlock)(BOOL) = ^(BOOL shouldIgnoreCache) {
 			dispatch_async(dispatch_get_main_queue(), ^{
-				[self.imageViewer processCurrentImage];
+				[self.imageViewer processCurrentImageIgnoreCache:shouldIgnoreCache];
 			});
 		};
 		

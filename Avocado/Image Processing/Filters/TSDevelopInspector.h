@@ -33,6 +33,6 @@
  * This block is executed when the image adjustments have been changed.
  * It may be ran on any thread.
  */
-@property (nonatomic, copy) void (^settingsChangeBlock)(void);
+@property (nonatomic, copy) void (^settingsChangeBlock)(BOOL);
 
 @end
