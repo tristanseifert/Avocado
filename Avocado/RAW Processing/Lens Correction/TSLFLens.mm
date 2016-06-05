@@ -11,6 +11,12 @@
 
 #import "lensfun.h"
 
+#import <string.h>
+
+NSString* const TSLFLensKeyMake = @"TSLFLensMake";
+NSString* const TSLFLensKeyModel = @"TSLFLensModel";
+NSString* const TSLFLensKeyCropFactor = @"TSLFLensCropFactor";
+
 @interface TSLFLens ()
 
 @property (nonatomic) lfLens *lens;
@@ -108,6 +114,36 @@
  */
 - (CGFloat) apertureMax {
 	return self.lens->MaxAperture;
+}
+
+
+/**
+ * Archives a few key parameters, which can later be used to (at least attempt
+ * to) find this lens again.
+ */
+- (NSData *) persistentData {
+	// Set up an archiver
+	NSMutableData *data = [NSMutableData new];
+	NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
+	
+	archiver.requiresSecureCoding = YES;
+	
+	// Archive several key properties
+	const char *make = self.lens->Maker;
+	NSUInteger makeLength = strlen(make);
+	NSData *makeData = [NSData dataWithBytes:make length:makeLength];
+	[archiver encodeObject:makeData forKey:TSLFLensKeyMake];
+	
+	const char *model = self.lens->Model;
+	NSUInteger modelLength = strlen(model);
+	NSData *modelData = [NSData dataWithBytes:model length:modelLength];
+	[archiver encodeObject:modelData forKey:TSLFLensKeyModel];
+	
+	[archiver encodeDouble:self.lens->CropFactor forKey:TSLFLensKeyCropFactor];
+	
+	// Complete archival process
+	[archiver finishEncoding];
+	return [data copy];
 }
 
 

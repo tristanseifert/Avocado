@@ -149,7 +149,7 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 	
 	
 	// Find lenses
-	NSArray<TSLFLens *> *lenses = [[TSLFDatabase sharedInstance] lensesForImage:self.activeImage];
+	NSArray<TSLFLens *> *lenses = [[TSLFDatabase sharedInstance] lensesForImage:self.activeImage withFlags:0];
 	DDLogVerbose(@"Lenses: %@", lenses);
 	
 	// Sort lenses

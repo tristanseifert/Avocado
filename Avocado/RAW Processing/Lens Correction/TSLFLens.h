@@ -10,6 +10,13 @@
 
 #import <Foundation/Foundation.h>
 
+/// Encoded non-localized lens make, saved as NSData.
+extern NSString* const TSLFLensKeyMake;
+/// Encoded non-localized lens model, saved as NSData.
+extern NSString* const TSLFLensKeyModel;
+/// Encoded crop factor, saved as NSNumber.
+extern NSString* const TSLFLensKeyCropFactor;
+
 @interface TSLFLens : NSObject
 
 - (instancetype) initWithLens:(void *) lens;
@@ -32,5 +39,7 @@
 /// Maximum aperture value (ex ƒ/22)
 @property (nonatomic, readonly) CGFloat apertureMax;
 
+/// Archived data; can be used to find this lens again later.
+@property (nonatomic, readonly) NSData *persistentData;
 
 @end

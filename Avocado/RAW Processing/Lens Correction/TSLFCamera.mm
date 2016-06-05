@@ -11,6 +11,10 @@
 
 #import "lensfun.h"
 
+NSString* const TSLFCameraKeyMake = @"TSLFCameraMake";
+NSString* const TSLFCameraKeyModel = @"TSLFCameraModel";
+NSString* const TSLFCameraKeyCropFactor = @"TSLFCameraCropFactor";
+
 @interface TSLFCamera ()
 
 @property (nonatomic) lfCamera *camera;
@@ -54,12 +58,50 @@
 }
 
 /**
+ * Returns the crop factor of this camera's sensor. The crop factor is the
+ * sensor's relative size, when compared to a standard 35mm film frame.
+ */
+- (CGFloat) cropFactor {
+	return self.camera->CropFactor;
+}
+
+/**
  * Puts together a camera display name (shown in the UI) from a variety of other
  * parameters.
  */
 - (NSString *) displayName {
 	NSString *localizedString = NSLocalizedString(@"%@ %@", @"Camera display name; 1 = maker, 2 = model");
 	return [NSString localizedStringWithFormat:localizedString, self.maker, self.model];
+}
+
+
+/**
+ * Archives a few key parameters, which can later be used to (at least attempt
+ * to) find this lens again.
+ */
+- (NSData *) persistentData {
+	// Set up an archiver
+	NSMutableData *data = [NSMutableData new];
+	NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
+	
+	archiver.requiresSecureCoding = YES;
+	
+	// Archive several key properties
+	const char *make = self.camera->Maker;
+	NSUInteger makeLength = strlen(make);
+	NSData *makeData = [NSData dataWithBytes:make length:makeLength];
+	[archiver encodeObject:makeData forKey:TSLFCameraKeyMake];
+	
+	const char *model = self.camera->Model;
+	NSUInteger modelLength = strlen(model);
+	NSData *modelData = [NSData dataWithBytes:model length:modelLength];
+	[archiver encodeObject:modelData forKey:TSLFCameraKeyModel];
+	
+	[archiver encodeDouble:self.camera->CropFactor forKey:TSLFCameraKeyCropFactor];
+	
+	// Complete archival process
+	[archiver finishEncoding];
+	return [data copy];
 }
 
 
