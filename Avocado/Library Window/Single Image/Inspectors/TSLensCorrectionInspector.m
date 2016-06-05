@@ -14,6 +14,7 @@
 
 static void *TSActiveImageKVOCtx = &TSActiveImageKVOCtx;
 static void *TSSettingsKVOCtx = &TSSettingsKVOCtx;
+static void *TSCorrectionsEnabledKVOCtx = &TSCorrectionsEnabledKVOCtx;
 
 /// Delay between invocations of change that must pass to re-render image
 static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
@@ -50,6 +51,8 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 		// Add some KVO observers
 		[self addObserver:self forKeyPath:@"activeImage"
 				  options:0 context:TSActiveImageKVOCtx];
+		[self addObserver:self forKeyPath:@"correctionsEnabled"
+				  options:0 context:TSCorrectionsEnabledKVOCtx];
 		
 		self.ignoreChanges = YES;
 		[self addAdjustmentKVO];
@@ -67,6 +70,13 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
  */
 - (void) dealloc {
 	[self removeAdjustmentKVO];
+	
+	@try {
+		[self removeObserver:self forKeyPath:@"activeImage"];
+	} @catch(NSException * __unused) { }
+	@try {
+		[self removeObserver:self forKeyPath:@"correctionsEnabled"];
+	} @catch(NSException * __unused) { }
 }
 
 /**
@@ -82,13 +92,13 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 													 selector:@selector(saveAfterSettingsChange)
 													   object:nil];
 		
-		// Copy the image adjustments
 		if(self.activeImage) {
+			// Populate a list of cameras and lenses that could work
+			[self findMatchingCameraLensCombinations];
+			
+			// Set the lenses that were saved, if existent
 			[self loadAdjustmentData];
 		}
-		
-		// Populate a list of cameras and lenses that could work
-		[self findMatchingCameraLensCombinations];
 	}
 	// Settings changed
 	else if(context == TSSettingsKVOCtx) {
@@ -96,7 +106,13 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 			[self settingsChanged];
 		}
 	}
-	// anything else
+	// Corrections enabled state changed
+	else if(context == TSCorrectionsEnabledKVOCtx) {
+		if(self.ignoreChanges == NO) {
+			self.isSelectionAllowed = self.correctionsEnabled;
+		}
+	}
+	// Anything else
 	else {
 		[super observeValueForKeyPath:keyPath ofObject:object
 							   change:change context:context];
@@ -135,7 +151,7 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 	
 	// Find cameras
 	TSLFCamera *cam = [[TSLFDatabase sharedInstance] cameraForImage:self.activeImage];
-	DDLogVerbose(@"Camera: %@", cam);
+//	DDLogVerbose(@"Camera: %@", cam);
 	
 	if(cam != nil) {
 		self.suitableCameras = @[cam];
@@ -145,18 +161,15 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 		return;
 	}
 	
-	self.selectedCamera = self.suitableCameras.firstObject;
-	
 	
 	// Find lenses
 	NSArray<TSLFLens *> *lenses = [[TSLFDatabase sharedInstance] lensesForImage:self.activeImage withFlags:0];
-	DDLogVerbose(@"Lenses: %@", lenses);
+//	DDLogVerbose(@"Lenses: %@", lenses);
 	
 	// Sort lenses
 	NSSortDescriptor *sortScore = [NSSortDescriptor sortDescriptorWithKey:@"sortingScore"
 																ascending:NO];
 	self.suitableLenses = [lenses sortedArrayUsingDescriptors:@[sortScore]];
-	self.selectedLens = self.suitableLenses.lastObject;
 	
 	// Change tracking was disabled
 	self.ignoreChanges = NO;
@@ -195,6 +208,30 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 - (void) loadAdjustmentData {
 	self.ignoreChanges = YES;
 	
+	// Get the corrections object
+	TSLibraryImageCorrectionData *correction = self.activeImage.correctionData;
+	
+	self.correctionsEnabled = correction.enabled;
+	self.isSelectionAllowed = correction.enabled;
+	
+	if(correction != nil) {
+		// Unarchive the camera first
+		NSData *camData = correction.cameraData;
+		TSLFCamera *cam = [[TSLFDatabase sharedInstance] findCameraWithPersistentData:camData];
+		
+		self.selectedCamera = cam;
+		
+		// Unarchive the lens after that
+		NSData *lensData = correction.lensData;
+		TSLFLens *lens = [[TSLFDatabase sharedInstance] findLensWithPersistentData:lensData andCamera:cam];
+		
+		self.selectedLens = lens;
+	} else {
+		// Set the default lens/camera combination if no correction data is available
+		self.selectedCamera = self.suitableCameras.firstObject;
+		self.selectedLens = self.suitableLenses.firstObject;
+	}
+	
 	// Allow change handling again
 	self.ignoreChanges = NO;
 }
@@ -203,7 +240,19 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
  * Saves adjustment data back into the given image.
  */
 - (void) saveAdjustmentData:(TSLibraryImage *) im {
+	// Get the corrections object
+	TSLibraryImageCorrectionData *correction = im.correctionData;
+	correction.enabled = self.correctionsEnabled;
 	
+	// If corrections are enabled, archive the camera/lens data
+	if(self.correctionsEnabled.boolValue == YES) {
+		correction.cameraData = self.selectedCamera.persistentData;
+		correction.lensData = self.selectedLens.persistentData;
+	}
+	// Otherwise, set these to nil
+	else {
+		correction.cameraData = correction.lensData = nil;
+	}
 }
 
 /**

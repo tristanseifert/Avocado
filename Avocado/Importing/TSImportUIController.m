@@ -17,9 +17,9 @@ NSString *const TSDirectoryImportCompletedNotificationUrlKey = @"TSDirectoryImpo
 
 @interface TSImportUIController ()
 
-// re-define some properties as readwrite
+// Re-define some properties as readwrite
 @property (nonatomic, readwrite) NSProgress *importProgress;
-// internal properties
+// Internal properties
 @property (nonatomic) TSImportOpenPanelAccessory *accessory;
 @property (nonatomic) NSOpenPanel *openPanel;
 
@@ -27,7 +27,7 @@ NSString *const TSDirectoryImportCompletedNotificationUrlKey = @"TSDirectoryImpo
 @property (nonatomic) NSURL *lastImportedDirectory;
 @property (nonatomic) NSOperationQueue *importQueue;
 
-/// errors that may have occurred during importing
+/// Errors that may have occurred during importing
 @property (nonatomic) NSMutableArray<NSError *> *importErrors;
 
 - (void) importDirectory:(NSURL *) url;
@@ -41,10 +41,10 @@ NSString *const TSDirectoryImportCompletedNotificationUrlKey = @"TSDirectoryImpo
  */
 - (instancetype) init {
 	if(self = [super init]) {
-		// load accessory view
+		// Load accessory view
 		self.accessory = [[TSImportOpenPanelAccessory alloc] initWithNibName:@"TSImportPanelAccessory" bundle:nil];
 		
-		// create the open panel
+		// Create the open panel
 		self.openPanel = [NSOpenPanel new];
 		
 		self.openPanel.title = NSLocalizedString(@"Import Images", @"import panel  title");
@@ -58,10 +58,10 @@ NSString *const TSDirectoryImportCompletedNotificationUrlKey = @"TSDirectoryImpo
 		self.openPanel.accessoryView = self.accessory.view;
 		self.openPanel.accessoryViewDisclosed = YES;
 		
-		// create import controller
+		// Create import controller
 		self.importer = [TSImportController new];
 		
-		// create a dispatch queue on which import operations exist
+		// Create a dispatch queue on which import operations exist
 		self.importQueue = [NSOperationQueue new];
 		
 		self.importQueue.maxConcurrentOperationCount = 1;
@@ -82,10 +82,10 @@ NSString *const TSDirectoryImportCompletedNotificationUrlKey = @"TSDirectoryImpo
 	[self.openPanel beginSheetModalForWindow:window
 						   completionHandler:^(NSInteger result) {
 		if(result == NSFileHandlingPanelOKButton) {
-			// set up the importer
+			// Set up the importer
 			self.importer.copyFiles = self.accessory.shouldCopyImages;
 			
-			// import all images in the selected directory
+			// Import all images in the selected directory
 			[self importDirectory:self.openPanel.URL];
 		}
 	}];
@@ -100,9 +100,9 @@ NSString *const TSDirectoryImportCompletedNotificationUrlKey = @"TSDirectoryImpo
 						context:(void *) context {
 	if(context == TSImportQueueCountRemainingCtx) {
 		if(self.importQueue.operationCount == 0) {
-			DDLogVerbose(@"Importing images in %@ complete", self.lastImportedDirectory);
+			DDLogInfo(@"Importing images in %@ complete", self.lastImportedDirectory);
 			
-			// post a notification
+			// Post a notification
 			NSDictionary *info = @{
 				TSDirectoryImportCompletedNotificationUrlKey: self.lastImportedDirectory
 			};
@@ -131,25 +131,25 @@ NSString *const TSDirectoryImportCompletedNotificationUrlKey = @"TSDirectoryImpo
 	
 	NSMutableArray<NSURL *> *filesToImport = [NSMutableArray new];
 	
-	// save the directory to import
-	DDLogVerbose(@"Importing directory %@", url);
+	// Save the directory to import
+	DDLogDebug(@"Importing images indirectory %@…", url);
 	self.lastImportedDirectory = url;
 	
-	// set up an enumerator
+	// Set up an enumerator
 	e = [fm enumeratorAtURL:url
  includingPropertiesForKeys:@[NSURLIsDirectoryKey, NSURLTypeIdentifierKey]
 					options:0
 			   errorHandler:nil];
 	
-	// iterate through the directory to find all files
+	// Iterate through the directory to find all files
 	while((url = [e nextObject])) {
-		// check if it's a directory
+		// Check if it's a directory
 		if([url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:&err]) {
-			// it's a file.
+			// It's a file.
 			if(isDirectory.boolValue == NO) {
-				// get the UTI
+				// Get the UTI
 				if([url getResourceValue:&uti forKey:NSURLTypeIdentifierKey error:nil]) {
-					// it MUST conform to public.image for us to do anything with it
+					// It MUST conform to public.image for us to do anything with it
 					if([workspace type:uti conformsToType:@"public.image"]) {
 						[filesToImport addObject:url];
 					}
@@ -162,7 +162,7 @@ NSString *const TSDirectoryImportCompletedNotificationUrlKey = @"TSDirectoryImpo
 		}
 	}
 	
-	// now that we know what files to import, go through each one and import
+	// Now that we know what files to import, go through each one and import
 	self.importProgress = [NSProgress progressWithTotalUnitCount:filesToImport.count];
 	self.importErrors = [NSMutableArray new];
 	
@@ -170,14 +170,14 @@ NSString *const TSDirectoryImportCompletedNotificationUrlKey = @"TSDirectoryImpo
 		[self.importQueue addOperationWithBlock:^{
 			NSError *err = nil;
 			
-			// attempt to do the import
-			DDLogVerbose(@"Importing %@", url);
+			// Attempt to do the import
+			DDLogDebug(@"Importing %@", url);
 			
 			if([self.importer importFile:url withError:&err] == NO) {
 				[self.importErrors addObject:err];
 			}
 			
-			// update progress
+			// Update progress
 			self.importProgress.completedUnitCount++;
 			
 		}];

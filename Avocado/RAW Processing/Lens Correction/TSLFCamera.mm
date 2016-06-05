@@ -19,6 +19,8 @@ NSString* const TSLFCameraKeyCropFactor = @"TSLFCameraCropFactor";
 
 @property (nonatomic) lfCamera *camera;
 
+- (BOOL) isEqualToCamera:(TSLFCamera *) camera;
+
 @end
 
 @implementation TSLFCamera
@@ -104,6 +106,53 @@ NSString* const TSLFCameraKeyCropFactor = @"TSLFCameraCropFactor";
 	return [data copy];
 }
 
+#pragma mark Collection Support
+/**
+ * Compares to see whether this object is equivalent to another camera. This 
+ * performs a comparison on the maker, model, and crop factor.
+ */
+- (BOOL) isEqualToCamera:(TSLFCamera *) camera {
+	// Check maker
+	if([self.maker isEqualToString:camera.maker] == NO)
+		return NO;
+	
+	// Check model
+	if([self.model isEqualToString:camera.model] == NO)
+		return NO;
+	
+	// Check maker
+	if(self.cropFactor != camera.cropFactor)
+		return NO;
+	
+	// The objects must be equal.
+	return YES;
+}
+
+/**
+ * Implements the more general equality comparison method.
+ */
+- (BOOL) isEqual:(id) object {
+	// Check identity (pointer)
+	if(self == object) {
+		return YES;
+	}
+	
+	// If the class is not the same as this class, they're not equal
+	if(![object isKindOfClass:[TSLFCamera class]]) {
+		return NO;
+	}
+	
+	// If it is an TSLFCamera instance, check deep equality
+	return [self isEqualToCamera:(TSLFCamera *) object];
+}
+
+/**
+ * Returns a hash for this object. This is a bitwise XOR of the maker and model
+ * strings. (This is acceptable, because they can never be swapped.)
+ */
+- (NSUInteger) hash {
+	return self.maker.hash ^ self.model.hash;
+}
 
 /**
  * Returns a description for this camera, consisting of its address,
