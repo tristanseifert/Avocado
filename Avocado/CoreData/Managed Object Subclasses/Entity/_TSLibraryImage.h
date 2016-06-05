@@ -13,6 +13,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class TSLibraryImageCorrectionData;
 @class TSLibraryAlbum;
 @class TSLibraryImageAdjustment;
 @class TSLibraryTag;
@@ -57,6 +58,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSString* pvtImageSize;
 
 @property (nonatomic, strong, nullable) NSString* uuid;
+
+@property (nonatomic, strong, nullable) TSLibraryImageCorrectionData *correctionData;
 
 @property (nonatomic, strong, nullable) NSSet<TSLibraryAlbum*> *parentAlbums;
 - (nullable NSMutableSet<TSLibraryAlbum*>*)parentAlbumsSet;
@@ -131,6 +134,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString*)primitiveUuid;
 - (void)setPrimitiveUuid:(NSString*)value;
 
+- (TSLibraryImageCorrectionData*)primitiveCorrectionData;
+- (void)setPrimitiveCorrectionData:(TSLibraryImageCorrectionData*)value;
+
 - (NSMutableSet<TSLibraryAlbum*>*)primitiveParentAlbums;
 - (void)setPrimitiveParentAlbums:(NSMutableSet<TSLibraryAlbum*>*)value;
 
@@ -156,6 +162,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface TSLibraryImageRelationships: NSObject
++ (NSString *)correctionData;
 + (NSString *)parentAlbums;
 + (NSString *)pvtAdjustments;
 + (NSString *)tags;

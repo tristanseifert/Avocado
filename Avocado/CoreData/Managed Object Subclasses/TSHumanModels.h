@@ -3,4 +3,5 @@
 #import "TSLibraryExportService.h"
 #import "TSLibraryImage.h"
 #import "TSLibraryImageAdjustment.h"
+#import "TSLibraryImageCorrectionData.h"
 #import "TSLibraryTag.h"

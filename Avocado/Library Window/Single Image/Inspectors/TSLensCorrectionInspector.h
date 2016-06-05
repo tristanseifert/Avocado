@@ -20,9 +20,13 @@
 
 /// List of all suitable cameras
 @property (nonatomic, readonly) NSArray<TSLFCamera *> *suitableCameras;
-
 /// List of all suitable lenses
 @property (nonatomic, readonly) NSArray<TSLFLens *> *suitableLenses;
+
+/// Selected camera
+@property TSLFCamera *selectedCamera;
+/// Selected lens
+@property TSLFLens *selectedLens;
 
 
 @end

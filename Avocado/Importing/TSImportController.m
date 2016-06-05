@@ -124,7 +124,6 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 		image.dateShot = raw.timestamp;
 		image.imageSize = raw.size;
 		
-		
 		// Extract a few keys from the fixed-up EXIF dictionary dictionary
 		NSDictionary *exifFixed = exif[TSImageMetadataExifDictionary];
 		if(exifFixed != nil) {
@@ -134,7 +133,6 @@ NSString *const TSImportingErrorDomain = @"TSImportingErrorDomain";
 				image.dateDigitized = image.dateImported;
 			}
 		}
-		
 		
 		// Post notification
 		NSDictionary *info = @{

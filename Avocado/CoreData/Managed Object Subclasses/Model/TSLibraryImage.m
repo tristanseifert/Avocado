@@ -81,9 +81,15 @@ static void *TSLibraryImageDateShotKVOCtx = &TSLibraryImageDateShotKVOCtx;
 	
 	[self commonInit];
 	
-	// set default values
+	// Set some default values
 	[self setPrimitiveUuid:[NSUUID new].UUIDString];
 	[self loadDefaultAdjustments];
+	
+	// Create lens correction data object
+	TSLibraryImageCorrectionData *lensCorrect = [TSLibraryImageCorrectionData TSCreateEntityInContext:self.managedObjectContext];
+	lensCorrect.enabled = @NO;
+	
+	self.correctionData = lensCorrect;
 }
 
 /**

@@ -99,6 +99,8 @@
 
 @dynamic uuid;
 
+@dynamic correctionData;
+
 @dynamic parentAlbums;
 
 - (NSMutableSet<TSLibraryAlbum*>*)parentAlbumsSet {
@@ -168,6 +170,9 @@
 @end
 
 @implementation TSLibraryImageRelationships 
++ (NSString *)correctionData {
+	return @"correctionData";
+}
 + (NSString *)parentAlbums {
 	return @"parentAlbums";
 }

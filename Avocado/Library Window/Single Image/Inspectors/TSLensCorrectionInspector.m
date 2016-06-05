@@ -123,6 +123,8 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
  * Finds all matching lens and camera combinations for the given image.
  */
 - (void) findMatchingCameraLensCombinations {
+	self.ignoreChanges = YES;
+	
 	// If there's no active image, return.
 	if(self.activeImage == nil) {
 		self.suitableCameras = nil;
@@ -139,7 +141,12 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 		self.suitableCameras = @[cam];
 	} else {
 		self.suitableCameras = nil;
+		self.selectedCamera = nil;
+		return;
 	}
+	
+	self.selectedCamera = self.suitableCameras.firstObject;
+	
 	
 	// Find lenses
 	NSArray<TSLFLens *> *lenses = [[TSLFDatabase sharedInstance] lensesForImage:self.activeImage];
@@ -149,6 +156,10 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 	NSSortDescriptor *sortScore = [NSSortDescriptor sortDescriptorWithKey:@"sortingScore"
 																ascending:NO];
 	self.suitableLenses = [lenses sortedArrayUsingDescriptors:@[sortScore]];
+	self.selectedLens = self.suitableLenses.lastObject;
+	
+	// Change tracking was disabled
+	self.ignoreChanges = NO;
 }
 
 #pragma mark Settings Saving/Loading
@@ -199,7 +210,7 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
  * Adds KVO observers to the mirror properties.
  */
 - (void) addAdjustmentKVO {
-	NSArray *keys = @[];
+	NSArray *keys = @[@"correctionsEnabled", @"selectedCamera", @"selectedLens"];
 	
 	for(NSString *key in keys) {
 		[self addObserver:self forKeyPath:key
@@ -211,7 +222,7 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
  * Removes any previously installed KVO listeners.
  */
 - (void) removeAdjustmentKVO {
-	NSArray *keys = @[];
+	NSArray *keys = @[@"correctionsEnabled", @"selectedCamera", @"selectedLens"];
 	
 	for(NSString *key in keys) {
 		@try {

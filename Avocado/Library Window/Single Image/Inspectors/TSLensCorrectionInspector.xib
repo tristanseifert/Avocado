@@ -44,6 +44,7 @@
                         <binding destination="-2" name="content" keyPath="self.suitableCameras" id="qnq-yb-WXS"/>
                         <binding destination="-2" name="contentValues" keyPath="self.suitableCameras.displayName" previousBinding="qnq-yb-WXS" id="zek-MN-n22"/>
                         <binding destination="-2" name="enabled" keyPath="self.isSelectionAllowed" id="UQC-am-eof"/>
+                        <binding destination="-2" name="selectedObject" keyPath="self.selectedCamera" previousBinding="zek-MN-n22" id="zNs-Cz-e5U"/>
                     </connections>
                 </popUpButton>
                 <button translatesAutoresizingMaskIntoConstraints="NO" id="5ri-Hd-gRv">
@@ -81,6 +82,7 @@
                         <binding destination="-2" name="content" keyPath="self.suitableLenses" id="26K-XB-zgw"/>
                         <binding destination="-2" name="contentValues" keyPath="self.suitableLenses.displayName" previousBinding="26K-XB-zgw" id="2q4-m0-aTY"/>
                         <binding destination="-2" name="enabled" keyPath="self.isSelectionAllowed" id="bFr-67-qQ1"/>
+                        <binding destination="-2" name="selectedObject" keyPath="self.selectedLens" previousBinding="2q4-m0-aTY" id="cLv-xE-SvM"/>
                     </connections>
                 </popUpButton>
             </subviews>
