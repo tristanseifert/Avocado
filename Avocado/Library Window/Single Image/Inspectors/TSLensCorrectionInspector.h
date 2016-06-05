@@ -15,10 +15,14 @@
 
 /// Whether lens corrections are enabled
 @property (nonatomic) NSNumber *correctionsEnabled;
+/// Determines whether the camera/lens selectors are active.
+@property (nonatomic) NSNumber *isSelectionAllowed;
 
 /// List of all suitable cameras
 @property (nonatomic, readonly) NSArray<TSLFCamera *> *suitableCameras;
+
 /// List of all suitable lenses
 @property (nonatomic, readonly) NSArray<TSLFLens *> *suitableLenses;
+
 
 @end

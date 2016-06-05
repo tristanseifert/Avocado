@@ -45,7 +45,7 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 - (instancetype) init {
 	if(self = [super initWithNibName:@"TSLensCorrectionInspector" bundle:nil]) {
 		self.title = NSLocalizedString(@"Lens Corrections", @"lens corrections inspector title");
-		self.preferredContentSize = NSMakeSize(0, 272);
+		self.preferredContentSize = NSMakeSize(0, 86);
 		
 		// Add some KVO observers
 		[self addObserver:self forKeyPath:@"activeImage"
@@ -56,6 +56,7 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 		
 		// Set some default values
 		self.correctionsEnabled = @(YES);
+		self.isSelectionAllowed = @(YES);
 	}
 	
 	return self;
@@ -144,7 +145,10 @@ static const NSTimeInterval TSSettingsChangeDebounce = 0.66f;
 	NSArray<TSLFLens *> *lenses = [[TSLFDatabase sharedInstance] lensesForImage:self.activeImage];
 	DDLogVerbose(@"Lenses: %@", lenses);
 	
-	self.suitableLenses = lenses;
+	// Sort lenses
+	NSSortDescriptor *sortScore = [NSSortDescriptor sortDescriptorWithKey:@"sortingScore"
+																ascending:NO];
+	self.suitableLenses = [lenses sortedArrayUsingDescriptors:@[sortScore]];
 }
 
 #pragma mark Settings Saving/Loading

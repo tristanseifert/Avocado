@@ -31,6 +31,14 @@
 }
 
 /**
+ * Frees the internal lens object on deallocation.
+ */
+- (void) dealloc {
+	delete self.lens;
+}
+
+
+/**
  * Reads the maker string from the lens object.
  */
 - (NSString *) maker {
@@ -53,13 +61,17 @@
  * A display name might be "Canon 50mm ƒ/1.8" or "Canon 70-200mm ƒ/2.8 III"
  */
 - (NSString *) displayName {
-	if(self.focalMin == self.focalMax) {
+/*	if(self.focalMin == self.focalMax) {
 		NSString *localizedString = NSLocalizedString(@"%@ %.0fmm ƒ/%2.1f %@", nil);
 		return [NSString localizedStringWithFormat:localizedString, self.maker, self.focalMin, self.apertureMin, self.model];
 	} else {
 		NSString *localizedString = NSLocalizedString(@"%@ %.0f-%.0fmm ƒ/%2.1f %@", nil);
 		return [NSString localizedStringWithFormat:localizedString, self.maker, self.focalMin, self.focalMax, self.apertureMin, self.model];
-	}
+	}*/
+	
+	// Return the model, concatenated with the crop factor
+	NSString *localizedString = NSLocalizedString(@"%@ (Crop %.2g)", nil);
+	return [NSString localizedStringWithFormat:localizedString, self.model, self.lens->CropFactor];
 }
 
 /**

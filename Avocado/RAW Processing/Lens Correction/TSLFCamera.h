@@ -19,4 +19,7 @@
 /// Model string
 @property (nonatomic, readonly) NSString *model;
 
+/// Display name (combined from a variety of parameters)
+@property (nonatomic, readonly) NSString *displayName;
+
 @end

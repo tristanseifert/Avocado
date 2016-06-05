@@ -115,7 +115,7 @@ static TSLFDatabase *sharedDatabase = nil;
 		return nil;
 	} else {
 		// otherwise, use the FIRST entry in the list.
-		const lfCamera *camera = cameras[0];
+		const lfCamera *camera = new lfCamera(*cameras[0]);
 		TSLFCamera *obj = [[TSLFCamera alloc] initWithCamera:(void *) camera];
 		
 		// clean up
@@ -156,7 +156,7 @@ static TSLFDatabase *sharedDatabase = nil;
 	// for each lens, create an object wrapper
 	do {
 		// get lens and make object, then add to object
-		const lfLens *lens = lenses[0];
+		const lfLens *lens = new lfLens(*lenses[0]);
 		
 		TSLFLens *lensObj = [[TSLFLens alloc] initWithLens:(void *) lens];
 		[arr addObject:lensObj];
