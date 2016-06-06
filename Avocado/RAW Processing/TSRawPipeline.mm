@@ -405,22 +405,8 @@
 		
 		state.stage = TSRawPipelineStageConvertToRGB;
 		libraw_data_t *libRaw = state.rawImage.libRaw;
-	
-		/*
-		 * Because lens corrections require sampling from the colour-corrected
-		 * input data (in self.interpolatedColourBuf,) and writing the resultant
-		 * data elsewhere, that is stored in the converter's RGBX data. However,
-		 * the rest of the code expects the pixel data to be in the interpolated
-		 * colour buffer. This copies it, if lens corrections were performed.
-		 */
-		if(state.applyLensCorrections == YES) {
-			size_t num_bytes = (state.rawSize.width * 4 * sizeof(uint16_t)) * state.rawSize.height;
-			void *correctedData = TSPixelConverterGetRGBXPointer(state.converter);
-			
-			memcpy(self.interpolatedColourBuf, correctedData, num_bytes);
-		}
 		
-		// convert to RGB
+		// Convert to RGB
 		state.stage = TSRawPipelineStageConvertToRGB;
 		TSRawConvertToRGB(libRaw,
 						  (uint16_t (*)[4]) self.interpolatedColourBuf, // input -> RGBX
@@ -429,7 +415,7 @@
 		
 		
 #if WriteDebugData
-		// save buffer to disk (debug testing)
+		// Save buffers to disk (debug testing)
 		NSURL *appSupportURL = [TSGroupContainerHelper sharedInstance].appSupport;
 		
 		NSData *rawData = [NSData dataWithBytesNoCopy:self.interpolatedColourBuf length:(state.rawImage.size.width * 3 * 2) * state.rawImage.size.height freeWhenDone:NO];
@@ -562,7 +548,7 @@
 				
 				// Perform the step for each scanline separately
 				for(y = 0; (ok && (y < state.rawSize.height)); y++) {
-					// remove vignetting
+					// Remove vignetting
 					if(step == 0) {
 						// Calculate image stride, in BYTES
 						int imgDataStrideBytes = state.rawSize.width * 4 * sizeof(uint16_t);
@@ -613,6 +599,18 @@
 			
 			// Free the buffers previously allocated
 			free(subPixelCoords);
+	
+			/*
+			 * Because lens corrections require sampling from the colour-corrected
+			 * input data (in self.interpolatedColourBuf,) and writing the resultant
+			 * data elsewhere, that is stored in the converter's RGBX data. However,
+			 * the rest of the code expects the pixel data to be in the interpolated
+			 * colour buffer. This copies it, if lens corrections were performed.
+			 */
+			size_t num_bytes = (state.rawSize.width * 4 * sizeof(uint16_t)) * state.rawSize.height;
+			void *correctedData = TSPixelConverterGetRGBXPointer(state.converter);
+				
+			memcpy(self.interpolatedColourBuf, correctedData, num_bytes);
 		}
 		
 		TSEndOperation();
@@ -1289,7 +1287,7 @@
 	tiff = [rep TIFFRepresentationUsingCompression:NSTIFFCompressionNone
 											factor:1];
 	
-	[tiff writeToURL:[appSupportURL URLByAppendingPathComponent:@"raw_pipeline_coreimage_tagged.tiff"] atomically:YES];
+	[tiff writeToURL:[appSupportURL URLByAppendingPathComponent:@"raw_pipeline_coreimage_tagged.tiff"] atomically:NO];
 }
 
 @end
