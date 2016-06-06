@@ -31,6 +31,9 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 
 @property (nonatomic) BOOL shouldAdjustImageSize;
 
+/// When set, the full-res image has already been displayed, so ignore the thumb.
+@property (nonatomic) BOOL hasShownFullResImage;
+
 // Loading controller
 @property (nonatomic) TSDevelopLoadingIndicatorWindowController *loadController;
 
@@ -108,17 +111,20 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 		
 		// if there is a new image, process it
 		if(self.image != nil) {
-			// cause the view to be resized
+			// Cause the view to be resized
+			self.hasShownFullResImage = NO;
 			self.shouldAdjustImageSize = YES;
 			
-			// get a thumbnail
+			// Get a thumbnail
 			CGFloat s = MAX(NSWidth(self.view.bounds), NSHeight(self.view.bounds));
 			
 			[[TSThumbCache sharedInstance] getThumbForImage:self.image withSize:NSMakeSize(s, s) andCallback:^(NSImage *thumb, __unused void *userData) {
-				self.displayedImage = thumb;
+				if(self.hasShownFullResImage == NO) {
+					self.displayedImage = thumb;
+				}
 			} withUserData:nil];
 	
-			// process image
+			// Process image
 			[self processCurrentImageIgnoreCache:NO];
 		}
 	}
@@ -180,21 +186,20 @@ static void *TSDisplayedImageKVO = &TSDisplayedImageKVO;
 			if([rep isKindOfClass:[TSBufferOwningBitmapRep class]]) {
 				DDLogDebug(@"Found %@ in image %@", rep, self.displayedImage);
 				
-				// free the buffers
+				// Free the buffers
 				TSBufferOwningBitmapRep *bm = (TSBufferOwningBitmapRep *) rep;
 				[bm TSFreeBuffers];
 			}
 		}];
 	}
 	
-	// Fetch a thumb?
-	
 	// Actually process the image
 	if(self.image.fileTypeValue == TSLibraryImageRaw) {
 		// Submit the RAW image to the rendering pipeline
 		[self.pipelineRaw queueRawFile:self.image shouldCache:YES inhibitCachedResume:ignoreCache renderingIntent:TSRawPipelineIntentDisplayFast outputFormat:TSRawPipelineOutputFormatNSImage completionCallback:^(NSImage *img, NSError *err) {
-			// display it
+			// Display it
 			if(img) {
+				self.hasShownFullResImage = YES;
 				self.displayedImage = img;
 			} else {
 				DDLogError(@"Error processing image: %@", err);

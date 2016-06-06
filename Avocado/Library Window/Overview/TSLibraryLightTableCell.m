@@ -77,6 +77,8 @@ static const CGFloat kThumbHMargin = 5.f;
 @property (nonatomic) void *thumbToken;
 /// When set, the view is currently visible, and thumbnails should be generated.
 @property (nonatomic) BOOL shouldGenerateThumbs;
+/// Indicates that a valid thumbnail is being displayed, when set.
+@property (nonatomic) BOOL isShowingValidThumb;
 
 - (void) setUpMainLayersWithParent:(CALayer *) layer;
 - (void) setUpBordersWithParent:(CALayer *) layer;
@@ -103,20 +105,16 @@ static const CGFloat kThumbHMargin = 5.f;
 	self.view.wantsLayer = YES;
 	CALayer *layer = self.view.layer;
 	
-	// set up the main layer pls
+	// Set up the main layer
 //	layer.backgroundColor = [NSColor colorWithCalibratedWhite:0.42 alpha:1.f].CGColor;
 	layer.masksToBounds = YES;
 	
-	// set up main content
+	// Set up main content, top box, and borders
 	[self setUpMainLayersWithParent:layer];
-	
-	// set up top box
 	[self setUpTopInfoBoxWithParent:layer];
-	
-	// at the end, add the light and dark borders
 	[self setUpBordersWithParent:layer];
 	
-	// set up the shot date formatter and thumb cache
+	// Set up the shot date formatter and thumb cache
 	static dispatch_once_t onceToken;
 	dispatch_once(&onceToken, ^{
 		shotDateFormatter = [NSDateFormatter new];
@@ -139,8 +137,9 @@ static const CGFloat kThumbHMargin = 5.f;
 	[self addObserver:self forKeyPath:@"selected" options:0
 			  context:TSLightTableCellSelectedCtx];
 	
-	// set up the tracking area
-	self.trackingArea = [[NSTrackingArea alloc] initWithRect:NSZeroRect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow | NSTrackingInVisibleRect owner:self userInfo:nil];
+	// Set up a tracking area
+	self.trackingArea = [[NSTrackingArea alloc] initWithRect:NSZeroRect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow | NSTrackingInVisibleRect
+													   owner:self userInfo:nil];
 	[self.view addTrackingArea:self.trackingArea];
 }
 
@@ -148,9 +147,10 @@ static const CGFloat kThumbHMargin = 5.f;
  * Clean up some resources when this cell is deallocated.
  */
 - (void) dealloc {
-	// remove as a notification observer
+	// Remove as a notification observer
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
+	// Remove KVO
 	@try {
 		[self removeObserver:self forKeyPath:@"selected"];
 	} @catch (NSException* __unused) { }
@@ -163,6 +163,11 @@ static const CGFloat kThumbHMargin = 5.f;
 	[super viewWillAppear];
 	
 	self.shouldGenerateThumbs = YES;
+	
+	// Generate a new thumb if the cell just became visible.
+	if(self.isShowingValidThumb == NO) {
+		[self updateThumbnails];
+	}
 }
 
 /**
@@ -178,7 +183,7 @@ static const CGFloat kThumbHMargin = 5.f;
 /**
  * Mouse entered the tracking area; apply hover style.
  */
-- (void) mouseEntered:(NSEvent *)theEvent {
+- (void) mouseEntered:(NSEvent *) theEvent {
 	self.view.layer.backgroundColor = kHoverBackgroundColour.CGColor;
 	self.sequenceNumber.foregroundColor = kSequenceNumberColourSelected.CGColor;
 }
@@ -186,7 +191,7 @@ static const CGFloat kThumbHMargin = 5.f;
 /**
  * Mouse left: apply the regular or highlighted styles.
  */
-- (void) mouseExited:(NSEvent *)theEvent {
+- (void) mouseExited:(NSEvent *) theEvent {
 	if(self.selected) {
 		self.view.layer.backgroundColor = kSelectedBackgroundColour.CGColor;
 		self.sequenceNumber.foregroundColor = kSequenceNumberColourSelected.CGColor;
@@ -203,7 +208,7 @@ static const CGFloat kThumbHMargin = 5.f;
 - (void) mouseDown:(NSEvent *) theEvent {
 	[super mouseDown:theEvent];
 	
-	// only perform double click action if an object is associated with the cell
+	// Only perform double click action if an object is associated with the cell
 	if(theEvent.clickCount == 2 && self.representedObject != nil) {
 		[self.controller cellWasDoubleClicked:self];
 	}
@@ -217,7 +222,7 @@ static const CGFloat kThumbHMargin = 5.f;
 					   ofObject:(id) object
 						 change:(NSDictionary<NSString *,id> *) change
 						context:(void *) context {
-	// the selection state changed pls
+	// The selection state changed
 	if(context == TSLightTableCellSelectedCtx) {
 		if(self.selected) {
 			self.view.layer.backgroundColor = kSelectedBackgroundColour.CGColor;
@@ -226,9 +231,9 @@ static const CGFloat kThumbHMargin = 5.f;
 			self.view.layer.backgroundColor = nil;
 			self.sequenceNumber.foregroundColor = kSequenceNumberColourUnselected.CGColor;
 		}
-		
-//		DDLogVerbose(@"Selected: %i", self.isSelected);
-	} else {
+	}
+	// Pass every other KVO to the superclass
+	else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}
 }
@@ -238,7 +243,7 @@ static const CGFloat kThumbHMargin = 5.f;
  * Sets up the main layers.
  */
 - (void) setUpMainLayersWithParent:(CALayer *) layer {
-	// create the sequence number layer
+	// Create the sequence number layer
 	self.sequenceNumber = [CATextLayer layer];
 	self.sequenceNumber.delegate = self;
 	
@@ -250,7 +255,7 @@ static const CGFloat kThumbHMargin = 5.f;
 	
 	[layer addSublayer:self.sequenceNumber];
 	
-	// set up image layer
+	// Set up image layer
 	self.imageLayer = [CALayer layer];
 	self.imageLayer.delegate = self;
 	
@@ -262,7 +267,7 @@ static const CGFloat kThumbHMargin = 5.f;
 	
 	[layer addSublayer:self.imageLayer];
 	
-	// set up image shadow layer
+	// Set up image shadow layer
 	self.imageShadowLayer = [CALayer layer];
 	
 	self.imageShadowLayer.shadowColor = [NSColor colorWithCalibratedWhite:0.1 alpha:1.f].CGColor;
@@ -277,7 +282,7 @@ static const CGFloat kThumbHMargin = 5.f;
  * Sets up the top information box's layers.
  */
 - (void) setUpTopInfoBoxWithParent:(CALayer *) layer {
-	// create top info layer
+	// Create top info layer
 	self.topInfoContainer = [CALayer layer];
 	self.topInfoContainer.backgroundColor = [NSColor colorWithCalibratedWhite:0.74 alpha:0.5].CGColor;
 	
@@ -285,7 +290,7 @@ static const CGFloat kThumbHMargin = 5.f;
 	
 	[layer addSublayer:self.topInfoContainer];
 	
-	// create the filename label
+	// Create the filename label
 	self.topInfoFileName = [CATextLayer layer];
 	self.topInfoFileName.delegate = self;
 	
@@ -304,7 +309,7 @@ static const CGFloat kThumbHMargin = 5.f;
 	
 	[self.topInfoContainer addSublayer:self.topInfoFileName];
 	
-	// create the subtitle label
+	// Create the subtitle label
 	self.topInfoSubtitle = [CATextLayer layer];
 	self.topInfoSubtitle.delegate = self;
 	
@@ -319,7 +324,7 @@ static const CGFloat kThumbHMargin = 5.f;
 	
 	[self.topInfoContainer addSublayer:self.topInfoSubtitle];
 	
-	// create the border that'll show at the bottom of the box
+	// Create the border that'll show at the bottom of the box
 	self.topInfoBorder = [CALayer layer];
 	self.topInfoBorder.backgroundColor = [NSColor colorWithCalibratedWhite:0.40 alpha:0.5].CGColor;
 	
@@ -366,14 +371,14 @@ static const CGFloat kThumbHMargin = 5.f;
 - (void) layOutContentLayers {
 	NSRect frame = self.view.bounds;
 	
-	// begin a transaction (disabling implicit animations)
+	// Begin a transaction (disabling implicit animations)
 	[CATransaction begin];
 	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 	
-	// lay out sequence number
+	// Lay out sequence number
 	self.sequenceNumber.frame = CGRectMake(0, frame.size.height - 55, frame.size.width - 8, 52);
 	
-	// lay out image layer
+	// Lay out image layer
 	CGFloat originalHeight = self.representedObject.rotatedImageSize.height;
 	CGFloat originalWidth = self.representedObject.rotatedImageSize.width;
 	
@@ -388,7 +393,7 @@ static const CGFloat kThumbHMargin = 5.f;
 	
 	NSSize imageSize = NSMakeSize(finalWidth, finalHeight);
 	
-	// center the image in the main layer, and set its frame
+	// Center the image in the main layer, and set its frame
 	CGFloat imageX = (frame.size.width - imageSize.width) / 2.f;
 	CGFloat imageY = (frame.size.height - imageSize.height) / 2.f;
 	imageY -= ((kImageVInset - (kImageVInset - kTopInfoBoxHeight)) / 2.f);
@@ -403,7 +408,7 @@ static const CGFloat kThumbHMargin = 5.f;
 	self.imageShadowLayer.shadowPath = CGPathCreateWithRect(self.imageLayer.bounds, NULL);
 	
 	
-	// lay out the dark border (right, bottom)
+	// Lay out the dark border (right, bottom)
 	CGMutablePathRef darkPath = CGPathCreateMutable();
 	CGPathAddRect(darkPath, NULL, CGRectMake((frame.size.width - 1), 0, 1, frame.size.height));
 	CGPathAddRect(darkPath, NULL, CGRectMake(0, 0, (frame.size.width - 1), 1));
@@ -411,7 +416,7 @@ static const CGFloat kThumbHMargin = 5.f;
 	self.darkBorder.path = darkPath;
 	self.darkBorder.frame = self.view.bounds;
 	
-	// lay out the light border (left, top)
+	// Lay out the light border (left, top)
 	CGMutablePathRef lightPath = CGPathCreateMutable();
 	CGPathAddRect(lightPath, NULL, CGRectMake(0, 1, 1, (frame.size.height - 1)));
 	CGPathAddRect(lightPath, NULL, CGRectMake(0, (frame.size.height - 1), (frame.size.width - 1), 1));
@@ -419,13 +424,13 @@ static const CGFloat kThumbHMargin = 5.f;
 	self.lightBorder.path = lightPath;
 	self.lightBorder.frame = self.view.bounds;
 	
-	// update scale factor
+	// Update scale factor
 //	[self updateContentScales];
 	
-	// lay out info box
+	// Lay out info box
 	[self layOutTopInfoBox];
 	
-	// commit transaction
+	// Commit transaction
 	[CATransaction commit];
 }
 
@@ -435,16 +440,16 @@ static const CGFloat kThumbHMargin = 5.f;
 - (void) layOutTopInfoBox {
 	NSRect frame = self.view.bounds;
 	
-	// set its width to 100%, height predefined, fixed to top
+	// Set its width to 100%, height predefined, fixed to top
 	self.topInfoContainer.frame = (CGRect) {
 		.size = CGSizeMake(frame.size.width, kTopInfoBoxHeight),
 		.origin = CGPointMake(0, frame.size.height - kTopInfoBoxHeight)
 	};
 	
-	// position the border at the very bottom
+	// Position the border at the very bottom
 	self.topInfoBorder.frame = CGRectMake(0, 1, frame.size.width, 1);
 	
-	// position the filename and subtitle labels
+	// Position the filename and subtitle labels
 	self.topInfoFileName.frame = (CGRect) {
 		.size = CGSizeMake(frame.size.width - (kInfoBoxHInset * 2.f), 18),
 		.origin = CGPointMake(kInfoBoxHInset, kTopInfoBoxHeight - 18 - kInfoBoxVInset)
@@ -491,12 +496,14 @@ shouldInheritContentsScale:(CGFloat) newScale
 	[CATransaction begin];
 	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 	
+	// Clear the thumbnail view
+	self.imageLayer.contents = nil;
+	self.isShowingValidThumb = NO;
+	
 	// Exit if the property was cleared
 	if(image == nil) {
 		self.topInfoFileName.string = @"Empty Cell";
 		self.topInfoSubtitle.string = @"Empty Cell\nEmpty Cell";
-		
-		self.imageLayer.contents = nil;
 		
 		[CATransaction commit];
 		return;
@@ -574,8 +581,11 @@ shouldInheritContentsScale:(CGFloat) newScale
 											
 		// Ensure we only access the image layer on the main thread
 		dispatch_async(dispatch_get_main_queue(), ^{
+			// Important: set the layer contents and scale factor from NSImage
 			self.imageLayer.contents = layerContents;
 			self.imageLayer.contentsScale = actualScaleFactor;
+			
+			self.isShowingValidThumb = YES;
 		});
 	} withUserData:self.thumbToken];
 }
