@@ -41,15 +41,15 @@
                         </menu>
                     </popUpButtonCell>
                     <connections>
-                        <binding destination="-2" name="content" keyPath="self.suitableCameras" id="qnq-yb-WXS"/>
-                        <binding destination="-2" name="contentValues" keyPath="self.suitableCameras.displayName" previousBinding="qnq-yb-WXS" id="zek-MN-n22"/>
                         <binding destination="-2" name="enabled" keyPath="self.isSelectionAllowed" id="UQC-am-eof"/>
                         <binding destination="-2" name="selectedObject" keyPath="self.selectedCamera" previousBinding="zek-MN-n22" id="zNs-Cz-e5U"/>
+                        <binding destination="-2" name="content" keyPath="self.suitableCameras" id="qnq-yb-WXS"/>
+                        <binding destination="-2" name="contentValues" keyPath="self.suitableCameras.displayName" previousBinding="qnq-yb-WXS" id="zek-MN-n22"/>
                     </connections>
                 </popUpButton>
                 <button translatesAutoresizingMaskIntoConstraints="NO" id="5ri-Hd-gRv">
-                    <rect key="frame" x="77" y="61" width="112" height="18"/>
-                    <buttonCell key="cell" type="check" title="Lens Corrections" bezelStyle="regularSquare" imagePosition="left" controlSize="small" state="on" inset="2" id="qqa-mt-Ili">
+                    <rect key="frame" x="77" y="61" width="145" height="18"/>
+                    <buttonCell key="cell" type="check" title="Apply Lens Corrections" bezelStyle="regularSquare" imagePosition="left" controlSize="small" state="on" inset="2" id="qqa-mt-Ili">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="smallSystem"/>
                     </buttonCell>
@@ -79,10 +79,10 @@
                         </menu>
                     </popUpButtonCell>
                     <connections>
-                        <binding destination="-2" name="content" keyPath="self.suitableLenses" id="26K-XB-zgw"/>
-                        <binding destination="-2" name="contentValues" keyPath="self.suitableLenses.displayName" previousBinding="26K-XB-zgw" id="2q4-m0-aTY"/>
                         <binding destination="-2" name="enabled" keyPath="self.isSelectionAllowed" id="bFr-67-qQ1"/>
                         <binding destination="-2" name="selectedObject" keyPath="self.selectedLens" previousBinding="2q4-m0-aTY" id="cLv-xE-SvM"/>
+                        <binding destination="-2" name="content" keyPath="self.suitableLenses" id="26K-XB-zgw"/>
+                        <binding destination="-2" name="contentValues" keyPath="self.suitableLenses.displayName" previousBinding="26K-XB-zgw" id="2q4-m0-aTY"/>
                     </connections>
                 </popUpButton>
             </subviews>

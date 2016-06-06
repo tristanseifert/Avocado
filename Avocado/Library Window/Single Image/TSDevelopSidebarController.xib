@@ -42,7 +42,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                     <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="5Sx-Ki-dPV">
-                        <rect key="frame" x="344" y="0.0" width="16" height="364"/>
+                        <rect key="frame" x="345" y="0.0" width="15" height="364"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                 </scrollView>

@@ -497,9 +497,13 @@ void TSRawConvertToRGB(libraw_data_t *libRaw, uint16_t (*image)[4], uint16_t (*o
 		}
 	}
 	
-	// set up for conversion to RGB
+	// Set up for conversion to RGB
 	img = image[0];
-
+	
+#if PRINT_DEBUG_INFO
+	DDLogVerbose(@"Colours: %i", libRaw->idata.colors);
+#endif
+	
 	memset(histogram, 0, sizeof(int) * 0x2000 * 4);
 	
 	for(row = 0; row < height; row++) {
@@ -632,29 +636,36 @@ uint16_t TSInterpolatePixelBilinear(uint16_t *buffer, size_t stride, float x, fl
 	DDCAssert(buffer != nil, @"input buffer may not be nil");
 	DDCAssert(stride != 0, @"stride may not be 0");
 	
-	// calculate floors of the input coordinates, and the first pointer
+	// Calculate the integer coordinate of the given pixel.
+	const unsigned int compsPerPixel = 4;
+	
 	unsigned int px = (unsigned int) x;
 	unsigned int py = (unsigned int) y;
 	
-	const uint16_t* p0 = buffer + px + (py * stride);
+	// Get a pointer into the buffer at the given integer coordinate
+	const uint16_t* p0 = buffer + (px * compsPerPixel) + (py * stride);
 	
-	// read pixels; note that we assume three components per pixel.
-	const uint16_t p1 = p0[0 + (0 * stride)];
-	const uint16_t p2 = p0[3 + 1 + (0 * stride)];
-	const uint16_t p3 = p0[0 + (1 * stride)];
-	const uint16_t p4 = p0[3 + 1 + (1 * stride)];
+	/*
+	 * Sample the input buffer. This samples it rectangularly four times, with
+	 * the original coordinate's floor being the top left corner of this rect.
+	 */
+	const uint16_t p1 = p0[0			 + (0 * stride)];
+	const uint16_t p2 = p0[compsPerPixel + (0 * stride)];
+	const uint16_t p3 = p0[0			 + (1 * stride)];
+	const uint16_t p4 = p0[compsPerPixel + (1 * stride)];
 	
-	// calculate weights for each pixel
+	// Calculate wposition of the four samples
 	float fx = x - px;
 	float fy = y - py;
 	float fx1 = 1.0f - fx;
 	float fy1 = 1.0f - fy;
 	
+	// From the positions, calculate weights for each pixel
 	int w1 = fx1 * fy1 * 65536.0f;
 	int w2 = fx  * fy1 * 65536.0f;
 	int w3 = fx1 * fy  * 65536.0f;
 	int w4 = fx  * fy  * 65536.0f;
 	
-	// calculate the output pixel value
-	return ((p1 * w1) + (p2 * w2) + (p3 * w3) + (p4 * w4));
+	// Calculate the output pixel value
+	return (p1 * w1 + p2 * w2 + p3 * w3 + p4 * w4) >> 16;
 }

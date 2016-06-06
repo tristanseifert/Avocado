@@ -281,8 +281,6 @@ static TSLFDatabase *sharedDatabase = nil;
 		const lfCamera *camera = new lfCamera(*cameras[0]);
 		TSLFCamera *obj = [[TSLFCamera alloc] initWithCamera:(void *) camera];
 		
-		// Clean up
-		lf_free(cameras);
 		return obj;
 	}
 }
@@ -337,9 +335,6 @@ static TSLFDatabase *sharedDatabase = nil;
 				// Create the object wrapper, if it does match.
 				const lfLens *lens = new lfLens(*lenses[0]);
 				TSLFLens *lensObj = [[TSLFLens alloc] initWithLens:(void *) lens];
-				
-				// Clean up
-				lf_free(lenses);
 				
 				return lensObj;
 			}

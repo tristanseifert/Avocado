@@ -405,6 +405,20 @@
 		
 		state.stage = TSRawPipelineStageConvertToRGB;
 		libraw_data_t *libRaw = state.rawImage.libRaw;
+	
+		/*
+		 * Because lens corrections require sampling from the colour-corrected
+		 * input data (in self.interpolatedColourBuf,) and writing the resultant
+		 * data elsewhere, that is stored in the converter's RGBX data. However,
+		 * the rest of the code expects the pixel data to be in the interpolated
+		 * colour buffer. This copies it, if lens corrections were performed.
+		 */
+		if(state.applyLensCorrections == YES) {
+			size_t num_bytes = (state.rawSize.width * 4 * sizeof(uint16_t)) * state.rawSize.height;
+			void *correctedData = TSPixelConverterGetRGBXPointer(state.converter);
+			
+			memcpy(self.interpolatedColourBuf, correctedData, num_bytes);
+		}
 		
 		// convert to RGB
 		state.stage = TSRawPipelineStageConvertToRGB;
@@ -416,7 +430,6 @@
 		
 #if WriteDebugData
 		// save buffer to disk (debug testing)
-		NSFileManager *fm = [NSFileManager defaultManager];
 		NSURL *appSupportURL = [TSGroupContainerHelper sharedInstance].appSupport;
 		
 		NSData *rawData = [NSData dataWithBytesNoCopy:self.interpolatedColourBuf length:(state.rawImage.size.width * 3 * 2) * state.rawImage.size.height freeWhenDone:NO];
@@ -489,6 +502,9 @@
 	// Check that the lens data is valid
 	if(lens != nil) {
 		state.lcLens = lens.lens;
+	} else {
+		state.applyLensCorrections = NO;
+		return;
 	}
 	
 	// Create a modifier object
@@ -535,7 +551,7 @@
 			 * for a particular step have been operated on, the next step will
 			 * be operated on.
 			 */
-			for(step = 0; step < 1; step++) {
+			for(step = 0; step < 2; step++) {
 				// Set up some variables
 				BOOL ok = YES;
 				
@@ -549,12 +565,13 @@
 					// remove vignetting
 					if(step == 0) {
 						// Calculate image stride, in BYTES
-						int imgDataStride = state.rawSize.width * 4 * sizeof(uint16_t);
+						int imgDataStrideBytes = state.rawSize.width * 4 * sizeof(uint16_t);
 						
 						// Perform colour modifications
 						ok = m->ApplyColorModification(imgData, 0, y,
 													   state.rawSize.width, 1,
-													   LF_CR_4(RED,GREEN,BLUE,UNKNOWN), imgDataStride);
+													   LF_CR_4(RED,GREEN,BLUE,UNKNOWN),
+													   imgDataStrideBytes);
 						
 						// Advance to the next row in the input pointer
 						imgData += ((size_t) (4 * state.rawSize.width));
@@ -563,29 +580,28 @@
 					// Correct geometry and TCA
 					else if(step == 1) {
 						// Calculate image stride, in ELEMENTS
-						int imgDataStride = state.rawSize.width * 4;
+						int imgDataStrideElements = state.rawSize.width * 4;
 						
 						// Perform subpixel distortion correction
 						ok = m->ApplySubpixelGeometryDistortion(0, y,
-																state.rawSize.width,
-																1, subPixelCoords);
+																state.rawSize.width, 1,
+																subPixelCoords);
+						
 						// Interpolate the pixels into output buffer
 						if(ok) {
 							float *src = subPixelCoords;
 							
 							for(x = 0; x < state.rawSize.width; x++) {
-								// Copy the RGB pixels individually
-								*dst++ = TSInterpolatePixelBilinear(imgData, imgDataStride, src[0], src[1]);
-								*dst++ = TSInterpolatePixelBilinear(imgData, imgDataStride, src[2], src[3]);
-								*dst++ = TSInterpolatePixelBilinear(imgData, imgDataStride, src[4], src[5]);
+								// Read the R, G, B components separately, increment coordinate buffer
+								*dst++ = TSInterpolatePixelBilinear(imgData + 0, imgDataStrideElements, src[0], src[1]);
+								*dst++ = TSInterpolatePixelBilinear(imgData + 1, imgDataStrideElements, src[2], src[3]);
+								*dst++ = TSInterpolatePixelBilinear(imgData + 2, imgDataStrideElements, src[4], src[5]);
+								src += (3 * 2);
 								
-								// Increment the src pointer
-								src += (2 * 3);
+								// Set the X component (buffer is RGBX) to zero
+								*dst++ = 0;
 							}
 						}
-						
-						// Advance to the next row in the output pointer
-						dst += ((size_t) (4 * state.rawSize.width));
 					}
 					
 					// Unknown step
@@ -616,15 +632,6 @@
 		TSBeginOperation(@"Convert to Planar Floating Point");
 		
 		state.stage = TSRawPipelineStageConvertToPlanar;
-		
-		// if lens corrections were applied, the data is in the converter output
-		/*if(state.applyLensCorrections == YES) {
-			size_t num_bytes = (state.rawSize.width * 3 * sizeof(uint16_t)) * state.rawSize.height;
-			void *correctedData = TSPixelConverterGetRGBXPointer(state.converter);
-			
-			// we must copy the data; otherwise, it'll explode!
-			memcpy(self.interpolatedColourBuf, correctedData, num_bytes);
-		}*/
 		
 		// set the input buffer and begin converting
 		TSPixelConverterSetInData(state.converter, self.interpolatedColourBuf);
@@ -1255,7 +1262,7 @@
 		  samplesPerPixel:4
 		  hasAlpha:YES
 		  isPlanar:NO
-		  colorSpaceName:NSCustomColorSpace
+		  colorSpaceName:NSCalibratedRGBColorSpace
 		  bitmapFormat:NSFloatingPointSamplesBitmapFormat
 		  bytesPerRow:TSPixelConverterGetRGBXStride(state.converter)
 		  bitsPerPixel:128];
