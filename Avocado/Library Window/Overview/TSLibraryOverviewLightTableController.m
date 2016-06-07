@@ -40,11 +40,11 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
 	if(self = [super init]) {
 		self.gridView = view;
 		
-		// we're both its delegate and its data source
+		// We're both the grid view delegate and its data source
 		self.gridView.dataSource = self;
 		self.gridView.delegate = self;
 		
-		// register cell
+		// Register cell class
 		[self.gridView registerClass:[TSLibraryLightTableCell class] forItemWithIdentifier:@"ImageCell"];
 		
 		// notificationmaru!~!!!!1~~~
@@ -53,7 +53,7 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
 				   selector:@selector(imageDidImportNotification:)
 					   name:TSFileImportedNotificationName object:nil];
 		
-		// observe size changes to the enclosing scroll view
+		// Observe size changes to the enclosing scroll view
 		NSScrollView *scroll = self.gridView.enclosingScrollView;
 		scroll.postsFrameChangedNotifications = YES;
 		
@@ -62,12 +62,11 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
 					   name:NSViewFrameDidChangeNotification
 					 object:scroll];
 		
-		// set up some default values
+		// Set up some default values
 		self.cellsPerRow = 2;
-		
 		self.sortKey = TSLibraryOverviewNoSort;
 		
-		// add KVO observer for some keys
+		// Add KVO observer for some keys changeable in the UI
 		[self addObserver:self forKeyPath:@"cellsPerRow" options:0
 				  context:TSCellsPerRowKVO];
 		
@@ -82,8 +81,16 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
  * cleans up some shit
  */
 - (void) dealloc {
-	// remove notification observers
+	// Remove notification observers
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	
+	// Remove KVO observers
+	@try {
+		[self removeObserver:self forKeyPath:@"cellsPerRow"];
+	} @catch(NSException * __unused) { }
+	@try {
+		[self removeObserver:self forKeyPath:@"sortKey"];
+	} @catch(NSException * __unused) { }
 }
 
 #pragma mark Collection View Data Source
@@ -98,11 +105,11 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
  * Returns an item for the given index.
  */
 - (NSCollectionViewItem *) collectionView:(NSCollectionView *) collectionView itemForRepresentedObjectAtIndexPath:(NSIndexPath *) indexPath {
-	// get a cell
+	// Get a cell
 	TSLibraryLightTableCell *cell = [self.gridView makeItemWithIdentifier:@"ImageCell" forIndexPath:indexPath];
 	cell.controller = self;
 	
-	// set the image
+	// Set its represented object to the image, and update its sequence number
 	NSUInteger idx = [indexPath indexAtPosition:1];
 	
 	cell.representedObject = self.imagesToShow[idx];
@@ -137,7 +144,7 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
 	if(context == TSCellsPerRowKVO) {
 		[self resizeCells];
 	}
-	// sort key changed
+	// Sort key changed
 	else if(context == TSSortKeyKVO) {
 		[self applySortDescriptors];
 		[self refetchImages];
@@ -149,16 +156,16 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
  * Sets the fetch request, executes it, and updates the grid view.
  */
 - (void) setFetchRequest:(NSFetchRequest *) fetchRequest {
-	// set it first, pls
+	// Create a copy of the fetch request
 	_fetchRequest = [fetchRequest copy];
 	
-	// set the properties to fetch
+	// Set some limits for batch sizes, and prefetch
 	self.fetchRequest.fetchBatchSize = 30;
 	
 	self.fetchRequest.includesPropertyValues =  YES;
 	self.fetchRequest.shouldRefreshRefetchedObjects = YES;
 	
-	// update its sort descriptors
+	// Update its sort descriptors
 	[self applySortDescriptors];
 	
 	// EGGsecute it
@@ -169,10 +176,10 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
  * Executes the fetch request, then updates the image view
  */
 - (void) refetchImages {
-	// ensure we have a valid fetch request
+	// Ensure we have a valid fetch request
 	if(self.fetchRequest == nil) return;
 	
-	// execute the request and reload data
+	// Execute the request and reload data
 	NSManagedObjectContext *mainCtx = [TSCoreDataStore sharedInstance].mainThreadMoc;
 	self.imagesToShow = [TSLibraryImage TSExecuteFetchRequest:self.fetchRequest inContext:mainCtx];
 	
@@ -199,24 +206,24 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
 	NSSortDescriptor *sd = nil;
 	
 	switch(self.sortKey) {
-		// no sort
+		// No sort
 		case TSLibraryOverviewNoSort:
 			self.fetchRequest.sortDescriptors = nil;
 			break;
 			
-		// sort by date shot
+		// Sort by date shot
 		case TSLibraryOverviewSortByDateShot:
 			sd = [NSSortDescriptor sortDescriptorWithKey:@"dateShot" ascending:NO];
 			self.fetchRequest.sortDescriptors = @[sd];
 			break;
 			
-		// sort by date imported
+		// Sort by date imported
 		case TSLibraryOverviewSortByDateImported:
 			sd = [NSSortDescriptor sortDescriptorWithKey:@"dateImported" ascending:NO];
 			self.fetchRequest.sortDescriptors = @[sd];
 			break;
 			
-		// sort by filename
+		// Sort by filename
 		case TSLibraryOverviewSortByFilename:
 			sd = [NSSortDescriptor sortDescriptorWithKey:@"fileUrl" ascending:NO];
 			self.fetchRequest.sortDescriptors = @[sd];
@@ -231,7 +238,7 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
 - (void) resizeCells {
 	NSCollectionViewFlowLayout *layout = (NSCollectionViewFlowLayout *) self.gridView.collectionViewLayout;
 	
-	// calculate per cell size
+	// Calculate per cell size
 	CGFloat cellWidth = floorf(self.gridView.frame.size.width / ((CGFloat) self.cellsPerRow));
 	CGFloat cellHeight = ceilf(cellWidth * 1.25);
 	
@@ -239,7 +246,7 @@ static void *TSSortKeyKVO = &TSSortKeyKVO;
 	
 //	DDLogInfo(@"New item size: %@", NSStringFromSize(layout.itemSize));
 	
-	// force the thumbnails to be re-created
+	// Force the image cells to update their thumbnails
 	[[NSNotificationCenter defaultCenter] postNotificationName:TSLibraryLightTableInvalidateThumbsNotificationName object:nil];
 }
 
